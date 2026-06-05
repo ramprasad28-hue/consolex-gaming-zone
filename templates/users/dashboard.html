@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}My Dashboard — CONSOLEX{% endblock %}
+{% block content %}
+<section class="dashboard-section container">
+    <div class="dashboard-header">
+        <div>
+            <h2>Welcome, {{ user.username }} 👋</h2>
+            <p class="dashboard-sub">{{ user.email }}</p>
+        </div>
+        <a href="/bookings/" class="btn-primary">+ Book a Slot</a>
+    </div>
+
+    <h3 class="section-title">My Bookings</h3>
+
+    {% if bookings %}
+        <div class="booking-list">
+            {% for booking in bookings %}
+            <div class="booking-card status-{{ booking.status }}">
+                <div class="booking-info">
+                    <span class="booking-console">🎮 {{ booking.console.name }}</span>
+                    <span class="booking-date">{{ booking.date }} | {{ booking.start_time|time:"h:i A" }} – {{ booking.end_time|time:"h:i A" }}</span>
+                    <span class="booking-players">{{ booking.number_of_players }} Player{{ booking.number_of_players|pluralize }}</span>
+                </div>
+                <div class="booking-meta">
+                    <span class="booking-cost">₹{{ booking.total_cost }}</span>
+                    <span class="booking-status badge-{{ booking.status }}">{{ booking.get_status_display }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>No bookings yet. <a href="/bookings/">Book your first slot!</a></p>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

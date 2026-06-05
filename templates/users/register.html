@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Register — CONSOLEX{% endblock %}
+{% block content %}
+<section class="auth-section">
+    <div class="auth-card">
+        <h2>Create Account</h2>
+        <p class="auth-sub">Join CONSOLEX and book your slot</p>
+
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="alert alert-{{ msg.tags }}">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <span class="field-error">{{ field.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">{{ form.non_field_errors.0 }}</div>
+            {% endif %}
+            <button type="submit" class="btn-primary btn-full">Create Account</button>
+        </form>
+        <p class="auth-footer">Already have an account? <a href="/users/login/">Login here</a></p>
+    </div>
+</section>
+{% endblock %}

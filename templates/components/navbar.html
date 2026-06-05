@@ -1,0 +1,18 @@
+<nav class="navbar">
+    <div class="container">
+        <a href="/" class="logo">
+            <span class="logo-icon">🎮</span> CONSOLEX
+        </a>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/bookings/">Book a Slot</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="/users/dashboard/">My Bookings</a></li>
+                <li><a href="/users/logout/" class="btn-nav">Logout</a></li>
+            {% else %}
+                <li><a href="/users/login/">Login</a></li>
+                <li><a href="/users/register/" class="btn-nav">Register</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
