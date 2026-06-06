@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}CONSOLEX Gaming Zone{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/hero.css' %}">
     {% block extra_head %}{% endblock %}
 </head>
 <body>
@@ -16,5 +17,7 @@
     </main>
 
     {% include 'components/footer.html' %}
+    <script src="{% static 'js/hero.js' %}"></script>
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>
