@@ -1,0 +1,299 @@
+<!-- ══════════════════════════════════════════
+     CONSOLEX — Pricing Section (Phase 4.3)
+     Include in home.html:
+     {% include 'components/pricing.html' %}
+══════════════════════════════════════════ -->
+<section class="pricing-section" id="pricing">
+
+    <!-- Background -->
+    <div class="ps-bg">
+        <div class="ps-grid"></div>
+        <div class="ps-orb ps-orb-1"></div>
+        <div class="ps-orb ps-orb-2"></div>
+    </div>
+
+    <div class="pricing-container">
+
+        <!-- Section header -->
+        <div class="ps-head">
+            <span class="ps-tag">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="1" x2="12" y2="23"/>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+                Pricing
+            </span>
+            <h2 class="ps-title">
+                Simple <span class="ps-neon">Transparent</span> Pricing
+            </h2>
+            <p class="ps-sub">
+                Pay per hour, per player. No hidden charges. No membership required to walk in.
+            </p>
+        </div>
+
+        <!-- Day toggle -->
+        <div class="ps-toggle" role="group" aria-label="Select pricing day">
+            <button
+                class="pst-btn pst-active"
+                id="btnWeekday"
+                onclick="setPricing('weekday')"
+                aria-pressed="true">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8"  y1="2" x2="8"  y2="6"/>
+                    <line x1="3"  y1="10" x2="21" y2="10"/>
+                </svg>
+                Weekdays
+            </button>
+            <button
+                class="pst-btn"
+                id="btnWeekend"
+                onclick="setPricing('weekend')"
+                aria-pressed="false">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1"  x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22"  y1="4.22"  x2="5.64"  y2="5.64"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1"  y1="12" x2="3"  y2="12"/>
+                    <line x1="21" y1="12" x2="23" y2="12"/>
+                    <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
+                    <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
+                </svg>
+                Weekends
+            </button>
+        </div>
+
+        <!-- Cards grid -->
+        <div class="pc-grid" id="pricingGrid">
+
+            <!-- 1 Player -->
+            <div class="pc-card" data-player="1">
+                <div class="pc-glow"></div>
+                <div class="pc-top">
+                    <div class="pc-avatar">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="8" r="4"/>
+                            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                        </svg>
+                    </div>
+                    <div class="pc-label">Solo Player</div>
+                </div>
+                <div class="pc-price-wrap">
+                    <span class="pc-rupee">₹</span>
+                    <span class="pc-amount" data-weekday="130" data-weekend="150">130</span>
+                    <span class="pc-per">/hr</span>
+                </div>
+                <div class="pc-note" data-weekday="Weekday rate" data-weekend="Weekend rate">Weekday rate</div>
+                <ul class="pc-perks">
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        1 DualSense Controller
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Full Game Library Access
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        55" 4K Display
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Snack Bar Access
+                    </li>
+                </ul>
+                <a href="/bookings/" class="pc-btn">Book Solo</a>
+            </div>
+
+            <!-- 2 Players — Popular -->
+            <div class="pc-card pc-popular" data-player="2">
+                <div class="pc-glow"></div>
+                <div class="pc-popular-badge">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    Most Popular
+                </div>
+                <div class="pc-top">
+                    <div class="pc-avatar pc-avatar-popular">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="9"  cy="8" r="3.5"/>
+                            <circle cx="15" cy="8" r="3.5"/>
+                            <path d="M2 20c0-3.5 3-6 7-6"/>
+                            <path d="M22 20c0-3.5-3-6-7-6"/>
+                            <path d="M9 14c1-.3 2-.3 3 0 1-.3 2-.3 3 0"/>
+                        </svg>
+                    </div>
+                    <div class="pc-label">Duo Players</div>
+                </div>
+                <div class="pc-price-wrap">
+                    <span class="pc-rupee">₹</span>
+                    <span class="pc-amount" data-weekday="250" data-weekend="270">250</span>
+                    <span class="pc-per">/hr</span>
+                </div>
+                <div class="pc-note" data-weekday="Weekday rate" data-weekend="Weekend rate">Weekday rate</div>
+                <ul class="pc-perks">
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        2 DualSense Controllers
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Full Game Library Access
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        55" 4K Display
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Snack Bar Access
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Priority Booking
+                    </li>
+                </ul>
+                <a href="/bookings/" class="pc-btn pc-btn-popular">Book for Two</a>
+            </div>
+
+            <!-- 3 Players -->
+            <div class="pc-card" data-player="3">
+                <div class="pc-glow"></div>
+                <div class="pc-top">
+                    <div class="pc-avatar">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="6" r="3"/>
+                            <circle cx="5"  cy="15" r="3"/>
+                            <circle cx="19" cy="15" r="3"/>
+                            <path d="M9 9.5C10 8 11 7.5 12 7.5s2 .5 3 2"/>
+                            <path d="M5 18v.5M19 18v.5"/>
+                        </svg>
+                    </div>
+                    <div class="pc-label">Trio Squad</div>
+                </div>
+                <div class="pc-price-wrap">
+                    <span class="pc-rupee">₹</span>
+                    <span class="pc-amount" data-weekday="330" data-weekend="400">330</span>
+                    <span class="pc-per">/hr</span>
+                </div>
+                <div class="pc-note" data-weekday="Weekday rate" data-weekend="Weekend rate">Weekday rate</div>
+                <ul class="pc-perks">
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        3 DualSense Controllers
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Full Game Library Access
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        55" 4K Display
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Snack Bar Access
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Split Billing Option
+                    </li>
+                </ul>
+                <a href="/bookings/" class="pc-btn">Book Trio</a>
+            </div>
+
+            <!-- 4 Players -->
+            <div class="pc-card pc-squad" data-player="4">
+                <div class="pc-glow"></div>
+                <div class="pc-top">
+                    <div class="pc-avatar pc-avatar-squad">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="7"  cy="7"  r="2.5"/>
+                            <circle cx="17" cy="7"  r="2.5"/>
+                            <circle cx="7"  cy="17" r="2.5"/>
+                            <circle cx="17" cy="17" r="2.5"/>
+                        </svg>
+                    </div>
+                    <div class="pc-label">Full Squad</div>
+                </div>
+                <div class="pc-price-wrap">
+                    <span class="pc-rupee">₹</span>
+                    <span class="pc-amount" data-weekday="420" data-weekend="520">420</span>
+                    <span class="pc-per">/hr</span>
+                </div>
+                <div class="pc-note" data-weekday="Weekday rate" data-weekend="Weekend rate">Weekday rate</div>
+                <ul class="pc-perks">
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        4 DualSense Controllers
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Full Game Library Access
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        55" 4K Display
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Snack Bar Access
+                    </li>
+                    <li>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Squad Discount Applied
+                    </li>
+                </ul>
+                <a href="/bookings/" class="pc-btn pc-btn-squad">Book Squad</a>
+            </div>
+
+        </div>
+
+        <!-- Bottom note -->
+        <div class="ps-footnote">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8"  x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            Minimum booking 1 hour &nbsp;·&nbsp; 30% advance to confirm slot &nbsp;·&nbsp; Balance payable at venue
+        </div>
+
+    </div>
+</section>
+
+<script>
+/* Pricing toggle — inline so no extra JS file needed */
+(function () {
+    var current = 'weekday';
+
+    window.setPricing = function (mode) {
+        if (mode === current) return;
+        current = mode;
+
+        /* Update toggle button states */
+        document.getElementById('btnWeekday').classList.toggle('pst-active', mode === 'weekday');
+        document.getElementById('btnWeekend').classList.toggle('pst-active', mode === 'weekend');
+        document.getElementById('btnWeekday').setAttribute('aria-pressed', mode === 'weekday');
+        document.getElementById('btnWeekend').setAttribute('aria-pressed', mode === 'weekend');
+
+        /* Animate each price out → update → in */
+        document.querySelectorAll('.pc-amount').forEach(function (el) {
+            el.classList.add('pc-flip-out');
+            setTimeout(function () {
+                el.textContent = el.dataset[mode];
+                el.classList.remove('pc-flip-out');
+                el.classList.add('pc-flip-in');
+                setTimeout(function () { el.classList.remove('pc-flip-in'); }, 300);
+            }, 180);
+        });
+
+        /* Update the day label text */
+        document.querySelectorAll('.pc-note').forEach(function (el) {
+            el.textContent = el.dataset[mode];
+        });
+    };
+}());
+</script>
