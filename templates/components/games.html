@@ -1,0 +1,316 @@
+<!-- ══════════════════════════════════════════
+     CONSOLEX — Featured Games (Phase 4.5)
+     Include in home.html:
+     {% include 'components/games.html' %}
+══════════════════════════════════════════ -->
+<section class="games-section" id="games">
+
+    <div class="gs-bg">
+        <div class="gs-grid"></div>
+        <div class="gs-orb gs-orb-1"></div>
+        <div class="gs-orb gs-orb-2"></div>
+    </div>
+
+    <div class="games-container">
+
+        <!-- Header -->
+        <div class="gs-head">
+            <span class="gs-tag">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <rect x="2" y="6" width="20" height="12" rx="3"/>
+                    <circle cx="8" cy="12" r="2"/>
+                    <line x1="13" y1="10" x2="13" y2="14"/>
+                    <line x1="11" y1="12" x2="15" y2="12"/>
+                    <circle cx="18" cy="11" r="0.8" fill="currentColor"/>
+                    <circle cx="18" cy="13" r="0.8" fill="currentColor"/>
+                </svg>
+                Game Library
+            </span>
+            <h2 class="gs-title">Featured <span class="gs-neon">Games</span></h2>
+            <p class="gs-sub">50+ titles across every genre. From multiplayer mayhem to co-op adventures — there's something for every squad.</p>
+        </div>
+
+        <!-- Filter pills -->
+        <div class="gs-filters" role="group" aria-label="Filter games">
+            <button class="gf-pill gf-active" onclick="filterGames('all',   this)">All Games</button>
+            <button class="gf-pill"            onclick="filterGames('coop',  this)">Co-op</button>
+            <button class="gf-pill"            onclick="filterGames('multi', this)">Multiplayer</button>
+            <button class="gf-pill"            onclick="filterGames('solo',  this)">Solo</button>
+        </div>
+
+        <!-- Games grid -->
+        <div class="games-grid" id="gamesGrid">
+
+            <!-- FC 26 -->
+            <div class="game-card" data-tags="multi solo">
+                <div class="gc-cover gc-cover-fc">
+                    <div class="gc-cover-bg"></div>
+                    <div class="gc-emoji">⚽</div>
+                    <div class="gc-cover-shine"></div>
+                    <div class="gc-player-badge">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                        1–4 Players
+                    </div>
+                </div>
+                <div class="gc-body">
+                    <div class="gc-meta-row">
+                        <span class="gc-genre gc-genre-green">Sports</span>
+                        <span class="gc-type">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="7" r="3"/><circle cx="16" cy="7" r="3"/><path d="M3 19c0-3 2.7-5 6-5"/><path d="M15 14c3.3 0 6 2 6 5"/></svg>
+                            Multiplayer
+                        </span>
+                    </div>
+                    <h3 class="gc-title">FC 26</h3>
+                    <p class="gc-desc">World's #1 football game. Play leagues, tournaments and ultimate team battles.</p>
+                    <div class="gc-footer">
+                        <div class="gc-players-icons">
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                        </div>
+                        <a href="/bookings/" class="gc-play-btn">Play Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call of Duty -->
+            <div class="game-card" data-tags="multi solo">
+                <div class="gc-cover gc-cover-cod">
+                    <div class="gc-cover-bg"></div>
+                    <div class="gc-emoji">💥</div>
+                    <div class="gc-cover-shine"></div>
+                    <div class="gc-player-badge">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                        1–4 Players
+                    </div>
+                    <div class="gc-hot-badge">🔥 Hot</div>
+                </div>
+                <div class="gc-body">
+                    <div class="gc-meta-row">
+                        <span class="gc-genre gc-genre-red">FPS</span>
+                        <span class="gc-type">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="7" r="3"/><circle cx="16" cy="7" r="3"/><path d="M3 19c0-3 2.7-5 6-5"/><path d="M15 14c3.3 0 6 2 6 5"/></svg>
+                            Multiplayer
+                        </span>
+                    </div>
+                    <h3 class="gc-title">Call of Duty</h3>
+                    <p class="gc-desc">Tactical FPS warfare. Dominate lobbies in the most intense shooter on PS5.</p>
+                    <div class="gc-footer">
+                        <div class="gc-players-icons">
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                        </div>
+                        <a href="/bookings/" class="gc-play-btn">Play Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- It Takes Two -->
+            <div class="game-card" data-tags="coop">
+                <div class="gc-cover gc-cover-itt">
+                    <div class="gc-cover-bg"></div>
+                    <div class="gc-emoji">🤝</div>
+                    <div class="gc-cover-shine"></div>
+                    <div class="gc-player-badge">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                        2 Players Only
+                    </div>
+                    <div class="gc-award-badge">🏆 GOTY</div>
+                </div>
+                <div class="gc-body">
+                    <div class="gc-meta-row">
+                        <span class="gc-genre gc-genre-blue">Adventure</span>
+                        <span class="gc-type gc-type-coop">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            Co-op
+                        </span>
+                    </div>
+                    <h3 class="gc-title">It Takes Two</h3>
+                    <p class="gc-desc">Award-winning co-op adventure. Perfect for friends and couples — pure chaos and heart.</p>
+                    <div class="gc-footer">
+                        <div class="gc-players-icons">
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-off"></span>
+                            <span class="gc-dot gc-dot-off"></span>
+                        </div>
+                        <a href="/bookings/" class="gc-play-btn">Play Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sackboy -->
+            <div class="game-card" data-tags="coop multi">
+                <div class="gc-cover gc-cover-sack">
+                    <div class="gc-cover-bg"></div>
+                    <div class="gc-emoji">🧸</div>
+                    <div class="gc-cover-shine"></div>
+                    <div class="gc-player-badge">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                        1–4 Players
+                    </div>
+                </div>
+                <div class="gc-body">
+                    <div class="gc-meta-row">
+                        <span class="gc-genre gc-genre-purple">Platformer</span>
+                        <span class="gc-type gc-type-coop">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            Co-op
+                        </span>
+                    </div>
+                    <h3 class="gc-title">Sackboy</h3>
+                    <p class="gc-desc">Charming 3D platformer with epic co-op levels. Fun for all ages and skill levels.</p>
+                    <div class="gc-footer">
+                        <div class="gc-players-icons">
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                        </div>
+                        <a href="/bookings/" class="gc-play-btn">Play Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Asphalt Legends -->
+            <div class="game-card" data-tags="multi solo">
+                <div class="gc-cover gc-cover-asphalt">
+                    <div class="gc-cover-bg"></div>
+                    <div class="gc-emoji">🏎️</div>
+                    <div class="gc-cover-shine"></div>
+                    <div class="gc-player-badge">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                        1–4 Players
+                    </div>
+                </div>
+                <div class="gc-body">
+                    <div class="gc-meta-row">
+                        <span class="gc-genre gc-genre-orange">Racing</span>
+                        <span class="gc-type">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="7" r="3"/><circle cx="16" cy="7" r="3"/><path d="M3 19c0-3 2.7-5 6-5"/><path d="M15 14c3.3 0 6 2 6 5"/></svg>
+                            Multiplayer
+                        </span>
+                    </div>
+                    <h3 class="gc-title">Asphalt Legends</h3>
+                    <p class="gc-desc">Blazing-fast arcade racing with exotic supercars. Pure adrenaline on 55 inches.</p>
+                    <div class="gc-footer">
+                        <div class="gc-players-icons">
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                        </div>
+                        <a href="/bookings/" class="gc-play-btn">Play Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overcooked -->
+            <div class="game-card" data-tags="coop multi">
+                <div class="gc-cover gc-cover-cook">
+                    <div class="gc-cover-bg"></div>
+                    <div class="gc-emoji">🍳</div>
+                    <div class="gc-cover-shine"></div>
+                    <div class="gc-player-badge">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                        1–4 Players
+                    </div>
+                </div>
+                <div class="gc-body">
+                    <div class="gc-meta-row">
+                        <span class="gc-genre gc-genre-yellow">Party</span>
+                        <span class="gc-type gc-type-coop">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            Co-op
+                        </span>
+                    </div>
+                    <h3 class="gc-title">Overcooked 2</h3>
+                    <p class="gc-desc">Chaotic cooking co-op that will test your friendships, teamwork and reflexes.</p>
+                    <div class="gc-footer">
+                        <div class="gc-players-icons">
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                        </div>
+                        <a href="/bookings/" class="gc-play-btn">Play Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- A Way Out -->
+            <div class="game-card" data-tags="coop">
+                <div class="gc-cover gc-cover-awo">
+                    <div class="gc-cover-bg"></div>
+                    <div class="gc-emoji">🔓</div>
+                    <div class="gc-cover-shine"></div>
+                    <div class="gc-player-badge">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                        2 Players Only
+                    </div>
+                </div>
+                <div class="gc-body">
+                    <div class="gc-meta-row">
+                        <span class="gc-genre gc-genre-blue">Action</span>
+                        <span class="gc-type gc-type-coop">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            Co-op
+                        </span>
+                    </div>
+                    <h3 class="gc-title">A Way Out</h3>
+                    <p class="gc-desc">Cinematic prison break co-op story. Gripping narrative, stunning split-screen action.</p>
+                    <div class="gc-footer">
+                        <div class="gc-players-icons">
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-on"></span>
+                            <span class="gc-dot gc-dot-off"></span>
+                            <span class="gc-dot gc-dot-off"></span>
+                        </div>
+                        <a href="/bookings/" class="gc-play-btn">Play Now</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Bottom CTA -->
+        <div class="gs-cta">
+            <p class="gs-cta-text">+43 more titles available at the lounge</p>
+            <a href="/bookings/" class="gs-cta-btn">
+                Book & Play Today
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<script>
+(function () {
+    window.filterGames = function (tag, btn) {
+        /* Update active pill */
+        document.querySelectorAll('.gf-pill').forEach(function (p) {
+            p.classList.remove('gf-active');
+        });
+        btn.classList.add('gf-active');
+
+        /* Show / hide cards */
+        document.querySelectorAll('.game-card').forEach(function (card) {
+            var tags = card.dataset.tags || '';
+            var show = tag === 'all' || tags.indexOf(tag) !== -1;
+            if (show) {
+                card.classList.remove('gc-hidden');
+                card.classList.add('gc-visible');
+            } else {
+                card.classList.add('gc-hidden');
+                card.classList.remove('gc-visible');
+            }
+        });
+    };
+}());
+</script>
