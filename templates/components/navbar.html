@@ -23,14 +23,14 @@
             </div>
         </a>
 
-        <!-- Desktop Links
+        <!-- Desktop Links -->
         <ul class="nav-links" id="navLinks">
             <li><a href="/"            class="nl {% if request.path == '/' %}active{% endif %}">Home</a></li>
             <li><a href="#games"       class="nl">Games</a></li>
             <li><a href="#pricing"     class="nl">Pricing</a></li>
             <li><a href="#membership"  class="nl">Memberships</a></li>
             <li><a href="#contact"     class="nl">Contact</a></li>
-        </ul> -->
+        </ul>
 
         <!-- Right actions -->
         <div class="nav-actions">
@@ -67,13 +67,13 @@
 
     <!-- Mobile Drawer -->
     <div class="mob-drawer" id="mobDrawer">
-        <ul class="mob-links">
+        <!-- <ul class="mob-links">
             <li><a href="/"           class="mob-link">Home</a></li>
             <li><a href="#games"      class="mob-link">Games</a></li>
             <li><a href="#pricing"    class="mob-link">Pricing</a></li>
             <li><a href="#membership" class="mob-link">Memberships</a></li>
             <li><a href="#contact"    class="mob-link">Contact</a></li>
-        </ul>
+        </ul> -->
         <div class="mob-auth">
             {% if user.is_authenticated %}
                 <a href="/users/dashboard/" class="mob-dash-link">My Bookings</a>
