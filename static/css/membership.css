@@ -1,0 +1,545 @@
+/* ============================================================
+   CONSOLEX — membership.css  (Phase 4.4)
+   Depends on CSS variables from navbar_footer.css
+   ============================================================ */
+
+/* ── Section shell ───────────────────────────────────────── */
+.mem-section {
+    position: relative;
+    padding: 110px 0 100px;
+    overflow: hidden;
+    background: var(--bg, #080810);
+}
+
+/* ── Background ──────────────────────────────────────────── */
+.ms-bg { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+
+.ms-grid {
+    position: absolute; inset: 0;
+    background-image:
+        linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
+    background-size: 70px 70px;
+    mask-image: radial-gradient(ellipse 85% 80% at 50% 50%, black, transparent);
+}
+
+.ms-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(110px);
+    pointer-events: none;
+    animation: msOrb 13s ease-in-out infinite;
+}
+.ms-orb-1 {
+    width: 520px; height: 520px;
+    background: radial-gradient(circle, rgba(0,240,255,0.08), transparent 70%);
+    top: -140px; right: -100px;
+    animation-delay: 0s;
+}
+.ms-orb-2 {
+    width: 440px; height: 440px;
+    background: radial-gradient(circle, rgba(191,0,255,0.07), transparent 70%);
+    bottom: -120px; left: -80px;
+    animation-delay: -5s;
+}
+.ms-orb-3 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(255,107,0,0.06), transparent 70%);
+    top: 45%; left: 42%;
+    animation-delay: -9s;
+}
+@keyframes msOrb {
+    0%,100% { transform: translate(0,0); }
+    50%      { transform: translate(-18px, 22px); }
+}
+
+/* ── Container ───────────────────────────────────────────── */
+.mem-container {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 28px;
+}
+
+/* ── Section header ──────────────────────────────────────── */
+.ms-head {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.ms-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-body, 'Rajdhani', sans-serif);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--purple, #bf00ff);
+    background: rgba(191,0,255,0.08);
+    border: 1px solid rgba(191,0,255,0.22);
+    padding: 6px 16px;
+    border-radius: 50px;
+    margin-bottom: 18px;
+}
+
+.ms-title {
+    font-family: var(--font-head, 'Orbitron', monospace);
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 14px;
+}
+
+.ms-neon {
+    color: var(--purple, #bf00ff);
+    text-shadow:
+        0 0 20px rgba(191,0,255,0.55),
+        0 0 60px rgba(191,0,255,0.20);
+}
+
+.ms-sub {
+    font-family: var(--font-body, 'Rajdhani', sans-serif);
+    font-size: 1rem;
+    color: var(--text2, #9a9db8);
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.75;
+}
+
+/* ── Cards grid ──────────────────────────────────────────── */
+.mem-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    align-items: start;
+    margin-bottom: 36px;
+}
+
+/* ── Individual card ─────────────────────────────────────── */
+.mem-card {
+    position: relative;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 22px;
+    padding: 36px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition:
+        transform    0.32s cubic-bezier(0.22,1,0.36,1),
+        border-color 0.30s ease,
+        box-shadow   0.30s ease;
+}
+
+/* Inner radial glow (top center) */
+.mc-inner-glow {
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 260px; height: 180px;
+    border-radius: 50%;
+    filter: blur(50px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    background: radial-gradient(circle, rgba(0,240,255,0.22), transparent 70%);
+}
+
+/* ── Basic card ──────────────────────────────────────────── */
+.mc-basic:hover {
+    transform: translateY(-8px);
+    border-color: rgba(0,240,255,0.22);
+    box-shadow:
+        0 24px 64px rgba(0,0,0,0.45),
+        0 0 48px rgba(0,240,255,0.06);
+}
+.mc-basic:hover .mc-inner-glow { opacity: 1; }
+
+/* ── Standard card (featured) ────────────────────────────── */
+.mc-standard {
+    border-color: rgba(0,240,255,0.28);
+    background: linear-gradient(
+        160deg,
+        rgba(0,240,255,0.055) 0%,
+        rgba(191,0,255,0.040) 60%,
+        rgba(8,8,16,0) 100%
+    );
+    transform: scale(1.04);   /* slightly larger at rest */
+}
+.mc-standard .mc-inner-glow {
+    background: radial-gradient(circle, rgba(0,240,255,0.28), transparent 70%);
+    opacity: 0.45;
+}
+.mc-standard:hover {
+    transform: translateY(-10px) scale(1.04);
+    border-color: rgba(0,240,255,0.52);
+    box-shadow:
+        0 32px 80px rgba(0,0,0,0.55),
+        0 0 70px rgba(0,240,255,0.12),
+        inset 0 1px 0 rgba(0,240,255,0.22);
+}
+.mc-standard:hover .mc-inner-glow { opacity: 1; }
+
+/* ── Pro card ────────────────────────────────────────────── */
+.mc-pro {
+    border-color: rgba(255,107,0,0.18);
+}
+.mc-pro .mc-inner-glow {
+    background: radial-gradient(circle, rgba(255,107,0,0.22), transparent 70%);
+}
+.mc-pro:hover {
+    transform: translateY(-8px);
+    border-color: rgba(255,107,0,0.45);
+    box-shadow:
+        0 24px 64px rgba(0,0,0,0.45),
+        0 0 52px rgba(255,107,0,0.08);
+}
+.mc-pro:hover .mc-inner-glow { opacity: 1; }
+
+/* ── Badge (Most Popular / Best Value) ───────────────────── */
+.mc-badge {
+    position: absolute;
+    top: -1px; left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-body, 'Rajdhani', sans-serif);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    border-radius: 0 0 12px 12px;
+    white-space: nowrap;
+}
+
+.mc-badge-popular {
+    color: #000;
+    background: var(--cyan, #00f0ff);
+    box-shadow: 0 4px 22px rgba(0,240,255,0.45);
+}
+
+.mc-badge-pro {
+    color: #000;
+    background: var(--orange, #ff6b00);
+    box-shadow: 0 4px 22px rgba(255,107,0,0.45);
+}
+
+/* ── Card header ─────────────────────────────────────────── */
+.mc-header { margin-bottom: 22px; }
+
+.mc-tier-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.mc-tier-icon { font-size: 1.5rem; }
+
+.mc-tier-name {
+    font-family: var(--font-head, 'Orbitron', monospace);
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #fff;
+}
+.mc-name-cyan   { color: var(--cyan, #00f0ff); text-shadow: 0 0 18px rgba(0,240,255,0.4); }
+.mc-name-orange { color: var(--orange, #ff6b00); text-shadow: 0 0 18px rgba(255,107,0,0.4); }
+
+.mc-tier-desc {
+    font-family: var(--font-body, 'Rajdhani', sans-serif);
+    font-size: 0.85rem;
+    color: var(--text3, #5a5d7a);
+    line-height: 1.65;
+}
+
+/* ── Price block ─────────────────────────────────────────── */
+.mc-price-block {
+    margin-bottom: 20px;
+}
+
+.mc-price {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.mc-currency {
+    font-family: var(--font-head, 'Orbitron', monospace);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text2, #9a9db8);
+    margin-bottom: 8px;
+}
+.mc-currency-cyan   { color: var(--cyan, #00f0ff); }
+.mc-currency-orange { color: var(--orange, #ff6b00); }
+
+.mc-amount {
+    font-family: var(--font-head, 'Orbitron', monospace);
+    font-size: 2.8rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    color: #fff;
+}
+.mc-amount-cyan   {
+    color: var(--cyan, #00f0ff);
+    text-shadow: 0 0 28px rgba(0,240,255,0.35);
+}
+.mc-amount-orange {
+    color: var(--orange, #ff6b00);
+    text-shadow: 0 0 28px rgba(255,107,0,0.35);
+}
+
+.mc-period {
+    font-family: var(--font-body, 'Rajdhani', sans-serif);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text3, #5a5d7a);
+}
+
+/* ── Hours block ─────────────────────────────────────────── */
+.mc-hours-block {
+    display: flex;
+    align-items: center;
+    margin-bottom: 22px;
+}
+.mc-hours-split { gap: 8px; }
+
+.mc-hours-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 10px;
+    padding: 8px 12px;
+    flex: 1;
+    transition: border-color 0.25s;
+}
+
+/* Colour variants */
+.mc-hours-pill-cyan {
+    border-color: rgba(0,240,255,0.20);
+    background: rgba(0,240,255,0.06);
+    color: var(--cyan, #00f0ff);
+}
+.mc-hours-pill-purple {
+    border-color: rgba(191,0,255,0.20);
+    background: rgba(191,0,255,0.06);
+    color: var(--purple, #bf00ff);
+}
+.mc-hours-pill-orange {
+    border-color: rgba(255,107,0,0.20);
+    background: rgba(255,107,0,0.06);
+    color: var(--orange, #ff6b00);
+}
+.mc-hours-pill-fire {
+    border-color: rgba(255,60,0,0.22);
+    background: rgba(255,60,0,0.07);
+    color: #ff4500;
+}
+
+.mc-hours-pill svg { flex-shrink: 0; }
+
+.mc-hours-num {
+    font-family: var(--font-head, 'Orbitron', monospace);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: inherit;
+}
+.mc-hours-label {
+    font-family: var(--font-body, 'Rajdhani', sans-serif);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: inherit;
+    opacity: 0.8;
+    line-height: 1.2;
+}
+
+.mc-hours-plus {
+    font-family: var(--font-head, 'Orbitron', monospace);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text3, #5a5d7a);
+    flex-shrink: 0;
+}
+
+/* ── Divider ─────────────────────────────────────────────── */
+.mc-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.07);
+    margin-bottom: 22px;
+}
+.mc-divider-cyan   { background: linear-gradient(90deg, transparent, rgba(0,240,255,0.25), transparent); }
+.mc-divider-orange { background: linear-gradient(90deg, transparent, rgba(255,107,0,0.25), transparent); }
+
+/* ── Perks list ──────────────────────────────────────────── */
+.mc-perks {
+    list-style: none;
+    padding: 0; margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    flex: 1;
+    margin-bottom: 26px;
+}
+
+.mc-perk {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-body, 'Rajdhani', sans-serif);
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text2, #9a9db8);
+    transition: color 0.2s;
+}
+.mem-card:hover .mc-perk { color: var(--text, #e8eaf0); }
+
+.mc-perk-off {
+    color: var(--text3, #5a5d7a) !important;
+}
+.mem-card:hover .mc-perk-off { color: var(--text3, #5a5d7a) !important; }
+
+/* Check icon circle */
+.mc-check {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+}
+.mem-card:hover .mc-check { transform: scale(1.1); }
+
+.mc-check-cyan   { background: rgba(0,240,255,0.12);  color: var(--cyan, #00f0ff); }
+.mc-check-purple { background: rgba(191,0,255,0.12); color: var(--purple, #bf00ff); }
+.mc-check-orange { background: rgba(255,107,0,0.12); color: var(--orange, #ff6b00); }
+.mc-check-off    { background: rgba(255,255,255,0.05); color: var(--text3, #5a5d7a); }
+
+/* ── CTA button ──────────────────────────────────────────── */
+.mc-btn {
+    display: block;
+    text-align: center;
+    font-family: var(--font-body, 'Rajdhani', sans-serif);
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    padding: 13px 16px;
+    border-radius: 10px;
+    margin-bottom: 14px;
+    transition:
+        color        0.25s ease,
+        background   0.25s ease,
+        border-color 0.25s ease,
+        box-shadow   0.25s ease,
+        transform    0.2s ease;
+}
+
+/* Basic button — ghost */
+.mc-btn-basic {
+    color: var(--text2, #9a9db8);
+    border: 1px solid rgba(255,255,255,0.12);
+    background: none;
+}
+.mc-btn-basic:hover {
+    color: var(--cyan, #00f0ff);
+    border-color: rgba(0,240,255,0.38);
+    background: rgba(0,240,255,0.06);
+    transform: translateY(-2px);
+}
+
+/* Standard button — solid cyan */
+.mc-btn-standard {
+    color: #000;
+    background: var(--cyan, #00f0ff);
+    border: 1px solid var(--cyan, #00f0ff);
+    box-shadow: 0 0 26px rgba(0,240,255,0.42);
+}
+.mc-btn-standard:hover {
+    background: #fff;
+    border-color: #fff;
+    box-shadow: 0 0 44px rgba(0,240,255,0.60);
+    transform: translateY(-2px);
+}
+
+/* Pro button — orange gradient */
+.mc-btn-pro {
+    color: #000;
+    background: linear-gradient(135deg, var(--orange, #ff6b00), #ff9500);
+    border: 1px solid var(--orange, #ff6b00);
+    box-shadow: 0 0 26px rgba(255,107,0,0.40);
+}
+.mc-btn-pro:hover {
+    background: linear-gradient(135deg, #ff8c00, #ffb300);
+    box-shadow: 0 0 44px rgba(255,107,0,0.60);
+    transform: translateY(-2px);
+}
+
+/* ── Effective rate note ──────────────────────────────────── */
+.mc-value-note {
+    text-align: center;
+    font-family: var(--font-body, 'Rajdhani', sans-serif);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text3, #5a5d7a);
+}
+.mc-value-cyan   { color: rgba(0,240,255,0.45); }
+.mc-value-orange { color: rgba(255,107,0,0.45); }
+
+/* ── Bottom compare note ─────────────────────────────────── */
+.ms-compare {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--font-body, 'Rajdhani', sans-serif);
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text3, #5a5d7a);
+    text-align: center;
+    flex-wrap: wrap;
+}
+.ms-compare svg { flex-shrink: 0; color: var(--purple, #bf00ff); opacity: 0.5; }
+
+/* ── Responsive ──────────────────────────────────────────── */
+
+/* Tablet */
+@media (max-width: 960px) {
+    .mem-grid {
+        grid-template-columns: 1fr;
+        max-width: 440px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    /* Remove scale on standard at rest for stacked layout */
+    .mc-standard { transform: scale(1); }
+    .mc-standard:hover { transform: translateY(-8px) scale(1); }
+}
+
+/* Mobile */
+@media (max-width: 500px) {
+    .mem-section { padding: 80px 0 72px; }
+    .mem-container { padding: 0 18px; }
+    .mem-grid { max-width: 100%; }
+
+    .mc-amount { font-size: 2.4rem; }
+
+    .mc-hours-split { flex-wrap: wrap; }
+    .mc-hours-pill  { flex: 1 1 40%; }
+
+    .ms-compare { font-size: 0.76rem; }
+}
