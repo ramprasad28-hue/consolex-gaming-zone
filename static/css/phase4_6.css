@@ -1,0 +1,696 @@
+/* ═══════════════════════════════════════════════════════════
+   CONSOLEX — PHASE 4.6 CSS
+   File: static/css/phase4_6.css
+   Covers: Testimonials · WhatsApp Float · Instagram CTA
+           Google Review CTA
+═══════════════════════════════════════════════════════════ */
+
+/* ── CSS VARIABLES (mirrors design system) ──────────────── */
+:root {
+  --cx-cyan:    #00f0ff;
+  --cx-purple:  #bf00ff;
+  --cx-orange:  #ff6b00;
+  --cx-dark:    #050510;
+  --cx-dark-2:  #0a0a1a;
+  --cx-dark-3:  #0f0f22;
+  --cx-glass:   rgba(255,255,255,0.04);
+  --cx-border:  rgba(255,255,255,0.08);
+  --cx-text:    #e0e0f0;
+  --cx-muted:   rgba(224,224,240,0.55);
+  --transition: 0.3s ease;
+}
+
+/* ── SHARED SECTION UTILITIES ───────────────────────────── */
+.section-eyebrow {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  color: var(--cx-cyan);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  opacity: 0.85;
+}
+
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.15;
+  margin: 0 0 1rem;
+}
+
+.section-subtitle {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.05rem;
+  color: var(--cx-muted);
+  max-width: 540px;
+  margin: 0 0 3rem;
+  line-height: 1.6;
+}
+
+.title-accent {
+  background: linear-gradient(90deg, var(--cx-cyan), var(--cx-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── SCROLL REVEAL ───────────────────────────────────────── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[data-reveal].revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ════════════════════════════════════════════════════════════
+   TESTIMONIALS SECTION
+════════════════════════════════════════════════════════════ */
+.testimonials-section {
+  background: var(--cx-dark-2);
+  padding: 6rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.testimonials-section::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  right: -200px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(191,0,255,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.testimonials-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Grid */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+}
+
+/* Card */
+.testimonial-card {
+  background: var(--cx-glass);
+  border: 1px solid var(--cx-border);
+  border-radius: 16px;
+  padding: 1.8rem;
+  position: relative;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+  backdrop-filter: blur(10px);
+}
+
+.testimonial-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(0,240,255,0.25);
+  box-shadow: 0 12px 40px rgba(0,240,255,0.08);
+}
+
+.testimonial-card.card-featured {
+  border-color: rgba(0,240,255,0.3);
+  background: linear-gradient(135deg, rgba(0,240,255,0.05), rgba(191,0,255,0.05));
+  box-shadow: 0 0 30px rgba(0,240,255,0.07);
+}
+
+.testimonial-badge {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: var(--cx-cyan);
+  background: rgba(0,240,255,0.1);
+  border: 1px solid rgba(0,240,255,0.25);
+  border-radius: 4px;
+  padding: 3px 10px;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+
+.testimonial-rating {
+  margin-bottom: 0.9rem;
+}
+
+.testimonial-rating .star {
+  color: #fbbf24;
+  font-size: 0.9rem;
+  margin-right: 1px;
+}
+
+.testimonial-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.98rem;
+  color: var(--cx-text);
+  line-height: 1.65;
+  margin: 0 0 1.5rem;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.testimonial-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.testimonial-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.testimonial-avatar.cyan   { background: rgba(0,240,255,0.15); color: var(--cx-cyan); border: 1px solid rgba(0,240,255,0.3); }
+.testimonial-avatar.purple { background: rgba(191,0,255,0.15); color: var(--cx-purple); border: 1px solid rgba(191,0,255,0.3); }
+.testimonial-avatar.orange { background: rgba(255,107,0,0.15); color: var(--cx-orange); border: 1px solid rgba(255,107,0,0.3); }
+
+.testimonial-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.testimonial-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.testimonial-detail {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.78rem;
+  color: var(--cx-muted);
+}
+
+.testimonial-platform {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: var(--cx-muted);
+  border: 1px solid var(--cx-border);
+  border-radius: 4px;
+  padding: 3px 8px;
+}
+
+/* Stats bar */
+.testimonials-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  background: var(--cx-glass);
+  border: 1px solid var(--cx-border);
+  border-radius: 16px;
+  padding: 2rem;
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.stat-number {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 900;
+  background: linear-gradient(90deg, var(--cx-cyan), var(--cx-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.stat-plus, .stat-decimal, .stat-unit {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--cx-cyan);
+  line-height: 1;
+}
+
+.stat-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  color: var(--cx-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 60px;
+  background: var(--cx-border);
+  margin: 0 2rem;
+  flex-shrink: 0;
+}
+
+/* ════════════════════════════════════════════════════════════
+   WHATSAPP FLOATING BUTTON
+════════════════════════════════════════════════════════════ */
+.whatsapp-float {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 9999;
+  width: 58px;
+  height: 58px;
+  background: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.45);
+  transition: transform var(--transition), box-shadow var(--transition);
+  text-decoration: none;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.12);
+  box-shadow: 0 6px 28px rgba(37,211,102,0.6);
+}
+
+.whatsapp-float:hover .whatsapp-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.whatsapp-icon {
+  width: 30px;
+  height: 30px;
+  color: #ffffff;
+  position: relative;
+  z-index: 2;
+}
+
+.whatsapp-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #25D366;
+  animation: waPulse 2.5s ease-out infinite;
+  z-index: 1;
+}
+
+@keyframes waPulse {
+  0%   { transform: scale(1);   opacity: 0.7; }
+  70%  { transform: scale(1.5); opacity: 0;   }
+  100% { transform: scale(1.5); opacity: 0;   }
+}
+
+.whatsapp-tooltip {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateX(8px) translateY(-50%);
+  background: rgba(10,10,26,0.95);
+  border: 1px solid rgba(37,211,102,0.3);
+  color: #ffffff;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 6px 14px;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition), transform var(--transition);
+}
+
+.whatsapp-tooltip::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-left-color: rgba(10,10,26,0.95);
+  border-right: none;
+}
+
+/* ════════════════════════════════════════════════════════════
+   INSTAGRAM CTA SECTION
+════════════════════════════════════════════════════════════ */
+.instagram-cta {
+  background: var(--cx-dark-3);
+  padding: 5rem 1.5rem;
+  border-top: 1px solid var(--cx-border);
+  border-bottom: 1px solid var(--cx-border);
+}
+
+.instagram-cta-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.insta-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--cx-muted);
+  margin-bottom: 1rem;
+}
+
+.insta-logo-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.insta-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 1rem;
+  line-height: 1.2;
+}
+
+.insta-desc {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  color: var(--cx-muted);
+  line-height: 1.65;
+  margin: 0 0 2rem;
+  max-width: 440px;
+}
+
+.btn-insta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 0.85rem 1.8rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+
+.btn-insta:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(220,39,67,0.35);
+}
+
+/* Instagram grid */
+.insta-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.insta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.insta-tile {
+  border-radius: 12px;
+  border: 1px solid var(--cx-border);
+  padding: 1.5rem 1rem;
+  background: var(--cx-glass);
+  transition: transform var(--transition), box-shadow var(--transition);
+  cursor: default;
+}
+
+.insta-tile:hover {
+  transform: translateY(-4px);
+}
+
+.tile-glow-cyan:hover   { box-shadow: 0 8px 24px rgba(0,240,255,0.15); border-color: rgba(0,240,255,0.25); }
+.tile-glow-purple:hover { box-shadow: 0 8px 24px rgba(191,0,255,0.15); border-color: rgba(191,0,255,0.25); }
+.tile-glow-orange:hover { box-shadow: 0 8px 24px rgba(255,107,0,0.15); border-color: rgba(255,107,0,0.25); }
+
+.insta-tile-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.tile-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.tile-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--cx-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.insta-follower-count {
+  text-align: center;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.follower-number {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #f09433, #dc2743, #bc1888);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.follower-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  color: var(--cx-muted);
+}
+
+/* ════════════════════════════════════════════════════════════
+   GOOGLE REVIEW CTA
+════════════════════════════════════════════════════════════ */
+.google-review-cta {
+  background: var(--cx-dark-2);
+  padding: 4rem 1.5rem;
+}
+
+.google-review-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  background: var(--cx-glass);
+  border: 1px solid var(--cx-border);
+  border-radius: 20px;
+  padding: 2.5rem 3rem;
+}
+
+.google-stars-display {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-shrink: 0;
+}
+
+.google-logo {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.google-rating-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.google-score {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.google-stars-row .gstar {
+  color: #fbbf24;
+  font-size: 0.9rem;
+}
+
+.google-stars-row .gstar.half {
+  opacity: 0.4;
+}
+
+.google-count {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.78rem;
+  color: var(--cx-muted);
+  white-space: nowrap;
+}
+
+.google-review-content {
+  flex: 1;
+}
+
+.google-review-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 0.4rem;
+}
+
+.google-review-subtitle {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.95rem;
+  color: var(--cx-muted);
+  margin: 0 0 1.25rem;
+  line-height: 1.5;
+}
+
+.btn-google-review {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(66,133,244,0.12);
+  border: 1px solid rgba(66,133,244,0.4);
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.btn-google-review:hover {
+  background: rgba(66,133,244,0.22);
+  border-color: rgba(66,133,244,0.7);
+  transform: translateY(-2px);
+}
+
+/* ════════════════════════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .testimonials-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .testimonials-stats {
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .stat-divider {
+    width: 60px;
+    height: 1px;
+    margin: 0;
+  }
+
+  .instagram-cta-inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .insta-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .insta-follower-count {
+    display: none;
+  }
+
+  .google-review-inner {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .google-stars-display {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .google-rating-block {
+    align-items: center;
+  }
+
+  .whatsapp-float {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 52px;
+    height: 52px;
+  }
+}
+
+@media (max-width: 480px) {
+  .testimonials-section,
+  .instagram-cta,
+  .google-review-cta {
+    padding: 4rem 1rem;
+  }
+
+  .insta-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .whatsapp-tooltip {
+    display: none;
+  }
+}
+
+/* ── COUNTER ANIMATION (JS hook) ───────────────────────── */
+.stat-number.counting {
+  transition: none;
+}
