@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Booking Confirmed — CONSOLEX{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/payment.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="payment-section">
+  <div class="payment-container payment-container--narrow">
+
+    <div class="success-icon">✅</div>
+    <h1 class="payment-title">Slot <span class="title-accent">Confirmed!</span></h1>
+    <p class="payment-subtitle">
+      Your advance of <strong>₹{{ payment.amount_rupees }}</strong> has been received.
+      See you at CONSOLEX!
+    </p>
+
+    <div class="payment-summary-card">
+      <div class="summary-row">
+        <span class="summary-label">Booking ID</span>
+        <span class="summary-value">#{{ booking.id }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Date</span>
+        <span class="summary-value">{{ booking.booking_date|date:"d M Y" }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Time</span>
+        <span class="summary-value">{{ booking.start_time|time:"h:i A" }} – {{ booking.end_time|time:"h:i A" }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Razorpay ID</span>
+        <span class="summary-value summary-small">{{ payment.razorpay_payment_id }}</span>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-row summary-advance">
+        <span class="summary-label">Advance Paid</span>
+        <span class="summary-value accent-cyan">₹{{ payment.amount_rupees }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Balance at venue</span>
+        <span class="summary-value accent-muted">₹{{ booking.total_cost|floatformat:2 }}</span>
+      </div>
+    </div>
+
+    <div class="success-actions">
+      <a href="{% url 'user_dashboard' %}" class="btn-pay">View My Bookings</a>
+      <a href="{% url 'home' %}" class="btn-secondary">Back to Home</a>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

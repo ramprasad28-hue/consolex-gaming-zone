@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Payment Failed — CONSOLEX{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/payment.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="payment-section">
+  <div class="payment-container payment-container--narrow">
+
+    <div class="success-icon">❌</div>
+    <h1 class="payment-title">Payment <span style="color:var(--cx-orange)">Failed</span></h1>
+    <p class="payment-subtitle">
+      Something went wrong with your payment. Your slot has <strong>not</strong> been confirmed yet.
+    </p>
+
+    <div class="success-actions">
+      <a href="{% url 'payment_page' booking.id %}" class="btn-pay">Try Again</a>
+      <a href="{% url 'home' %}" class="btn-secondary">Back to Home</a>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
