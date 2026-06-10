@@ -12,6 +12,7 @@ urlpatterns = [
     path('', home, name='home'),
     path('users/', include('apps.users.urls')),
     path('bookings/', include('apps.bookings.urls')),
+    path('payments/', include('apps.payments.urls')),
 ]
 
 if settings.DEBUG:

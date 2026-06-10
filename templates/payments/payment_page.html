@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Pay Advance — CONSOLEX{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/payment.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="payment-section">
+  <div class="payment-container">
+
+    <div class="payment-eyebrow">SECURE CHECKOUT</div>
+    <h1 class="payment-title">Confirm Your <span class="title-accent">Booking</span></h1>
+
+    <!-- Booking summary -->
+    <div class="payment-summary-card">
+      <div class="summary-row">
+        <span class="summary-label">Date</span>
+        <span class="summary-value">{{ booking.booking_date|date:"d M Y" }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Time</span>
+        <span class="summary-value">{{ booking.start_time|time:"h:i A" }} – {{ booking.end_time|time:"h:i A" }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Players</span>
+        <span class="summary-value">{{ booking.number_of_players }}</span>
+      </div>
+      {% if booking.game_console %}
+      <div class="summary-row">
+        <span class="summary-label">Game</span>
+        <span class="summary-value">{{ booking.game_console.name }}</span>
+      </div>
+      {% endif %}
+      <div class="summary-divider"></div>
+      <div class="summary-row">
+        <span class="summary-label">Total Cost</span>
+        <span class="summary-value">₹{{ total_rupees }}</span>
+      </div>
+      <div class="summary-row summary-advance">
+        <span class="summary-label">Advance (30%)</span>
+        <span class="summary-value accent-cyan">₹{{ advance_rupees }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Balance at venue</span>
+        <span class="summary-value accent-muted">₹{{ balance_rupees }}</span>
+      </div>
+    </div>
+
+    <div class="payment-info-note">
+      💳 You are paying the <strong>30% advance</strong> now to confirm your slot.
+      The remaining ₹{{ balance_rupees }} is paid at the venue.
+    </div>
+
+    <!-- Pay button -->
+    <button id="pay-btn" class="btn-pay">
+      Pay ₹{{ advance_rupees }} via Razorpay
+    </button>
+
+    <div id="payment-status" class="payment-status hidden"></div>
+
+  </div>
+</section>
+
+<!-- Razorpay checkout script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  const payBtn = document.getElementById('pay-btn');
+  const statusEl = document.getElementById('payment-status');
+
+  payBtn.addEventListener('click', () => {
+    const options = {
+      key:         '{{ razorpay_key_id }}',
+      amount:      {{ rp_amount }},
+      currency:    'INR',
+      name:        'CONSOLEX Gaming Zone',
+      description: 'Slot Booking Advance — #{{ booking.id }}',
+      order_id:    '{{ rp_order_id }}',
+      prefill: {
+        name:  '{{ request.user.get_full_name }}',
+        email: '{{ request.user.email }}',
+      },
+      theme: { color: '#00f0ff' },
+
+      handler: function(response) {
+        payBtn.disabled = true;
+        payBtn.textContent = 'Verifying…';
+
+        fetch('/payments/verify/', {
+          method:  'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken':  '{{ csrf_token }}',
+          },
+          body: JSON.stringify({
+            razorpay_order_id:   response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature:  response.razorpay_signature,
+          }),
+        })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            window.location.href = data.redirect;
+          } else {
+            showStatus('❌ Verification failed: ' + (data.error || 'Unknown error'), 'error');
+            payBtn.disabled = false;
+            payBtn.textContent = 'Pay ₹{{ advance_rupees }} via Razorpay';
+          }
+        })
+        .catch(() => {
+          showStatus('❌ Network error. Please contact support.', 'error');
+          payBtn.disabled = false;
+          payBtn.textContent = 'Pay ₹{{ advance_rupees }} via Razorpay';
+        });
+      },
+
+      modal: {
+        ondismiss: function() {
+          showStatus('Payment cancelled. Click the button to try again.', 'warn');
+        }
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function(resp) {
+      showStatus('❌ Payment failed: ' + resp.error.description, 'error');
+      window.location.href = '/payments/failed/{{ booking.id }}/';
+    });
+    rzp.open();
+  });
+
+  function showStatus(msg, type) {
+    statusEl.textContent = msg;
+    statusEl.className = 'payment-status ' + type;
+  }
+</script>
+{% endblock %}

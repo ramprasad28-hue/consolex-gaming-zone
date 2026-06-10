@@ -90,3 +90,18 @@ AUTH_USER_MODEL = 'users.User'   # will enable after Phase 2
 LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/users/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
+
+# ─────────────────────────────────────────────
+# File: config/settings.py  (additions only)
+# Add these lines at the bottom
+# ─────────────────────────────────────────────
+
+# Razorpay
+RAZORPAY_KEY_ID     = 'rzp_test_XXXXXXXXXXXXXXXX'   # ← replace after signup
+RAZORPAY_KEY_SECRET = 'XXXXXXXXXXXXXXXXXXXXXXXX'    # ← replace after signup
+
+# Twilio WhatsApp
+TWILIO_ACCOUNT_SID  = 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'  # ← replace
+TWILIO_AUTH_TOKEN   = 'your_auth_token_here'                # ← replace
+TWILIO_WHATSAPP_FROM = 'whatsapp:+14155238886'              # Twilio sandbox number
+OWNER_WHATSAPP_TO    = 'whatsapp:+91XXXXXXXXXX'             # ← owner's number
