@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Demo Payment — CONSOLEX{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/payment.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="payment-section">
+  <div class="payment-container">
+
+    <div class="payment-eyebrow">DEMO MODE</div>
+    <h1 class="payment-title">Simulate <span class="title-accent">Payment</span></h1>
+    <p class="payment-subtitle">
+      Razorpay is not configured yet. Use the buttons below to simulate
+      a successful or failed payment for demo purposes.
+    </p>
+
+    <!-- Booking summary -->
+    <div class="payment-summary-card">
+      <div class="summary-row">
+        <span class="summary-label">Booking ID</span>
+        <span class="summary-value">#{{ booking.id }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Date</span>
+        <span class="summary-value">{{ booking.booking_date|date:"d M Y" }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Time</span>
+        <span class="summary-value">
+          {{ booking.start_time|time:"h:i A" }} – {{ booking.end_time|time:"h:i A" }}
+        </span>
+      </div>
+      {% if booking.game_console %}
+      <div class="summary-row">
+        <span class="summary-label">Game</span>
+        <span class="summary-value">{{ booking.game_console.name }}</span>
+      </div>
+      {% endif %}
+      <div class="summary-divider"></div>
+      <div class="summary-row">
+        <span class="summary-label">Total Cost</span>
+        <span class="summary-value">₹{{ total_rupees }}</span>
+      </div>
+      <div class="summary-row summary-advance">
+        <span class="summary-label">Advance (30%)</span>
+        <span class="summary-value accent-cyan">₹{{ advance_rupees }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Balance at venue</span>
+        <span class="summary-value accent-muted">₹{{ balance_rupees }}</span>
+      </div>
+    </div>
+
+    <div class="demo-notice">
+      🧪 This is a <strong>demo payment simulation</strong>.
+      No real money is charged. Booking will be marked as confirmed.
+    </div>
+
+    <!-- Demo action buttons -->
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit" name="action" value="approve" class="btn-pay">
+        ✅ Simulate Successful Payment — ₹{{ advance_rupees }}
+      </button>
+      <button type="submit" name="action" value="fail"
+              class="btn-pay btn-pay--fail" style="margin-top:0.75rem;">
+        ❌ Simulate Failed Payment
+      </button>
+    </form>
+
+  </div>
+</section>
+{% endblock %}
