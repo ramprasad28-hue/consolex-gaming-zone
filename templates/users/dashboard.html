@@ -1,37 +1,140 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
+
 {% block title %}My Dashboard — CONSOLEX{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
 {% block content %}
-<section class="dashboard-section container">
+<section class="dashboard-section">
+  <div class="dashboard-container">
+
+    <!-- Header -->
     <div class="dashboard-header">
-        <div>
-            <h2>Welcome, {{ user.username }} 👋</h2>
-            <p class="dashboard-sub">{{ user.email }}</p>
-        </div>
-        <a href="/bookings/" class="btn-primary">+ Book a Slot</a>
+      <div>
+        <div class="dashboard-eyebrow">PLAYER PORTAL</div>
+        <h1 class="dashboard-title">
+          Welcome back, <span class="title-accent">{{ request.user.first_name|default:request.user.email }}</span>
+        </h1>
+      </div>
+      <a href="{% url 'booking_form' %}" class="btn-book-now">+ Book a Slot</a>
     </div>
 
-    <h3 class="section-title">My Bookings</h3>
+    <!-- Stats row -->
+    <div class="dashboard-stats">
+      <div class="dash-stat">
+        <span class="dash-stat-number">{{ total_bookings }}</span>
+        <span class="dash-stat-label">Total Bookings</span>
+      </div>
+      <div class="dash-stat">
+        <span class="dash-stat-number" style="color:var(--cx-cyan)">{{ confirmed_bookings }}</span>
+        <span class="dash-stat-label">Confirmed</span>
+      </div>
+      <div class="dash-stat">
+        <span class="dash-stat-number" style="color:#f59e0b">{{ pending_bookings }}</span>
+        <span class="dash-stat-label">Pending</span>
+      </div>
+      <div class="dash-stat">
+        <span class="dash-stat-number" style="color:var(--cx-purple)">₹{{ total_spent }}</span>
+        <span class="dash-stat-label">Total Paid</span>
+      </div>
+    </div>
 
-    {% if bookings %}
-        <div class="booking-list">
-            {% for booking in bookings %}
-            <div class="booking-card status-{{ booking.status }}">
-                <div class="booking-info">
-                    <span class="booking-console">🎮 {{ booking.console.name }}</span>
-                    <span class="booking-date">{{ booking.date }} | {{ booking.start_time|time:"h:i A" }} – {{ booking.end_time|time:"h:i A" }}</span>
-                    <span class="booking-players">{{ booking.number_of_players }} Player{{ booking.number_of_players|pluralize }}</span>
-                </div>
-                <div class="booking-meta">
-                    <span class="booking-cost">₹{{ booking.total_cost }}</span>
-                    <span class="booking-status badge-{{ booking.status }}">{{ booking.get_status_display }}</span>
-                </div>
-            </div>
-            {% endfor %}
+    <!-- Booking history -->
+    <div class="dashboard-card">
+      <h2 class="dashboard-card-title">Booking History</h2>
+
+      {% if bookings %}
+        <div class="bookings-table-wrap">
+          <table class="bookings-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Game</th>
+                <th>Players</th>
+                <th>Total</th>
+                <th>Advance</th>
+                <th>Status</th>
+                <th>Payment</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for booking in bookings %}
+              <tr>
+                <td class="td-id">#{{ booking.id }}</td>
+                <td>{{ booking.booking_date|date:"d M Y" }}</td>
+                <td class="td-time">
+                  {{ booking.start_time|time:"h:i A" }}<br>
+                  <span class="td-muted">{{ booking.end_time|time:"h:i A" }}</span>
+                </td>
+                <td>{{ booking.game_console.name|default:"—" }}</td>
+                <td class="td-center">{{ booking.number_of_players }}</td>
+                <td>₹{{ booking.total_cost }}</td>
+                <td class="td-advance">₹{{ booking.advance_amount }}</td>
+
+                <!-- Booking status badge -->
+                <td>
+                  {% if booking.status == 'confirmed' %}
+                    <span class="badge badge-confirmed">Confirmed</span>
+                  {% elif booking.status == 'pending' %}
+                    <span class="badge badge-pending">Pending</span>
+                  {% elif booking.status == 'cancelled' %}
+                    <span class="badge badge-cancelled">Cancelled</span>
+                  {% elif booking.status == 'completed' %}
+                    <span class="badge badge-completed">Completed</span>
+                  {% endif %}
+                </td>
+
+                <!-- Payment status -->
+                <td>
+                  {% if booking.payment %}
+                    {% if booking.payment.status == 'captured' %}
+                      <span class="badge badge-confirmed">Paid</span>
+                    {% elif booking.payment.status == 'demo' %}
+                      <span class="badge badge-demo">Demo</span>
+                    {% elif booking.payment.status == 'failed' %}
+                      <span class="badge badge-cancelled">Failed</span>
+                    {% else %}
+                      <span class="badge badge-pending">{{ booking.payment.status|title }}</span>
+                    {% endif %}
+                  {% else %}
+                    <span class="badge badge-pending">Unpaid</span>
+                  {% endif %}
+                </td>
+
+                <!-- Action -->
+                <td>
+                  {% if booking.status == 'pending' and not booking.is_paid %}
+                    <a href="{% url 'payment_page' booking.id %}" class="btn-action btn-pay-now">
+                      Pay Now
+                    </a>
+                  {% else %}
+                    <a href="{% url 'booking_detail' booking.id %}" class="btn-action btn-view">
+                      View
+                    </a>
+                  {% endif %}
+                </td>
+
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-    {% else %}
-        <div class="empty-state">
-            <p>No bookings yet. <a href="/bookings/">Book your first slot!</a></p>
+
+      {% else %}
+        <div class="no-bookings">
+          <span class="no-bookings-icon">🎮</span>
+          <p>No bookings yet.</p>
+          <a href="{% url 'booking_form' %}" class="btn-book-now">Book Your First Slot</a>
         </div>
-    {% endif %}
+      {% endif %}
+
+    </div><!-- /.dashboard-card -->
+  </div>
 </section>
 {% endblock %}

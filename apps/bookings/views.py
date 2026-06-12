@@ -1,84 +1,119 @@
+# ─────────────────────────────────────────────
+# File: apps/bookings/views.py
+# ─────────────────────────────────────────────
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
-from datetime import datetime, timedelta
-from decimal import Decimal
-from .forms import BookingForm
+
 from .models import Booking
-
-WEEKDAY_RATES = {1: 130, 2: 250, 3: 330, 4: 420}
-WEEKEND_RATES = {1: 150, 2: 280, 3: 370, 4: 460}
-
-def calculate_cost(console, date, duration_hours, players):
-    is_weekend = date.weekday() >= 5  # Saturday=5, Sunday=6
-    rates = WEEKEND_RATES if is_weekend else WEEKDAY_RATES
-    hourly = rates.get(players, 130)
-    return Decimal(hourly * duration_hours)
+from apps.games.models import GameConsole
 
 
-@login_required
-def booking_create(request):
-    if request.method == 'POST':
-        form = BookingForm(request.POST)
-        if form.is_valid():
-            d = form.cleaned_data
-            console   = d['console']
-            date      = d['date']
-            duration  = int(d['duration'])
-            players   = int(d['number_of_players'])
-            h, m      = map(int, d['start_time'].split(':'))
-            from datetime import time
-            start_time = time(h, m)
-            end_time   = d['end_time']
-            total_cost = calculate_cost(console, date, duration, players)
-
-            booking = Booking.objects.create(
-                user=request.user,
-                console=console,
-                date=date,
-                start_time=start_time,
-                end_time=end_time,
-                number_of_players=players,
-                total_cost=total_cost,
-                status='pending',
-            )
-            messages.success(request, 'Booking created! Please complete your advance payment.')
-            return redirect('booking_payment', pk=booking.pk)
-    else:
-        form = BookingForm()
-    return render(request, 'bookings/booking_form.html', {'form': form})
+# ── HOURLY RATES ─────────────────────────────
+RATE_PER_HOUR = {
+    1: 300,   # 1 player
+    2: 500,   # 2 players
+    3: 700,
+    4: 900,
+}
+DEFAULT_RATE = 300
 
 
-@login_required
-def booking_payment(request, pk):
-    booking = get_object_or_404(Booking, pk=pk, user=request.user)
-    advance = (booking.total_cost * Decimal('0.3')).quantize(Decimal('1'))
-    return render(request, 'bookings/booking_payment.html', {
-        'booking': booking,
-        'advance': advance,
-    })
+def calculate_cost(start_time, end_time, players):
+    """Pure function — calculate total cost from times and player count."""
+    from datetime import datetime, date
+    start    = datetime.combine(date.today(), start_time)
+    end      = datetime.combine(date.today(), end_time)
+    hours    = max((end - start).seconds / 3600, 0)
+    rate     = RATE_PER_HOUR.get(players, DEFAULT_RATE)
+    return round(hours * rate, 2)
 
 
-@login_required
-def booking_confirm(request, pk):
-    """Called after Razorpay success webhook / manual confirm for now."""
-    booking = get_object_or_404(Booking, pk=pk, user=request.user)
-    booking.status = 'confirmed'
-    booking.save()
-
-    # Send owner notification
-    from apps.notifications.models import Notification
-    Notification.objects.create(
-        user=request.user,
-        message=(
-            f"New booking confirmed!\n"
-            f"Customer: {request.user.email}\n"
-            f"Console: {booking.console.name}\n"
-            f"Date: {booking.date} | {booking.start_time} – {booking.end_time}\n"
-            f"Players: {booking.number_of_players}\n"
-            f"Total: ₹{booking.total_cost}"
-        )
+def has_conflict(booking_date, start_time, end_time, game_console, exclude_id=None):
+    """Returns True if another booking overlaps this slot."""
+    qs = Booking.objects.filter(
+        booking_date  = booking_date,
+        game_console  = game_console,
+        status__in    = ['pending', 'confirmed'],
+        start_time__lt = end_time,
+        end_time__gt   = start_time,
     )
-    messages.success(request, 'Your booking is confirmed!')
-    return redirect('dashboard')
+    if exclude_id:
+        qs = qs.exclude(id=exclude_id)
+    return qs.exists()
+
+
+# ── BOOKING FORM ──────────────────────────────
+@login_required
+def booking_form(request):
+    consoles = GameConsole.objects.filter(is_available=True)
+
+    if request.method == 'POST':
+        # Pull form data
+        game_console_id = request.POST.get('game_console')
+        booking_date    = request.POST.get('booking_date')
+        start_time      = request.POST.get('start_time')
+        end_time        = request.POST.get('end_time')
+        players_raw     = request.POST.get('number_of_players', 1)
+
+        # Basic validation
+        if not all([game_console_id, booking_date, start_time, end_time]):
+            messages.error(request, 'Please fill in all required fields.')
+            return render(request, 'bookings/booking_form.html', {'consoles': consoles})
+
+        try:
+            from datetime import datetime, time as dt_time, date as dt_date
+            players     = int(players_raw)
+            b_date      = datetime.strptime(booking_date, '%Y-%m-%d').date()
+            b_start     = datetime.strptime(start_time,   '%H:%M').time()
+            b_end       = datetime.strptime(end_time,     '%H:%M').time()
+            game_console = GameConsole.objects.get(id=game_console_id)
+        except Exception:
+            messages.error(request, 'Invalid booking details. Please try again.')
+            return render(request, 'bookings/booking_form.html', {'consoles': consoles})
+
+        # Past date check
+        if b_date < timezone.localdate():
+            messages.error(request, 'Booking date cannot be in the past.')
+            return render(request, 'bookings/booking_form.html', {'consoles': consoles})
+
+        # Time logic check
+        if b_end <= b_start:
+            messages.error(request, 'End time must be after start time.')
+            return render(request, 'bookings/booking_form.html', {'consoles': consoles})
+
+        # Conflict detection
+        if has_conflict(b_date, b_start, b_end, game_console):
+            messages.error(
+                request,
+                'This slot is already booked. Please choose a different time.'
+            )
+            return render(request, 'bookings/booking_form.html', {'consoles': consoles})
+
+        # Calculate and store cost
+        total = calculate_cost(b_start, b_end, players)
+
+        booking = Booking.objects.create(
+            user              = request.user,
+            game_console      = game_console,
+            booking_date      = b_date,
+            start_time        = b_start,
+            end_time          = b_end,
+            number_of_players = players,
+            total_cost        = total,
+            status            = 'pending',
+        )
+
+        messages.success(request, 'Slot reserved! Complete payment to confirm.')
+        return redirect('payment_page', booking_id=booking.id)
+
+    return render(request, 'bookings/booking_form.html', {'consoles': consoles})
+
+
+# ── BOOKING DETAIL ────────────────────────────
+@login_required
+def booking_detail(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+    return render(request, 'bookings/booking_detail.html', {'booking': booking})
