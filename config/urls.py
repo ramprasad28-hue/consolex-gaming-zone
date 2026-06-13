@@ -13,6 +13,9 @@ urlpatterns = [
     path('users/', include('apps.users.urls')),
     path('bookings/', include('apps.bookings.urls')),
     path('payments/', include('apps.payments.urls')),
+    path('dashboard/', include('apps.dashboard.urls')),
+    path('memberships/', include('apps.memberships.urls')),
+    path('notifications/', include('apps.notifications.urls')),
 ]
 
 if settings.DEBUG:
