@@ -97,8 +97,8 @@ LOGOUT_REDIRECT_URL = '/'
 # ─────────────────────────────────────────────
 
 # Razorpay
-RAZORPAY_KEY_ID     = 'rzp_test_XXXXXXXXXXXXXXXX'   # ← replace after signup
-RAZORPAY_KEY_SECRET = 'XXXXXXXXXXXXXXXXXXXXXXXX'    # ← replace after signup
+RAZORPAY_KEY_ID     = 'REDACTED'   # ← replace after signup
+RAZORPAY_KEY_SECRET = 'REDACTED'    # ← replace after signup
 
 # Twilio WhatsApp
 TWILIO_ACCOUNT_SID  = 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'  # ← replace
