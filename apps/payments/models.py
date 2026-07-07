@@ -25,7 +25,9 @@ class Payment(models.Model):
     user                = models.ForeignKey(
                               settings.AUTH_USER_MODEL,
                               on_delete=models.CASCADE,
-                              related_name='payments'
+                              related_name='payments',
+                              null=True,
+                              blank=True
                           )
 
     # Razorpay identifiers — blank in demo mode
@@ -34,7 +36,7 @@ class Payment(models.Model):
     razorpay_signature  = models.CharField(max_length=255, blank=True, null=True)
 
     # Amount in paise
-    amount_paise        = models.PositiveIntegerField(
+    amount        = models.PositiveIntegerField(
                               help_text='Amount in paise (₹1 = 100 paise)'
                           )
     currency            = models.CharField(max_length=10, default='INR')
@@ -63,4 +65,4 @@ class Payment(models.Model):
 
     @property
     def amount_rupees(self):
-        return round(self.amount_paise / 100, 2)
+        return round(self.amount / 100, 2)

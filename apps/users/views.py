@@ -48,7 +48,7 @@ def register(request):
 # ── LOGIN ─────────────────────────────────────
 def user_login(request):
     if request.user.is_authenticated:
-        return redirect('user_dashboard')
+        return redirect('dashboard')
 
     if request.method == 'POST':
         email    = request.POST.get('email', '').strip().lower()
@@ -57,7 +57,7 @@ def user_login(request):
 
         if user:
             login(request, user)
-            next_url = request.GET.get('next', 'user_dashboard')
+            next_url = request.GET.get('next', 'dashboard')
             return redirect(next_url)
         else:
             messages.error(request, 'Invalid email or password.')
@@ -72,7 +72,6 @@ def user_logout(request):
 
 
 # ── DASHBOARD ─────────────────────────────────
-@login_required
 def user_dashboard(request):
     bookings = (
         Booking.objects
