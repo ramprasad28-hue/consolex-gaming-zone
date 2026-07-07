@@ -101,7 +101,7 @@
                         Snack Bar Access
                     </li>
                 </ul>
-                <a href="/bookings/" class="pc-btn">Book Solo</a>
+                <a href="{% url 'bookings:booking_form' %}" class="pc-btn">Book Solo</a>
             </div>
 
             <!-- 2 Players — Popular -->
@@ -151,7 +151,7 @@
                         Priority Booking
                     </li>
                 </ul>
-                <a href="/bookings/" class="pc-btn pc-btn-popular">Book for Two</a>
+                <a href="{%url 'bookings:booking_form'}" class="pc-btn pc-btn-popular">Book for Two</a>
             </div>
 
             <!-- 3 Players -->
@@ -197,7 +197,7 @@
                         Split Billing Option
                     </li>
                 </ul>
-                <a href="/bookings/" class="pc-btn">Book Trio</a>
+                <a href="{% url 'bookings:booking_form' %}" class="pc-btn">Book Trio</a>
             </div>
 
             <!-- 4 Players -->
@@ -242,7 +242,7 @@
                         Squad Discount Applied
                     </li>
                 </ul>
-                <a href="/bookings/" class="pc-btn pc-btn-squad">Book Squad</a>
+                <a href="{%url 'bookings:booking_form'}" class="pc-btn pc-btn-squad">Book Squad</a>
             </div>
 
         </div>

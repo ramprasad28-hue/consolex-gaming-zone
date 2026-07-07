@@ -1,36 +1,67 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}Login — CONSOLEX{% endblock %}
+
 {% block content %}
+
 <section class="auth-section">
     <div class="auth-card">
-        <h2>Welcome Back</h2>
-        <p class="auth-sub">Login to your CONSOLEX account</p>
 
+        <h2>Welcome Back</h2>
+        <p class="auth-sub">
+            Login to your CONSOLEX account
+        </p>
+
+        <!-- Messages -->
         {% if messages %}
-            {% for msg in messages %}
-                <div class="alert alert-{{ msg.tags }}">{{ msg }}</div>
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
             {% endfor %}
         {% endif %}
 
-        <form method="post" class="auth-form">
+        <form method="POST" class="auth-form">
+
             {% csrf_token %}
+
             <div class="form-group">
-                <label>Email</label>
-                {{ form.username }}
-                {% if form.username.errors %}
-                    <span class="field-error">{{ form.username.errors.0 }}</span>
-                {% endif %}
+                <label for="email">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                >
             </div>
+
             <div class="form-group">
-                <label>Password</label>
-                {{ form.password }}
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                >
             </div>
-            {% if form.non_field_errors %}
-                <div class="alert alert-error">Invalid email or password.</div>
-            {% endif %}
-            <button type="submit" class="btn-primary btn-full">Login</button>
+
+            <button type="submit" class="btn-primary btn-full">
+                Login
+            </button>
+
         </form>
-        <p class="auth-footer">Don't have an account? <a href="/users/register/">Register here</a></p>
+
+        <div class="auth-footer">
+            Don't have an account?
+            <a href="{% url 'users:register' %}">
+                Register here
+            </a>
+        </div>
+
     </div>
 </section>
+
 {% endblock %}

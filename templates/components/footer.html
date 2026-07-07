@@ -60,8 +60,8 @@
                 <li><a href="#games">Games</a></li>
                 <li><a href="#pricing">Pricing</a></li>
                 <li><a href="#membership">Memberships</a></li>
-                <li><a href="/bookings/">Book a Slot</a></li>
-                <li><a href="/users/login/">My Account</a></li>
+                <li><a href="{% url 'bookings:booking_form' %}">Book a Slot</a></li>
+                <li><a href="{% url 'users:login' %}">My Account</a></li>
             </ul>
         </div>
 
@@ -113,7 +113,7 @@
                     <a href="mailto:hello@consolex.in">hello@consolex.in</a>
                 </li>
             </ul>
-            <a href="/bookings/" class="footer-book-btn">🎮 Book a Slot</a>
+            <a href="{% url 'bookings:booking_form' %}" class="footer-book-btn">🎮 Book a Slot</a>
         </div>
 
     </div>

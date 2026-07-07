@@ -23,11 +23,11 @@
                 <p>💡 <strong>Razorpay integration</strong> will be added in the next step. For now, click below to confirm your booking.</p>
             </div>
 
-            <a href="/bookings/{{ booking.pk }}/confirm/" class="btn-primary btn-full">
+            <a href="{% url 'bookings:booking_form' %}{{ booking.pk }}/confirm/" class="btn-primary btn-full">
                 Confirm Booking (₹{{ advance }} Advance)
             </a>
 
-            <a href="/users/dashboard/" class="btn-ghost btn-full" style="margin-top:1rem;">Cancel</a>
+            <a href="{%}" class="btn-ghost btn-full" style="margin-top:1rem;">Cancel</a>
         </div>
     </div>
 </section>

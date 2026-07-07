@@ -35,16 +35,16 @@
         <!-- Right actions -->
         <div class="nav-actions">
             {% if user.is_authenticated %}
-                <a href="/users/dashboard/" class="nav-user-btn">
+                <a href="{% url 'users:dashboard' %}" class="nav-user-btn">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
                     </svg>
                     {{ user.username }}
                 </a>
-                <a href="/users/logout/" class="nav-logout">Logout</a>
+                <a href="{% url 'users:logout' %}" class="nav-logout">Logout</a>
             {% else %}
-                <a href="/users/login/" class="nav-login">Login</a>
-                <a href="/bookings/" class="nav-book-btn">
+                <a href="{% url 'users:login' %}" class="nav-login">Login</a>
+                <a href="{% url 'bookings:booking_form' %}" class="nav-book-btn">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <rect x="3" y="4" width="18" height="18" rx="2"/>
                         <line x1="16" y1="2" x2="16" y2="6"/>
@@ -76,11 +76,11 @@
         </ul> -->
         <div class="mob-auth">
             {% if user.is_authenticated %}
-                <a href="/users/dashboard/" class="mob-dash-link">My Bookings</a>
-                <a href="/users/logout/"    class="mob-logout-link">Logout</a>
+                <a href="{% url 'users:dashboard' %}" class="mob-dash-link">My Bookings</a>
+                <a href="{% url 'users:logout' %}" class="mob-logout-link">Logout</a>
             {% else %}
-                <a href="/users/login/"  class="mob-login-link">Login</a>
-                <a href="/bookings/"     class="mob-book-link">🎮 Book a Slot</a>
+                <a href="{% url 'users:login' %}" class="mob-login-link">Login</a>
+                <a href="{% url 'bookings:booking_form' %}" class="mob-book-link">🎮 Book a Slot</a>
             {% endif %}
         </div>
     </div>

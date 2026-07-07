@@ -19,7 +19,7 @@
           Welcome back, <span class="title-accent">{{ request.user.first_name|default:request.user.email }}</span>
         </h1>
       </div>
-      <a href="{% url 'booking_form' %}" class="btn-book-now">+ Book a Slot</a>
+      <a href="{% url 'bookings:booking_form' %}" class="btn-book-now">+ Book a Slot</a>
     </div>
 
     <!-- Stats row -->
@@ -130,7 +130,7 @@
         <div class="no-bookings">
           <span class="no-bookings-icon">🎮</span>
           <p>No bookings yet.</p>
-          <a href="{% url 'booking_form' %}" class="btn-book-now">Book Your First Slot</a>
+          <a href="{% url 'bookings:booking_form' %}" class="btn-book-now">Book Your First Slot</a>
         </div>
       {% endif %}
 
