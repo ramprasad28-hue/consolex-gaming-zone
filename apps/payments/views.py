@@ -11,7 +11,8 @@ from apps.bookings.models import Booking
 from apps.notifications.models import Notification
 from .models import Payment
 from .utils import send_whatsapp_booking_notification
-
+import json
+from django.http import JsonResponse
 @login_required
 def payment_page(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id, user=request.user)
@@ -38,17 +39,22 @@ def payment_page(request, booking_id):
         defaults={
             'user': request.user,
             'razorpay_order_id': razorpay_order['id'],
-            'amount_paise': amount,
+            'amount': amount,
             'status': 'pending'
         }
     )
 
     context = {
-        'booking': booking,
-        'razorpay_order_id': razorpay_order['id'],
-        'razorpay_key_id': settings.RAZORPAY_KEY_ID,
-        'amount': amount,
-        'currency': 'INR',
+        "booking": booking,
+
+        "total_rupees": booking.total_cost,
+        "advance_rupees": booking.advance_amount,
+        "balance_rupees": booking.balance_amount,
+
+        "rp_amount": amount,
+        "rp_order_id": razorpay_order["id"],
+
+        "razorpay_key_id": settings.RAZORPAY_KEY_ID,
     }
     return render(request, 'payments/payment_page.html', context)
 
@@ -56,15 +62,28 @@ def payment_page(request, booking_id):
 @transaction.atomic
 def verify_payment(request):
     if request.method != 'POST':
-        return redirect('users:dashboard')
+        return JsonResponse({
+            "success": False,
+            "error": "Invalid request."
+        })
 
-    payment_id = request.POST.get('razorpay_payment_id')
-    order_id = request.POST.get('razorpay_order_id')
-    signature = request.POST.get('razorpay_signature')
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({
+            "success": False,
+            "error": "Invalid JSON"
+        })
+    payment_id = data.get("razorpay_payment_id")
+    order_id = data.get("razorpay_order_id")
+    signature = data.get("razorpay_signature")
 
     if not all([payment_id, order_id, signature]):
         messages.error(request, "Payment validation failed: Missing data.")
-        return redirect('users:dashboard')
+        return JsonResponse({
+        "success": False,
+        "error": "Invalid request."
+        })
 
     try:
         payment = get_object_or_404(Payment, razorpay_order_id=order_id, user=request.user)
@@ -97,7 +116,10 @@ def verify_payment(request):
             send_whatsapp_booking_notification(booking, payment)
 
             messages.success(request, "Payment successful! Your slot is booked.")
-            return redirect('payments:payment_success', booking_id=booking.id)
+            return JsonResponse({
+            "success": True,
+            "redirect": f"/payments/success/{booking.id}/"
+        })
         else:
             # Signature Mismatch
             payment.status = 'failed'
@@ -105,16 +127,38 @@ def verify_payment(request):
             booking.status = 'cancelled'
             booking.save()
             messages.error(request, "Payment verification failed: Signature mismatch.")
-            return redirect('payments:payment_failed', booking_id=booking.id)
+            return JsonResponse({
+            "success": False,
+            "error": "Payment verification failed."
+            })
 
     except Exception as e:
-        messages.error(request, f"An error occurred during payment verification: {str(e)}")
-        return redirect('users:dashboard')
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({
+        "success": False,
+        "error": str(e),
+        }, status=500)
 
 @login_required
 def payment_success(request, booking_id):
-    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
-    return render(request, 'payments/payment_success.html', {'booking': booking})
+
+    booking = get_object_or_404(
+        Booking,
+        id=booking_id,
+        user=request.user
+    )
+
+    payment = booking.payment
+
+    return render(
+        request,
+        "payments/payment_success.html",
+        {
+            "booking": booking,
+            "payment": payment,
+        }
+    )
 
 @login_required
 def payment_failed(request, booking_id):

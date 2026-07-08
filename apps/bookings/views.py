@@ -13,7 +13,7 @@ RATE_PER_HOUR = {1: 300, 2: 500, 3: 700, 4: 900}
 
 @login_required
 def booking_form(request):
-    consoles = GameConsole.objects.filter(is_available=True)
+    consoles = GameConsole.objects.filter(is_active=True)
     
     if request.method == 'POST':
         try:

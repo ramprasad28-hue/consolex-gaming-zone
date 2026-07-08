@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import models
 from django.conf import settings
 
@@ -60,12 +62,11 @@ class Booking(models.Model):
 
     @property
     def advance_amount(self):
-        """30% advance — always derived from stored total_cost."""
-        return round(self.total_cost * 0.30, 2)
+        return (self.total_cost * Decimal("0.30")).quantize(Decimal("0.01"))
 
     @property
     def balance_amount(self):
-        return round(self.total_cost - self.advance_amount, 2)
+        return self.total_cost - self.advance_amount
 
     @property
     def is_paid(self):

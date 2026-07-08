@@ -18,7 +18,7 @@
     </p>
 
     <div class="success-actions">
-      <a href="{% url 'payment_page' booking.id %}" class="btn-pay">Try Again</a>
+      <a href="{% url 'payments:payment_page' booking_id=booking.id %}" class="btn-pay">Try Again</a>
       <a href="{% url 'home' %}" class="btn-secondary">Back to Home</a>
     </div>
 

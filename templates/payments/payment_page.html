@@ -1,140 +1,423 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Pay Advance — CONSOLEX{% endblock %}
+{% block title %}Secure Payment | CONSOLEX{% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/payment.css' %}">
+<link rel="stylesheet" href="{% static 'css/payment.css' %}">
+<style>
+.payment-wrapper{
+    max-width:900px;
+    margin:50px auto;
+}
+
+.payment-card{
+    background:#111827;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:18px;
+    padding:35px;
+    box-shadow:0 15px 40px rgba(0,0,0,.35);
+}
+
+.payment-title{
+    font-size:32px;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.payment-subtitle{
+    color:#9ca3af;
+    margin-bottom:30px;
+}
+
+.summary{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+
+.summary-item{
+    background:#1f2937;
+    border-radius:12px;
+    padding:18px;
+}
+
+.summary-label{
+    color:#9ca3af;
+    font-size:14px;
+}
+
+.summary-value{
+    font-size:20px;
+    margin-top:5px;
+    font-weight:600;
+}
+
+.total-box{
+    margin-top:30px;
+    background:#111827;
+    border:2px solid #00e5ff;
+    border-radius:16px;
+    padding:25px;
+}
+
+.total-row{
+    display:flex;
+    justify-content:space-between;
+    margin:10px 0;
+}
+
+.advance{
+    color:#00e5ff;
+    font-weight:bold;
+    font-size:24px;
+}
+
+.pay-btn{
+    width:100%;
+    padding:18px;
+    margin-top:30px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:18px;
+    font-weight:bold;
+    background:linear-gradient(135deg,#00e5ff,#6d28d9);
+    color:white;
+    transition:.3s;
+}
+
+.pay-btn:hover{
+    transform:translateY(-2px);
+}
+
+.pay-btn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+.status-box{
+    margin-top:20px;
+    display:none;
+    padding:15px;
+    border-radius:10px;
+}
+
+.status-success{
+    display:block;
+    background:#064e3b;
+    color:#fff;
+}
+
+.status-error{
+    display:block;
+    background:#7f1d1d;
+    color:#fff;
+}
+
+.loader{
+    width:18px;
+    height:18px;
+    border:3px solid rgba(255,255,255,.4);
+    border-top:3px solid white;
+    border-radius:50%;
+    display:inline-block;
+    animation:spin .8s linear infinite;
+    margin-right:8px;
+}
+
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
-<section class="payment-section">
-  <div class="payment-container">
 
-    <div class="payment-eyebrow">SECURE CHECKOUT</div>
-    <h1 class="payment-title">Confirm Your <span class="title-accent">Booking</span></h1>
+<div class="payment-wrapper">
 
-    <!-- Booking summary -->
-    <div class="payment-summary-card">
-      <div class="summary-row">
-        <span class="summary-label">Date</span>
-        <span class="summary-value">{{ booking.booking_date|date:"d M Y" }}</span>
-      </div>
-      <div class="summary-row">
-        <span class="summary-label">Time</span>
-        <span class="summary-value">{{ booking.start_time|time:"h:i A" }} – {{ booking.end_time|time:"h:i A" }}</span>
-      </div>
-      <div class="summary-row">
-        <span class="summary-label">Players</span>
-        <span class="summary-value">{{ booking.number_of_players }}</span>
-      </div>
-      {% if booking.game_console %}
-      <div class="summary-row">
-        <span class="summary-label">Game</span>
-        <span class="summary-value">{{ booking.game_console.name }}</span>
-      </div>
-      {% endif %}
-      <div class="summary-divider"></div>
-      <div class="summary-row">
-        <span class="summary-label">Total Cost</span>
-        <span class="summary-value">₹{{ total_rupees }}</span>
-      </div>
-      <div class="summary-row summary-advance">
-        <span class="summary-label">Advance (30%)</span>
-        <span class="summary-value accent-cyan">₹{{ advance_rupees }}</span>
-      </div>
-      <div class="summary-row">
-        <span class="summary-label">Balance at venue</span>
-        <span class="summary-value accent-muted">₹{{ balance_rupees }}</span>
-      </div>
-    </div>
+<div class="payment-card">
 
-    <div class="payment-info-note">
-      💳 You are paying the <strong>30% advance</strong> now to confirm your slot.
-      The remaining ₹{{ balance_rupees }} is paid at the venue.
-    </div>
+<h1 class="payment-title">
+Confirm Your Booking
+</h1>
 
-    <!-- Pay button -->
-    <button id="pay-btn" class="btn-pay">
-      Pay ₹{{ advance_rupees }} via Razorpay
-    </button>
+<p class="payment-subtitle">
+Complete your advance payment securely using Razorpay.
+</p>
 
-    <div id="payment-status" class="payment-status hidden"></div>
+<div class="summary">
 
-  </div>
-</section>
+<div class="summary-item">
+<div class="summary-label">
+Booking Date
+</div>
+<div class="summary-value">
+{{ booking.booking_date|date:"d M Y" }}
+</div>
+</div>
 
-<!-- Razorpay checkout script -->
+<div class="summary-item">
+<div class="summary-label">
+Time
+</div>
+<div class="summary-value">
+{{ booking.start_time }} - {{ booking.end_time }}
+</div>
+</div>
+
+<div class="summary-item">
+<div class="summary-label">
+Console
+</div>
+<div class="summary-value">
+{{ booking.game_console.name }}
+</div>
+</div>
+
+<div class="summary-item">
+<div class="summary-label">
+Players
+</div>
+<div class="summary-value">
+{{ booking.number_of_players }}
+</div>
+</div>
+
+</div>
+
+<div class="total-box">
+
+<div class="total-row">
+<span>Total Cost</span>
+<strong>₹{{ total_rupees }}</strong>
+</div>
+
+<div class="total-row">
+<span>Advance (30%)</span>
+<strong class="advance">
+₹{{ advance_rupees }}
+</strong>
+</div>
+
+<div class="total-row">
+<span>Balance at Venue</span>
+<strong>
+₹{{ balance_rupees }}
+</strong>
+</div>
+
+</div>
+
+<button
+id="pay-btn"
+class="pay-btn">
+
+Pay ₹{{ advance_rupees }} Securely
+
+</button>
+
+<div
+id="payment-status"
+class="status-box">
+</div>
+
+</div>
+
+</div>
+
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <script>
-  const payBtn = document.getElementById('pay-btn');
-  const statusEl = document.getElementById('payment-status');
 
-  payBtn.addEventListener('click', () => {
+const payBtn=document.getElementById("pay-btn");
+const status=document.getElementById("payment-status");
+
+function showError(message){
+
+status.className="status-box status-error";
+
+status.innerHTML=message;
+
+}
+
+function showSuccess(message){
+
+status.className="status-box status-success";
+
+status.innerHTML=message;
+
+}
+
+payBtn.addEventListener("click", function () {
+
+    payBtn.disabled = true;
+
+    payBtn.innerHTML =
+        '<span class="loader"></span>Opening Razorpay...';
+
     const options = {
-      key:         '{{ razorpay_key_id }}',
-      amount:      {{ rp_amount }},
-      currency:    'INR',
-      name:        'CONSOLEX Gaming Zone',
-      description: 'Slot Booking Advance — #{{ booking.id }}',
-      order_id:    '{{ rp_order_id }}',
-      prefill: {
-        name:  '{{ request.user.get_full_name }}',
-        email: '{{ request.user.email }}',
-      },
-      theme: { color: '#00f0ff' },
 
-      handler: function(response) {
-        payBtn.disabled = true;
-        payBtn.textContent = 'Verifying…';
+        key: "{{ razorpay_key_id }}",
 
-        fetch('/payments/verify/', {
-          method:  'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken':  '{{ csrf_token }}',
-          },
-          body: JSON.stringify({
-            razorpay_order_id:   response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature:  response.razorpay_signature,
-          }),
-        })
-        .then(r => r.json())
-        .then(data => {
-          if (data.success) {
-            window.location.href = data.redirect;
-          } else {
-            showStatus('❌ Verification failed: ' + (data.error || 'Unknown error'), 'error');
-            payBtn.disabled = false;
-            payBtn.textContent = 'Pay ₹{{ advance_rupees }} via Razorpay';
-          }
-        })
-        .catch(() => {
-          showStatus('❌ Network error. Please contact support.', 'error');
-          payBtn.disabled = false;
-          payBtn.textContent = 'Pay ₹{{ advance_rupees }} via Razorpay';
-        });
-      },
+        amount: {{ rp_amount }},
 
-      modal: {
-        ondismiss: function() {
-          showStatus('Payment cancelled. Click the button to try again.', 'warn');
+        currency: "INR",
+
+        name: "CONSOLEX Gaming Zone",
+
+        description: "Advance Payment",
+
+        image: "/static/images/logo.png",
+
+        order_id: "{{ rp_order_id }}",
+
+        prefill: {
+            name: "{{ request.user.get_full_name|default:''|escapejs }}",
+            email: "{{ request.user.email|escapejs }}"
+        },
+
+        theme: {
+            color: "#00e5ff"
+        },
+
+        modal: {
+
+            escape: false,
+
+            ondismiss: function () {
+
+                payBtn.disabled = false;
+
+                payBtn.innerHTML =
+                    "Pay ₹{{ advance_rupees }} Securely";
+
+                showError("Payment was cancelled.");
+            }
+
+        },
+
+        handler: function (response) {
+
+            console.log("Payment Success");
+
+            console.log(response);
+
+            payBtn.innerHTML =
+                '<span class="loader"></span>Verifying Payment...';
+
+            fetch("{% url 'payments:verify_payment' %}", {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type": "application/json",
+
+                    "X-CSRFToken": "{{ csrf_token }}"
+
+                },
+
+                body: JSON.stringify({
+
+                    razorpay_order_id:
+                        response.razorpay_order_id,
+
+                    razorpay_payment_id:
+                        response.razorpay_payment_id,
+
+                    razorpay_signature:
+                        response.razorpay_signature
+
+                })
+
+            })
+
+            .then(res => {
+
+                if (!res.ok)
+                    throw new Error("Server Error");
+
+                return res.json();
+
+            })
+
+            .then(data => {
+
+                console.log(data);
+
+                if (data.success) {
+
+                    showSuccess("Payment Verified Successfully!");
+
+                    setTimeout(function () {
+
+                        window.location.href = data.redirect;
+
+                    }, 1000);
+
+                }
+
+                else {
+
+                    payBtn.disabled = false;
+
+                    payBtn.innerHTML =
+                        "Pay ₹{{ advance_rupees }} Securely";
+
+                    showError(data.error);
+
+                }
+
+            })
+
+            .catch(function (err) {
+
+                console.error(err);
+
+                payBtn.disabled = false;
+
+                payBtn.innerHTML =
+                    "Pay ₹{{ advance_rupees }} Securely";
+
+                showError(
+                    "Unable to verify payment. Please contact support."
+                );
+
+            });
+
         }
-      }
+
     };
 
     const rzp = new Razorpay(options);
-    rzp.on('payment.failed', function(resp) {
-      showStatus('❌ Payment failed: ' + resp.error.description, 'error');
-      window.location.href = '/payments/failed/{{ booking.id }}/';
-    });
-    rzp.open();
-  });
 
-  function showStatus(msg, type) {
-    statusEl.textContent = msg;
-    statusEl.className = 'payment-status ' + type;
-  }
+    rzp.on("payment.failed", function (response) {
+
+        console.log("Payment Failed");
+
+        console.log(response);
+
+        payBtn.disabled = false;
+
+        payBtn.innerHTML =
+            "Pay ₹{{ advance_rupees }} Securely";
+
+        showError(
+
+            response.error.description ||
+
+            "Payment Failed."
+
+        );
+
+    });
+
+    rzp.open();
+
+});
+
 </script>
 {% endblock %}

@@ -42,12 +42,12 @@
       </div>
       <div class="summary-row">
         <span class="summary-label">Balance at venue</span>
-        <span class="summary-value accent-muted">₹{{ booking.total_cost|floatformat:2 }}</span>
+        <span class="summary-value accent-muted">₹{{ booking.balance_amount}}</span>
       </div>
     </div>
 
     <div class="success-actions">
-      <a href="{% url 'user_dashboard' %}" class="btn-pay">View My Bookings</a>
+      <a href="{% url 'users:dashboard' %}" class="btn-pay">View My Bookings</a>
       <a href="{% url 'home' %}" class="btn-secondary">Back to Home</a>
     </div>
 

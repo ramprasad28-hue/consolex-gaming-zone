@@ -1,94 +1,214 @@
 {% extends 'base.html' %}
 {% block title %}Book a Slot — CONSOLEX{% endblock %}
+
 {% block content %}
+
 <section class="booking-section container">
+
     <h2 class="section-title">Book Your PS5 Slot</h2>
-    <p class="section-sub">Select your setup, date, time and players</p>
+    <p class="section-sub">
+        Select your console, date, time and number of players.
+    </p>
 
     {% if messages %}
         {% for msg in messages %}
-            <div class="alert alert-{{ msg.tags }}">{{ msg }}</div>
+            <div class="alert alert-{{ msg.tags }}">
+                {{ msg }}
+            </div>
         {% endfor %}
     {% endif %}
 
     <div class="booking-form-wrap">
-        <form method="post" class="booking-form" id="bookingForm">
+
+        <form method="POST" class="booking-form" id="bookingForm">
+
             {% csrf_token %}
 
+            <!-- Console -->
             <div class="form-group">
                 <label>PS5 Setup</label>
-                {{ form.console }}
-                {% if form.console.errors %}<span class="field-error">{{ form.console.errors.0 }}</span>{% endif %}
+
+                <select name="game_console" required>
+
+                    <option value="">Select Console</option>
+
+                    {% for console in consoles %}
+                        <option value="{{ console.id }}">
+                            {{ console.name }}
+                        </option>
+                    {% endfor %}
+
+                </select>
             </div>
 
+            <!-- Date -->
             <div class="form-row">
+
                 <div class="form-group">
                     <label>Date</label>
-                    {{ form.date }}
-                    {% if form.date.errors %}<span class="field-error">{{ form.date.errors.0 }}</span>{% endif %}
+                    <input
+                        type="date"
+                        name="booking_date"
+                        required
+                    >
                 </div>
+
                 <div class="form-group">
                     <label>Start Time</label>
-                    {{ form.start_time }}
+                    <input
+                        type="time"
+                        name="start_time"
+                        required
+                    >
                 </div>
+
             </div>
 
+            <!-- Duration -->
             <div class="form-row">
+
                 <div class="form-group">
-                    <label>Duration</label>
-                    {{ form.duration }}
+                    <label>Duration (Hours)</label>
+
+                    <select name="duration_hours">
+
+                        <option value="1">1 Hour</option>
+                        <option value="2">2 Hours</option>
+                        <option value="3">3 Hours</option>
+                        <option value="4">4 Hours</option>
+
+                    </select>
+
                 </div>
+
                 <div class="form-group">
-                    <label>Number of Players</label>
-                    {{ form.number_of_players }}
+
+                    <label>Players</label>
+
+                    <select name="number_of_players">
+
+                        <option value="1">1 Player</option>
+                        <option value="2">2 Players</option>
+                        <option value="3">3 Players</option>
+                        <option value="4">4 Players</option>
+
+                    </select>
+
                 </div>
+
             </div>
 
-            {% if form.non_field_errors %}
-                <div class="alert alert-error">{{ form.non_field_errors.0 }}</div>
-            {% endif %}
+            <!-- Live Cost -->
 
             <div class="cost-preview" id="costPreview">
-                <span>Estimated cost will appear here</span>
+
+                Estimated Total:
+                <strong>₹300</strong>
+
             </div>
 
-            <button type="submit" class="btn-primary btn-full">Proceed to Payment →</button>
+            <button class="btn-primary btn-full">
+
+                Proceed to Payment →
+
+            </button>
+
         </form>
 
         <div class="pricing-info">
+
             <h4>Pricing Guide</h4>
+
             <table class="price-table">
-                <thead><tr><th>Players</th><th>Weekday</th><th>Weekend</th></tr></thead>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Players</th>
+                        <th>Rate / Hour</th>
+
+                    </tr>
+
+                </thead>
+
                 <tbody>
-                    <tr><td>1 Player</td><td>₹130/hr</td><td>₹150/hr</td></tr>
-                    <tr><td>2 Players</td><td>₹250/hr</td><td>₹280/hr</td></tr>
-                    <tr><td>3 Players</td><td>₹330/hr</td><td>₹370/hr</td></tr>
-                    <tr><td>4 Players</td><td>₹420/hr</td><td>₹460/hr</td></tr>
+
+                    <tr>
+                        <td>1 Player</td>
+                        <td>₹300</td>
+                    </tr>
+
+                    <tr>
+                        <td>2 Players</td>
+                        <td>₹500</td>
+                    </tr>
+
+                    <tr>
+                        <td>3 Players</td>
+                        <td>₹700</td>
+                    </tr>
+
+                    <tr>
+                        <td>4 Players</td>
+                        <td>₹900</td>
+                    </tr>
+
                 </tbody>
+
             </table>
+
         </div>
+
     </div>
+
 </section>
 
 <script>
-const weekdayRates = {1:130, 2:250, 3:330, 4:420};
-const weekendRates = {1:150, 2:280, 3:370, 4:460};
 
-function updateCost() {
-    const dateVal = document.querySelector('[name="date"]').value;
-    const duration = parseInt(document.querySelector('[name="duration"]').value) || 1;
-    const players = parseInt(document.querySelector('[name="number_of_players"]').value) || 1;
-    if (!dateVal) return;
-    const d = new Date(dateVal);
-    const isWeekend = d.getDay() === 0 || d.getDay() === 6;
-    const rates = isWeekend ? weekendRates : weekdayRates;
-    const cost = rates[players] * duration;
-    document.getElementById('costPreview').innerHTML =
-        `<span>Estimated Total: <strong>₹${cost}</strong> &nbsp;|&nbsp; Advance (30%): <strong>₹${Math.ceil(cost * 0.3)}</strong></span>`;
+const RATE = {
+
+    1:300,
+    2:500,
+    3:700,
+    4:900
+
+};
+
+function updateCost(){
+
+    const players =
+        parseInt(
+            document.querySelector('[name="number_of_players"]').value
+        );
+
+    const duration =
+        parseInt(
+            document.querySelector('[name="duration_hours"]').value
+        );
+
+    const total = RATE[players] * duration;
+
+    const advance = Math.round(total * 0.30);
+
+    document.getElementById("costPreview").innerHTML =
+
+        `Estimated Total:
+        <strong>₹${total}</strong>
+        &nbsp;&nbsp;|
+        Advance:
+        <strong>₹${advance}</strong>`;
+
 }
 
-document.querySelector('[name="date"]').addEventListener('change', updateCost);
-document.querySelector('[name="duration"]').addEventListener('change', updateCost);
-document.querySelector('[name="number_of_players"]').addEventListener('change', updateCost);
+document.querySelector('[name="number_of_players"]')
+.addEventListener("change", updateCost);
+
+document.querySelector('[name="duration_hours"]')
+.addEventListener("change", updateCost);
+
+updateCost();
+
 </script>
+
 {% endblock %}
