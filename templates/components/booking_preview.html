@@ -1,0 +1,94 @@
+
+<section class="bp-section" id="how-it-works">
+
+    <div class="bp-bg">
+        <div class="bp-orb bp-orb-1"></div>
+    </div>
+
+    <div class="bp-container">
+
+        <div class="bp-head" data-reveal>
+            <span class="bp-tag">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8" y1="2" x2="8" y2="6"/>
+                    <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                How Booking Works
+            </span>
+            <h2 class="bp-title">Four Steps to <span class="bp-neon">Game Time</span></h2>
+            <p class="bp-sub">No calls, no waiting at the counter. Reserve your setup online in under a minute.</p>
+        </div>
+
+        <div class="bp-steps">
+
+            <div class="bp-step" data-reveal>
+                <div class="bp-step-num">01</div>
+                <div class="bp-step-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <rect x="2" y="7" width="20" height="11" rx="4"/>
+                        <circle cx="8" cy="12.5" r="2"/>
+                        <line x1="15" y1="11" x2="18" y2="11"/>
+                        <line x1="15" y1="14" x2="18" y2="14"/>
+                    </svg>
+                </div>
+                <h3 class="bp-step-title">Choose Console</h3>
+                <p class="bp-step-desc">Pick a PS5 setup and how many players are joining you.</p>
+            </div>
+
+            <div class="bp-connector" aria-hidden="true"></div>
+
+            <div class="bp-step" data-reveal>
+                <div class="bp-step-num">02</div>
+                <div class="bp-step-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <circle cx="12" cy="12" r="9"/>
+                        <polyline points="12 7 12 12 15.5 14"/>
+                    </svg>
+                </div>
+                <h3 class="bp-step-title">Choose Time</h3>
+                <p class="bp-step-desc">Select a date and slot that fits your schedule — see availability live.</p>
+            </div>
+
+            <div class="bp-connector" aria-hidden="true"></div>
+
+            <div class="bp-step" data-reveal>
+                <div class="bp-step-num">03</div>
+                <div class="bp-step-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <rect x="2" y="5" width="20" height="14" rx="3"/>
+                        <line x1="2" y1="10" x2="22" y2="10"/>
+                        <line x1="6" y1="15" x2="10" y2="15"/>
+                    </svg>
+                </div>
+                <h3 class="bp-step-title">Pay Advance</h3>
+                <p class="bp-step-desc">Secure your slot with a small advance via Razorpay. Balance is paid at the lounge.</p>
+            </div>
+
+            <div class="bp-connector" aria-hidden="true"></div>
+
+            <div class="bp-step" data-reveal>
+                <div class="bp-step-num">04</div>
+                <div class="bp-step-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <polygon points="6 3 20 12 6 21 6 3"/>
+                    </svg>
+                </div>
+                <h3 class="bp-step-title">Play</h3>
+                <p class="bp-step-desc">Walk in, sit down, and start playing. Your setup is ready and waiting.</p>
+            </div>
+
+        </div>
+
+        <div class="bp-cta" data-reveal>
+            <a href="{% url 'bookings:booking_form' %}" class="bp-cta-btn">
+                Book Your Slot
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+
+    </div>
+</section>

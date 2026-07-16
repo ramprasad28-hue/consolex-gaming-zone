@@ -1,0 +1,243 @@
+/* ============================================================
+   CONSOLEX — phase7.css  (Phase 7: Landing Page Redesign)
+   Covers: Why Choose Us · Booking Preview · FAQ
+   Depends on --cyan / --purple / --orange / --font-head / --font-body
+   from navbar_footer.css (loaded globally in base.html)
+   ============================================================ */
+
+/* ── Shared scroll-reveal (mirrors data-reveal pattern used sitewide) ── */
+[data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s var(--ease, ease), transform 0.7s var(--ease, ease);
+}
+[data-reveal].revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============================================================
+   WHY CHOOSE US
+   ============================================================ */
+.wcu-section {
+    position: relative;
+    padding: 7rem 1.5rem;
+    overflow: hidden;
+}
+
+.wcu-bg { position: absolute; inset: 0; z-index: 0; }
+.wcu-grid {
+    position: absolute; inset: 0;
+    background-image:
+        linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 20%, transparent 100%);
+}
+.wcu-orb {
+    position: absolute; border-radius: 50%;
+    filter: blur(90px); opacity: 0.22; pointer-events: none;
+}
+.wcu-orb-1 { width: 420px; height: 420px; top: -120px; left: -100px; background: var(--cyan); }
+.wcu-orb-2 { width: 380px; height: 380px; bottom: -140px; right: -100px; background: var(--purple); }
+
+.wcu-container { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; }
+
+.wcu-head { text-align: center; max-width: 620px; margin: 0 auto 3.5rem; }
+.wcu-tag {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    font-family: var(--font-head); font-size: 0.72rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--cyan);
+    background: rgba(0, 240, 255, 0.08); border: 1px solid rgba(0, 240, 255, 0.22);
+    padding: 0.45rem 0.9rem; border-radius: 999px; margin-bottom: 1.1rem;
+}
+.wcu-title {
+    font-family: var(--font-head); font-weight: 800; letter-spacing: 0.01em;
+    font-size: clamp(1.8rem, 3.6vw, 2.6rem); color: var(--text); margin-bottom: 0.9rem;
+}
+.wcu-neon {
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.wcu-sub { color: var(--text2); font-size: 1.02rem; line-height: 1.6; }
+
+.wcu-grid-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem;
+}
+.wcu-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.9rem 1.6rem;
+    transition: transform 0.35s var(--ease), border-color 0.35s var(--ease), box-shadow 0.35s var(--ease);
+}
+.wcu-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(0, 240, 255, 0.35);
+    box-shadow: 0 16px 40px rgba(0, 240, 255, 0.08);
+}
+.wcu-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0, 240, 255, 0.08); color: var(--cyan);
+    margin-bottom: 1.1rem;
+}
+.wcu-card-title {
+    font-family: var(--font-head); font-size: 1.02rem; font-weight: 700;
+    color: var(--text); margin-bottom: 0.5rem; letter-spacing: 0.01em;
+}
+.wcu-card-desc { color: var(--text2); font-size: 0.92rem; line-height: 1.55; }
+
+@media (max-width: 860px) {
+    .wcu-grid-cards { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 540px) {
+    .wcu-grid-cards { grid-template-columns: 1fr; }
+    .wcu-section { padding: 4.5rem 1.25rem; }
+}
+
+/* ============================================================
+   BOOKING PREVIEW
+   ============================================================ */
+.bp-section {
+    position: relative;
+    padding: 7rem 1.5rem;
+    background: linear-gradient(180deg, transparent, rgba(191, 0, 255, 0.03), transparent);
+    overflow: hidden;
+}
+.bp-bg { position: absolute; inset: 0; z-index: 0; }
+.bp-orb-1 {
+    position: absolute; width: 500px; height: 500px; border-radius: 50%;
+    top: 10%; left: 50%; transform: translateX(-50%);
+    background: var(--purple); filter: blur(120px); opacity: 0.14;
+}
+
+.bp-container { position: relative; z-index: 1; max-width: 1140px; margin: 0 auto; }
+
+.bp-head { text-align: center; max-width: 620px; margin: 0 auto 4rem; }
+.bp-tag {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    font-family: var(--font-head); font-size: 0.72rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--purple);
+    background: rgba(191, 0, 255, 0.08); border: 1px solid rgba(191, 0, 255, 0.24);
+    padding: 0.45rem 0.9rem; border-radius: 999px; margin-bottom: 1.1rem;
+}
+.bp-title {
+    font-family: var(--font-head); font-weight: 800; letter-spacing: 0.01em;
+    font-size: clamp(1.8rem, 3.6vw, 2.6rem); color: var(--text); margin-bottom: 0.9rem;
+}
+.bp-neon {
+    background: linear-gradient(90deg, var(--purple), var(--cyan));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.bp-sub { color: var(--text2); font-size: 1.02rem; line-height: 1.6; }
+
+.bp-steps {
+    display: flex; align-items: flex-start; justify-content: center;
+    gap: 0; margin-bottom: 3.5rem;
+}
+.bp-step {
+    flex: 1; max-width: 230px; text-align: center;
+    display: flex; flex-direction: column; align-items: center;
+}
+.bp-step-num {
+    font-family: var(--font-head); font-size: 0.78rem; font-weight: 700;
+    color: var(--text3); letter-spacing: 0.15em; margin-bottom: 0.7rem;
+}
+.bp-step-icon {
+    width: 60px; height: 60px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface); border: 1px solid var(--border2);
+    color: var(--cyan); margin-bottom: 1.1rem;
+}
+.bp-step-title {
+    font-family: var(--font-head); font-size: 1rem; font-weight: 700;
+    color: var(--text); margin-bottom: 0.5rem;
+}
+.bp-step-desc { color: var(--text2); font-size: 0.88rem; line-height: 1.55; }
+
+.bp-connector {
+    flex: 0 0 auto; width: 60px; height: 1px; margin-top: 30px;
+    background: linear-gradient(90deg, var(--border2), var(--border2));
+    align-self: flex-start;
+}
+
+.bp-cta { text-align: center; }
+.bp-cta-btn {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-family: var(--font-head); font-weight: 700; font-size: 0.92rem;
+    letter-spacing: 0.03em; color: #05050a;
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    padding: 0.95rem 2.1rem; border-radius: 999px;
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.bp-cta-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 34px rgba(0, 240, 255, 0.25);
+}
+
+@media (max-width: 860px) {
+    .bp-steps { flex-wrap: wrap; row-gap: 2rem; }
+    .bp-connector { display: none; }
+    .bp-step { max-width: 45%; }
+}
+@media (max-width: 540px) {
+    .bp-section { padding: 4.5rem 1.25rem; }
+    .bp-step { max-width: 100%; }
+}
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+.faq-section {
+    padding: 7rem 1.5rem;
+}
+.faq-container { max-width: 780px; margin: 0 auto; }
+
+.faq-head { text-align: center; margin-bottom: 3rem; }
+.faq-tag {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    font-family: var(--font-head); font-size: 0.72rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--orange);
+    background: rgba(255, 107, 0, 0.08); border: 1px solid rgba(255, 107, 0, 0.24);
+    padding: 0.45rem 0.9rem; border-radius: 999px; margin-bottom: 1.1rem;
+}
+.faq-title {
+    font-family: var(--font-head); font-weight: 800; letter-spacing: 0.01em;
+    font-size: clamp(1.8rem, 3.6vw, 2.6rem); color: var(--text); margin-bottom: 0.9rem;
+}
+.faq-neon {
+    background: linear-gradient(90deg, var(--orange), var(--purple));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.faq-sub { color: var(--text2); font-size: 1.02rem; }
+
+.faq-list { display: flex; flex-direction: column; gap: 0.7rem; }
+.faq-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    transition: border-color 0.3s var(--ease);
+}
+.faq-item:has(.faq-q[aria-expanded="true"]) {
+    border-color: rgba(0, 240, 255, 0.3);
+}
+.faq-q {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; background: none; border: none; cursor: pointer;
+    padding: 1.15rem 1.4rem; text-align: left;
+    font-family: var(--font-body); font-size: 1rem; font-weight: 600;
+    color: var(--text);
+}
+.faq-chevron { flex-shrink: 0; color: var(--text3); transition: transform 0.3s var(--ease), color 0.3s var(--ease); }
+.faq-q[aria-expanded="true"] .faq-chevron { transform: rotate(180deg); color: var(--cyan); }
+
+.faq-a {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.35s var(--ease);
+}
+.faq-a p {
+    padding: 0 1.4rem 1.25rem; color: var(--text2); font-size: 0.94rem; line-height: 1.65;
+}
+
+@media (max-width: 540px) {
+    .faq-section { padding: 4.5rem 1.25rem; }
+    .faq-q { font-size: 0.94rem; padding: 1rem 1.1rem; }
+}

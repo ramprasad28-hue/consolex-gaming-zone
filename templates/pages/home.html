@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="{% static 'css/membership.css' %}">
   <link rel="stylesheet" href="{% static 'css/games.css' %}">
   <link rel="stylesheet" href="{% static 'css/phase4_6.css' %}">
+  <link rel="stylesheet" href="{% static 'css/phase7.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -27,19 +28,29 @@
   <!-- ④ GAMES LIBRARY ────────────────────────────────── -->
   {% include "components/games.html" %}
 
-  <!-- ⑤ TESTIMONIALS ─────────────────────────────────── -->
+  <!-- ⑤ WHY CHOOSE US ────────────────────────────────── -->
+  {% include "components/why_choose_us.html" %}
+
+  <!-- ⑥ BOOKING PREVIEW / HOW IT WORKS ───────────────── -->
+  {% include "components/booking_preview.html" %}
+
+  <!-- ⑦ TESTIMONIALS ─────────────────────────────────── -->
   {% include "components/testimonials.html" %}
 
-  <!-- ⑥ INSTAGRAM CTA + GOOGLE REVIEW ────────────────── -->
+  <!-- ⑧ FAQ ──────────────────────────────────────────── -->
+  {% include "components/faq.html" %}
+
+  <!-- ⑨ INSTAGRAM CTA + GOOGLE REVIEW ────────────────── -->
   {% include "components/social_cta.html" %}
 
-  <!-- ⑦ WHATSAPP FLOATING BUTTON ─────────────────────── -->
+  <!-- ⑩ WHATSAPP FLOATING BUTTON ─────────────────────── -->
   {% include "components/whatsapp_btn.html" %}
 
 {% endblock %}
 
 {% block extra_js %}
-  <!-- Phase 4 JS — load in order -->
+  <!-- Phase 4 / 7 JS — load in order -->
   <script src="{% static 'js/hero.js' %}" defer></script>
   <script src="{% static 'js/phase4_6.js' %}" defer></script>
+  <script src="{% static 'js/phase7.js' %}" defer></script>
 {% endblock %} 
