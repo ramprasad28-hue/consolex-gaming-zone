@@ -11,130 +11,353 @@
 <section class="dashboard-section">
   <div class="dashboard-container">
 
-    <!-- Header -->
-    <div class="dashboard-header">
-      <div>
-        <div class="dashboard-eyebrow">PLAYER PORTAL</div>
-        <h1 class="dashboard-title">
-          Welcome back, <span class="title-accent">{{ request.user.first_name|default:request.user.email }}</span>
-        </h1>
+    {% with user_display=request.user.first_name|default:request.user.email %}
+    {% with user_initial=user_display|slice:":1"|upper %}
+
+    <!-- ══════════ TOP TOOLBAR ══════════ -->
+    <div class="dash-topbar nx-animate">
+      <div class="dash-topbar-left">
+        <div class="dash-avatar" aria-hidden="true">{{ user_initial }}</div>
+        <div class="dash-topbar-welcome">
+          <div class="dash-topbar-eyebrow">Player Portal</div>
+          <div class="dash-topbar-name">{{ user_display }}</div>
+        </div>
       </div>
-      <a href="{% url 'bookings:booking_form' %}" class="btn-book-now">+ Book a Slot</a>
-    </div>
 
-    <!-- Stats row -->
-    <div class="dashboard-stats">
-      <div class="dash-stat">
-        <span class="dash-stat-number">{{ total_bookings }}</span>
-        <span class="dash-stat-label">Total Bookings</span>
-      </div>
-      <div class="dash-stat">
-        <span class="dash-stat-number" style="color:var(--cx-cyan)">{{ confirmed_bookings }}</span>
-        <span class="dash-stat-label">Confirmed</span>
-      </div>
-      <div class="dash-stat">
-        <span class="dash-stat-number" style="color:#f59e0b">{{ pending_bookings }}</span>
-        <span class="dash-stat-label">Pending</span>
-      </div>
-      <div class="dash-stat">
-        <span class="dash-stat-number" style="color:var(--cx-purple)">₹{{ total_spent }}</span>
-        <span class="dash-stat-label">Total Paid</span>
-      </div>
-    </div>
+      <div class="dash-topbar-actions">
 
-    <!-- Booking history -->
-    <div class="dashboard-card">
-      <h2 class="dashboard-card-title">Booking History</h2>
+        <!-- Notifications -->
+        <div class="dash-notif-wrap">
+          <button type="button"
+                  id="dashNotifBell"
+                  class="dash-icon-btn"
+                  aria-label="Notifications"
+                  aria-haspopup="true"
+                  aria-expanded="false">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            {% if unread_notifications_count %}
+              <span class="dash-badge-dot">{{ unread_notifications_count }}</span>
+            {% endif %}
+          </button>
 
-      {% if bookings %}
-        <div class="bookings-table-wrap">
-          <table class="bookings-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Game</th>
-                <th>Players</th>
-                <th>Total</th>
-                <th>Advance</th>
-                <th>Status</th>
-                <th>Payment</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for booking in bookings %}
-              <tr>
-                <td class="td-id">#{{ booking.id }}</td>
-                <td>{{ booking.booking_date|date:"d M Y" }}</td>
-                <td class="td-time">
-                  {{ booking.start_time|time:"h:i A" }}<br>
-                  <span class="td-muted">{{ booking.end_time|time:"h:i A" }}</span>
-                </td>
-                <td>{{ booking.game_console.name|default:"—" }}</td>
-                <td class="td-center">{{ booking.number_of_players }}</td>
-                <td>₹{{ booking.total_cost }}</td>
-                <td class="td-advance">₹{{ booking.advance_amount }}</td>
-
-                <!-- Booking status badge -->
-                <td>
-                  {% if booking.status == 'confirmed' %}
-                    <span class="badge badge-confirmed">Confirmed</span>
-                  {% elif booking.status == 'pending' %}
-                    <span class="badge badge-pending">Pending</span>
-                  {% elif booking.status == 'cancelled' %}
-                    <span class="badge badge-cancelled">Cancelled</span>
-                  {% elif booking.status == 'completed' %}
-                    <span class="badge badge-completed">Completed</span>
-                  {% endif %}
-                </td>
-
-                <!-- Payment status -->
-                <td>
-                  {% if booking.payment %}
-                    {% if booking.payment.status == 'captured' %}
-                      <span class="badge badge-confirmed">Paid</span>
-                    {% elif booking.payment.status == 'demo' %}
-                      <span class="badge badge-demo">Demo</span>
-                    {% elif booking.payment.status == 'failed' %}
-                      <span class="badge badge-cancelled">Failed</span>
-                    {% else %}
-                      <span class="badge badge-pending">{{ booking.payment.status|title }}</span>
-                    {% endif %}
-                  {% else %}
-                    <span class="badge badge-pending">Unpaid</span>
-                  {% endif %}
-                </td>
-
-                <!-- Action -->
-                <td>
-                  {% if booking.status == 'pending' and not booking.is_paid %}
-                    <a href="{% url 'payment_page' booking.id %}" class="btn-action btn-pay-now">
-                      Pay Now
-                    </a>
-                  {% else %}
-                    <a href="{% url 'booking_detail' booking.id %}" class="btn-action btn-view">
-                      View
-                    </a>
-                  {% endif %}
-                </td>
-
-              </tr>
+          <div id="dashNotifPanel" class="dash-notif-panel" role="menu">
+            <div class="dash-notif-head">Notifications</div>
+            {% if notifications %}
+              {% for n in notifications %}
+                <div class="dash-notif-item {% if not n.is_read %}is-unread{% endif %}" role="menuitem">
+                  <span class="dash-notif-dot" aria-hidden="true"></span>
+                  <div>
+                    <div class="dash-notif-text">{{ n.message }}</div>
+                    <div class="dash-notif-time">{{ n.created_at|timesince }} ago</div>
+                  </div>
+                </div>
               {% endfor %}
-            </tbody>
-          </table>
+            {% else %}
+              <div class="dash-notif-empty">You're all caught up — no notifications yet.</div>
+            {% endif %}
+          </div>
         </div>
 
-      {% else %}
-        <div class="no-bookings">
-          <span class="no-bookings-icon">🎮</span>
-          <p>No bookings yet.</p>
-          <a href="{% url 'bookings:booking_form' %}" class="btn-book-now">Book Your First Slot</a>
-        </div>
-      {% endif %}
+        <!-- Settings (placeholder — no settings view exists yet) -->
+        <button type="button"
+                class="dash-icon-btn"
+                aria-label="Settings"
+                data-stub-action="Account settings are coming soon.">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.36.4.66.75.85.24.13.5.19.76.19H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
 
-    </div><!-- /.dashboard-card -->
+        <a href="{% url 'users:logout' %}" class="dash-logout-link">Logout</a>
+      </div>
+    </div>
+
+    <!-- ══════════ HERO CARD ══════════ -->
+    <div class="dash-hero nx-animate nx-d1">
+      <h1 class="dash-hero-title">Welcome back, <span class="accent">{{ user_display }}</span></h1>
+      <p class="dash-hero-sub">Here's what's happening with your CONSOLEX account.</p>
+
+      <div class="dash-hero-meta">
+        <div class="dash-hero-meta-item">
+          <div class="dash-hero-meta-label">Member Since</div>
+          <div class="dash-hero-meta-value">{{ request.user.created_at|date:"M Y" }}</div>
+        </div>
+        <div class="dash-hero-meta-item">
+          <div class="dash-hero-meta-label">Membership</div>
+          <div class="dash-hero-meta-value is-accent">{{ request.user.membership.name|default:"None" }}</div>
+        </div>
+        <div class="dash-hero-meta-item">
+          <div class="dash-hero-meta-label">Hours Played</div>
+          <div class="dash-hero-meta-value">{{ total_hours_played }}</div>
+        </div>
+        <div class="dash-hero-meta-item">
+          <div class="dash-hero-meta-label">Favorite Console</div>
+          <div class="dash-hero-meta-value">{{ favorite_console|default:"—" }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ STATS GRID ══════════ -->
+    <div class="dash-stats-grid">
+      <div class="dash-stat-card is-cyan nx-animate nx-d1">
+        <div class="dash-stat-icon">🎮</div>
+        <div class="dash-stat-value" data-count-to="{{ total_bookings }}">0</div>
+        <div class="dash-stat-label">Total Bookings</div>
+      </div>
+      <div class="dash-stat-card is-cyan nx-animate nx-d2">
+        <div class="dash-stat-icon">✅</div>
+        <div class="dash-stat-value" data-count-to="{{ confirmed_bookings }}">0</div>
+        <div class="dash-stat-label">Confirmed Bookings</div>
+      </div>
+      <div class="dash-stat-card is-highlight nx-animate nx-d3">
+        <div class="dash-stat-icon">⏳</div>
+        <div class="dash-stat-value" data-count-to="{{ pending_bookings }}">0</div>
+        <div class="dash-stat-label">Pending Bookings</div>
+      </div>
+      <div class="dash-stat-card is-purple nx-animate nx-d4">
+        <div class="dash-stat-icon">🏁</div>
+        <div class="dash-stat-value" data-count-to="{{ completed_bookings }}">0</div>
+        <div class="dash-stat-label">Completed Sessions</div>
+      </div>
+      <div class="dash-stat-card is-orange nx-animate nx-d1">
+        <div class="dash-stat-icon">💰</div>
+        <div class="dash-stat-value" data-count-to="{{ total_spent }}" data-prefix="₹" data-decimals="0">₹0</div>
+        <div class="dash-stat-label">Total Amount Spent</div>
+      </div>
+      <div class="dash-stat-card is-cyan nx-animate nx-d2">
+        <div class="dash-stat-icon">🕒</div>
+        <div class="dash-stat-value" data-count-to="{{ total_hours_played }}" data-decimals="1">0</div>
+        <div class="dash-stat-label">Total Hours Played</div>
+      </div>
+      <div class="dash-stat-card is-purple nx-animate nx-d3">
+        <div class="dash-stat-icon">🕹️</div>
+        <div class="dash-stat-value" style="font-size:1.05rem;">{{ favorite_console|default:"—" }}</div>
+        <div class="dash-stat-label">Favorite Console</div>
+      </div>
+      <div class="dash-stat-card is-highlight nx-animate nx-d4">
+        <div class="dash-stat-icon">🎫</div>
+        <div class="dash-stat-value" style="font-size:1.05rem;">{{ request.user.membership.name|default:"None" }}</div>
+        <div class="dash-stat-label">Current Membership</div>
+      </div>
+    </div>
+
+    <!-- ══════════ QUICK ACTIONS ══════════ -->
+    <div class="dash-quick-actions">
+      <a href="{% url 'bookings:booking_form' %}" class="dash-qa-card nx-animate nx-d1">
+        <div class="dash-qa-icon">➕</div>
+        <div class="dash-qa-label">Book New Slot</div>
+      </a>
+      <a href="{% url 'home' %}#membership" class="dash-qa-card nx-animate nx-d2">
+        <div class="dash-qa-icon">🎫</div>
+        <div class="dash-qa-label">Membership</div>
+      </a>
+      <a href="{% url 'home' %}#games" class="dash-qa-card nx-animate nx-d3">
+        <div class="dash-qa-icon">🎮</div>
+        <div class="dash-qa-label">Browse Games</div>
+      </a>
+      <a href="https://wa.me/9193444140?text=Hi%20CONSOLEX!%20I%20need%20help%20with%20my%20booking."
+         target="_blank" rel="noopener noreferrer" class="dash-qa-card nx-animate nx-d4">
+        <div class="dash-qa-icon">💬</div>
+        <div class="dash-qa-label">Support</div>
+      </a>
+      <button type="button" class="dash-qa-card nx-animate nx-d5"
+              onclick="document.getElementById('dashNotifBell').click();">
+        <div class="dash-qa-icon">🔔</div>
+        <div class="dash-qa-label">Notifications</div>
+      </button>
+    </div>
+
+    <!-- ══════════ MAIN GRID ══════════ -->
+    <div class="dash-main-grid">
+
+      <!-- LEFT: Booking history -->
+      <div>
+        <div class="dashboard-card nx-animate">
+          <h2 class="dashboard-card-title">📋 Booking History</h2>
+
+          {% if bookings %}
+            <div class="bookings-table-wrap">
+              <table class="bookings-table">
+                <thead>
+                  <tr>
+                    <th>Booking ID</th>
+                    <th>Console</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Players</th>
+                    <th>Amount</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for booking in bookings %}
+                  <tr>
+                    <td class="td-id">#{{ booking.id }}</td>
+                    <td>{{ booking.game_console.name|default:"—" }}</td>
+                    <td>{{ booking.booking_date|date:"d M Y" }}</td>
+                    <td class="td-time">
+                      {{ booking.start_time|time:"h:i A" }}<br>
+                      <span class="td-muted">{{ booking.end_time|time:"h:i A" }}</span>
+                    </td>
+                    <td class="td-center">{{ booking.number_of_players }}</td>
+                    <td>
+                      ₹{{ booking.total_cost }}<br>
+                      <span class="td-muted td-advance">Adv ₹{{ booking.advance_amount }}</span>
+                    </td>
+
+                    <!-- Payment status -->
+                    <td>
+                      {% if booking.payment %}
+                        {% if booking.payment.status == 'captured' %}
+                          <span class="badge badge-confirmed">Paid</span>
+                        {% elif booking.payment.status == 'demo' %}
+                          <span class="badge badge-demo">Demo</span>
+                        {% elif booking.payment.status == 'failed' %}
+                          <span class="badge badge-cancelled">Failed</span>
+                        {% elif booking.payment.status == 'refunded' %}
+                          <span class="badge badge-refunded">Refunded</span>
+                        {% else %}
+                          <span class="badge badge-pending">Pending</span>
+                        {% endif %}
+                      {% else %}
+                        <span class="badge badge-pending">Unpaid</span>
+                      {% endif %}
+                    </td>
+
+                    <!-- Booking status -->
+                    <td>
+                      {% if booking.status == 'confirmed' %}
+                        <span class="badge badge-confirmed">Confirmed</span>
+                      {% elif booking.status == 'pending' %}
+                        <span class="badge badge-pending">Pending</span>
+                      {% elif booking.status == 'cancelled' %}
+                        <span class="badge badge-cancelled">Cancelled</span>
+                      {% elif booking.status == 'completed' %}
+                        <span class="badge badge-completed">Completed</span>
+                      {% endif %}
+                    </td>
+
+                    <!-- Actions -->
+                    <td>
+                      <div class="td-actions">
+                        {% if booking.status == 'pending' and not booking.is_paid %}
+                          <a href="{% url 'payments:payment_page' booking.id %}" class="btn-action btn-pay-now">Pay Now</a>
+                        {% endif %}
+                        <a href="{% url 'bookings:booking_detail' booking.id %}" class="btn-action btn-view">View</a>
+                        {% if booking.status == 'pending' or booking.status == 'confirmed' %}
+                          <button type="button" class="btn-action btn-cancel"
+                                  data-stub-action="Cancellation isn't wired up yet — contact us on WhatsApp for now.">Cancel</button>
+                        {% endif %}
+                        {% if booking.is_paid %}
+                          <button type="button" class="btn-action btn-receipt"
+                                  data-stub-action="Receipt downloads are coming soon.">Receipt</button>
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="no-bookings">
+              <span class="no-bookings-icon">🎮</span>
+              <p>No bookings yet.</p>
+              <a href="{% url 'bookings:booking_form' %}" class="btn-book-now">Book Your First Slot</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- RIGHT: Sidebar -->
+      <div>
+
+        <!-- Profile card -->
+        <div class="dashboard-card nx-animate nx-d1">
+          <div class="dash-profile-avatar">{{ user_initial }}</div>
+          <div class="dash-profile-name">{{ user_display }}</div>
+          <div class="dash-profile-membership">{{ request.user.membership.name|default:"No active membership" }}</div>
+
+          <div class="dash-profile-list">
+            <div class="dash-profile-row"><span>Email</span><span>{{ request.user.email }}</span></div>
+            <div class="dash-profile-row"><span>Phone</span><span>{{ request.user.phone|default:"—" }}</span></div>
+            <div class="dash-profile-row"><span>Joined</span><span>{{ request.user.created_at|date:"d M Y" }}</span></div>
+          </div>
+
+          <button type="button" class="btn-edit-profile"
+                  data-stub-action="Profile editing is coming soon.">Edit Profile</button>
+        </div>
+
+        <!-- Gaming progress -->
+        <div class="dashboard-card nx-animate nx-d2">
+          <h2 class="dashboard-card-title">📈 Gaming Progress</h2>
+
+          <div class="dash-progress-row">
+            <span>Hours Played</span>
+            <strong>{{ total_hours_played }} hrs</strong>
+          </div>
+          <div class="dash-progress-track">
+            <div class="dash-progress-fill" data-progress-fill="{{ hours_progress_pct }}"></div>
+          </div>
+
+          <div class="dash-progress-row">
+            <span>Games Played</span>
+            <strong>{{ games_played }}</strong>
+          </div>
+          <div class="dash-progress-track">
+            <div class="dash-progress-fill" data-progress-fill="{{ games_progress_pct }}"></div>
+          </div>
+
+          <div class="dash-achievements">
+            {% for a in achievements %}
+              <div class="dash-achv {% if a.achieved %}is-unlocked{% endif %}">
+                <span class="dash-achv-icon">{{ a.icon }}</span>
+                <span class="dash-achv-label">{{ a.label }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Recent activity -->
+        <div class="dashboard-card nx-animate nx-d3">
+          <h2 class="dashboard-card-title">🕓 Recent Activity</h2>
+
+          {% if activity %}
+            <ul class="dash-timeline">
+              {% for item in activity %}
+                <li class="dash-timeline-item">
+                  <span class="dash-timeline-icon" aria-hidden="true">{{ item.icon }}</span>
+                  <div>
+                    <div class="dash-timeline-text">{{ item.text }}</div>
+                    <div class="dash-timeline-time">{{ item.timestamp|timesince }} ago</div>
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="dash-empty-inline">No recent activity yet — your bookings will show up here.</p>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+
+    {% endwith %}
+    {% endwith %}
   </div>
+
+  <!-- Toast for stub (not-yet-wired) actions -->
+  <div id="dashToast" class="dash-toast" role="status" aria-live="polite"></div>
+
 </section>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}

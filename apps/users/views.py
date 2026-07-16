@@ -1,3 +1,5 @@
+from collections import Counter
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -81,21 +83,103 @@ def user_dashboard(request):
         .order_by('-booking_date', '-start_time')
     )
 
-    # Booking stats
+    # ── Booking stats ──────────────────────────
     total_bookings     = bookings.count()
     confirmed_bookings = bookings.filter(status='confirmed').count()
     pending_bookings   = bookings.filter(status='pending').count()
-    total_spent        = sum(
+    completed_bookings = bookings.filter(status='completed').count()
+    cancelled_bookings = bookings.filter(status='cancelled').count()
+
+    total_spent = sum(
         b.payment.amount_rupees
         for b in bookings
         if hasattr(b, 'payment') and b.payment.status in ('captured', 'demo')
     )
 
+    # ── Gaming progress ────────────────────────
+    total_hours_played = sum(
+        b.duration_hours for b in bookings if b.status == 'completed'
+    )
+
+    console_counter = Counter(
+        b.game_console.name
+        for b in bookings
+        if b.game_console_id and b.status != 'cancelled'
+    )
+    favorite_console = console_counter.most_common(1)[0][0] if console_counter else None
+    games_played      = len(console_counter)
+
+    # ── Notifications ──────────────────────────
+    notifications = request.user.notifications.order_by('-created_at')[:8]
+    unread_notifications_count = request.user.notifications.filter(is_read=False).count()
+
+    # ── Recent activity timeline (derived, no new models) ──
+    activity = []
+    for b in bookings[:8]:
+        activity.append({
+            'icon': '🎮',
+            'text': f"Booked {b.game_console.name if b.game_console else 'a console'}",
+            'timestamp': b.created_at,
+        })
+        if hasattr(b, 'payment') and b.payment.status in ('captured', 'demo'):
+            activity.append({
+                'icon': '💳',
+                'text': f"Payment completed for Booking #{b.id}",
+                'timestamp': b.payment.updated_at,
+            })
+        if b.status == 'cancelled':
+            activity.append({
+                'icon': '✖',
+                'text': f"Booking #{b.id} cancelled",
+                'timestamp': b.updated_at,
+            })
+    activity.sort(key=lambda a: a['timestamp'], reverse=True)
+    activity = activity[:6]
+
+    # ── Achievements (computed, not stored) ────
+    achievements = [
+        {
+            'label': 'First Booking',
+            'icon': '🕹️',
+            'achieved': total_bookings >= 1,
+        },
+        {
+            'label': 'Regular Player',
+            'icon': '⭐',
+            'achieved': total_bookings >= 5,
+        },
+        {
+            'label': 'Marathon Gamer',
+            'icon': '⏱️',
+            'achieved': total_hours_played >= 20,
+        },
+        {
+            'label': 'Big Spender',
+            'icon': '💎',
+            'achieved': total_spent >= 5000,
+        },
+    ]
+
+    # ── Progress bar percentages (clamped 0–100) ──
+    hours_progress_pct = min(round((total_hours_played / 40) * 100), 100) if total_hours_played else 0
+    games_progress_pct = min(round((games_played / 10) * 100), 100) if games_played else 0
+
     context = {
-        'bookings':           bookings,
-        'total_bookings':     total_bookings,
-        'confirmed_bookings': confirmed_bookings,
-        'pending_bookings':   pending_bookings,
-        'total_spent':        total_spent,
+        'bookings':                   bookings,
+        'total_bookings':             total_bookings,
+        'confirmed_bookings':         confirmed_bookings,
+        'pending_bookings':           pending_bookings,
+        'completed_bookings':         completed_bookings,
+        'cancelled_bookings':         cancelled_bookings,
+        'total_spent':                total_spent,
+        'total_hours_played':         round(total_hours_played, 1),
+        'favorite_console':           favorite_console,
+        'games_played':               games_played,
+        'notifications':              notifications,
+        'unread_notifications_count': unread_notifications_count,
+        'activity':                   activity,
+        'achievements':               achievements,
+        'hours_progress_pct':         hours_progress_pct,
+        'games_progress_pct':         games_progress_pct,
     }
     return render(request, 'users/dashboard.html', context)
