@@ -75,7 +75,8 @@ class Payment(models.Model):
 
     @property
     def amount_rupees(self):
-        return self.amount / 100
+        from decimal import Decimal
+        return (Decimal(self.amount) / Decimal(100)).quantize(Decimal("0.01"))
 
     @property
     def is_successful(self):

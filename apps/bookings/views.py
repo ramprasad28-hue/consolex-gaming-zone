@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db import transaction
 from django.db.models import Q
 from datetime import datetime, timedelta
 from decimal import Decimal
@@ -45,47 +46,56 @@ def booking_form(request):
             end_datetime = start_datetime + timedelta(hours=duration_hours)
             end_time = end_datetime.time()
 
-            # Slot Conflict Detection
-            # Check for any booking that overlaps with the requested time on the same date
-            # Overlap condition: ExistingStart < RequestedEnd AND RequestedStart < ExistingEnd
-            conflicting_bookings = Booking.objects.filter(
-                booking_date=booking_date,
-                status__in=['pending', 'confirmed']
-            ).filter(
-                Q(start_time__lt=end_time) & Q(end_time__gt=start_time)
-            )
+            # Slot Conflict Detection — serialized to avoid a race.
+            # We lock the console row (select_for_update) so two concurrent
+            # bookings for the same console cannot both pass the overlap
+            # check and double-book the slot. The conflict check also scopes
+            # by console when one is selected.
+            with transaction.atomic():
+                if console is not None:
+                    # Lock the console row; releases at end of the block.
+                    GameConsole.objects.select_for_update().get(pk=console.pk)
 
-            if conflicting_bookings.exists():
-                messages.error(request, "This time slot is already booked. Please choose a different time.")
-                return render(request, 'bookings/booking_form.html',
-                               {'consoles': consoles, 'rate_table': rate_table})
+                conflict_filter = Q(booking_date=booking_date) & Q(
+                    status__in=['pending', 'confirmed']
+                ) & Q(start_time__lt=end_time) & Q(end_time__gt=start_time)
+                if console is not None:
+                    conflict_filter &= Q(game_console=console)
 
-            # Calculate Total Cost from the console rate (weekday/weekend) x
-            # player multiplier x duration, then apply membership discount.
-            total_cost = calculate_total(
-                console, booking_date, duration_hours, number_of_players
-            )
+                conflicting_bookings = Booking.objects.filter(conflict_filter)
 
-            active_membership = (
-                request.user.membership
-                if getattr(request.user, 'membership', None) else None
-            )
-            if active_membership:
-                total_cost = apply_membership_discount(
-                    total_cost, active_membership.discount_percent
+                if conflicting_bookings.exists():
+                    messages.error(request, "This time slot is already booked. Please choose a different time.")
+                    return render(request, 'bookings/booking_form.html',
+                                   {'consoles': consoles, 'rate_table': rate_table})
+
+                # Calculate Total Cost from the console rate (weekday/weekend) x
+                # player multiplier x duration, then apply membership discount.
+                total_cost = calculate_total(
+                    console, booking_date, duration_hours, number_of_players
                 )
 
-            # Create Booking
-            booking = Booking.objects.create(
-                user=request.user,
-                game_console=console,
-                booking_date=booking_date,
-                start_time=start_time,
-                end_time=end_time,
-                number_of_players=number_of_players,
-                total_cost=total_cost,
-                status='pending'
-            )
+                active_membership = (
+                    request.user.membership
+                    if getattr(request.user, 'membership', None) else None
+                )
+                if active_membership:
+                    total_cost = apply_membership_discount(
+                        total_cost, active_membership.discount_percent
+                    )
+
+                # Create Booking (inside the locked block, so the overlap
+                # check and insert are atomic for this console).
+                booking = Booking.objects.create(
+                    user=request.user,
+                    game_console=console,
+                    booking_date=booking_date,
+                    start_time=start_time,
+                    end_time=end_time,
+                    number_of_players=number_of_players,
+                    total_cost=total_cost,
+                    status='pending'
+                )
 
             messages.success(request, "Slot available! Proceed to pay the 30% advance.")
             return redirect('payments:payment_page', booking_id=booking.id)
