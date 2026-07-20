@@ -7,7 +7,7 @@
 set -e  # Exit on any error
 
 echo "▶ Installing dependencies..."
-pip install -r requirements.txt
+pip install -r apps/requirements/production.txt
 
 echo "▶ Collecting static files..."
 python manage.py collectstatic --noinput

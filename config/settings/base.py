@@ -24,7 +24,6 @@ INSTALLED_APPS = [
     'apps.bookings',
     'apps.games',
     'apps.payments',
-    'apps.dashboard',
     'apps.memberships',
     'apps.notifications',
 ]

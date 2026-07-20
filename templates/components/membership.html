@@ -1,4 +1,3 @@
-
 <section class="mem-section" id="membership">
 
     <!-- Background -->
@@ -28,281 +27,70 @@
             </p>
         </div>
 
-        <!-- Cards -->
+        <!-- Cards (driven by the Membership model) -->
         <div class="mem-grid">
 
-            <!-- ── BASIC ── -->
-            <div class="mem-card mc-basic">
+            {% for plan in plans %}
+            <div class="mem-card {% cycle 'mc-basic' 'mc-standard' 'mc-pro' %}{% if plan.is_popular %} mc-featured{% endif %}">
                 <div class="mc-inner-glow"></div>
 
-                <div class="mc-header">
-                    <div class="mc-tier-row">
-                        <span class="mc-tier-icon">🎮</span>
-                        <span class="mc-tier-name">Basic</span>
-                    </div>
-                    <p class="mc-tier-desc">Perfect for casual gamers who want a regular slot every week.</p>
-                </div>
-
-                <div class="mc-price-block">
-                    <div class="mc-price">
-                        <span class="mc-currency">₹</span>
-                        <span class="mc-amount">1,199</span>
-                    </div>
-                    <span class="mc-period">per month</span>
-                </div>
-
-                <div class="mc-hours-block">
-                    <div class="mc-hours-pill">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <polyline points="12 6 12 12 16 14"/>
-                        </svg>
-                        <span class="mc-hours-num">10</span>
-                        <span class="mc-hours-label">Hours / Month</span>
-                    </div>
-                </div>
-
-                <div class="mc-divider"></div>
-
-                <ul class="mc-perks">
-                    <li class="mc-perk">
-                        <span class="mc-check mc-check-cyan">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
-                        10 gaming hours (weekdays)
-                    </li>
-                    <li class="mc-perk">
-                        <span class="mc-check mc-check-cyan">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
-                        Priority slot booking
-                    </li>
-                    <li class="mc-perk">
-                        <span class="mc-check mc-check-cyan">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
-                        Access to full game library
-                    </li>
-                    <li class="mc-perk">
-                        <span class="mc-check mc-check-cyan">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
-                        Member discount on extras
-                    </li>
-                    <li class="mc-perk mc-perk-off">
-                        <span class="mc-check mc-check-off">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                        </span>
-                        Weekend bonus hours
-                    </li>
-                    <li class="mc-perk mc-perk-off">
-                        <span class="mc-check mc-check-off">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                        </span>
-                        Guest pass
-                    </li>
-                </ul>
-
-                <a href="{% url 'users:register' %}" class="mc-btn mc-btn-basic">Get Basic</a>
-
-                <div class="mc-value-note">
-                    ~₹120/hr effective rate
-                </div>
-            </div>
-
-            <!-- ── STANDARD — Most Popular ── -->
-            <div class="mem-card mc-standard mc-featured">
-                <div class="mc-inner-glow"></div>
-
-                <!-- Badge -->
+                {% if plan.is_popular %}
                 <div class="mc-badge mc-badge-popular">
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                     </svg>
                     Most Popular
                 </div>
+                {% endif %}
 
                 <div class="mc-header">
                     <div class="mc-tier-row">
-                        <span class="mc-tier-icon">⚡</span>
-                        <span class="mc-tier-name mc-name-cyan">Standard</span>
+                        <span class="mc-tier-icon">🎮</span>
+                        <span class="mc-tier-name">{{ plan.name }}</span>
                     </div>
-                    <p class="mc-tier-desc">For dedicated gamers who love weekend sessions with their squad.</p>
+                    <p class="mc-tier-desc">{{ plan.description|default:"A CONSOLEX membership plan." }}</p>
                 </div>
 
                 <div class="mc-price-block">
                     <div class="mc-price">
-                        <span class="mc-currency mc-currency-cyan">₹</span>
-                        <span class="mc-amount mc-amount-cyan">2,499</span>
+                        <span class="mc-currency">₹</span>
+                        <span class="mc-amount">{{ plan.price }}</span>
                     </div>
-                    <span class="mc-period">per month</span>
+                    <span class="mc-period">per {{ plan.duration_days }} days</span>
                 </div>
 
-                <div class="mc-hours-block mc-hours-split">
-                    <div class="mc-hours-pill mc-hours-pill-cyan">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <polyline points="12 6 12 12 16 14"/>
-                        </svg>
-                        <span class="mc-hours-num">25</span>
-                        <span class="mc-hours-label">Weekday Hrs</span>
-                    </div>
-                    <span class="mc-hours-plus">+</span>
-                    <div class="mc-hours-pill mc-hours-pill-purple">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="5"/>
-                            <line x1="12" y1="1"  x2="12" y2="3"/>
-                            <line x1="12" y1="21" x2="12" y2="23"/>
-                            <line x1="4.22"  y1="4.22"  x2="5.64"  y2="5.64"/>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                        </svg>
-                        <span class="mc-hours-num">5</span>
-                        <span class="mc-hours-label">Weekend Hrs</span>
-                    </div>
-                </div>
-
-                <div class="mc-divider mc-divider-cyan"></div>
+                <div class="mc-divider"></div>
 
                 <ul class="mc-perks">
+                    {% if plan.discount_percent %}
                     <li class="mc-perk">
-                        <span class="mc-check mc-check-cyan">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
-                        25 weekday gaming hours
+                        <span class="mc-check mc-check-cyan"></span>
+                        {{ plan.discount_percent }}% off every booking
                     </li>
+                    {% endif %}
+                    {% if plan.free_hours_per_month %}
                     <li class="mc-perk">
-                        <span class="mc-check mc-check-purple">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
-                        5 bonus weekend hours
+                        <span class="mc-check mc-check-cyan"></span>
+                        {{ plan.free_hours_per_month }} free hours / month
                     </li>
+                    {% endif %}
+                    {% if plan.priority_booking %}
                     <li class="mc-perk">
-                        <span class="mc-check mc-check-cyan">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
+                        <span class="mc-check mc-check-cyan"></span>
                         Priority slot booking
                     </li>
+                    {% endif %}
                     <li class="mc-perk">
-                        <span class="mc-check mc-check-cyan">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
+                        <span class="mc-check mc-check-cyan"></span>
                         Access to full game library
                     </li>
-                    <li class="mc-perk">
-                        <span class="mc-check mc-check-cyan">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
-                        1 guest pass per month
-                    </li>
-                    <li class="mc-perk">
-                        <span class="mc-check mc-check-cyan">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
-                        Free snack every visit
-                    </li>
                 </ul>
 
-                <a href="{% url 'users:register' %}" class="mc-btn mc-btn-standard">Get Standard</a>
-
-                <div class="mc-value-note mc-value-cyan">
-                    ~₹83/hr effective rate
-                </div>
+                <a href="{% url 'users:register' %}" class="mc-btn">Choose {{ plan.name }}</a>
             </div>
-
-            <!-- ── PRO — Best Value ── -->
-            <div class="mem-card mc-pro">
-                <div class="mc-inner-glow"></div>
-
-                <!-- Badge -->
-                <div class="mc-badge mc-badge-pro">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17.657 5.304A8 8 0 1 0 20 12h-2a6 6 0 1 1-2.05-4.5l-2.122 2.121A3 3 0 1 0 15 12h2a5 5 0 1 1-1.757-3.818l1.414-1.878z"/>
-                    </svg>
-                    Best Value
-                </div>
-
-                <div class="mc-header">
-                    <div class="mc-tier-row">
-                        <span class="mc-tier-icon">🔥</span>
-                        <span class="mc-tier-name mc-name-orange">Pro</span>
-                    </div>
-                    <p class="mc-tier-desc">For hardcore gamers who live and breathe PS5. Unlimited mode.</p>
-                </div>
-
-                <div class="mc-price-block">
-                    <div class="mc-price">
-                        <span class="mc-currency mc-currency-orange">₹</span>
-                        <span class="mc-amount mc-amount-orange">3,999</span>
-                    </div>
-                    <span class="mc-period">per month</span>
-                </div>
-
-                <div class="mc-hours-block mc-hours-split">
-                    <div class="mc-hours-pill mc-hours-pill-orange">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <polyline points="12 6 12 12 16 14"/>
-                        </svg>
-                        <span class="mc-hours-num">40</span>
-                        <span class="mc-hours-label">Base Hours</span>
-                    </div>
-                    <span class="mc-hours-plus">+</span>
-                    <div class="mc-hours-pill mc-hours-pill-fire">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2c0 6-6 8-6 14a6 6 0 0 0 12 0c0-6-6-8-6-14z"/>
-                        </svg>
-                        <span class="mc-hours-num">5</span>
-                        <span class="mc-hours-label">Bonus Hours</span>
-                    </div>
-                </div>
-
-                <div class="mc-divider mc-divider-orange"></div>
-
-                <ul class="mc-perks">
-                    <li class="mc-perk">
-                        <span class="mc-check mc-check-orange">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
-                        40 hours any day of the week
-                    </li>
-                    <li class="mc-perk">
-                        <span class="mc-check mc-check-orange">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
-                        5 bonus hours (rollover)
-                    </li>
-                    <li class="mc-perk">
-                        <span class="mc-check mc-check-orange">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
-                        First pick on all time slots
-                    </li>
-                    <li class="mc-perk">
-                        <span class="mc-check mc-check-orange">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
-                        3 guest passes per month
-                    </li>
-                    <li class="mc-perk">
-                        <span class="mc-check mc-check-orange">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
-                        Free snacks + drinks always
-                    </li>
-                    <li class="mc-perk">
-                        <span class="mc-check mc-check-orange">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        </span>
-                        Exclusive Pro merch drop
-                    </li>
-                </ul>
-
-                <a href="{% url 'users:register' %}" class="mc-btn mc-btn-pro">Go Pro</a>
-
-                <div class="mc-value-note mc-value-orange">
-                    ~₹89/hr effective rate
-                </div>
-            </div>
+            {% empty %}
+            <p class="ms-compare">Membership plans coming soon.</p>
+            {% endfor %}
 
         </div>
 
@@ -313,7 +101,7 @@
                 <line x1="12" y1="8"  x2="12" y2="12"/>
                 <line x1="12" y1="16" x2="12.01" y2="16"/>
             </svg>
-            All memberships renew monthly · Cancel anytime · Hours do not carry over (except Pro bonus hours)
+            All memberships renew per their duration · Cancel anytime
         </div>
 
     </div>

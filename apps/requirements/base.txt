@@ -3,3 +3,5 @@ pillow
 python-decouple
 gunicorn
 whitenoise
+razorpay
+twilio

@@ -4,9 +4,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import render
 
+from apps.memberships.models import Membership
+
 
 def home(request):
-    return render(request, "pages/home.html")
+    plans = Membership.objects.filter(is_active=True)
+    return render(request, "pages/home.html", {"plans": plans})
 
 
 urlpatterns = [
