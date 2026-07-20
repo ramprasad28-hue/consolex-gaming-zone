@@ -86,7 +86,7 @@
                     </li>
                 </ul>
 
-                <a href="{% url 'users:register' %}" class="mc-btn">Choose {{ plan.name }}</a>
+                <a href="{% url 'memberships:subscribe' plan.id %}" class="mc-btn">Choose {{ plan.name }}</a>
             </div>
             {% empty %}
             <p class="ms-compare">Membership plans coming soon.</p>

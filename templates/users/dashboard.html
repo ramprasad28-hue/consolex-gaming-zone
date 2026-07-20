@@ -151,7 +151,7 @@
         <div class="dash-qa-icon">➕</div>
         <div class="dash-qa-label">Book New Slot</div>
       </a>
-      <a href="{% url 'home' %}#membership" class="dash-qa-card nx-animate nx-d2">
+      <a href="{% url 'memberships:plan_list' %}" class="dash-qa-card nx-animate nx-d2">
         <div class="dash-qa-icon">🎫</div>
         <div class="dash-qa-label">Membership</div>
       </a>
@@ -196,7 +196,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {% for booking in bookings %}
+                   {% for booking in page_obj %}
                   <tr>
                     <td class="td-id">#{{ booking.id }}</td>
                     <td>{{ booking.game_console.name|default:"—" }}</td>
@@ -265,6 +265,24 @@
                 </tbody>
               </table>
             </div>
+
+            {% if page_obj.paginator.num_pages > 1 %}
+            <div class="dash-pagination">
+              {% if page_obj.has_previous %}
+                <a href="?page=1" class="dash-page-link">&laquo; First</a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="dash-page-link">&lsaquo; Prev</a>
+              {% endif %}
+
+              <span class="dash-page-current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+              </span>
+
+              {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="dash-page-link">Next &rsaquo;</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="dash-page-link">Last &raquo;</a>
+              {% endif %}
+            </div>
+            {% endif %}
           {% else %}
             <div class="no-bookings">
               <span class="no-bookings-icon">🎮</span>

@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.paginator import Paginator
 from apps.bookings.models import Booking
 
 
@@ -76,15 +77,21 @@ def user_logout(request):
 # ── DASHBOARD ─────────────────────────────────
 @login_required
 def user_dashboard(request):
-    bookings = (
+    all_bookings = (
         Booking.objects
         .filter(user=request.user)
         .select_related('game_console', 'payment')
         .order_by('-booking_date', '-start_time')
     )
 
+    # Paginate the booking table (8 per page) so heavy users stay fast.
+    paginator = Paginator(all_bookings, 8)
+    page_obj = paginator.get_page(request.GET.get("page"))
+
+    bookings = all_bookings  # kept for derived stats/activity below
+
     # ── Booking stats ──────────────────────────
-    total_bookings     = bookings.count()
+    total_bookings     = all_bookings.count()
     confirmed_bookings = bookings.filter(status='confirmed').count()
     pending_bookings   = bookings.filter(status='pending').count()
     completed_bookings = bookings.filter(status='completed').count()
@@ -166,6 +173,7 @@ def user_dashboard(request):
 
     context = {
         'bookings':                   bookings,
+        'page_obj':                   page_obj,
         'total_bookings':             total_bookings,
         'confirmed_bookings':         confirmed_bookings,
         'pending_bookings':           pending_bookings,

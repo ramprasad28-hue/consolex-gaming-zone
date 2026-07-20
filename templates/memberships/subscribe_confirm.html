@@ -1,23 +1,17 @@
 {% extends "base.html" %}
-{% load static %}
-{% block title %}Membership Plans — CONSOLEX{% endblock %}
+{% block title %}Confirm Membership — CONSOLEX{% endblock %}
 
 {% block content %}
-<section class="mem-section" id="membership">
+<section class="mem-section">
     <div class="mem-container">
         <div class="ms-head">
-            <span class="ms-tag">Membership Plans</span>
-            <h2 class="ms-title">Level Up with a <span class="ms-neon">Membership</span></h2>
-            <p class="ms-sub">Unlock exclusive hours, priority booking and member-only perks every month.</p>
+            <span class="ms-tag">Confirm Membership</span>
+            <h2 class="ms-title">Subscribe to <span class="ms-neon">{{ plan.name }}</span></h2>
+            <p class="ms-sub">You're about to activate the {{ plan.name }} plan for ₹{{ plan.price }} / {{ plan.duration_days }} days.</p>
         </div>
 
-        <div class="mem-grid">
-            {% for plan in plans %}
-            <div class="mem-card {% if plan.is_popular %}mc-featured{% endif %}">
-                <div class="mc-inner-glow"></div>
-                {% if plan.is_popular %}
-                <div class="mc-badge mc-badge-popular">Most Popular</div>
-                {% endif %}
+        <div class="mem-grid" style="justify-content:center;">
+            <div class="mem-card mc-featured">
                 <div class="mc-header">
                     <div class="mc-tier-row">
                         <span class="mc-tier-name">{{ plan.name }}</span>
@@ -42,11 +36,12 @@
                     <li class="mc-perk"><span class="mc-check mc-check-cyan"></span>Priority slot booking</li>
                     {% endif %}
                 </ul>
-                <a href="{% url 'memberships:subscribe' plan.id %}" class="mc-btn">Choose {{ plan.name }}</a>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="mc-btn">Confirm Subscription</button>
+                </form>
+                <a href="{% url 'memberships:plan_list' %}" class="mc-value-note">Cancel</a>
             </div>
-            {% empty %}
-            <p>No membership plans available right now.</p>
-            {% endfor %}
         </div>
     </div>
 </section>
