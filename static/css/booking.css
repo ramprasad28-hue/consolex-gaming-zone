@@ -1,0 +1,244 @@
+/* ============================================================
+   CONSOLEX — booking.css  (Phase 8 · Step 1: Choose Console)
+   Depends on --cyan / --purple / --orange / --font-head /
+   --font-body / --surface / --border tokens from navbar_footer.css
+   ============================================================ */
+
+.wiz-section {
+    position: relative;
+    min-height: 100vh;
+    padding: calc(var(--nav-h, 72px) + 3rem) 1.5rem 5rem;
+}
+
+.wiz-wrap { max-width: 920px; margin: 0 auto; }
+
+.wiz-head { text-align: center; margin-bottom: 2.4rem; }
+.wiz-title {
+    font-family: var(--font-head); font-weight: 800; letter-spacing: 0.01em;
+    font-size: clamp(1.9rem, 4vw, 2.6rem); color: var(--text);
+}
+.wiz-neon {
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.wiz-sub { color: var(--text2); margin-top: 0.6rem; font-size: 1rem; }
+
+.wiz-alert {
+    max-width: 640px; margin: 0 auto 1.5rem; padding: 0.9rem 1.2rem;
+    border-radius: var(--radius); font-size: 0.92rem; text-align: center;
+    border: 1px solid var(--border);
+}
+.wiz-alert-error   { background: rgba(243, 38, 45, 0.08); border-color: rgba(243, 38, 45, 0.3); color: #ff8b8f; }
+.wiz-alert-success { background: rgba(0, 240, 255, 0.08); border-color: rgba(0, 240, 255, 0.3); color: var(--cyan); }
+
+/* ── Progress bar ─────────────────────────────────────────── */
+.wiz-progress {
+    display: flex; align-items: flex-start; justify-content: center;
+    gap: 0; margin: 0 auto 3rem; max-width: 720px;
+}
+.wiz-step-indicator {
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    flex: 0 0 auto; width: 84px;
+}
+.wiz-step-circle {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-head); font-size: 0.85rem; font-weight: 700;
+    background: var(--surface); border: 1.5px solid var(--border2); color: var(--text3);
+    transition: all 0.35s var(--ease);
+}
+.wiz-step-label {
+    font-size: 0.72rem; color: var(--text3); letter-spacing: 0.03em;
+    transition: color 0.35s var(--ease);
+}
+.wiz-step-indicator.wiz-active .wiz-step-circle {
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    border-color: transparent; color: #05050a;
+    box-shadow: 0 0 18px rgba(0, 240, 255, 0.4);
+}
+.wiz-step-indicator.wiz-active .wiz-step-label { color: var(--cyan); font-weight: 600; }
+.wiz-step-indicator.wiz-done .wiz-step-circle {
+    background: rgba(0, 240, 255, 0.12); border-color: var(--cyan); color: var(--cyan);
+}
+.wiz-step-indicator.wiz-done .wiz-step-label { color: var(--text2); }
+
+.wiz-step-line {
+    flex: 1 1 auto; height: 1.5px; background: var(--border2);
+    margin-top: 18px; min-width: 20px;
+}
+
+/* ── Panels ────────────────────────────────────────────────── */
+.wiz-panel { display: none; animation: wizFadeIn 0.4s var(--ease); }
+.wiz-panel.wiz-panel-active { display: block; }
+
+@keyframes wizFadeIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.wiz-panel-head { text-align: center; margin-bottom: 2rem; }
+.wiz-panel-title {
+    font-family: var(--font-head); font-size: 1.5rem; font-weight: 700; color: var(--text);
+}
+.wiz-panel-sub { color: var(--text2); font-size: 0.94rem; margin-top: 0.4rem; }
+
+.wiz-empty {
+    text-align: center; color: var(--text2); padding: 3rem 1rem;
+    border: 1px dashed var(--border2); border-radius: var(--radius);
+}
+
+.wiz-error {
+    text-align: center; color: #ff8b8f; font-size: 0.88rem;
+    margin-top: 1rem;
+}
+
+/* ── Console selection grid ───────────────────────────────── */
+.wiz-console-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem;
+}
+
+.wiz-console-radio {
+    position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;
+}
+
+.wiz-console-card {
+    display: block; cursor: pointer;
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    transition: transform 0.3s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.wiz-console-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 240, 255, 0.3);
+    box-shadow: 0 14px 32px rgba(0, 240, 255, 0.08);
+}
+
+.wiz-console-radio:checked + .wiz-console-card {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.15), 0 14px 34px rgba(0, 240, 255, 0.15);
+    transform: translateY(-4px);
+}
+.wiz-console-radio:focus-visible + .wiz-console-card {
+    outline: 2px solid var(--cyan); outline-offset: 2px;
+}
+
+.wiz-console-media {
+    position: relative; aspect-ratio: 4 / 3; overflow: hidden;
+    background: linear-gradient(135deg, rgba(0,240,255,0.06), rgba(191,0,255,0.06));
+}
+.wiz-console-media img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.wiz-console-placeholder {
+    width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+    color: var(--text3);
+}
+
+.wiz-console-check {
+    position: absolute; top: 10px; right: 10px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(5, 5, 10, 0.65); border: 1.5px solid var(--border2);
+    color: transparent; display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s var(--ease);
+}
+.wiz-console-radio:checked + .wiz-console-card .wiz-console-check {
+    background: var(--cyan); border-color: var(--cyan); color: #05050a;
+}
+
+.wiz-console-body { padding: 1.1rem 1.15rem 1.3rem; }
+.wiz-console-name {
+    font-family: var(--font-head); font-size: 1rem; font-weight: 700; color: var(--text);
+    margin-bottom: 0.25rem;
+}
+.wiz-console-type {
+    display: block; font-size: 0.8rem; color: var(--text2); margin-bottom: 0.7rem;
+}
+
+.wiz-status {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.02em;
+    padding: 0.3rem 0.7rem; border-radius: 999px;
+}
+.wiz-status-dot { width: 7px; height: 7px; border-radius: 50%; }
+.wiz-status-available {
+    background: rgba(0, 240, 255, 0.1); color: var(--cyan);
+}
+.wiz-status-available .wiz-status-dot { background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+.wiz-status-inactive {
+    background: rgba(255, 255, 255, 0.05); color: var(--text3);
+}
+.wiz-status-inactive .wiz-status-dot { background: var(--text3); }
+
+/* Disabled / inactive console */
+.wiz-console-disabled {
+    cursor: not-allowed; opacity: 0.45;
+}
+.wiz-console-disabled:hover {
+    transform: none; box-shadow: none; border-color: var(--border);
+}
+
+/* ── Interim details panel (functional, restyled in later steps) ── */
+.wiz-interim {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.8rem;
+}
+.wiz-field-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem;
+    margin-bottom: 1.1rem;
+}
+.wiz-field label {
+    display: block; font-size: 0.82rem; color: var(--text2); margin-bottom: 0.4rem;
+}
+.wiz-field input, .wiz-field select {
+    width: 100%; padding: 0.7rem 0.9rem; border-radius: 8px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border2);
+    color: var(--text); font-family: var(--font-body); font-size: 0.95rem;
+}
+.wiz-field input:focus, .wiz-field select:focus {
+    outline: none; border-color: var(--cyan);
+}
+
+.wiz-cost-preview {
+    margin-top: 0.6rem; padding: 0.9rem 1.1rem; border-radius: 8px;
+    background: rgba(0, 240, 255, 0.06); border: 1px solid rgba(0, 240, 255, 0.2);
+    color: var(--text2); font-size: 0.92rem;
+}
+.wiz-cost-preview strong { color: var(--cyan); font-family: var(--font-head); }
+
+/* ── Actions ───────────────────────────────────────────────── */
+.wiz-actions {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 1.8rem;
+}
+.wiz-actions-end { justify-content: flex-end; }
+
+.wiz-btn {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    font-family: var(--font-head); font-weight: 700; font-size: 0.88rem;
+    letter-spacing: 0.02em; padding: 0.85rem 1.7rem; border-radius: 999px;
+    border: none; cursor: pointer; transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.wiz-btn-primary {
+    color: #05050a; background: linear-gradient(90deg, var(--cyan), var(--purple));
+}
+.wiz-btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(0, 240, 255, 0.25); }
+.wiz-btn-ghost {
+    color: var(--text2); background: var(--surface); border: 1px solid var(--border2);
+}
+.wiz-btn-ghost:hover { color: var(--text); border-color: var(--border2); }
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 780px) {
+    .wiz-console-grid { grid-template-columns: repeat(2, 1fr); }
+    .wiz-progress { max-width: 100%; }
+    .wiz-step-indicator { width: 60px; }
+    .wiz-step-label { font-size: 0.62rem; }
+}
+@media (max-width: 540px) {
+    .wiz-section { padding: calc(var(--nav-h, 72px) + 1.5rem) 1rem 3.5rem; }
+    .wiz-console-grid { grid-template-columns: 1fr; }
+    .wiz-field-row { grid-template-columns: 1fr; }
+    .wiz-step-label { display: none; }
+    .wiz-actions { flex-direction: column-reverse; gap: 0.8rem; }
+    .wiz-actions .wiz-btn { width: 100%; justify-content: center; }
+}
