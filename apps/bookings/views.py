@@ -35,11 +35,22 @@ def booking_form(request):
                 return render(request, 'bookings/booking_form.html',
                                {'consoles': consoles, 'rate_table': rate_table})
 
-            console = get_object_or_404(GameConsole, id=console_id) if console_id else None
+            if not console_id:
+                messages.error(request, "Please select a PS5 setup.")
+                return render(request, 'bookings/booking_form.html',
+                               {'consoles': consoles, 'rate_table': rate_table})
+
+            console = get_object_or_404(GameConsole, id=console_id)
 
             # Parse inputs safely
             booking_date = datetime.strptime(booking_date_str, '%Y-%m-%d').date()
             start_time = datetime.strptime(start_time_str, '%H:%M').time()
+
+            # Reject past dates — a booking must be in the future.
+            if booking_date < datetime.now().date():
+                messages.error(request, "Please choose a future date.")
+                return render(request, 'bookings/booking_form.html',
+                               {'consoles': consoles, 'rate_table': rate_table})
 
             # Calculate end time
             start_datetime = datetime.combine(booking_date, start_time)
