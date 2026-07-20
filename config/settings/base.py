@@ -3,7 +3,10 @@ from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY', default='change-me-in-env')
+# SECRET_KEY has no default in production — it must be supplied via env.
+# A dev-only fallback is provided so local runs work without a .env file.
+import os as _os
+SECRET_KEY = _os.environ.get('SECRET_KEY') or config('SECRET_KEY', default='dev-only-insecure-key-change-me')
 
 DEBUG = config('DEBUG', default=True, cast=bool)
 
@@ -92,16 +95,19 @@ LOGIN_REDIRECT_URL = '/users/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
 # ─────────────────────────────────────────────
-# File: config/settings.py  (additions only)
-# Add these lines at the bottom
+# Third-party credentials — ALL loaded from environment.
+# Never hardcode secrets here. They are read from .env (dev) or the
+# platform's env vars (prod). Empty strings are safe fallbacks so the
+# app still boots locally; payment/WhatsApp features simply no-op until
+# real keys are provided.
 # ─────────────────────────────────────────────
 
 # Razorpay
-RAZORPAY_KEY_ID     = 'REDACTED'   # ← replace after signup
-RAZORPAY_KEY_SECRET = 'REDACTED'    # ← replace after signup
+RAZORPAY_KEY_ID     = config('RAZORPAY_KEY_ID', default='')
+RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET', default='')
 
 # Twilio WhatsApp
-TWILIO_ACCOUNT_SID  = 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'  # ← replace
-TWILIO_AUTH_TOKEN   = 'your_auth_token_here'                # ← replace
-TWILIO_WHATSAPP_FROM = 'whatsapp:+14155238886'              # Twilio sandbox number
-OWNER_WHATSAPP_TO    = 'whatsapp:+91XXXXXXXXXX'             # ← owner's number
+TWILIO_ACCOUNT_SID   = config('TWILIO_ACCOUNT_SID', default='')
+TWILIO_AUTH_TOKEN    = config('TWILIO_AUTH_TOKEN', default='')
+TWILIO_WHATSAPP_FROM = config('TWILIO_WHATSAPP_FROM', default='')
+OWNER_WHATSAPP_TO    = config('OWNER_WHATSAPP_TO', default='')

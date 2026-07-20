@@ -3,9 +3,20 @@ import os
 
 DEBUG = False
 
-# Add your platform subdomain here once you deploy
-# e.g. 'consolex.up.railway.app' or 'consolex.onrender.com'
+# SECRET_KEY MUST be provided via environment in production.
+# No insecure fallback — fail fast if it is missing or still the dev default.
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY or SECRET_KEY == 'dev-only-insecure-key-change-me':
+    raise RuntimeError(
+        "SECRET_KEY environment variable is required and must not be the "
+        "dev default. Set it in your hosting provider's env config."
+    )
+
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+if not any(h.strip() for h in ALLOWED_HOSTS):
+    raise RuntimeError(
+        "ALLOWED_HOSTS environment variable is required in production."
+    )
 
 DATABASES = {
     'default': {
