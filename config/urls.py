@@ -23,6 +23,9 @@ urlpatterns = [
 
     # Payments
     path("payments/", include("apps.payments.urls")),
+
+    # Memberships
+    path("memberships/", include("apps.memberships.urls")),
 ]
 
 if settings.DEBUG:

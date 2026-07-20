@@ -103,7 +103,7 @@
             <div class="cost-preview" id="costPreview">
 
                 Estimated Total:
-                <strong>₹300</strong>
+                <strong>₹{{ rate_table.1|floatformat:0 }}</strong>
 
             </div>
 
@@ -166,13 +166,12 @@
 
 <script>
 
+// Player-count -> base rate/hour, injected from the server (single source
+// of truth in apps/bookings/pricing.py).
 const RATE = {
-
-    1:300,
-    2:500,
-    3:700,
-    4:900
-
+    {% for players, rate in rate_table.items %}
+        {{ players }}: {{ rate }}{% if not forloop.last %},{% endif %}
+    {% endfor %}
 };
 
 function updateCost(){
@@ -187,7 +186,7 @@ function updateCost(){
             document.querySelector('[name="duration_hours"]').value
         );
 
-    const total = RATE[players] * duration;
+    const total = (RATE[players] || 0) * duration;
 
     const advance = Math.round(total * 0.30);
 

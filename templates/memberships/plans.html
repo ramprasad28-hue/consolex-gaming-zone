@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Membership Plans — CONSOLEX{% endblock %}
+
+{% block content %}
+<section class="mem-section" id="membership">
+    <div class="mem-container">
+        <div class="ms-head">
+            <span class="ms-tag">Membership Plans</span>
+            <h2 class="ms-title">Level Up with a <span class="ms-neon">Membership</span></h2>
+            <p class="ms-sub">Unlock exclusive hours, priority booking and member-only perks every month.</p>
+        </div>
+
+        <div class="mem-grid">
+            {% for plan in plans %}
+            <div class="mem-card {% if plan.is_popular %}mc-featured{% endif %}">
+                <div class="mc-inner-glow"></div>
+                {% if plan.is_popular %}
+                <div class="mc-badge mc-badge-popular">Most Popular</div>
+                {% endif %}
+                <div class="mc-header">
+                    <div class="mc-tier-row">
+                        <span class="mc-tier-name">{{ plan.name }}</span>
+                    </div>
+                    <p class="mc-tier-desc">{{ plan.description }}</p>
+                </div>
+                <div class="mc-price-block">
+                    <div class="mc-price">
+                        <span class="mc-currency">₹</span>
+                        <span class="mc-amount">{{ plan.price }}</span>
+                    </div>
+                    <span class="mc-period">per {{ plan.duration_days }} days</span>
+                </div>
+                <ul class="mc-perks">
+                    {% if plan.discount_percent %}
+                    <li class="mc-perk"><span class="mc-check mc-check-cyan"></span>{{ plan.discount_percent }}% off bookings</li>
+                    {% endif %}
+                    {% if plan.free_hours_per_month %}
+                    <li class="mc-perk"><span class="mc-check mc-check-cyan"></span>{{ plan.free_hours_per_month }} free hours / month</li>
+                    {% endif %}
+                    {% if plan.priority_booking %}
+                    <li class="mc-perk"><span class="mc-check mc-check-cyan"></span>Priority slot booking</li>
+                    {% endif %}
+                </ul>
+                <a href="{% url 'users:register' %}" class="mc-btn">Choose {{ plan.name }}</a>
+            </div>
+            {% empty %}
+            <p>No membership plans available right now.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

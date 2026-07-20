@@ -15,6 +15,7 @@ from apps.notifications.models import Notification
 
 from .models import Payment
 from .utils import send_whatsapp_booking_notification
+from .loyalty import accrue_loyalty
 
 
 @login_required
@@ -192,9 +193,16 @@ def verify_payment(request):
 
     payment.razorpay_payment_id = payment_id
     payment.razorpay_signature = signature
+
+    # Only accrue loyalty the first time the payment becomes successful,
+    # so retried/duplicate confirmations don't double-count points.
+    was_already_successful = payment.is_successful
     payment.status = "captured"
 
     payment.save()
+
+    if not was_already_successful:
+        accrue_loyalty(request.user, payment.amount_rupees)
 
     booking.status = "confirmed"
 
