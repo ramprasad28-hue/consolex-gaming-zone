@@ -1,8 +1,12 @@
 # apps/memberships/views.py
+from datetime import date
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+
+from apps.bookings.pricing import player_hourly_rate
 
 from .models import Membership, MembershipSubscription
 
@@ -10,10 +14,15 @@ from .models import Membership, MembershipSubscription
 def plan_list(request):
     """Render all active membership plans from the database."""
     plans = Membership.objects.filter(is_active=True)
+
+    # Standard pay-per-hour cost for a 2-player, 2-hour weekday session,
+    # used by the savings-comparison section on the page.
+    payg_2h_weekday = player_hourly_rate(2, date(2026, 1, 5)) * 2  # Mon = weekday
+
     return render(
         request,
         "memberships/plans.html",
-        {"plans": plans},
+        {"plans": plans, "payg_2h_weekday": payg_2h_weekday},
     )
 
 

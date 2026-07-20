@@ -543,3 +543,100 @@
 
     .ms-compare { font-size: 0.76rem; }
 }
+
+/* ═════════════════════════════════════════════════════════════
+   Extended membership page sections (cards / comparison / calculator
+   / savings / rules / FAQ / CTA) — Neon Nexus theme
+   ═════════════════════════════════════════════════════════════ */
+
+.mem-compare-section,
+.mem-calc-section,
+.mem-savings-section,
+.mem-rules-section,
+.mem-faq-section,
+.mem-cta-section { padding: 70px 0; border-top: 1px solid rgba(255,255,255,0.05); }
+
+.mem-table-wrap { overflow-x: auto; margin-top: 26px; }
+.mem-compare-table {
+    width: 100%; border-collapse: collapse; min-width: 540px;
+    background: rgba(255,255,255,0.03); border-radius: 16px; overflow: hidden;
+}
+.mem-compare-table th, .mem-compare-table td {
+    padding: 14px 18px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.06);
+    color: #cfd2e8; font-size: 0.92rem;
+}
+.mem-compare-table thead th {
+    background: rgba(0,240,255,0.08); color: #fff; font-weight: 700;
+}
+.mem-compare-table th.is-popular { color: #00f0ff; }
+.mem-compare-table tbody tr:hover { background: rgba(0,240,255,0.04); }
+.mem-compare-table td:first-child, .mem-compare-table th:first-child {
+    text-align: left; color: #8b8fb0; font-weight: 600;
+}
+
+/* Calculator */
+.mem-calc-card {
+    margin-top: 26px; max-width: 460px; padding: 26px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(0,240,255,0.18);
+    border-radius: 18px;
+}
+.mem-calc-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; }
+.mem-calc-row label { color: #8b8fb0; font-size: 0.9rem; }
+.mem-calc-row select, .mem-calc-row input {
+    background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.12);
+    color: #fff; padding: 9px 12px; border-radius: 10px; min-width: 160px;
+}
+.mem-calc-result { margin-top: 8px; color: #cfd2e8; font-size: 0.95rem; line-height: 1.6; }
+.mem-calc-plans { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+.mem-calc-plan-btn {
+    background: rgba(0,240,255,0.08); border: 1px solid rgba(0,240,255,0.3);
+    color: #00f0ff; padding: 10px 16px; border-radius: 999px; cursor: pointer;
+    font-size: 0.85rem; font-weight: 600; transition: all .2s ease;
+}
+.mem-calc-plan-btn:hover, .mem-calc-plan-btn.is-active {
+    background: #00f0ff; color: #050510;
+}
+
+/* Savings */
+.mem-savings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-top: 26px; }
+.mem-savings-card {
+    padding: 24px; border-radius: 18px; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.mem-savings-card.is-popular { border-color: rgba(0,240,255,0.5); box-shadow: 0 0 40px rgba(0,240,255,0.12); }
+.mem-savings-card h3 { color: #fff; font-size: 1.05rem; margin-bottom: 12px; }
+.mem-savings-price { color: #00f0ff; font-size: 1.6rem; font-weight: 800; margin: 0; }
+.mem-savings-price span { font-size: 0.8rem; color: #8b8fb0; font-weight: 500; }
+.mem-savings-note { color: #9aa0c4; font-size: 0.85rem; margin-top: 10px; }
+
+/* Rules */
+.mem-rules-list { margin-top: 22px; max-width: 720px; list-style: none; padding: 0; }
+.mem-rules-list li {
+    padding: 14px 18px; margin-bottom: 10px; color: #cfd2e8; font-size: 0.95rem;
+    background: rgba(255,255,255,0.03); border-left: 3px solid #00f0ff; border-radius: 0 12px 12px 0;
+}
+.mem-rules-list strong { color: #fff; }
+
+/* FAQ */
+.mem-faq-list { margin-top: 22px; max-width: 760px; display: flex; flex-direction: column; gap: 12px; }
+.mem-faq-item {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px; padding: 4px 18px;
+}
+.mem-faq-item summary { cursor: pointer; padding: 14px 0; color: #fff; font-weight: 600; list-style: none; }
+.mem-faq-item summary::-webkit-details-marker { display: none; }
+.mem-faq-item summary::after { content: "+"; float: right; color: #00f0ff; font-size: 1.3rem; }
+.mem-faq-item[open] summary::after { content: "−"; }
+.mem-faq-item p { color: #9aa0c4; font-size: 0.9rem; padding: 0 0 14px; margin: 0; }
+
+/* CTA */
+.mem-cta { text-align: center; }
+.mem-cta-actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 24px; }
+
+/* Total hours line under cards */
+.mc-total-hours { text-align: center; color: #00f0ff; font-weight: 700; margin-top: 10px; font-size: 0.95rem; }
+
+@media (max-width: 600px) {
+    .mem-calc-row { flex-direction: column; align-items: stretch; }
+    .mem-calc-row select, .mem-calc-row input { width: 100%; }
+}

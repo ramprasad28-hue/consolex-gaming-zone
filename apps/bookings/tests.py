@@ -18,19 +18,19 @@ class PricingTests(TestCase):
         )
 
     def test_weekday_cost(self):
-        # Wed 2026-07-22, 2 players, 2h -> 300 * 1.6 * 2 = 960
+        # Wed 2026-07-22, 2 players, 2h -> per-player rate 250 * 2 = 500
         total = calculate_total(self.console, date(2026, 7, 22), 2, 2)
-        self.assertEqual(total, 960)
+        self.assertEqual(total, 500)
 
     def test_weekend_cost(self):
-        # Sat 2026-07-25, 2 players, 2h -> 400 * 1.6 * 2 = 1280
+        # Sat 2026-07-25, 2 players, 2h -> per-player rate 270 * 2 = 540
         total = calculate_total(self.console, date(2026, 7, 25), 2, 2)
-        self.assertEqual(total, 1280)
+        self.assertEqual(total, 540)
 
     def test_membership_discount(self):
         total = calculate_total(self.console, date(2026, 7, 22), 2, 2)
         discounted = apply_membership_discount(total, 10)
-        self.assertEqual(discounted, 864)
+        self.assertEqual(discounted, 450)
 
 
 class BookingConflictTests(TestCase):

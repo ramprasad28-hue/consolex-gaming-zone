@@ -1,53 +1,362 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Membership Plans — CONSOLEX{% endblock %}
+{% block title %}Membership Plans — CONSOLEX Gaming Zone{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/membership.css' %}">
+{% endblock %}
 
 {% block content %}
+
+<!-- ═══════════ HERO ═══════════ -->
 <section class="mem-section" id="membership">
+    <div class="ms-bg">
+        <div class="ms-grid"></div>
+        <div class="ms-orb ms-orb-1"></div>
+        <div class="ms-orb ms-orb-2"></div>
+        <div class="ms-orb ms-orb-3"></div>
+    </div>
+
     <div class="mem-container">
         <div class="ms-head">
-            <span class="ms-tag">Membership Plans</span>
-            <h2 class="ms-title">Level Up with a <span class="ms-neon">Membership</span></h2>
-            <p class="ms-sub">Unlock exclusive hours, priority booking and member-only perks every month.</p>
+            <span class="ms-tag">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+                </svg>
+                Membership Plans
+            </span>
+            <h1 class="ms-title">Level Up with a <span class="ms-neon">Membership</span></h1>
+            <p class="ms-sub">
+                Unlock exclusive hours, priority booking and member-only perks every month.
+                The more you play, the more you save.
+            </p>
         </div>
 
+        <!-- ═══════════ PLAN CARDS ═══════════ -->
         <div class="mem-grid">
             {% for plan in plans %}
-            <div class="mem-card {% if plan.is_popular %}mc-featured{% endif %}">
+            <div class="mem-card {% cycle 'mc-basic' 'mc-standard' 'mc-pro' %}{% if plan.is_popular %} mc-featured{% endif %}">
                 <div class="mc-inner-glow"></div>
+
                 {% if plan.is_popular %}
-                <div class="mc-badge mc-badge-popular">Most Popular</div>
+                <div class="mc-badge mc-badge-popular">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    Most Popular
+                </div>
+                {% elif plan.bonus_hours and plan.tier_level == 3 %}
+                <div class="mc-badge mc-badge-pro">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17.657 5.304A8 8 0 1 0 20 12h-2a6 6 0 1 1-2.05-4.5l-2.122 2.121A3 3 0 1 0 15 12h2a5 5 0 1 1-1.757-3.818l1.414-1.878z"/>
+                    </svg>
+                    Best Value
+                </div>
                 {% endif %}
+
                 <div class="mc-header">
                     <div class="mc-tier-row">
+                        <span class="mc-tier-icon">🎮</span>
                         <span class="mc-tier-name">{{ plan.name }}</span>
                     </div>
-                    <p class="mc-tier-desc">{{ plan.description }}</p>
+                    <p class="mc-tier-desc">{{ plan.description|default:"A CONSOLEX membership plan." }}</p>
                 </div>
+
                 <div class="mc-price-block">
                     <div class="mc-price">
                         <span class="mc-currency">₹</span>
                         <span class="mc-amount">{{ plan.price }}</span>
                     </div>
-                    <span class="mc-period">per {{ plan.duration_days }} days</span>
+                    <span class="mc-period">per month · {{ plan.duration_days }} days</span>
                 </div>
+
+                <!-- Total hours (included + weekend + bonus) -->
+                {% with total_hours=plan.included_hours|add:plan.weekend_hours|add:plan.bonus_hours %}
+                <div class="mc-hours-block">
+                    <div class="mc-hours-pill mc-hours-pill-cyan">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        <span class="mc-hours-num">{{ plan.included_hours }}</span>
+                        <span class="mc-hours-label">Weekday Hrs</span>
+                    </div>
+                    {% if plan.weekend_hours %}
+                    <span class="mc-hours-plus">+</span>
+                    <div class="mc-hours-pill mc-hours-pill-purple">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                            <line x1="19.78" y1="19.78" x2="21.2" y2="21.2"/>
+                        </svg>
+                        <span class="mc-hours-num">{{ plan.weekend_hours }}</span>
+                        <span class="mc-hours-label">Weekend Hrs</span>
+                    </div>
+                    {% endif %}
+                    {% if plan.bonus_hours %}
+                    <span class="mc-hours-plus">+</span>
+                    <div class="mc-hours-pill mc-hours-pill-fire">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2c0 6-6 8-6 14a6 6 0 0 0 12 0c0-6-6-8-6-14z"/>
+                        </svg>
+                        <span class="mc-hours-num">{{ plan.bonus_hours }}</span>
+                        <span class="mc-hours-label">Bonus Hrs</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="mc-total-hours">Total = {{ total_hours }} Hours</div>
+                {% endwith %}
+
+                <div class="mc-divider"></div>
+
                 <ul class="mc-perks">
-                    {% if plan.discount_percent %}
-                    <li class="mc-perk"><span class="mc-check mc-check-cyan"></span>{{ plan.discount_percent }}% off bookings</li>
+                    {% if plan.included_hours %}
+                    <li class="mc-perk"><span class="mc-check mc-check-cyan"></span>{{ plan.included_hours }} gaming hours</li>
                     {% endif %}
-                    {% if plan.free_hours_per_month %}
-                    <li class="mc-perk"><span class="mc-check mc-check-cyan"></span>{{ plan.free_hours_per_month }} free hours / month</li>
+                    {% if plan.weekend_hours %}
+                    <li class="mc-perk"><span class="mc-check mc-check-purple"></span>{{ plan.weekend_hours }} bonus weekend hours</li>
                     {% endif %}
+                    {% if plan.bonus_hours %}
+                    <li class="mc-perk"><span class="mc-check mc-check-orange"></span>{{ plan.bonus_hours }} bonus hours (total {{ plan.included_hours|add:plan.weekend_hours|add:plan.bonus_hours }})</li>
+                    {% endif %}
+                    <li class="mc-perk"><span class="mc-check mc-check-cyan"></span>Valid for {{ plan.duration_days }} days</li>
                     {% if plan.priority_booking %}
                     <li class="mc-perk"><span class="mc-check mc-check-cyan"></span>Priority slot booking</li>
                     {% endif %}
+                    <li class="mc-perk"><span class="mc-check mc-check-cyan"></span>Access to full game library</li>
                 </ul>
-                <a href="{% url 'memberships:subscribe' plan.id %}" class="mc-btn">Choose {{ plan.name }}</a>
+
+                <a href="{% url 'memberships:subscribe' plan.id %}" class="mc-btn">Become a Member</a>
             </div>
             {% empty %}
-            <p>No membership plans available right now.</p>
+            <p class="ms-compare">Membership plans coming soon.</p>
             {% endfor %}
         </div>
     </div>
 </section>
+
+<!-- ═══════════ COMPARISON TABLE ═══════════ -->
+<section class="mem-section mem-compare-section">
+    <div class="mem-container">
+        <div class="ms-head">
+            <h2 class="ms-title">Compare <span class="ms-neon">Plans</span></h2>
+            <p class="ms-sub">Everything included in each CONSOLEX membership.</p>
+        </div>
+        <div class="mem-table-wrap">
+            <table class="mem-compare-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        {% for plan in plans %}
+                        <th class="{% if plan.is_popular %}is-popular{% endif %}">{{ plan.name }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Monthly Price</td>
+                        {% for plan in plans %}<td>₹{{ plan.price }}</td>{% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Weekday Hours</td>
+                        {% for plan in plans %}<td>{{ plan.included_hours }}</td>{% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Weekend Hours</td>
+                        {% for plan in plans %}<td>{% if plan.weekend_hours %}{{ plan.weekend_hours }}{% else %}—{% endif %}</td>{% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Bonus Hours</td>
+                        {% for plan in plans %}<td>{% if plan.bonus_hours %}{{ plan.bonus_hours }}{% else %}—{% endif %}</td>{% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Total Hours</td>
+                        {% for plan in plans %}<td>{{ plan.included_hours|add:plan.weekend_hours|add:plan.bonus_hours }}</td>{% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Priority Booking</td>
+                        {% for plan in plans %}<td>{% if plan.priority_booking %}✅{% else %}—{% endif %}</td>{% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Validity</td>
+                        {% for plan in plans %}<td>{{ plan.duration_days }} days</td>{% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ GAMING HOUR CALCULATOR ═══════════ -->
+<section class="mem-section mem-calc-section">
+    <div class="mem-container">
+        <div class="ms-head">
+            <h2 class="ms-title">Gaming Hour <span class="ms-neon">Calculator</span></h2>
+            <p class="ms-sub">See how many sessions your membership hours cover.</p>
+        </div>
+        <div class="mem-calc-card">
+            <div class="mem-calc-row">
+                <label>Players</label>
+                <select id="calcPlayers">
+                    <option value="1">1 Player</option>
+                    <option value="2">2 Players</option>
+                    <option value="3">3 Players</option>
+                    <option value="4">4 Players</option>
+                </select>
+            </div>
+            <div class="mem-calc-row">
+                <label>Session length (hours)</label>
+                <input type="number" id="calcHours" value="2" min="1" max="12">
+            </div>
+            <div class="mem-calc-row">
+                <label>Day type</label>
+                <select id="calcDay">
+                    <option value="weekday">Weekday</option>
+                    <option value="weekend">Weekend</option>
+                </select>
+            </div>
+            <div class="mem-calc-result" id="calcResult">Select a plan below to see coverage.</div>
+        </div>
+
+        <div class="mem-calc-plans">
+            {% for plan in plans %}
+            <button type="button" class="mem-calc-plan-btn" data-hours="{{ plan.included_hours|add:plan.weekend_hours|add:plan.bonus_hours }}">
+                {{ plan.name }} · {{ plan.included_hours|add:plan.weekend_hours|add:plan.bonus_hours }} hrs
+            </button>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ SAVINGS COMPARISON ═══════════ -->
+<section class="mem-section mem-savings-section">
+    <div class="mem-container">
+        <div class="ms-head">
+            <h2 class="ms-title">Membership <span class="ms-neon">Savings</span></h2>
+            <p class="ms-sub">Pay per hour vs. pay with a membership — see the difference.</p>
+        </div>
+        <div class="mem-savings-grid">
+            <div class="mem-savings-card">
+                <h3>Without Membership</h3>
+                <p class="mem-savings-price">₹{{ payg_2h_weekday }} <span>/ 2 hrs (2 players, weekday)</span></p>
+                <p class="mem-savings-note">Standard pay-per-hour rates apply every visit.</p>
+            </div>
+            {% for plan in plans %}
+            <div class="mem-savings-card {% if plan.is_popular %}is-popular{% endif %}">
+                <h3>{{ plan.name }}</h3>
+                <p class="mem-savings-price">₹{{ plan.price }} <span>/ month</span></p>
+                <p class="mem-savings-note">
+                    {{ plan.included_hours|add:plan.weekend_hours|add:plan.bonus_hours }} hours included —
+                    {% if payg_2h_weekday > 0 %}
+                    covers ~{{ plan.included_hours|add:plan.weekend_hours|add:plan.bonus_hours|floatformat:0|default:0 }} sessions of 2h.
+                    {% else %}member pricing.{% endif %}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ PLAN RULES ═══════════ -->
+<section class="mem-section mem-rules-section">
+    <div class="mem-container">
+        <div class="ms-head">
+            <h2 class="ms-title">Plan <span class="ms-neon">Rules</span></h2>
+        </div>
+        <ul class="mem-rules-list">
+            <li>Every membership expires after {{ plans.0.duration_days|default:30 }} days.</li>
+            <li>Unused hours do <strong>not</strong> carry forward.</li>
+            <li>Hours are deducted after every gaming session.</li>
+            <li>Membership hours belong only to the registered member.</li>
+            <li>Controller sharing does not increase free hours.</li>
+            <li>Membership cannot be transferred to another account.</li>
+        </ul>
+    </div>
+</section>
+
+<!-- ═══════════ FAQ ═══════════ -->
+<section class="mem-section mem-faq-section">
+    <div class="mem-container">
+        <div class="ms-head">
+            <h2 class="ms-title">Frequently Asked <span class="ms-neon">Questions</span></h2>
+        </div>
+        <div class="mem-faq-list">
+            <details class="mem-faq-item">
+                <summary>Do unused hours carry forward?</summary>
+                <p>No. Membership hours are valid only for the {{ plans.0.duration_days|default:30 }}-day plan period and do not roll over.</p>
+            </details>
+            <details class="mem-faq-item">
+                <summary>Can I share my membership hours?</summary>
+                <p>Hours belong to the registered member only. Controller sharing does not add free hours, and memberships cannot be transferred.</p>
+            </details>
+            <details class="mem-faq-item">
+                <summary>What happens when my hours run out?</summary>
+                <p>Once membership hours are exhausted, further sessions are charged at the standard weekday/weekend hourly rates.</p>
+            </details>
+            <details class="mem-faq-item">
+                <summary>Can I cancel or get a refund?</summary>
+                <p>Plans are billed monthly. Contact the CONSOLEX team on WhatsApp for cancellation and refund queries.</p>
+            </details>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ CTA ═══════════ -->
+<section class="mem-section mem-cta-section">
+    <div class="mem-container mem-cta">
+        <h2 class="ms-title">Ready to <span class="ms-neon">Play Beyond?</span></h2>
+        <p class="ms-sub">Join CONSOLEX and unlock your gaming hours today.</p>
+        <div class="mem-cta-actions">
+            {% for plan in plans %}
+            <a href="{% url 'memberships:subscribe' plan.id %}" class="mc-btn">Become a {{ plan.name }} Member</a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    var RATES = {
+        weekday: {1:130, 2:250, 3:330, 4:420},
+        weekend: {1:150, 2:270, 3:400, 4:520}
+    };
+    var players = document.getElementById('calcPlayers');
+    var hours   = document.getElementById('calcHours');
+    var day     = document.getElementById('calcDay');
+    var result  = document.getElementById('calcResult');
+    var buttons = document.querySelectorAll('.mem-calc-plan-btn');
+
+    function render() {
+        var p = parseInt(players.value, 10);
+        var h = parseFloat(hours.value) || 0;
+        var rate = RATES[day.value][p];
+        var sessionCost = rate * h;
+        var planHours = buttons.length ? parseInt(buttons[0].dataset.hours, 10) : 0;
+        if (result.dataset.plan != null) {
+            planHours = parseInt(result.dataset.plan, 10);
+        }
+        var sessions = planHours > 0 && h > 0 ? Math.floor(planHours / h) : 0;
+        result.innerHTML =
+            'Session cost (pay-per-hour): <strong>₹' + sessionCost + '</strong><br>' +
+            'Selected plan covers <strong>' + sessions + '</strong> session(s) of ' + h + 'h.';
+    }
+
+    buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            buttons.forEach(function (b) { b.classList.remove('is-active'); });
+            btn.classList.add('is-active');
+            result.dataset.plan = btn.dataset.hours;
+            render();
+        });
+    });
+
+    [players, hours, day].forEach(function (el) {
+        el.addEventListener('change', function () { delete result.dataset.plan; render(); });
+        el.addEventListener('input', function () { delete result.dataset.plan; render(); });
+    });
+    render();
+})();
+</script>
 {% endblock %}

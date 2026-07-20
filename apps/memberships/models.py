@@ -35,6 +35,20 @@ class Membership(models.Model):
         default=0,
         help_text="Complimentary gaming hours included per month on this plan.",
     )
+
+    # ── Real CONSOLEX plan fields (additive) ──
+    included_hours = models.PositiveIntegerField(
+        default=0,
+        help_text="Weekday gaming hours included in the plan.",
+    )
+    weekend_hours = models.PositiveIntegerField(
+        default=0,
+        help_text="Additional weekend gaming hours included in the plan.",
+    )
+    bonus_hours = models.PositiveIntegerField(
+        default=0,
+        help_text="Bonus hours (e.g. rollover/extra) included in the plan.",
+    )
     badge_color = models.CharField(
         max_length=7,
         blank=True,

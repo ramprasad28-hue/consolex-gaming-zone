@@ -41,6 +41,13 @@
                     </svg>
                     Most Popular
                 </div>
+                {% elif plan.bonus_hours and plan.tier_level == 3 %}
+                <div class="mc-badge mc-badge-pro">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17.657 5.304A8 8 0 1 0 20 12h-2a6 6 0 1 1-2.05-4.5l-2.122 2.121A3 3 0 1 0 15 12h2a5 5 0 1 1-1.757-3.818l1.414-1.878z"/>
+                    </svg>
+                    Best Value
+                </div>
                 {% endif %}
 
                 <div class="mc-header">
@@ -59,19 +66,57 @@
                     <span class="mc-period">per {{ plan.duration_days }} days</span>
                 </div>
 
+                <div class="mc-hours-block">
+                    <div class="mc-hours-pill mc-hours-pill-cyan">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        <span class="mc-hours-num">{{ plan.included_hours }}</span>
+                        <span class="mc-hours-label">Weekday Hrs</span>
+                    </div>
+                    {% if plan.weekend_hours %}
+                    <span class="mc-hours-plus">+</span>
+                    <div class="mc-hours-pill mc-hours-pill-purple">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                            <line x1="19.78" y1="19.78" x2="21.2" y2="21.2"/>
+                        </svg>
+                        <span class="mc-hours-num">{{ plan.weekend_hours }}</span>
+                        <span class="mc-hours-label">Weekend Hrs</span>
+                    </div>
+                    {% endif %}
+                    {% if plan.bonus_hours %}
+                    <span class="mc-hours-plus">+</span>
+                    <div class="mc-hours-pill mc-hours-pill-fire">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2c0 6-6 8-6 14a6 6 0 0 0 12 0c0-6-6-8-6-14z"/>
+                        </svg>
+                        <span class="mc-hours-num">{{ plan.bonus_hours }}</span>
+                        <span class="mc-hours-label">Bonus Hrs</span>
+                    </div>
+                    {% endif %}
+                </div>
+
                 <div class="mc-divider"></div>
 
                 <ul class="mc-perks">
-                    {% if plan.discount_percent %}
+                    {% if plan.included_hours %}
                     <li class="mc-perk">
                         <span class="mc-check mc-check-cyan"></span>
-                        {{ plan.discount_percent }}% off every booking
+                        {{ plan.included_hours }} weekday hours
                     </li>
                     {% endif %}
-                    {% if plan.free_hours_per_month %}
+                    {% if plan.weekend_hours %}
                     <li class="mc-perk">
-                        <span class="mc-check mc-check-cyan"></span>
-                        {{ plan.free_hours_per_month }} free hours / month
+                        <span class="mc-check mc-check-purple"></span>
+                        {{ plan.weekend_hours }} weekend hours
+                    </li>
+                    {% endif %}
+                    {% if plan.bonus_hours %}
+                    <li class="mc-perk">
+                        <span class="mc-check mc-check-orange"></span>
+                        {{ plan.bonus_hours }} bonus hours
                     </li>
                     {% endif %}
                     {% if plan.priority_booking %}
@@ -101,7 +146,11 @@
                 <line x1="12" y1="8"  x2="12" y2="12"/>
                 <line x1="12" y1="16" x2="12.01" y2="16"/>
             </svg>
-            All memberships renew per their duration · Cancel anytime
+            Hours don't carry forward · Valid for {{ plans.0.duration_days|default:30 }} days · Cancel anytime
+        </div>
+
+        <div class="ms-compare" style="margin-top:18px;">
+            <a href="{% url 'memberships:plans' %}" class="mc-btn" style="display:inline-block;">View All Plans &amp; Compare</a>
         </div>
 
     </div>
