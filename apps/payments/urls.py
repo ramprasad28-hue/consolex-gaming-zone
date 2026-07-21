@@ -11,4 +11,5 @@ urlpatterns = [
     path('webhook/',                  views.razorpay_webhook, name='webhook'),
     path('success/<int:booking_id>/', views.payment_success, name='payment_success'),
     path('failed/<int:booking_id>/',  views.payment_failed,  name='payment_failed'),
+    path('receipt/<int:booking_id>/', views.payment_receipt, name='payment_receipt'),
 ]

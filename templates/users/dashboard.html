@@ -72,7 +72,10 @@
           </svg>
         </button>
 
-        <a href="{% url 'users:logout' %}" class="dash-logout-link">Logout</a>
+        <form method="POST" action="{% url 'users:logout' %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="dash-logout-link" style="background:none;border:none;cursor:pointer;font:inherit;color:inherit;">Logout</button>
+        </form>
       </div>
     </div>
 
@@ -255,8 +258,7 @@
                                   data-stub-action="Cancellation isn't wired up yet — contact us on WhatsApp for now.">Cancel</button>
                         {% endif %}
                         {% if booking.is_paid %}
-                          <button type="button" class="btn-action btn-receipt"
-                                  data-stub-action="Receipt downloads are coming soon.">Receipt</button>
+                          <a href="{% url 'payments:payment_receipt' booking.id %}" class="btn-action btn-receipt">Receipt</a>
                         {% endif %}
                       </div>
                     </td>

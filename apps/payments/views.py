@@ -380,3 +380,14 @@ def payment_failed(request, booking_id):
         },
 
     )
+
+
+@login_required
+def payment_receipt(request, booking_id):
+    """Downloadable/printable payment receipt for a confirmed booking."""
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+    payment = getattr(booking, 'payment', None)
+    return render(request, "payments/receipt.html", {
+        "booking": booking,
+        "payment": payment,
+    })

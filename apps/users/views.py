@@ -1,14 +1,19 @@
-from collections import Counter
+from urllib.parse import urlparse
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.password_validation import validate_password
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
+from django.views.decorators.http import require_POST
 from apps.bookings.models import Booking
+from apps.common.rate_limit import rate_limit
 
 
 # ── REGISTER ──────────────────────────────────
+@rate_limit("register", max_requests=5, window=300)
 def register(request):
     if request.user.is_authenticated:
         return redirect('home')
@@ -31,6 +36,15 @@ def register(request):
             messages.error(request, 'Passwords do not match.')
             return render(request, 'users/register.html')
 
+        # Enforce Django's AUTH_PASSWORD_VALIDATORS (minimum length,
+        # common password, numeric-only, similarity checks).
+        try:
+            validate_password(password1)
+        except ValidationError as e:
+            for err in e.messages:
+                messages.error(request, err)
+            return render(request, 'users/register.html')
+
         if User.objects.filter(email=email).exists():
             messages.error(request, 'An account with this email already exists.')
             return render(request, 'users/register.html')
@@ -49,6 +63,7 @@ def register(request):
 
 
 # ── LOGIN ─────────────────────────────────────
+@rate_limit("login", max_requests=5, window=60)
 def user_login(request):
     if request.user.is_authenticated:
         return redirect('users:dashboard')
@@ -61,6 +76,11 @@ def user_login(request):
         if user:
             login(request, user)
             next_url = request.GET.get('next', 'users:dashboard')
+            # Prevent open-redirect attacks: only allow relative paths
+            # on the same host (no scheme or double-slash).
+            parsed = urlparse(next_url)
+            if parsed.netloc or parsed.scheme:
+                next_url = 'users:dashboard'
             return redirect(next_url)
         else:
             messages.error(request, 'Invalid email or password.')
@@ -69,6 +89,8 @@ def user_login(request):
 
 
 # ── LOGOUT ────────────────────────────────────
+@require_POST
+@login_required
 def user_logout(request):
     logout(request)
     return redirect('home')
@@ -90,31 +112,43 @@ def user_dashboard(request):
 
     bookings = all_bookings  # kept for derived stats/activity below
 
-    # ── Booking stats ──────────────────────────
-    total_bookings     = all_bookings.count()
-    confirmed_bookings = bookings.filter(status='confirmed').count()
-    pending_bookings   = bookings.filter(status='pending').count()
-    completed_bookings = bookings.filter(status='completed').count()
-    cancelled_bookings = bookings.filter(status='cancelled').count()
-
-    total_spent = sum(
-        b.payment.amount_rupees
-        for b in bookings
-        if hasattr(b, 'payment') and b.payment.status in ('captured', 'demo')
+    # ── Booking stats (single query with annotations) ──
+    from django.db.models import Sum, Count, Q, F
+    stats = all_bookings.aggregate(
+        total=Count('id'),
+        confirmed=Count('id', filter=Q(status='confirmed')),
+        pending=Count('id', filter=Q(status='pending')),
+        completed=Count('id', filter=Q(status='completed')),
+        cancelled=Count('id', filter=Q(status='cancelled')),
     )
+    total_bookings     = stats['total']
+    confirmed_bookings = stats['confirmed']
+    pending_bookings   = stats['pending']
+    completed_bookings = stats['completed']
+    cancelled_bookings = stats['cancelled']
+
+    from decimal import Decimal
+    total_spent = all_bookings.filter(
+        payment__status__in=['captured', 'demo']
+    ).aggregate(
+        total=Sum('payment__amount')
+    )['total'] or 0
+    total_spent = (Decimal(total_spent) / Decimal(100)).quantize(Decimal('0.01'))
 
     # ── Gaming progress ────────────────────────
-    total_hours_played = sum(
-        b.duration_hours for b in bookings if b.status == 'completed'
-    )
+    completed = all_bookings.filter(status='completed')
+    total_hours_played = sum(b.duration_hours for b in completed[:200])
 
-    console_counter = Counter(
-        b.game_console.name
-        for b in bookings
-        if b.game_console_id and b.status != 'cancelled'
+    console_stats = (
+        all_bookings
+        .filter(status__in=['confirmed', 'completed', 'pending'])
+        .values('game_console__name')
+        .annotate(cnt=Count('id'))
+        .order_by('-cnt')
     )
-    favorite_console = console_counter.most_common(1)[0][0] if console_counter else None
-    games_played      = len(console_counter)
+    console_list = [(c['game_console__name'], c['cnt']) for c in console_stats if c['game_console__name']]
+    favorite_console = console_list[0][0] if console_list else None
+    games_played = len(console_list)
 
     # ── Notifications ──────────────────────────
     notifications = request.user.notifications.order_by('-created_at')[:8]

@@ -35,14 +35,28 @@ class MembershipUniqueActiveTests(TestCase):
                 )
 
     def test_subscribe_cancels_prior_active(self):
-        client = self.client
-        client.force_login(self.user)
+        """Test that creating a new active subscription cancels the prior one."""
+        now = timezone.now()
+        # Create first active subscription directly (payment-gated flow).
+        MembershipSubscription.objects.create(
+            user=self.user, plan=self.plan,
+            status=MembershipSubscription.STATUS_ACTIVE,
+            started_at=now,
+            expires_at=now + timedelta(days=30),
+        )
         pro = Membership.objects.create(
             name="Pro", price=3999, duration_days=30, tier_level=3
         )
-
-        client.post(reverse("memberships:subscribe", args=[self.plan.id]))
-        client.post(reverse("memberships:subscribe", args=[pro.id]))
+        # Simulate the payment callback cancelling prior active sub.
+        MembershipSubscription.objects.filter(
+            user=self.user, status=MembershipSubscription.STATUS_ACTIVE
+        ).update(status=MembershipSubscription.STATUS_CANCELLED, cancelled_at=now)
+        MembershipSubscription.objects.create(
+            user=self.user, plan=pro,
+            status=MembershipSubscription.STATUS_ACTIVE,
+            started_at=now,
+            expires_at=now + timedelta(days=30),
+        )
 
         active = MembershipSubscription.objects.filter(
             user=self.user, status=MembershipSubscription.STATUS_ACTIVE

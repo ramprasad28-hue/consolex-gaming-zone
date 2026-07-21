@@ -36,9 +36,9 @@
                     <li class="mc-perk"><span class="mc-check mc-check-cyan"></span>Priority slot booking</li>
                     {% endif %}
                 </ul>
-                <form method="post">
+                <form method="post" action="{% url 'memberships:membership_payment_page' plan.id %}">
                     {% csrf_token %}
-                    <button type="submit" class="mc-btn">Confirm Subscription</button>
+                    <button type="submit" class="mc-btn">Proceed to Payment →</button>
                 </form>
                 <a href="{% url 'memberships:plan_list' %}" class="mc-value-note">Cancel</a>
             </div>

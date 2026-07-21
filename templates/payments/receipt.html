@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Receipt — Booking #{{ booking.id }} — CONSOLEX{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #fff !important; }
+      .receipt-card { box-shadow: none !important; border: 1px solid #ddd !important; }
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-section">
+  <div class="dashboard-container">
+
+    <div class="dash-topbar nx-animate no-print">
+      <div class="dash-topbar-left">
+        <a href="{% url 'users:dashboard' %}" class="dash-icon-btn" style="text-decoration:none;color:#8b8fb0;">
+          ← Back to Dashboard
+        </a>
+      </div>
+      <div class="dash-topbar-actions">
+        <button onclick="window.print()" class="nav-login" style="cursor:pointer;">Print Receipt</button>
+      </div>
+    </div>
+
+    <div class="receipt-card dashboard-card nx-animate" style="max-width:580px;margin:28px auto;padding:36px;">
+      <div style="text-align:center;margin-bottom:24px;">
+        <h2 style="color:#00f0ff;margin:0;">CONSOLEX</h2>
+        <p style="color:#8b8fb0;margin:4px 0 0;font-size:0.85rem;">Gaming Zone — Play Beyond</p>
+      </div>
+
+      <h3 style="text-align:center;color:#fff;margin:0 0 24px;">Payment Receipt</h3>
+
+      <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:18px;">
+        <table style="width:100%;border-collapse:collapse;">
+          <tr>
+            <td style="padding:8px 0;color:#8b8fb0;">Booking ID</td>
+            <td style="padding:8px 0;color:#fff;text-align:right;">#{{ booking.id }}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0;color:#8b8fb0;">Console</td>
+            <td style="padding:8px 0;color:#fff;text-align:right;">{{ booking.game_console.name|default:"—" }}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0;color:#8b8fb0;">Date</td>
+            <td style="padding:8px 0;color:#fff;text-align:right;">{{ booking.booking_date|date:"d M Y" }}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0;color:#8b8fb0;">Time</td>
+            <td style="padding:8px 0;color:#fff;text-align:right;">{{ booking.start_time|time:"h:i A" }} — {{ booking.end_time|time:"h:i A" }}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0;color:#8b8fb0;">Players</td>
+            <td style="padding:8px 0;color:#fff;text-align:right;">{{ booking.number_of_players }}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0;color:#8b8fb0;">Duration</td>
+            <td style="padding:8px 0;color:#fff;text-align:right;">{{ booking.duration_hours }} hr{{ booking.duration_hours|pluralize }}</td>
+          </tr>
+        </table>
+      </div>
+
+      <div style="border-top:2px solid rgba(0,240,255,0.3);margin:16px 0;padding-top:16px;">
+        <table style="width:100%;border-collapse:collapse;">
+          <tr>
+            <td style="padding:6px 0;color:#8b8fb0;">Total Amount</td>
+            <td style="padding:6px 0;color:#fff;text-align:right;font-weight:700;">₹{{ booking.total_cost }}</td>
+          </tr>
+          <tr>
+            <td style="padding:6px 0;color:#8b8fb0;">Advance Paid</td>
+            <td style="padding:6px 0;color:#00f0ff;text-align:right;font-weight:700;">₹{{ booking.advance_amount }}</td>
+          </tr>
+          <tr>
+            <td style="padding:6px 0;color:#8b8fb0;">Balance Due</td>
+            <td style="padding:6px 0;color:#fff;text-align:right;">₹{{ booking.balance_amount }}</td>
+          </tr>
+        </table>
+      </div>
+
+      {% if payment %}
+      <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:14px;margin-top:14px;">
+        <table style="width:100%;border-collapse:collapse;">
+          <tr>
+            <td style="padding:4px 0;color:#8b8fb0;font-size:0.85rem;">Payment ID</td>
+            <td style="padding:4px 0;color:#fff;text-align:right;font-size:0.85rem;">{{ payment.razorpay_payment_id|default:"—" }}</td>
+          </tr>
+          <tr>
+            <td style="padding:4px 0;color:#8b8fb0;font-size:0.85rem;">Order ID</td>
+            <td style="padding:4px 0;color:#fff;text-align:right;font-size:0.85rem;">{{ payment.razorpay_order_id|default:"—" }}</td>
+          </tr>
+          <tr>
+            <td style="padding:4px 0;color:#8b8fb0;font-size:0.85rem;">Payment Status</td>
+            <td style="padding:4px 0;color:#00f0ff;text-align:right;font-size:0.85rem;text-transform:capitalize;">{{ payment.status }}</td>
+          </tr>
+          <tr>
+            <td style="padding:4px 0;color:#8b8fb0;font-size:0.85rem;">Paid On</td>
+            <td style="padding:4px 0;color:#fff;text-align:right;font-size:0.85rem;">{{ payment.updated_at|date:"d M Y, h:i A" }}</td>
+          </tr>
+        </table>
+      </div>
+      {% endif %}
+
+      <div style="text-align:center;margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.08);">
+        <p style="color:#8b8fb0;font-size:0.8rem;margin:0;">Thank you for playing at CONSOLEX!</p>
+        <p style="color:#8b8fb0;font-size:0.75rem;margin:6px 0 0;">For support: WhatsApp us at the number on our website.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

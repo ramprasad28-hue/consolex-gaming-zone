@@ -6,6 +6,7 @@ from django.db import transaction
 from django.db.models import Q
 from datetime import datetime, timedelta
 from decimal import Decimal
+from django.utils import timezone
 from .models import Booking
 from apps.games.models import GameConsole
 from .pricing import (
@@ -46,16 +47,36 @@ def booking_form(request):
             booking_date = datetime.strptime(booking_date_str, '%Y-%m-%d').date()
             start_time = datetime.strptime(start_time_str, '%H:%M').time()
 
-            # Reject past dates — a booking must be in the future.
-            if booking_date < datetime.now().date():
-                messages.error(request, "Please choose a future date.")
-                return render(request, 'bookings/booking_form.html',
-                               {'consoles': consoles, 'rate_table': rate_table})
-
             # Calculate end time
             start_datetime = datetime.combine(booking_date, start_time)
             end_datetime = start_datetime + timedelta(hours=duration_hours)
             end_time = end_datetime.time()
+
+            # Reject past dates — a booking must be in the future.
+            now = timezone.now()
+            if booking_date < now.date() or (booking_date == now.date() and start_time <= now.time()):
+                messages.error(request, "Please choose a future date and time.")
+                return render(request, 'bookings/booking_form.html',
+                               {'consoles': consoles, 'rate_table': rate_table})
+
+            # Operating hours: weekdays 10:00–23:00, weekends 9:00–00:00
+            is_weekend = booking_date.weekday() >= 5
+            open_hour = 9 if is_weekend else 10
+            close_hour = 24 if is_weekend else 23  # 24 = midnight for weekend
+
+            if start_time.hour < open_hour:
+                label = "9 AM on weekends" if is_weekend else "10 AM on weekdays"
+                messages.error(request, f"We open at {label}.")
+                return render(request, 'bookings/booking_form.html',
+                               {'consoles': consoles, 'rate_table': rate_table})
+
+            # end_datetime.hour==0 means midnight (next day), treat as 24 for weekend comparison
+            end_hour = end_datetime.hour if end_datetime.hour != 0 else (24 if is_weekend else 0)
+            if end_hour > close_hour:
+                label = "midnight on weekends" if is_weekend else "11 PM on weekdays"
+                messages.error(request, f"We close at {label}. Please choose an earlier time or shorter duration.")
+                return render(request, 'bookings/booking_form.html',
+                               {'consoles': consoles, 'rate_table': rate_table})
 
             # Slot Conflict Detection — serialized to avoid a race.
             # We lock the console row (select_for_update) so two concurrent
@@ -95,6 +116,20 @@ def booking_form(request):
                         total_cost, active_membership.discount_percent
                     )
 
+                # Check if user has an active membership subscription
+                from apps.memberships.models import MembershipSubscription
+                active_sub = MembershipSubscription.objects.filter(
+                    user=request.user,
+                    status=MembershipSubscription.STATUS_ACTIVE,
+                    expires_at__gt=timezone.now(),
+                ).select_related('plan').first()
+                if active_sub:
+                    total_hours = (active_sub.plan.included_hours
+                                   + active_sub.plan.weekend_hours
+                                   + active_sub.plan.bonus_hours)
+                    if total_hours > 0:
+                        total_cost = 0  # Covered by membership hours
+
                 # Create Booking (inside the locked block, so the overlap
                 # check and insert are atomic for this console).
                 booking = Booking.objects.create(
@@ -111,8 +146,8 @@ def booking_form(request):
             messages.success(request, "Slot available! Proceed to pay the 30% advance.")
             return redirect('payments:payment_page', booking_id=booking.id)
 
-        except (ValueError, KeyError) as e:
-            messages.error(request, f"Invalid form data submitted. Please check your inputs. {str(e)}")
+        except (ValueError, KeyError):
+            messages.error(request, "Invalid form data. Please check your inputs and try again.")
             return render(request, 'bookings/booking_form.html',
                            {'consoles': consoles, 'rate_table': rate_table})
 
@@ -123,3 +158,22 @@ def booking_form(request):
 def booking_detail(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id, user=request.user)
     return render(request, 'bookings/booking_detail.html', {'booking': booking})
+
+
+@login_required
+def booking_cancel(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+    if request.method != 'POST':
+        return redirect('bookings:booking_detail', booking_id=booking.id)
+    if booking.status not in ('pending', 'confirmed'):
+        messages.error(request, "This booking cannot be cancelled.")
+        return redirect('bookings:booking_detail', booking_id=booking.id)
+    booking.status = 'cancelled'
+    booking.save(update_fields=['status', 'updated_at'])
+    from apps.notifications.models import Notification
+    Notification.objects.create(
+        user=request.user,
+        message=f"Booking #{booking.id} has been cancelled.",
+    )
+    messages.success(request, f"Booking #{booking.id} cancelled successfully.")
+    return redirect('users:dashboard')

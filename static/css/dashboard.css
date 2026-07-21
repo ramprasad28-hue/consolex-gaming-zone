@@ -850,3 +850,11 @@
   .dash-quick-actions { grid-template-columns: 1fr 1fr; }
   .dashboard-card { padding: 1.1rem; }
 }
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .bookings-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .bookings-table { min-width: 700px; }
+    .dash-stats-grid { grid-template-columns: 1fr 1fr !important; }
+    .dash-main-grid { grid-template-columns: 1fr !important; }
+}

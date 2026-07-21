@@ -202,3 +202,46 @@ class LoyaltyProfile(models.Model):
 
     def __str__(self):
         return f"{self.user} — {self.get_current_level_display()} ({self.points} pts)"
+
+
+class MembershipPayment(models.Model):
+    """Razorpay payment record for a membership subscription."""
+
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pending"
+        CAPTURED = "captured", "Captured"
+        FAILED = "failed", "Failed"
+
+    subscription = models.OneToOneField(
+        MembershipSubscription,
+        on_delete=models.CASCADE,
+        related_name="payment",
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="membership_payments",
+    )
+    razorpay_order_id = models.CharField(max_length=100, blank=True, default="", db_index=True)
+    razorpay_payment_id = models.CharField(max_length=100, blank=True, null=True, db_index=True)
+    razorpay_signature = models.CharField(max_length=255, blank=True, null=True)
+    amount = models.PositiveIntegerField(help_text="Amount in paise")
+    currency = models.CharField(max_length=10, default="INR")
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"MembershipPayment #{self.pk} | Sub #{self.subscription_id} | ₹{self.amount_rupees} | {self.status}"
+
+    @property
+    def amount_rupees(self):
+        from decimal import Decimal
+        return (Decimal(self.amount) / Decimal(100)).quantize(Decimal("0.01"))
+
+    @property
+    def is_successful(self):
+        return self.status in (self.Status.CAPTURED,)

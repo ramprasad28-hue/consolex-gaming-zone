@@ -111,3 +111,45 @@ TWILIO_ACCOUNT_SID   = config('TWILIO_ACCOUNT_SID', default='')
 TWILIO_AUTH_TOKEN    = config('TWILIO_AUTH_TOKEN', default='')
 TWILIO_WHATSAPP_FROM = config('TWILIO_WHATSAPP_FROM', default='')
 OWNER_WHATSAPP_TO    = config('OWNER_WHATSAPP_TO', default='')
+
+# ── Cache (used by rate limiter and general caching) ─────────
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'consolex-cache',
+    }
+}
+
+# ── Logging ──────────────────────────────────
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'apps': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}

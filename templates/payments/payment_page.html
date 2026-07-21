@@ -301,10 +301,6 @@ payBtn.addEventListener("click", function () {
 
         handler: function (response) {
 
-            console.log("Payment Success");
-
-            console.log(response);
-
             payBtn.innerHTML =
                 '<span class="loader"></span>Verifying Payment...';
 
@@ -345,8 +341,6 @@ payBtn.addEventListener("click", function () {
             })
 
             .then(data => {
-
-                console.log(data);
 
                 if (data.success) {
 
@@ -395,10 +389,6 @@ payBtn.addEventListener("click", function () {
     const rzp = new Razorpay(options);
 
     rzp.on("payment.failed", function (response) {
-
-        console.log("Payment Failed");
-
-        console.log(response);
 
         payBtn.disabled = false;
 

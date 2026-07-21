@@ -41,7 +41,10 @@
                     </svg>
                     {{ user.username }}
                 </a>
-                <a href="{% url 'users:logout' %}" class="nav-logout">Logout</a>
+                <form method="POST" action="{% url 'users:logout' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-logout" style="background:none;border:none;cursor:pointer;font:inherit;color:inherit;">Logout</button>
+                </form>
             {% else %}
                 <a href="{% url 'users:login' %}" class="nav-login">Login</a>
                 <a href="{% url 'bookings:booking_form' %}" class="nav-book-btn">
@@ -67,17 +70,20 @@
 
     <!-- Mobile Drawer -->
     <div class="mob-drawer" id="mobDrawer">
-        <!-- <ul class="mob-links">
+        <ul class="mob-links">
             <li><a href="/"           class="mob-link">Home</a></li>
             <li><a href="#games"      class="mob-link">Games</a></li>
             <li><a href="#pricing"    class="mob-link">Pricing</a></li>
             <li><a href="#membership" class="mob-link">Memberships</a></li>
             <li><a href="#contact"    class="mob-link">Contact</a></li>
-        </ul> -->
+        </ul>
         <div class="mob-auth">
             {% if user.is_authenticated %}
                 <a href="{% url 'users:dashboard' %}" class="mob-dash-link">My Bookings</a>
-                <a href="{% url 'users:logout' %}" class="mob-logout-link">Logout</a>
+                <form method="POST" action="{% url 'users:logout' %}" style="margin:0;">
+                    {% csrf_token %}
+                    <button type="submit" class="mob-logout-link" style="background:none;border:none;cursor:pointer;font:inherit;color:inherit;width:100%;text-align:left;">Logout</button>
+                </form>
             {% else %}
                 <a href="{% url 'users:login' %}" class="mob-login-link">Login</a>
                 <a href="{% url 'bookings:booking_form' %}" class="mob-book-link">🎮 Book a Slot</a>

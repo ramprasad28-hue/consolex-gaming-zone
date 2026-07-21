@@ -4,12 +4,6 @@
 {% block title %}CONSOLEX Gaming Zone — Play Beyond{% endblock %}
 
 {% block extra_css %}
-  <!-- Phase 4 CSS — load in order -->
-  <link rel="stylesheet" href="{% static 'css/navbar_footer.css' %}">
-  <link rel="stylesheet" href="{% static 'css/hero.css' %}">
-  <link rel="stylesheet" href="{% static 'css/pricing.css' %}">
-  <link rel="stylesheet" href="{% static 'css/membership.css' %}">
-  <link rel="stylesheet" href="{% static 'css/games.css' %}">
   <link rel="stylesheet" href="{% static 'css/phase4_6.css' %}">
   <link rel="stylesheet" href="{% static 'css/phase7.css' %}">
 {% endblock %}
@@ -48,9 +42,7 @@
 
 {% endblock %}
 
-{% block extra_js %}
-  <!-- Phase 4 / 7 JS — load in order -->
-  <script src="{% static 'js/hero.js' %}" defer></script>
+{% block extra_scripts %}
   <script src="{% static 'js/phase4_6.js' %}" defer></script>
   <script src="{% static 'js/phase7.js' %}" defer></script>
-{% endblock %} 
+{% endblock %}

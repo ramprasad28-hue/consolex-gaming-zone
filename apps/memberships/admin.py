@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Membership
+from .models import Membership, MembershipSubscription, LoyaltyProfile, MembershipPayment
 
 
 @admin.register(Membership)
@@ -27,3 +27,26 @@ class MembershipAdmin(admin.ModelAdmin):
             "fields": ('discount_percent', 'priority_booking', 'badge_color'),
         }),
     )
+
+
+@admin.register(MembershipSubscription)
+class MembershipSubscriptionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'plan', 'status', 'started_at', 'expires_at', 'days_remaining')
+    list_filter = ('status',)
+    search_fields = ('user__email', 'plan__name')
+    readonly_fields = ('created_at', 'updated_at')
+
+
+@admin.register(LoyaltyProfile)
+class LoyaltyProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'points', 'lifetime_spending', 'current_level', 'total_bookings')
+    search_fields = ('user__email',)
+    readonly_fields = ('created_at', 'updated_at')
+
+
+@admin.register(MembershipPayment)
+class MembershipPaymentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'subscription', 'amount', 'status', 'created_at')
+    list_filter = ('status',)
+    search_fields = ('user__email', 'razorpay_order_id')
+    readonly_fields = ('created_at', 'updated_at')

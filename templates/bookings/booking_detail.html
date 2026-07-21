@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Booking #{{ booking.id }} — CONSOLEX{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-section">
+  <div class="dashboard-container">
+
+    <div class="dash-topbar nx-animate">
+      <div class="dash-topbar-left">
+        <a href="{% url 'users:dashboard' %}" class="dash-icon-btn" style="text-decoration:none;color:#8b8fb0;">
+          ← Back to Dashboard
+        </a>
+      </div>
+      <div class="dash-topbar-actions">
+        <a href="{% url 'users:dashboard' %}" class="nav-login">Dashboard</a>
+      </div>
+    </div>
+
+    <div class="dashboard-card nx-animate" style="max-width:680px;margin:28px auto;">
+      <h2 class="dashboard-card-title">📋 Booking #{{ booking.id }}</h2>
+
+      <div class="dash-profile-list" style="margin-top:18px;">
+        <div class="dash-profile-row">
+          <span>Console</span>
+          <span>{{ booking.game_console.name|default:"—" }}</span>
+        </div>
+        <div class="dash-profile-row">
+          <span>Date</span>
+          <span>{{ booking.booking_date|date:"d M Y (l)" }}</span>
+        </div>
+        <div class="dash-profile-row">
+          <span>Time</span>
+          <span>{{ booking.start_time|time:"h:i A" }} — {{ booking.end_time|time:"h:i A" }}</span>
+        </div>
+        <div class="dash-profile-row">
+          <span>Players</span>
+          <span>{{ booking.number_of_players }}</span>
+        </div>
+        <div class="dash-profile-row">
+          <span>Duration</span>
+          <span>{{ booking.duration_hours }} hr{{ booking.duration_hours|pluralize }}</span>
+        </div>
+        <div class="dash-profile-row">
+          <span>Total Cost</span>
+          <span style="color:#00f0ff;font-weight:700;">₹{{ booking.total_cost }}</span>
+        </div>
+        <div class="dash-profile-row">
+          <span>Advance Paid</span>
+          <span>₹{{ booking.advance_amount }}</span>
+        </div>
+        <div class="dash-profile-row">
+          <span>Balance Due</span>
+          <span>₹{{ booking.balance_amount }}</span>
+        </div>
+
+        <div class="dash-profile-row">
+          <span>Status</span>
+          <span>
+            {% if booking.status == 'confirmed' %}
+              <span class="badge badge-confirmed">Confirmed</span>
+            {% elif booking.status == 'pending' %}
+              <span class="badge badge-pending">Pending</span>
+            {% elif booking.status == 'cancelled' %}
+              <span class="badge badge-cancelled">Cancelled</span>
+            {% elif booking.status == 'completed' %}
+              <span class="badge badge-completed">Completed</span>
+            {% endif %}
+          </span>
+        </div>
+
+        <div class="dash-profile-row">
+          <span>Payment</span>
+          <span>
+            {% if booking.payment %}
+              {% if booking.payment.status == 'captured' %}
+                <span class="badge badge-confirmed">Paid</span>
+              {% elif booking.payment.status == 'failed' %}
+                <span class="badge badge-cancelled">Failed</span>
+              {% else %}
+                <span class="badge badge-pending">Pending</span>
+              {% endif %}
+            {% else %}
+              <span class="badge badge-pending">Unpaid</span>
+            {% endif %}
+          </span>
+        </div>
+
+        <div class="dash-profile-row">
+          <span>Booked On</span>
+          <span>{{ booking.created_at|date:"d M Y, h:i A" }}</span>
+        </div>
+      </div>
+
+      <div style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;">
+        {% if booking.status == 'pending' and not booking.is_paid %}
+          <a href="{% url 'payments:payment_page' booking.id %}" class="btn-action btn-pay-now">Pay Now</a>
+        {% endif %}
+        {% if booking.status == 'pending' or booking.status == 'confirmed' %}
+          <form method="POST" action="{% url 'bookings:booking_cancel' booking.id %}" style="margin:0;"
+                onsubmit="return confirm('Cancel this booking?');">
+            {% csrf_token %}
+            <button type="submit" class="btn-action btn-cancel">Cancel Booking</button>
+          </form>
+        {% endif %}
+        <a href="{% url 'users:dashboard' %}" class="btn-action">Back to Dashboard</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

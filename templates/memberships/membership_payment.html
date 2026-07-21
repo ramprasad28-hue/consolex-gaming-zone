@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Pay for {{ plan.name }} — CONSOLEX{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/membership.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="mem-section">
+    <div class="mem-container">
+        <div class="ms-head">
+            <span class="ms-tag">Membership Payment</span>
+            <h2 class="ms-title">Pay for <span class="ms-neon">{{ plan.name }}</span></h2>
+            <p class="ms-sub">Complete payment to activate your {{ plan.name }} membership.</p>
+        </div>
+
+        <div class="mem-grid" style="justify-content:center;">
+            <div class="mem-card mc-featured" style="max-width:420px;">
+                <div class="mc-header">
+                    <div class="mc-tier-row">
+                        <span class="mc-tier-name">{{ plan.name }} Membership</span>
+                    </div>
+                </div>
+                <div class="mc-price-block">
+                    <div class="mc-price">
+                        <span class="mc-currency">₹</span>
+                        <span class="mc-amount">{{ plan.price }}</span>
+                    </div>
+                    <span class="mc-period">per {{ plan.duration_days }} days</span>
+                </div>
+                <div id="memPayStatus" style="text-align:center;padding:18px 0;color:#8b8fb0;">
+                    Click below to pay with Razorpay.
+                </div>
+                <button id="memPayBtn" class="mc-btn" style="width:100%;text-align:center;">
+                    Pay ₹{{ plan.price }} with Razorpay
+                </button>
+                <a href="{% url 'memberships:plan_list' %}" class="mc-value-note" style="display:block;text-align:center;margin-top:14px;">Cancel</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+(function () {
+    var btn    = document.getElementById('memPayBtn');
+    var status = document.getElementById('memPayStatus');
+
+    btn.addEventListener('click', function () {
+        btn.disabled = true;
+        btn.textContent = 'Opening Razorpay...';
+
+        var options = {
+            key: "{{ razorpay_key_id }}",
+            amount: "{{ rp_amount }}",
+            currency: "INR",
+            name: "CONSOLEX Gaming Zone",
+            description: "{{ plan.name }} Membership — {{ plan.duration_days }} days",
+            order_id: "{{ rp_order_id }}",
+            handler: function (response) {
+                status.textContent = "Verifying payment...";
+                fetch("{% url 'memberships:verify_membership_payment' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]')
+                            ? document.querySelector('[name=csrfmiddlewaretoken]').value
+                            : "{{ csrf_token }}",
+                    },
+                    body: JSON.stringify({
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature,
+                    }),
+                })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.success) {
+                        status.textContent = "Payment successful! Redirecting...";
+                        status.style.color = "#00f0ff";
+                        window.location.href = data.redirect;
+                    } else {
+                        status.textContent = data.error || "Payment failed. Please try again.";
+                        status.style.color = "#ff4444";
+                        btn.disabled = false;
+                        btn.textContent = "Retry Payment";
+                    }
+                })
+                .catch(function () {
+                    status.textContent = "Network error. Please try again.";
+                    status.style.color = "#ff4444";
+                    btn.disabled = false;
+                    btn.textContent = "Retry Payment";
+                });
+            },
+            prefill: {},
+            theme: { color: "#00f0ff" },
+            modal: {
+                ondismiss: function () {
+                    status.textContent = "Payment cancelled.";
+                    btn.disabled = false;
+                    btn.textContent = "Pay ₹{{ plan.price }} with Razorpay";
+                }
+            }
+        };
+
+        var rzp = new Razorpay(options);
+        rzp.open();
+    });
+})();
+</script>
+{% endblock %}
