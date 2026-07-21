@@ -479,3 +479,55 @@
     .gs-filters { gap: 6px; }
     .gf-pill { padding: 7px 14px; font-size: 0.8rem; }
 }
+
+/* ── 3D Tilt card ──────────────────────────────────────── */
+.game-card-3d { perspective: 800px; }
+.game-card-3d:hover { transform: none; }
+
+.card-3d-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease-out;
+    will-change: transform;
+}
+
+.card-3d-shine {
+    position: absolute;
+    inset: 0;
+    border-radius: 18px;
+    background: radial-gradient(
+        circle at 50% 50%,
+        rgba(191, 0, 255, 0.18) 0%,
+        rgba(0, 240, 255, 0.08) 40%,
+        transparent 70%
+    );
+    opacity: 0;
+    pointer-events: none;
+    z-index: 50;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Scroll-triggered entrance */
+.game-card-3d {
+    opacity: 0;
+    transform: translateY(32px) rotateX(6deg);
+    transition:
+        opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.30s ease,
+        box-shadow   0.30s ease;
+}
+.game-card-3d.card-3d-visible {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+}
+.game-card-3d:nth-child(2).card-3d-visible { transition-delay: 0.08s; }
+.game-card-3d:nth-child(3).card-3d-visible { transition-delay: 0.16s; }
+.game-card-3d:nth-child(4).card-3d-visible { transition-delay: 0.24s; }
+.game-card-3d:nth-child(5).card-3d-visible { transition-delay: 0.32s; }
+.game-card-3d:nth-child(6).card-3d-visible { transition-delay: 0.40s; }
+.game-card-3d:nth-child(7).card-3d-visible { transition-delay: 0.48s; }

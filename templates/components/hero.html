@@ -1,6 +1,9 @@
 <section class="hero" id="hero">
 
-    <!-- Layered animated background -->
+    <!-- Three.js 3D canvas (rendered by three-scene.js) -->
+    <canvas class="hero-3d-canvas" id="heroCanvas"></canvas>
+
+    <!-- Layered animated background (CSS fallback + overlay) -->
     <div class="hero-bg">
         <div class="hbg-grid"></div>
         <div class="hbg-orb hbg-orb-cyan"></div>
@@ -10,7 +13,7 @@
         <div class="hbg-vignette"></div>
     </div>
 
-    <!-- Floating particles -->
+    <!-- Floating particles (CSS fallback, hidden when WebGL loads) -->
     <div class="hero-particles" id="heroParticles"></div>
 
     <!-- Main content -->

@@ -17,6 +17,14 @@
     <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
     {% block extra_css %}{% endblock %}
     {% block extra_head %}{% endblock %}
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://esm.sh/three@0.170.0",
+            "three/addons/": "https://esm.sh/three@0.170.0/examples/jsm/"
+        }
+    }
+    </script>
 </head>
 <body>
     {% include 'components/navbar.html' %}

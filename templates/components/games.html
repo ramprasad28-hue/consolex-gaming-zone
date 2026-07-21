@@ -1,4 +1,4 @@
-
+{% load static %}
 <section class="games-section" id="games">
 
     <div class="gs-bg">
@@ -38,11 +38,13 @@
         <div class="games-grid" id="gamesGrid">
 
             <!-- FC 26 -->
-            <div class="game-card" data-tags="multi solo">
+            <div class="game-card game-card-3d" data-tags="multi solo">
+                <div class="card-3d-inner">
                 <div class="gc-cover gc-cover-fc">
                     <div class="gc-cover-bg"></div>
                     <div class="gc-emoji">⚽</div>
                     <div class="gc-cover-shine"></div>
+                    <div class="card-3d-shine"></div>
                     <div class="gc-player-badge">
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
                         1–4 Players
@@ -68,10 +70,12 @@
                         <a href="{% url 'bookings:booking_form' %}" class="gc-play-btn">Play Now</a>
                     </div>
                 </div>
+                </div>
             </div>
 
             <!-- Call of Duty -->
-            <div class="game-card" data-tags="multi solo">
+            <div class="game-card game-card-3d" data-tags="multi solo">
+                <div class="card-3d-inner">
                 <div class="gc-cover gc-cover-cod">
                     <div class="gc-cover-bg"></div>
                     <div class="gc-emoji">💥</div>
@@ -102,14 +106,17 @@
                         <a href="{% url 'bookings:booking_form' %}" class="gc-play-btn">Play Now</a>
                     </div>
                 </div>
+                </div>
             </div>
 
             <!-- It Takes Two -->
-            <div class="game-card" data-tags="coop">
+            <div class="game-card game-card-3d" data-tags="coop">
+                <div class="card-3d-inner">
                 <div class="gc-cover gc-cover-itt">
                     <div class="gc-cover-bg"></div>
                     <div class="gc-emoji">🤝</div>
                     <div class="gc-cover-shine"></div>
+                    <div class="card-3d-shine"></div>
                     <div class="gc-player-badge">
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
                         2 Players Only
@@ -136,14 +143,17 @@
                         <a href="{% url 'bookings:booking_form' %}" class="gc-play-btn">Play Now</a>
                     </div>
                 </div>
+                </div>
             </div>
 
             <!-- Sackboy -->
-            <div class="game-card" data-tags="coop multi">
+            <div class="game-card game-card-3d" data-tags="coop multi">
+                <div class="card-3d-inner">
                 <div class="gc-cover gc-cover-sack">
                     <div class="gc-cover-bg"></div>
                     <div class="gc-emoji">🧸</div>
                     <div class="gc-cover-shine"></div>
+                    <div class="card-3d-shine"></div>
                     <div class="gc-player-badge">
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
                         1–4 Players
@@ -169,14 +179,17 @@
                         <a href="{% url 'bookings:booking_form' %}" class="gc-play-btn">Play Now</a>
                     </div>
                 </div>
+                </div>
             </div>
 
             <!-- Asphalt Legends -->
-            <div class="game-card" data-tags="multi solo">
+            <div class="game-card game-card-3d" data-tags="multi solo">
+                <div class="card-3d-inner">
                 <div class="gc-cover gc-cover-asphalt">
                     <div class="gc-cover-bg"></div>
                     <div class="gc-emoji">🏎️</div>
                     <div class="gc-cover-shine"></div>
+                    <div class="card-3d-shine"></div>
                     <div class="gc-player-badge">
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
                         1–4 Players
@@ -202,14 +215,17 @@
                         <a href="{% url 'bookings:booking_form' %}" class="gc-play-btn">Play Now</a>
                     </div>
                 </div>
+                </div>
             </div>
 
             <!-- Overcooked -->
-            <div class="game-card" data-tags="coop multi">
+            <div class="game-card game-card-3d" data-tags="coop multi">
+                <div class="card-3d-inner">
                 <div class="gc-cover gc-cover-cook">
                     <div class="gc-cover-bg"></div>
                     <div class="gc-emoji">🍳</div>
                     <div class="gc-cover-shine"></div>
+                    <div class="card-3d-shine"></div>
                     <div class="gc-player-badge">
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
                         1–4 Players
@@ -235,14 +251,17 @@
                         <a href="{% url 'bookings:booking_form' %}" class="gc-play-btn">Play Now</a>
                     </div>
                 </div>
+                </div>
             </div>
 
             <!-- A Way Out -->
-            <div class="game-card" data-tags="coop">
+            <div class="game-card game-card-3d" data-tags="coop">
+                <div class="card-3d-inner">
                 <div class="gc-cover gc-cover-awo">
                     <div class="gc-cover-bg"></div>
                     <div class="gc-emoji">🔓</div>
                     <div class="gc-cover-shine"></div>
+                    <div class="card-3d-shine"></div>
                     <div class="gc-player-badge">
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
                         2 Players Only
@@ -268,6 +287,7 @@
                         <a href="{% url 'bookings:booking_form' %}" class="gc-play-btn">Play Now</a>
                     </div>
                 </div>
+                </div>
             </div>
 
         </div>
@@ -289,13 +309,11 @@
 <script>
 (function () {
     window.filterGames = function (tag, btn) {
-        /* Update active pill */
         document.querySelectorAll('.gf-pill').forEach(function (p) {
             p.classList.remove('gf-active');
         });
         btn.classList.add('gf-active');
 
-        /* Show / hide cards */
         document.querySelectorAll('.game-card').forEach(function (card) {
             var tags = card.dataset.tags || '';
             var show = tag === 'all' || tags.indexOf(tag) !== -1;
@@ -310,3 +328,4 @@
     };
 }());
 </script>
+<script src="{% static 'js/three-cards.js' %}" defer></script>

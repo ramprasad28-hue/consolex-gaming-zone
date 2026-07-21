@@ -45,4 +45,17 @@
 {% block extra_scripts %}
   <script src="{% static 'js/phase4_6.js' %}" defer></script>
   <script src="{% static 'js/phase7.js' %}" defer></script>
+  <script type="module">
+      import { initScene } from '{% static "js/three-scene.js" %}';
+      const canvas = document.getElementById('heroCanvas');
+      if (canvas) {
+          try {
+              initScene(canvas);
+              document.getElementById('hero').classList.add('hero-3d-loaded');
+          } catch (e) {
+              console.warn('WebGL not available, falling back to CSS.', e);
+              document.getElementById('hero').classList.add('hero-no-webgl');
+          }
+      }
+  </script>
 {% endblock %}
