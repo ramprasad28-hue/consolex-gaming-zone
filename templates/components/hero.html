@@ -1,142 +1,157 @@
 <section class="hero" id="hero">
 
-    <!-- Three.js 3D canvas (rendered by three-scene.js) -->
-    <canvas class="hero-3d-canvas" id="heroCanvas"></canvas>
-
-    <!-- Layered animated background (CSS fallback + overlay) -->
-    <div class="hero-bg">
-        <div class="hbg-grid"></div>
-        <div class="hbg-orb hbg-orb-cyan"></div>
-        <div class="hbg-orb hbg-orb-purple"></div>
-        <div class="hbg-orb hbg-orb-orange"></div>
-        <div class="hbg-scanlines"></div>
-        <div class="hbg-vignette"></div>
+    <!-- Background image with scrim -->
+    <div class="hero-bg-image">
+        <img src="https://images.unsplash.com/photo-1712699175189-2e84385d5d75?w=1920&q=80" alt="Dark gaming room with glowing RGB PS5 setup" class="hero-bg-img">
+        <div class="hero-scrim"></div>
     </div>
 
-    <!-- Floating particles (CSS fallback, hidden when WebGL loads) -->
-    <div class="hero-particles" id="heroParticles"></div>
+    <!-- Animated gradient overlay -->
+    <div class="hero-animated-gradient"></div>
 
-    <!-- Main content -->
-    <div class="hero-inner">
+    <!-- Atmospheric depth blobs -->
+    <div class="hero-blob hero-blob-cyan" data-parallax="0.5"></div>
+    <div class="hero-blob hero-blob-purple" data-parallax="0.8"></div>
+    <div class="hero-blob hero-blob-orange" data-parallax="0.3"></div>
 
-        <!-- Live badge -->
-        <div class="hero-badge" data-animate="fade-up" data-delay="0">
-            <span class="badge-pulse"></span>
-            Now Open · Mumbai's #1 PS5 Lounge
-        </div>
+    <!-- Grid lines -->
+    <div class="hero-grid-lines"></div>
 
-        <!-- Title -->
-        <h1 class="hero-title" data-animate="fade-up" data-delay="100">
-            <span class="ht-play">PLAY</span>
-            <span class="ht-beyond">
-                <span class="ht-b-letter" style="--i:0">B</span>
-                <span class="ht-b-letter" style="--i:1">E</span>
-                <span class="ht-b-letter" style="--i:2">Y</span>
-                <span class="ht-b-letter" style="--i:3">O</span>
-                <span class="ht-b-letter" style="--i:4">N</span>
-                <span class="ht-b-letter" style="--i:5">D</span>
-            </span>
-        </h1>
+    <!-- Content -->
+    <div class="hero-content-wrap">
+        <div class="hero-content" id="heroTextContent">
 
-        <!-- Subtitle -->
-        <p class="hero-subtitle" data-animate="fade-up" data-delay="300">
-            Premium PS5 Gaming Experience
-        </p>
-
-        <!-- Feature pills -->
-        <div class="hero-features" data-animate="fade-up" data-delay="450">
-            <div class="hf-pill">
-                <span class="hf-icon">🎮</span>
-                <div>
-                    <span class="hf-num">3</span>
-                    <span class="hf-label">PS5 Setups</span>
-                </div>
-            </div>
-            <div class="hf-sep"></div>
-            <div class="hf-pill">
-                <span class="hf-icon">📺</span>
-                <div>
-                    <span class="hf-num">55"</span>
-                    <span class="hf-label">4K TVs</span>
-                </div>
-            </div>
-            <div class="hf-sep"></div>
-            <div class="hf-pill">
-                <span class="hf-icon">👥</span>
-                <div>
-                    <span class="hf-num">4P</span>
-                    <span class="hf-label">Multiplayer</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- CTA buttons -->
-        <div class="hero-ctas" data-animate="fade-up" data-delay="600">
-            <a href="{% url 'bookings:booking_form' %}" class="hero-btn-primary magnetic">
-                <span class="magnetic-inner" style="display:inline-flex;align-items:center;gap:9px;">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <rect x="3" y="4" width="18" height="18" rx="2"/>
-                    <line x1="16" y1="2" x2="16" y2="6"/>
-                    <line x1="8"  y1="2" x2="8"  y2="6"/>
-                    <line x1="3"  y1="10" x2="21" y2="10"/>
-                </svg>
-                Book Slot
+            <!-- Badges -->
+            <div class="hero-badges" data-stagger>
+                <span class="hero-pill hero-pill-cyan">
+                    <span class="hero-pill-dot"></span>
+                    Now Open in Erode
                 </span>
-                <span class="btn-shine"></span>
-            </a>
-            <a href="#games" class="hero-btn-ghost magnetic">
-                <span class="magnetic-inner" style="display:inline-flex;align-items:center;gap:8px;">
-                View Games
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M7 17L17 7M17 7H7M17 7v10"/>
-                </svg>
-                </span>
-            </a>
-        </div>
-
-        <!-- Scroll hint -->
-        <div class="hero-scroll" data-animate="fade-up" data-delay="800">
-            <div class="scroll-track">
-                <div class="scroll-thumb"></div>
+                <span class="hero-pill hero-pill-purple">PS5 Gaming Lounge</span>
             </div>
-            <span>Scroll</span>
-        </div>
 
+            <!-- Headline -->
+            <h1 class="hero-title" data-stagger>
+                <span class="hero-line-1">PLAY</span>
+                <span class="hero-line-2">BEYOND</span>
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="hero-subtitle" data-stagger>
+                Experience premium console gaming with high-end PlayStation 5 setups, online booking, memberships, tournaments, and immersive multiplayer experiences.
+            </p>
+
+            <!-- CTAs -->
+            <div class="hero-ctas" data-stagger>
+                <a href="{% url 'bookings:booking_form' %}" class="hero-btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    Book Now
+                </a>
+                <a href="{% url 'memberships:plan_list' %}" class="hero-btn-ghost">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+                    </svg>
+                    Explore Memberships
+                </a>
+            </div>
+
+            <!-- Stats row -->
+            <div class="hero-stats" data-stagger>
+                <div class="hero-stat">
+                    <span class="hero-stat-value">10+</span>
+                    <span class="hero-stat-label">PS5 Consoles</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-value">4K</span>
+                    <span class="hero-stat-label">HDR Displays</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-value">100+</span>
+                    <span class="hero-stat-label">PS5 Games</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-value">₹130</span>
+                    <span class="hero-stat-label">Starting /hr</span>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-    <!-- Ticker tape -->
-    <div class="hero-ticker" aria-hidden="true">
-        <div class="ticker-belt">
-            <span>🎮 FC 26</span>
-            <span class="tk-dot">·</span>
-            <span>💥 Call of Duty</span>
-            <span class="tk-dot">·</span>
-            <span>🤝 It Takes Two</span>
-            <span class="tk-dot">·</span>
-            <span>🧸 Sackboy</span>
-            <span class="tk-dot">·</span>
-            <span>🍳 Overcooked</span>
-            <span class="tk-dot">·</span>
-            <span>🏎️ Asphalt Legends</span>
-            <span class="tk-dot">·</span>
-            <span>🥊 Mortal Kombat</span>
-            <span class="tk-dot">·</span>
-            <!-- duplicate for seamless loop -->
-            <span>🎮 FC 26</span>
-            <span class="tk-dot">·</span>
-            <span>💥 Call of Duty</span>
-            <span class="tk-dot">·</span>
-            <span>🤝 It Takes Two</span>
-            <span class="tk-dot">·</span>
-            <span>🧸 Sackboy</span>
-            <span class="tk-dot">·</span>
-            <span>🍳 Overcooked</span>
-            <span class="tk-dot">·</span>
-            <span>🏎️ Asphalt Legends</span>
-            <span class="tk-dot">·</span>
-            <span>🥊 Mortal Kombat</span>
-            <span class="tk-dot">·</span>
+    <!-- Floating UI cards (desktop only) -->
+    <div class="hero-float-card hero-float-card-1">
+        <div class="hf-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+                <path d="M4 22h16"/><path d="M10 22V8a4 4 0 0 0-4-4H4v16"/>
+                <path d="M14 22V4a4 4 0 0 1 4 4v16"/>
+            </svg>
         </div>
+        <div>
+            <p class="hf-title">Next Tournament</p>
+            <p class="hf-sub">Prize Pool: ₹5,000</p>
+        </div>
+        <div class="hf-live">
+            <span class="hf-live-dot"></span>
+            Registrations Open
+        </div>
+    </div>
+
+    <div class="hero-float-card hero-float-card-2">
+        <div class="hf-avatars">
+            <div class="hf-avatar"></div>
+            <div class="hf-avatar"></div>
+            <div class="hf-avatar"></div>
+        </div>
+        <div>
+            <p class="hf-title">+24 Playing Now</p>
+            <div class="hf-stars">
+                <span class="hf-star"></span>
+                <span class="hf-star"></span>
+                <span class="hf-star"></span>
+                <span class="hf-star"></span>
+                <span class="hf-star"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="hero-scroll">
+        <span class="hero-scroll-text">Scroll</span>
+        <div class="hero-scroll-line"></div>
     </div>
 
 </section>
+
+<script>
+(function () {
+    var hero = document.getElementById('hero');
+    var textContent = document.getElementById('heroTextContent');
+    if (!hero || !textContent) return;
+
+    /* Parallax blobs on mouse move */
+    hero.addEventListener('mousemove', function (e) {
+        var rect = hero.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width - 0.5;
+        var y = (e.clientY - rect.top) / rect.height - 0.5;
+        hero.querySelectorAll('[data-parallax]').forEach(function (blob) {
+            var speed = parseFloat(blob.dataset.parallax);
+            blob.style.transform = 'translate(' + (x * speed * 40) + 'px, ' + (y * speed * 30) + 'px)';
+        });
+    });
+
+    /* Stagger animation on load */
+    var staggerEls = textContent.querySelectorAll('[data-stagger]');
+    staggerEls.forEach(function (el, i) {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)';
+        setTimeout(function () {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        }, 200 + i * 150);
+    });
+}());
+</script>

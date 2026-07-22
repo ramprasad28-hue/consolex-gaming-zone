@@ -1,84 +1,172 @@
-
 <section class="faq-section" id="faq">
+
+    <!-- Background blobs -->
+    <div class="faq-blob faq-blob-purple"></div>
+    <div class="faq-blob faq-blob-cyan"></div>
 
     <div class="faq-container">
 
-        <div class="faq-head" data-reveal>
-            <span class="faq-tag">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path d="M9.5 9a2.5 2.5 0 015 0c0 1.7-2.5 2-2.5 4"/>
-                    <line x1="12" y1="17" x2="12.01" y2="17"/>
-                </svg>
-                FAQ
-            </span>
-            <h2 class="faq-title">Got <span class="faq-neon">Questions?</span></h2>
-            <p class="faq-sub">Everything you need to know before your first session.</p>
+        <!-- Header -->
+        <div class="faq-header stagger-child">
+            <span class="faq-pill">FAQ</span>
+            <h2 class="faq-title">
+                Got <span class="text-gradient-cyan">Questions?</span>
+            </h2>
+            <p class="faq-subtitle">Everything you need to know before you play.</p>
         </div>
 
-        <div class="faq-list" data-reveal>
+        <!-- FAQ list -->
+        <div class="faq-list">
 
-            <div class="faq-item">
-                <button class="faq-q" aria-expanded="false">
-                    <span>How do I book a slot?</span>
-                    <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            <div class="faq-item stagger-child" data-faq="1">
+                <button class="faq-question" onclick="toggleFaq(1)">
+                    <div class="faq-q-inner">
+                        <span class="faq-cat-tag">Booking</span>
+                        <h4 class="faq-q-text">How do I book a session at CONSOLEX?</h4>
+                    </div>
+                    <div class="faq-chevron">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
                 </button>
-                <div class="faq-a">
-                    <p>Tap "Book Now," choose your console, pick a date and time slot, then pay a small advance online through Razorpay to confirm the booking. It takes under a minute.</p>
+                <div class="faq-answer">
+                    <p>You can book online through our website in under 60 seconds — just select your date, time, number of players, and duration. You'll receive a confirmation via WhatsApp. Walk-ins are also welcome subject to availability.</p>
                 </div>
             </div>
 
-            <div class="faq-item">
-                <button class="faq-q" aria-expanded="false">
-                    <span>How much advance do I need to pay?</span>
-                    <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            <div class="faq-item stagger-child" data-faq="2">
+                <button class="faq-question" onclick="toggleFaq(2)">
+                    <div class="faq-q-inner">
+                        <span class="faq-cat-tag">Booking</span>
+                        <h4 class="faq-q-text">What is the minimum booking duration?</h4>
+                    </div>
+                    <div class="faq-chevron">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
                 </button>
-                <div class="faq-a">
-                    <p>We ask for 30% of the total session cost upfront to hold your slot. The remaining balance is paid directly at the lounge before you start playing.</p>
+                <div class="faq-answer">
+                    <p>The minimum booking duration is 1 hour. You can book in 30-minute increments after the first hour. Maximum single-session booking is 4 hours.</p>
                 </div>
             </div>
 
-            <div class="faq-item">
-                <button class="faq-q" aria-expanded="false">
-                    <span>Can I cancel or reschedule my booking?</span>
-                    <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            <div class="faq-item stagger-child" data-faq="3">
+                <button class="faq-question" onclick="toggleFaq(3)">
+                    <div class="faq-q-inner">
+                        <span class="faq-cat-tag">Membership</span>
+                        <h4 class="faq-q-text">What is included in a membership?</h4>
+                    </div>
+                    <div class="faq-chevron">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
                 </button>
-                <div class="faq-a">
-                    <p>Yes — reschedules are free up to 2 hours before your slot. Message us on WhatsApp with your booking details and we'll move it to a new time for you.</p>
+                <div class="faq-answer">
+                    <p>Memberships include pre-paid gaming hours valid for 30 days. Basic (10 hrs weekdays), Standard (25+5 weekend hrs), and Pro (45 total hrs, all days). Members also get priority booking and exclusive discounts.</p>
                 </div>
             </div>
 
-            <div class="faq-item">
-                <button class="faq-q" aria-expanded="false">
-                    <span>Do you offer group or birthday bookings?</span>
-                    <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            <div class="faq-item stagger-child" data-faq="4">
+                <button class="faq-question" onclick="toggleFaq(4)">
+                    <div class="faq-q-inner">
+                        <span class="faq-cat-tag">Membership</span>
+                        <h4 class="faq-q-text">Do unused membership hours roll over?</h4>
+                    </div>
+                    <div class="faq-chevron">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
                 </button>
-                <div class="faq-a">
-                    <p>Absolutely. We regularly host birthday parties and group sessions across multiple consoles. Reach out on WhatsApp and we'll help you plan it.</p>
+                <div class="faq-answer">
+                    <p>Membership hours do not roll over to the next month. We recommend choosing a plan that matches your expected usage. You can upgrade your plan at any time.</p>
                 </div>
             </div>
 
-            <div class="faq-item">
-                <button class="faq-q" aria-expanded="false">
-                    <span>Do I need a membership to walk in?</span>
-                    <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            <div class="faq-item stagger-child" data-faq="5">
+                <button class="faq-question" onclick="toggleFaq(5)">
+                    <div class="faq-q-inner">
+                        <span class="faq-cat-tag">Payments</span>
+                        <h4 class="faq-q-text">What payment methods do you accept?</h4>
+                    </div>
+                    <div class="faq-chevron">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
                 </button>
-                <div class="faq-a">
-                    <p>Not at all — anyone can book a pay-per-hour session with no membership required. Memberships simply unlock a lower effective hourly rate and priority booking.</p>
+                <div class="faq-answer">
+                    <p>We accept UPI (GPay, PhonePe, Paytm), cash, and all major credit/debit cards. Online bookings can be paid via UPI or card. Memberships can also be purchased in-store.</p>
                 </div>
             </div>
 
-            <div class="faq-item">
-                <button class="faq-q" aria-expanded="false">
-                    <span>Is there anything for people who aren't playing?</span>
-                    <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            <div class="faq-item stagger-child" data-faq="6">
+                <button class="faq-question" onclick="toggleFaq(6)">
+                    <div class="faq-q-inner">
+                        <span class="faq-cat-tag">Refunds</span>
+                        <h4 class="faq-q-text">What is the refund policy for bookings?</h4>
+                    </div>
+                    <div class="faq-chevron">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
                 </button>
-                <div class="faq-a">
-                    <p>Yes — the lounge has free Wi-Fi and comfortable seating for anyone who's just watching or waiting their turn, plus snacks and drinks available for everyone.</p>
+                <div class="faq-answer">
+                    <p>Cancellations made 2+ hours before the session start time receive a full refund. Cancellations within 2 hours receive a 50% refund. No-shows are non-refundable. Membership fees are non-refundable after activation.</p>
                 </div>
             </div>
 
+            <div class="faq-item stagger-child" data-faq="7">
+                <button class="faq-question" onclick="toggleFaq(7)">
+                    <div class="faq-q-inner">
+                        <span class="faq-cat-tag">Rules</span>
+                        <h4 class="faq-q-text">Are there any age restrictions?</h4>
+                    </div>
+                    <div class="faq-chevron">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </button>
+                <div class="faq-answer">
+                    <p>Players below 16 years old must be accompanied by a parent or guardian. Some games are age-rated and we follow PEGI/ESRB guidelines. ID may be requested for age-restricted titles.</p>
+                </div>
+            </div>
+
+            <div class="faq-item stagger-child" data-faq="8">
+                <button class="faq-question" onclick="toggleFaq(8)">
+                    <div class="faq-q-inner">
+                        <span class="faq-cat-tag">Rules</span>
+                        <h4 class="faq-q-text">Can I bring food and drinks to the lounge?</h4>
+                    </div>
+                    <div class="faq-chevron">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </button>
+                <div class="faq-answer">
+                    <p>Outside food and drinks are not permitted inside the gaming zone. We have snacks, beverages, and refreshments available at the lounge counter. No smoking or alcohol is allowed on the premises.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Support CTA -->
+        <div class="faq-cta stagger-child">
+            <div class="faq-cta-box">
+                <div class="faq-cta-text">
+                    <p class="faq-cta-title">Still have questions?</p>
+                    <p class="faq-cta-sub">Chat with us on WhatsApp — we reply fast.</p>
+                </div>
+                <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" class="faq-cta-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                    WhatsApp Us
+                </a>
+            </div>
         </div>
 
     </div>
 </section>
+
+<script>
+(function () {
+    window.toggleFaq = function (id) {
+        var item = document.querySelector('[data-faq="' + id + '"]');
+        if (!item) return;
+        var wasOpen = item.classList.contains('faq-open');
+        document.querySelectorAll('.faq-item').forEach(function (el) {
+            el.classList.remove('faq-open');
+        });
+        if (!wasOpen) item.classList.add('faq-open');
+    };
+}());
+</script>

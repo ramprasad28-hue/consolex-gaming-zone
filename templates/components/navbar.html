@@ -5,15 +5,15 @@
         <a href="/" class="nav-logo">
             <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
                 <rect x="3" y="10" width="28" height="16" rx="4" stroke="url(#ng)" stroke-width="1.5" fill="none"/>
-                <circle cx="11" cy="18" r="2.8" stroke="#00f0ff" stroke-width="1.2" fill="none"/>
-                <rect x="14.5" y="15" width="1.6" height="6" rx="0.8" fill="#bf00ff"/>
-                <rect x="12" y="17.2" width="6" height="1.6" rx="0.8" fill="#bf00ff"/>
-                <rect x="20" y="15.5" width="5" height="1.5" rx="0.75" fill="#ff6b00"/>
-                <rect x="20" y="18.5" width="5" height="1.5" rx="0.75" fill="#ff6b00"/>
+                <circle cx="11" cy="18" r="2.8" stroke="#00D9FF" stroke-width="1.2" fill="none"/>
+                <rect x="14.5" y="15" width="1.6" height="6" rx="0.8" fill="#8A2BE2"/>
+                <rect x="12" y="17.2" width="6" height="1.6" rx="0.8" fill="#8A2BE2"/>
+                <rect x="20" y="15.5" width="5" height="1.5" rx="0.75" fill="#FF6A00"/>
+                <rect x="20" y="18.5" width="5" height="1.5" rx="0.75" fill="#FF6A00"/>
                 <defs>
                     <linearGradient id="ng" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse">
-                        <stop offset="0%" stop-color="#00f0ff"/>
-                        <stop offset="100%" stop-color="#bf00ff"/>
+                        <stop offset="0%" stop-color="#00D9FF"/>
+                        <stop offset="100%" stop-color="#8A2BE2"/>
                     </linearGradient>
                 </defs>
             </svg>
@@ -23,13 +23,11 @@
             </div>
         </a>
 
-        <!-- Desktop Links -->
+        <!-- Desktop Links — simplified to match reference -->
         <ul class="nav-links" id="navLinks">
-            <li><a href="/"            class="nl {% if request.path == '/' %}active{% endif %}">Home</a></li>
-            <li><a href="#games"       class="nl">Games</a></li>
-            <li><a href="#pricing"     class="nl">Pricing</a></li>
-            <li><a href="#membership"  class="nl">Memberships</a></li>
-            <li><a href="#contact"     class="nl">Contact</a></li>
+            <li><a href="/" class="nl {% if request.path == '/' %}active{% endif %}">Home</a></li>
+            <li><a href="{% url 'bookings:booking_form' %}" class="nl {% if request.path == '/book/' %}active{% endif %}">Booking</a></li>
+            <li><a href="{% url 'memberships:plan_list' %}" class="nl {% if request.path == '/memberships/' %}active{% endif %}">Membership</a></li>
         </ul>
 
         <!-- Right actions -->
@@ -46,15 +44,14 @@
                     <button type="submit" class="nav-logout" style="background:none;border:none;cursor:pointer;font:inherit;color:inherit;">Logout</button>
                 </form>
             {% else %}
-                <a href="{% url 'users:login' %}" class="nav-login">Login</a>
                 <a href="{% url 'bookings:booking_form' %}" class="nav-book-btn">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <rect x="3" y="4" width="18" height="18" rx="2"/>
                         <line x1="16" y1="2" x2="16" y2="6"/>
-                        <line x1="8" y1="2" x2="8" y2="6"/>
-                        <line x1="3" y1="10" x2="21" y2="10"/>
+                        <line x1="8"  y1="2" x2="8"  y2="6"/>
+                        <line x1="3"  y1="10" x2="21" y2="10"/>
                     </svg>
-                    Book Slot
+                    Book Now
                 </a>
             {% endif %}
         </div>
@@ -71,11 +68,9 @@
     <!-- Mobile Drawer -->
     <div class="mob-drawer" id="mobDrawer">
         <ul class="mob-links">
-            <li><a href="/"           class="mob-link">Home</a></li>
-            <li><a href="#games"      class="mob-link">Games</a></li>
-            <li><a href="#pricing"    class="mob-link">Pricing</a></li>
-            <li><a href="#membership" class="mob-link">Memberships</a></li>
-            <li><a href="#contact"    class="mob-link">Contact</a></li>
+            <li><a href="/" class="mob-link">Home</a></li>
+            <li><a href="{% url 'bookings:booking_form' %}" class="mob-link">Booking</a></li>
+            <li><a href="{% url 'memberships:plan_list' %}" class="mob-link">Membership</a></li>
         </ul>
         <div class="mob-auth">
             {% if user.is_authenticated %}
@@ -85,7 +80,6 @@
                     <button type="submit" class="mob-logout-link" style="background:none;border:none;cursor:pointer;font:inherit;color:inherit;width:100%;text-align:left;">Logout</button>
                 </form>
             {% else %}
-                <a href="{% url 'users:login' %}" class="mob-login-link">Login</a>
                 <a href="{% url 'bookings:booking_form' %}" class="mob-book-link">🎮 Book a Slot</a>
             {% endif %}
         </div>
@@ -99,12 +93,10 @@
     var navbar  = document.getElementById('navbar');
     var isOpen  = false;
 
-    // Scroll effect
     window.addEventListener('scroll', function () {
         navbar.classList.toggle('nav-scrolled', window.scrollY > 50);
     }, { passive: true });
 
-    // Hamburger toggle
     btn.addEventListener('click', function () {
         isOpen = !isOpen;
         btn.classList.toggle('hb-open', isOpen);
@@ -112,7 +104,6 @@
         document.body.style.overflow = isOpen ? 'hidden' : '';
     });
 
-    // Close drawer on link click
     drawer.querySelectorAll('a').forEach(function (a) {
         a.addEventListener('click', function () {
             isOpen = false;
@@ -122,7 +113,6 @@
         });
     });
 
-    // Smooth scroll for hash links
     document.querySelectorAll('a[href^="#"]').forEach(function (a) {
         a.addEventListener('click', function (e) {
             var id = a.getAttribute('href').slice(1);

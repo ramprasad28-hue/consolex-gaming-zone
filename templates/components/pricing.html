@@ -1,294 +1,226 @@
-
 <section class="pricing-section" id="pricing">
 
-    <!-- Background -->
-    <div class="ps-bg">
-        <div class="ps-grid"></div>
-        <div class="ps-orb ps-orb-1"></div>
-        <div class="ps-orb ps-orb-2"></div>
-    </div>
+    <!-- Background blobs -->
+    <div class="pricing-blob pricing-blob-purple"></div>
+    <div class="pricing-blob pricing-blob-cyan"></div>
 
     <div class="pricing-container">
 
-        <!-- Section header -->
-        <div class="ps-head" data-reveal="fade-up">
-            <span class="ps-tag">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <line x1="12" y1="1" x2="12" y2="23"/>
-                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                </svg>
-                Pricing
-            </span>
-            <h2 class="ps-title">
-                Simple <span class="ps-neon">Transparent</span> Pricing
+        <!-- Header -->
+        <div class="pricing-header stagger-child">
+            <span class="pricing-pill">Pricing</span>
+            <h2 class="pricing-title">
+                Transparent, <span class="text-gradient-cyan">Fair Pricing</span>
             </h2>
-            <p class="ps-sub">
-                Pay per hour, per player. No hidden charges. No membership required to walk in.
+            <p class="pricing-subtitle">
+                Pay per hour or go unlimited with a membership. No hidden charges.
             </p>
         </div>
 
-        <!-- Day toggle -->
-        <div class="ps-toggle" role="group" aria-label="Select pricing day">
-            <button
-                class="pst-btn pst-active"
-                id="btnWeekday"
-                onclick="setPricing('weekday')"
-                aria-pressed="true">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2"/>
-                    <line x1="16" y1="2" x2="16" y2="6"/>
-                    <line x1="8"  y1="2" x2="8"  y2="6"/>
-                    <line x1="3"  y1="10" x2="21" y2="10"/>
-                </svg>
-                Weekdays
-            </button>
-            <button
-                class="pst-btn"
-                id="btnWeekend"
-                onclick="setPricing('weekend')"
-                aria-pressed="false">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="5"/>
-                    <line x1="12" y1="1"  x2="12" y2="3"/>
-                    <line x1="12" y1="21" x2="12" y2="23"/>
-                    <line x1="4.22"  y1="4.22"  x2="5.64"  y2="5.64"/>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                    <line x1="1"  y1="12" x2="3"  y2="12"/>
-                    <line x1="21" y1="12" x2="23" y2="12"/>
-                    <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
-                    <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
-                </svg>
-                Weekends
-            </button>
+        <!-- Hourly Pricing -->
+        <div class="pricing-hourly">
+            <div class="pricing-row-header stagger-child">
+                <h3 class="pricing-row-title">Hourly Rates</h3>
+                <div class="pricing-toggle" role="group" aria-label="Select pricing day">
+                    <button class="pricing-toggle-btn active" id="btnWeekday" onclick="setPricing('weekday')">Weekdays</button>
+                    <button class="pricing-toggle-btn" id="btnWeekend" onclick="setPricing('weekend')">Weekends</button>
+                </div>
+            </div>
+
+            <div class="pricing-cards-grid" id="pricingGrid">
+                <div class="pricing-card stagger-child" data-player="1">
+                    <div class="pricing-card-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                    </div>
+                    <p class="pricing-card-label">1 Player</p>
+                    <div class="pricing-card-price">
+                        <span class="pricing-rupee">₹</span>
+                        <span class="pricing-amount" data-weekday="130" data-weekend="150">130</span>
+                        <span class="pricing-per">/hr</span>
+                    </div>
+                    <div class="pricing-card-note" data-weekday="" data-weekend="Weekend Rate"></div>
+                </div>
+
+                <div class="pricing-card stagger-child" data-player="2">
+                    <div class="pricing-card-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><circle cx="15" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-6 7-6"/><path d="M22 20c0-3.5-3-6-7-6"/></svg>
+                    </div>
+                    <p class="pricing-card-label">2 Players</p>
+                    <div class="pricing-card-price">
+                        <span class="pricing-rupee">₹</span>
+                        <span class="pricing-amount" data-weekday="250" data-weekend="270">250</span>
+                        <span class="pricing-per">/hr</span>
+                    </div>
+                    <div class="pricing-card-note" data-weekday="" data-weekend="Weekend Rate"></div>
+                </div>
+
+                <div class="pricing-card stagger-child" data-player="3">
+                    <div class="pricing-card-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="6" r="3"/><circle cx="5" cy="15" r="3"/><circle cx="19" cy="15" r="3"/></svg>
+                    </div>
+                    <p class="pricing-card-label">3 Players</p>
+                    <div class="pricing-card-price">
+                        <span class="pricing-rupee">₹</span>
+                        <span class="pricing-amount" data-weekday="330" data-weekend="400">330</span>
+                        <span class="pricing-per">/hr</span>
+                    </div>
+                    <div class="pricing-card-note" data-weekday="" data-weekend="Weekend Rate"></div>
+                </div>
+
+                <div class="pricing-card stagger-child" data-player="4">
+                    <div class="pricing-card-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="7" r="2.5"/><circle cx="7" cy="17" r="2.5"/><circle cx="17" cy="17" r="2.5"/></svg>
+                    </div>
+                    <p class="pricing-card-label">4 Players</p>
+                    <div class="pricing-card-price">
+                        <span class="pricing-rupee">₹</span>
+                        <span class="pricing-amount" data-weekday="420" data-weekend="520">420</span>
+                        <span class="pricing-per">/hr</span>
+                    </div>
+                    <div class="pricing-card-note" data-weekday="" data-weekend="Weekend Rate"></div>
+                </div>
+            </div>
+
+            <p class="pricing-footnote stagger-child">
+                Mon–Fri: Weekday rates · Sat–Sun: Weekend rates · Minimum 1 hour per booking
+            </p>
         </div>
 
-        <!-- Cards grid -->
-        <div class="pc-grid" id="pricingGrid" data-stagger>
+        <!-- Divider -->
+        <div class="pricing-divider"></div>
 
-            <!-- 1 Player -->
-            <div class="pc-card" data-player="1">
-                <div class="pc-glow"></div>
-                <div class="pc-top">
-                    <div class="pc-avatar">
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <circle cx="12" cy="8" r="4"/>
-                            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-                        </svg>
-                    </div>
-                    <div class="pc-label">Solo Player</div>
-                </div>
-                <div class="pc-price-wrap">
-                    <span class="pc-rupee">₹</span>
-                    <span class="pc-amount" data-weekday="130" data-weekend="150">130</span>
-                    <span class="pc-per">/hr</span>
-                </div>
-                <div class="pc-note" data-weekday="Weekday rate" data-weekend="Weekend rate">Weekday rate</div>
-                <ul class="pc-perks">
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        1 DualSense Controller
-                    </li>
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Full Game Library Access
-                    </li>
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        55" 4K Display
-                    </li>
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Snack Bar Access
-                    </li>
-                </ul>
-                <a href="{% url 'bookings:booking_form' %}" class="pc-btn">Book Solo</a>
+        <!-- Membership Plans -->
+        <div class="pricing-memberships">
+            <div class="pricing-membership-header stagger-child">
+                <span class="pricing-pill-purple">Memberships</span>
+                <h3 class="pricing-membership-title">
+                    Go Unlimited with a <span class="text-gradient-cyan">Monthly Plan</span>
+                </h3>
+                <p class="pricing-membership-subtitle">
+                    Lock in your hours, save more, and access exclusive member perks.
+                </p>
             </div>
 
-            <!-- 2 Players — Popular -->
-            <div class="pc-card pc-popular" data-player="2">
-                <div class="pc-glow"></div>
-                <div class="pc-popular-badge">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    Most Popular
-                </div>
-                <div class="pc-top">
-                    <div class="pc-avatar pc-avatar-popular">
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <circle cx="9"  cy="8" r="3.5"/>
-                            <circle cx="15" cy="8" r="3.5"/>
-                            <path d="M2 20c0-3.5 3-6 7-6"/>
-                            <path d="M22 20c0-3.5-3-6-7-6"/>
-                            <path d="M9 14c1-.3 2-.3 3 0 1-.3 2-.3 3 0"/>
-                        </svg>
+            <div class="pricing-membership-grid">
+
+                <!-- Basic -->
+                <div class="membership-card stagger-child">
+                    <div class="mc-header">
+                        <h4 class="mc-name">Basic</h4>
+                        <p class="mc-tagline">Perfect for casual gamers</p>
                     </div>
-                    <div class="pc-label">Duo Players</div>
-                </div>
-                <div class="pc-price-wrap">
-                    <span class="pc-rupee">₹</span>
-                    <span class="pc-amount" data-weekday="250" data-weekend="270">250</span>
-                    <span class="pc-per">/hr</span>
-                </div>
-                <div class="pc-note" data-weekday="Weekday rate" data-weekend="Weekend rate">Weekday rate</div>
-                <ul class="pc-perks">
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        2 DualSense Controllers
-                    </li>
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Full Game Library Access
-                    </li>
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        55" 4K Display
-                    </li>
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Snack Bar Access
-                    </li>
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Priority Booking
-                    </li>
-                </ul>
-                <a href="{% url 'bookings:booking_form' %}" class="pc-btn pc-btn-popular">Book for Two</a>
-            </div>
-
-            <!-- 3 Players -->
-            <div class="pc-card" data-player="3">
-                <div class="pc-glow"></div>
-                <div class="pc-top">
-                    <div class="pc-avatar">
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <circle cx="12" cy="6" r="3"/>
-                            <circle cx="5"  cy="15" r="3"/>
-                            <circle cx="19" cy="15" r="3"/>
-                            <path d="M9 9.5C10 8 11 7.5 12 7.5s2 .5 3 2"/>
-                            <path d="M5 18v.5M19 18v.5"/>
-                        </svg>
+                    <div class="mc-price">
+                        <span class="mc-amount mc-cyan">₹1,199</span>
+                        <span class="mc-period">/month</span>
                     </div>
-                    <div class="pc-label">Trio Squad</div>
-                </div>
-                <div class="pc-price-wrap">
-                    <span class="pc-rupee">₹</span>
-                    <span class="pc-amount" data-weekday="330" data-weekend="400">330</span>
-                    <span class="pc-per">/hr</span>
-                </div>
-                <div class="pc-note" data-weekday="Weekday rate" data-weekend="Weekend rate">Weekday rate</div>
-                <ul class="pc-perks">
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        3 DualSense Controllers
-                    </li>
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Full Game Library Access
-                    </li>
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        55" 4K Display
-                    </li>
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Snack Bar Access
-                    </li>
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Split Billing Option
-                    </li>
-                </ul>
-                <a href="{% url 'bookings:booking_form' %}" class="pc-btn">Book Trio</a>
-            </div>
-
-            <!-- 4 Players -->
-            <div class="pc-card pc-squad" data-player="4">
-                <div class="pc-glow"></div>
-                <div class="pc-top">
-                    <div class="pc-avatar pc-avatar-squad">
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <circle cx="7"  cy="7"  r="2.5"/>
-                            <circle cx="17" cy="7"  r="2.5"/>
-                            <circle cx="7"  cy="17" r="2.5"/>
-                            <circle cx="17" cy="17" r="2.5"/>
-                        </svg>
+                    <div class="mc-hours-box">
+                        <div class="mc-hours-row">
+                            <span class="mc-hours-label">Total Hours</span>
+                            <span class="mc-hours-val mc-cyan">10 hrs</span>
+                        </div>
+                        <div class="mc-hours-divider"></div>
+                        <div class="mc-hours-row">
+                            <span class="mc-hours-label">Validity</span>
+                            <span class="mc-hours-val">30 Days</span>
+                        </div>
                     </div>
-                    <div class="pc-label">Full Squad</div>
+                    <ul class="mc-features">
+                        <li>10 Gaming Hours</li>
+                        <li>Weekdays Only (Mon–Fri)</li>
+                        <li>All PS5 Games</li>
+                        <li>Standard Seating</li>
+                        <li>Online Booking</li>
+                    </ul>
+                    <a href="{% url 'memberships:plan_list' %}" class="mc-btn mc-btn-ghost">Get Basic</a>
                 </div>
-                <div class="pc-price-wrap">
-                    <span class="pc-rupee">₹</span>
-                    <span class="pc-amount" data-weekday="420" data-weekend="520">420</span>
-                    <span class="pc-per">/hr</span>
+
+                <!-- Standard -->
+                <div class="membership-card membership-card-featured stagger-child">
+                    <div class="mc-badge mc-badge-popular">Most Popular</div>
+                    <div class="mc-header">
+                        <h4 class="mc-name mc-name-purple">Standard</h4>
+                        <p class="mc-tagline">Most popular choice</p>
+                    </div>
+                    <div class="mc-price">
+                        <span class="mc-amount mc-purple">₹2,499</span>
+                        <span class="mc-period">/month</span>
+                    </div>
+                    <div class="mc-hours-box">
+                        <div class="mc-hours-row">
+                            <span class="mc-hours-label">Total Hours</span>
+                            <span class="mc-hours-val mc-purple">30 hrs</span>
+                        </div>
+                        <div class="mc-hours-divider"></div>
+                        <div class="mc-hours-row">
+                            <span class="mc-hours-label">Validity</span>
+                            <span class="mc-hours-val">30 Days</span>
+                        </div>
+                    </div>
+                    <ul class="mc-features">
+                        <li>25 Weekday Hours</li>
+                        <li>5 Weekend Hours</li>
+                        <li>All PS5 Games</li>
+                        <li>Priority Seating</li>
+                        <li>Online Booking</li>
+                        <li>Member Discounts</li>
+                    </ul>
+                    <a href="{% url 'memberships:plan_list' %}" class="mc-btn mc-btn-purple">Get Standard</a>
                 </div>
-                <div class="pc-note" data-weekday="Weekday rate" data-weekend="Weekend rate">Weekday rate</div>
-                <ul class="pc-perks">
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        4 DualSense Controllers
-                    </li>
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Full Game Library Access
-                    </li>
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        55" 4K Display
-                    </li>
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Snack Bar Access
-                    </li>
-                    <li>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Squad Discount Applied
-                    </li>
-                </ul>
-                <a href="{% url 'bookings:booking_form' %}" class="pc-btn pc-btn-squad">Book Squad</a>
+
+                <!-- Pro -->
+                <div class="membership-card membership-card-featured stagger-child">
+                    <div class="mc-badge mc-badge-pro">Best Value</div>
+                    <div class="mc-header">
+                        <h4 class="mc-name mc-name-orange">Pro</h4>
+                        <p class="mc-tagline">Maximum value for hardcore gamers</p>
+                    </div>
+                    <div class="mc-price">
+                        <span class="mc-amount mc-orange">₹3,999</span>
+                        <span class="mc-period">/month</span>
+                    </div>
+                    <div class="mc-hours-box">
+                        <div class="mc-hours-row">
+                            <span class="mc-hours-label">Total Hours</span>
+                            <span class="mc-hours-val mc-orange">45 hrs</span>
+                        </div>
+                        <div class="mc-hours-divider"></div>
+                        <div class="mc-hours-row">
+                            <span class="mc-hours-label">Validity</span>
+                            <span class="mc-hours-val">30 Days</span>
+                        </div>
+                    </div>
+                    <ul class="mc-features">
+                        <li>40 Hours + 5 Bonus = 45 Total</li>
+                        <li>Weekdays + Weekends</li>
+                        <li>All PS5 Games</li>
+                        <li>VIP Seating</li>
+                        <li>Tournament Priority</li>
+                        <li>Member Discounts</li>
+                        <li>Dedicated Support</li>
+                    </ul>
+                    <a href="{% url 'memberships:plan_list' %}" class="mc-btn mc-btn-orange">Get Pro</a>
+                </div>
+
             </div>
-
-        </div>
-
-        <!-- Bottom note -->
-        <div class="ps-footnote">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="8"  x2="12" y2="12"/>
-                <line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-            Minimum booking 1 hour &nbsp;·&nbsp; 30% advance to confirm slot &nbsp;·&nbsp; Balance payable at venue
         </div>
 
     </div>
 </section>
 
 <script>
-/* Pricing toggle — inline so no extra JS file needed */
 (function () {
     var current = 'weekday';
-
     window.setPricing = function (mode) {
         if (mode === current) return;
         current = mode;
-
-        /* Update toggle button states */
-        document.getElementById('btnWeekday').classList.toggle('pst-active', mode === 'weekday');
-        document.getElementById('btnWeekend').classList.toggle('pst-active', mode === 'weekend');
-        document.getElementById('btnWeekday').setAttribute('aria-pressed', mode === 'weekday');
-        document.getElementById('btnWeekend').setAttribute('aria-pressed', mode === 'weekend');
-
-        /* Animate each price out → update → in */
-        document.querySelectorAll('.pc-amount').forEach(function (el) {
-            el.classList.add('pc-flip-out');
-            setTimeout(function () {
-                el.textContent = el.dataset[mode];
-                el.classList.remove('pc-flip-out');
-                el.classList.add('pc-flip-in');
-                setTimeout(function () { el.classList.remove('pc-flip-in'); }, 300);
-            }, 180);
-        });
-
-        /* Update the day label text */
-        document.querySelectorAll('.pc-note').forEach(function (el) {
+        document.getElementById('btnWeekday').classList.toggle('active', mode === 'weekday');
+        document.getElementById('btnWeekend').classList.toggle('active', mode === 'weekend');
+        document.querySelectorAll('.pricing-amount').forEach(function (el) {
             el.textContent = el.dataset[mode];
+        });
+        document.querySelectorAll('.pricing-card-note').forEach(function (el) {
+            var weekend = el.dataset.weekend;
+            el.textContent = mode === 'weekend' ? weekend : '';
         });
     };
 }());

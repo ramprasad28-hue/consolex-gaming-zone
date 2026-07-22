@@ -4,61 +4,57 @@
 {% block title %}CONSOLEX Gaming Zone — Play Beyond{% endblock %}
 
 {% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/features.css' %}">
   <link rel="stylesheet" href="{% static 'css/phase4_6.css' %}">
   <link rel="stylesheet" href="{% static 'css/phase7.css' %}">
+  <link rel="stylesheet" href="{% static 'css/tournament.css' %}">
 {% endblock %}
 
 {% block content %}
 
-  <!-- ① HERO ───────────────────────────────────────────── -->
+  <!-- HERO -->
   {% include "components/hero.html" %}
 
-  <!-- ② GALLERY ────────────────────────────────────────── -->
-  {% include "components/gallery.html" %}
+  <!-- FEATURES -->
+  {% include "components/features.html" %}
 
-  <!-- ③ PRICING ──────────────────────────────────────── -->
+  <!-- PRICING -->
   {% include "components/pricing.html" %}
 
-  <!-- ④ MEMBERSHIP PLANS ─────────────────────────────── -->
-  {% include "components/membership.html" %}
-
-  <!-- ⑤ GAMES LIBRARY ────────────────────────────────── -->
+  <!-- GAME LIBRARY -->
   {% include "components/games.html" %}
 
-  <!-- ⑥ WHY CHOOSE US ────────────────────────────────── -->
-  {% include "components/why_choose_us.html" %}
+  <!-- TOURNAMENTS -->
+  {% include "components/tournament.html" %}
 
-  <!-- ⑦ BOOKING PREVIEW / HOW IT WORKS ───────────────── -->
-  {% include "components/booking_preview.html" %}
-
-  <!-- ⑧ TESTIMONIALS ─────────────────────────────────── -->
+  <!-- TESTIMONIALS -->
   {% include "components/testimonials.html" %}
 
-  <!-- ⑨ FAQ ──────────────────────────────────────────── -->
+  <!-- FAQ -->
   {% include "components/faq.html" %}
 
-  <!-- ⑩ INSTAGRAM CTA + GOOGLE REVIEW ────────────────── -->
-  {% include "components/social_cta.html" %}
-
-  <!-- ⑪ WHATSAPP FLOATING BUTTON ─────────────────────── -->
+  <!-- WHATSAPP FLOATING BUTTON -->
   {% include "components/whatsapp_btn.html" %}
 
 {% endblock %}
 
 {% block extra_scripts %}
-  <script src="{% static 'js/phase4_6.js' %}" defer></script>
-  <script src="{% static 'js/phase7.js' %}" defer></script>
-  <script type="module">
-      import { initScene } from '{% static "js/three-scene.js" %}';
-      const canvas = document.getElementById('heroCanvas');
-      if (canvas) {
-          try {
-              initScene(canvas);
-              document.getElementById('hero').classList.add('hero-3d-loaded');
-          } catch (e) {
-              console.warn('WebGL not available, falling back to CSS.', e);
-              document.getElementById('hero').classList.add('hero-no-webgl');
-          }
-      }
+  <script>
+  (function () {
+      /* Stagger animation observer — fires for all .stagger-child elements */
+      var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                  var children = entry.target.querySelectorAll('.stagger-child');
+                  children.forEach(function (child, i) {
+                      setTimeout(function () { child.classList.add('is-visible'); }, i * 80);
+                  });
+              }
+          });
+      }, { threshold: 0.05 });
+      document.querySelectorAll('.stagger-child').forEach(function (el) {
+          observer.observe(el);
+      });
+  }());
   </script>
 {% endblock %}
