@@ -15,10 +15,20 @@
             <p class="faq-subtitle">Everything you need to know before you play.</p>
         </div>
 
-        <!-- FAQ list -->
-        <div class="faq-list">
+        <!-- Category filter -->
+        <div class="faq-filters stagger-child">
+            <button class="faq-filter active" onclick="filterFaq('all', this)">All</button>
+            <button class="faq-filter" onclick="filterFaq('Booking', this)">Booking</button>
+            <button class="faq-filter" onclick="filterFaq('Membership', this)">Membership</button>
+            <button class="faq-filter" onclick="filterFaq('Payments', this)">Payments</button>
+            <button class="faq-filter" onclick="filterFaq('Refunds', this)">Refunds</button>
+            <button class="faq-filter" onclick="filterFaq('Rules', this)">Rules</button>
+        </div>
 
-            <div class="faq-item stagger-child" data-faq="1">
+        <!-- FAQ list -->
+        <div class="faq-list" id="faqList">
+
+            <div class="faq-item stagger-child" data-faq="1" data-category="Booking">
                 <button class="faq-question" onclick="toggleFaq(1)">
                     <div class="faq-q-inner">
                         <span class="faq-cat-tag">Booking</span>
@@ -33,7 +43,7 @@
                 </div>
             </div>
 
-            <div class="faq-item stagger-child" data-faq="2">
+            <div class="faq-item stagger-child" data-faq="2" data-category="Booking">
                 <button class="faq-question" onclick="toggleFaq(2)">
                     <div class="faq-q-inner">
                         <span class="faq-cat-tag">Booking</span>
@@ -48,7 +58,7 @@
                 </div>
             </div>
 
-            <div class="faq-item stagger-child" data-faq="3">
+            <div class="faq-item stagger-child" data-faq="3" data-category="Membership">
                 <button class="faq-question" onclick="toggleFaq(3)">
                     <div class="faq-q-inner">
                         <span class="faq-cat-tag">Membership</span>
@@ -63,7 +73,7 @@
                 </div>
             </div>
 
-            <div class="faq-item stagger-child" data-faq="4">
+            <div class="faq-item stagger-child" data-faq="4" data-category="Membership">
                 <button class="faq-question" onclick="toggleFaq(4)">
                     <div class="faq-q-inner">
                         <span class="faq-cat-tag">Membership</span>
@@ -78,7 +88,7 @@
                 </div>
             </div>
 
-            <div class="faq-item stagger-child" data-faq="5">
+            <div class="faq-item stagger-child" data-faq="5" data-category="Payments">
                 <button class="faq-question" onclick="toggleFaq(5)">
                     <div class="faq-q-inner">
                         <span class="faq-cat-tag">Payments</span>
@@ -93,7 +103,7 @@
                 </div>
             </div>
 
-            <div class="faq-item stagger-child" data-faq="6">
+            <div class="faq-item stagger-child" data-faq="6" data-category="Refunds">
                 <button class="faq-question" onclick="toggleFaq(6)">
                     <div class="faq-q-inner">
                         <span class="faq-cat-tag">Refunds</span>
@@ -108,7 +118,7 @@
                 </div>
             </div>
 
-            <div class="faq-item stagger-child" data-faq="7">
+            <div class="faq-item stagger-child" data-faq="7" data-category="Rules">
                 <button class="faq-question" onclick="toggleFaq(7)">
                     <div class="faq-q-inner">
                         <span class="faq-cat-tag">Rules</span>
@@ -123,7 +133,7 @@
                 </div>
             </div>
 
-            <div class="faq-item stagger-child" data-faq="8">
+            <div class="faq-item stagger-child" data-faq="8" data-category="Rules">
                 <button class="faq-question" onclick="toggleFaq(8)">
                     <div class="faq-q-inner">
                         <span class="faq-cat-tag">Rules</span>
@@ -167,6 +177,17 @@
             el.classList.remove('faq-open');
         });
         if (!wasOpen) item.classList.add('faq-open');
+    };
+
+    window.filterFaq = function (cat, btn) {
+        document.querySelectorAll('.faq-filter').forEach(function (b) {
+            b.classList.remove('active');
+        });
+        btn.classList.add('active');
+        document.querySelectorAll('.faq-item').forEach(function (item) {
+            var show = cat === 'all' || item.dataset.category === cat;
+            item.style.display = show ? '' : 'none';
+        });
     };
 }());
 </script>

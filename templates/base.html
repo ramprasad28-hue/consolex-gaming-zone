@@ -7,26 +7,15 @@
     <title>{% block title %}CONSOLEX Gaming Zone{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/navbar_footer.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/hero.css' %}">
     <link rel="stylesheet" href="{% static 'css/pricing.css' %}">
-    <link rel="stylesheet" href="{% static 'css/membership.css' %}">
     <link rel="stylesheet" href="{% static 'css/games.css' %}">
-    <link rel="stylesheet" href="{% static 'css/gallery.css' %}">
-    <link rel="stylesheet" href="{% static 'css/navbar_footer.css' %}">
     <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
-    <link rel="stylesheet" href="{% static 'css/3d.css' %}">
     {% block extra_css %}{% endblock %}
     {% block extra_head %}{% endblock %}
-    <script type="importmap">
-    {
-        "imports": {
-            "three": "https://esm.sh/three@0.170.0",
-            "three/addons/": "https://esm.sh/three@0.170.0/examples/jsm/"
-        }
-    }
-    </script>
 </head>
 <body>
     {% include 'components/navbar.html' %}
@@ -36,10 +25,6 @@
     </main>
 
     {% include 'components/footer.html' %}
-    <script src="{% static 'js/three-loader.js' %}"></script>
-    <script src="{% static 'js/hero.js' %}"></script>
-    <script src="{% static 'js/three-scroll.js' %}" defer></script>
-    <script src="{% static 'js/three-magnetic.js' %}" defer></script>
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>
