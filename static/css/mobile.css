@@ -1,3 +1,7 @@
+/* ============================================================
+   CONSOLEX — mobile.css  (responsive overrides)
+   Uses current class names from reference-matched templates.
+   ============================================================ */
 
 /* ── BASE RESETS ────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
@@ -9,67 +13,34 @@ img, video { max-width: 100%; height: auto; display: block; }
 /* Prevent font size inflation on iOS */
 body { -webkit-text-size-adjust: 100%; }
 
-/* ── NAVBAR MOBILE ──────────────────────────────────────── */
-@media (max-width: 768px) {
-  .nav-links {
-    position: fixed;
-    inset: 0;
-    background: rgba(5,5,16,0.97);
-    backdrop-filter: blur(20px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2rem;
-    transform: translateX(100%);
-    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-    z-index: 998;
-  }
-
-  .nav-links.open { transform: translateX(0); }
-
-  .nav-links a {
-    font-size: 1.1rem;
-    letter-spacing: 0.12em;
-  }
-
-  .nav-cta { display: none; }
-
-  .nav-hamburger { display: flex; }
-}
-
 /* ── HERO MOBILE ────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .hero-section {
-    padding: 0 1rem;
-    min-height: 100svh;   /* use svh for mobile browsers with toolbars */
+  .hero {
+    min-height: 100svh;
   }
 
-  .hero-title {
-    font-size: clamp(2rem, 11vw, 3rem);
-    letter-spacing: 0.05em;
+  .hero-content {
+    padding: 40px 0;
   }
 
-  .hero-tagline {
-    font-size: clamp(0.7rem, 3vw, 0.85rem);
-    letter-spacing: 0.18em;
+  .hero-title .hero-line-1,
+  .hero-title .hero-line-2 {
+    font-size: clamp(2.5rem, 12vw, 4rem);
   }
 
   .hero-subtitle {
-    font-size: 0.95rem;
-    padding: 0 0.5rem;
+    font-size: 16px;
+    padding: 0 0.25rem;
   }
 
-  .hero-actions {
+  .hero-ctas {
     flex-direction: column;
-    align-items: center;
-    gap: 0.85rem;
-    width: 100%;
-    padding: 0 1rem;
+    align-items: stretch;
+    gap: 12px;
   }
 
-  .hero-actions .btn-primary,
-  .hero-actions .btn-outline {
+  .hero-btn-primary,
+  .hero-btn-ghost {
     width: 100%;
     justify-content: center;
     text-align: center;
@@ -77,156 +48,285 @@ body { -webkit-text-size-adjust: 100%; }
 
   .hero-stats {
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 24px;
     justify-content: center;
   }
 
-  .ticker-tape {
-    font-size: 0.65rem;
-  }
-}
-
-/* ── PRICING MOBILE ─────────────────────────────────────── */
-@media (max-width: 900px) {
-  .pricing-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 560px) {
-  .pricing-grid {
-    grid-template-columns: 1fr;
-    max-width: 380px;
-    margin-left: auto;
-    margin-right: auto;
+  .hero-blob {
+    opacity: 0.15;
   }
 
-  .pricing-toggle-wrap {
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: center;
-  }
-}
-
-/* ── MEMBERSHIP MOBILE ──────────────────────────────────── */
-@media (max-width: 900px) {
-  .membership-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .membership-grid .card-pro {
-    grid-column: span 2;
-    max-width: 400px;
-    margin: 0 auto;
-  }
-}
-
-@media (max-width: 560px) {
-  .membership-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .membership-grid .card-pro {
-    grid-column: auto;
-    max-width: 100%;
-  }
-}
-
-/* ── GAMES MOBILE ───────────────────────────────────────── */
-@media (max-width: 900px) {
-  .games-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .hero-grid-lines {
+    opacity: 0.3;
   }
 }
 
 @media (max-width: 480px) {
-  .games-filter {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: center;
+  .hero-badges {
+    flex-direction: column;
+    gap: 8px;
   }
 
-  .filter-btn {
-    font-size: 0.65rem;
-    padding: 0.45rem 0.9rem;
+  .hero-stat-value {
+    font-size: 20px;
   }
 
-  .games-grid {
+  .hero-stat-label {
+    font-size: 10px;
+  }
+}
+
+/* ── FEATURES MOBILE ────────────────────────────────────── */
+@media (max-width: 768px) {
+  .features-section {
+    padding: 64px 16px;
+  }
+
+  .features-header {
+    margin-bottom: 40px;
+  }
+
+  .features-card {
+    min-height: 180px;
+  }
+
+  .features-card-lg {
+    min-height: 220px;
+  }
+}
+
+/* ── PRICING MOBILE ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  .pricing-section {
+    padding: 64px 16px;
+  }
+
+  .pricing-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .pricing-row-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pricing-cards-grid {
     grid-template-columns: 1fr;
     max-width: 360px;
     margin-left: auto;
     margin-right: auto;
   }
+
+  .pricing-membership-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .membership-card {
+    padding: 24px;
+  }
+}
+
+/* ── GAMES MOBILE ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  .games-section {
+    padding: 64px 16px;
+  }
+
+  .games-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .games-filters {
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .games-filter {
+    font-size: 12px;
+    padding: 8px 14px;
+  }
+
+  .games-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}
+
+/* ── TOURNAMENT MOBILE ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .tournament-section {
+    padding: 64px 16px;
+  }
+
+  .tourney-card-img {
+    height: 150px;
+  }
+
+  .tourney-card-body {
+    padding: 20px;
+  }
+
+  .tourney-card-meta {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .lb-row {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .lb-header {
+    padding: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
 }
 
 /* ── TESTIMONIALS MOBILE ────────────────────────────────── */
 @media (max-width: 768px) {
-  .testimonials-stats {
-    padding: 1.25rem 1rem;
+  .testimonials-section {
+    padding: 64px 16px;
   }
 
-  .stat-number {
-    font-size: 2rem;
+  .testi-rating-box {
+    padding: 10px 16px;
+    gap: 12px;
+  }
+
+  .testi-rating-num {
+    font-size: 1.2rem;
+  }
+
+  .testi-card {
+    padding: 20px;
+  }
+
+  .testi-cta-box {
+    padding: 24px;
+    gap: 16px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .testi-cta-text {
+    text-align: center;
   }
 }
 
-/* ── PAYMENT PAGE MOBILE ────────────────────────────────── */
-@media (max-width: 480px) {
-  .payment-summary-card {
-    padding: 1.25rem 1rem;
+/* ── FAQ MOBILE ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .faq-section {
+    padding: 64px 16px;
   }
 
-  .btn-pay {
-    font-size: 0.72rem;
-    padding: 0.9rem;
+  .faq-filters {
+    gap: 6px;
+  }
+
+  .faq-filter {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .faq-question {
+    padding: 16px;
+  }
+
+  .faq-q-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .faq-cta-box {
+    padding: 20px;
+    gap: 16px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .faq-cta-text {
+    text-align: center;
   }
 }
 
 /* ── FOOTER MOBILE ──────────────────────────────────────── */
 @media (max-width: 768px) {
-  .footer-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
+  .site-footer {
+    padding: 48px 16px 24px;
   }
 
-  .footer-brand {
-    grid-column: span 2;
+  .footer-links-group {
+    gap: 32px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .footer-socials {
+    gap: 12px;
   }
 }
 
 @media (max-width: 480px) {
-  .footer-grid {
+  .footer-brand {
+    max-width: 100%;
+  }
+}
+
+/* ── AUTH PAGE MOBILE ───────────────────────────────────── */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1.5rem;
+  }
+}
+
+/* ── BOOKING PAGE MOBILE ────────────────────────────────── */
+@media (max-width: 768px) {
+  .booking-form-wrap {
     grid-template-columns: 1fr;
   }
 
-  .footer-brand {
-    grid-column: auto;
+  .payment-wrap {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
 /* ── TOUCH TARGETS ──────────────────────────────────────── */
 @media (max-width: 768px) {
   a, button {
-    min-height: 44px;    /* Apple HIG minimum touch target */
+    min-height: 44px;
     min-width: 44px;
   }
 
   /* Override for inline/icon elements */
-  .testimonial-platform,
-  .filter-btn {
+  .games-filter,
+  .faq-filter,
+  .hf-star,
+  .hero-pill-dot {
     min-height: unset;
     min-width: unset;
-  }
-}
-
-/* ── SCROLL SNAP for mobile game cards ─────────────────── */
-@media (max-width: 480px) {
-  .games-grid {
-    scroll-snap-type: y mandatory;
-  }
-
-  .game-card {
-    scroll-snap-align: start;
   }
 }
 
