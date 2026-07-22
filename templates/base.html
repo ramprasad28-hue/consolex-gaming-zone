@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{% static 'css/games.css' %}">
     <link rel="stylesheet" href="{% static 'css/navbar_footer.css' %}">
     <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/3d.css' %}">
     {% block extra_css %}{% endblock %}
     {% block extra_head %}{% endblock %}
     <script type="importmap">
@@ -34,7 +35,10 @@
     </main>
 
     {% include 'components/footer.html' %}
+    <script src="{% static 'js/three-loader.js' %}"></script>
     <script src="{% static 'js/hero.js' %}"></script>
+    <script src="{% static 'js/three-scroll.js' %}" defer></script>
+    <script src="{% static 'js/three-magnetic.js' %}" defer></script>
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>

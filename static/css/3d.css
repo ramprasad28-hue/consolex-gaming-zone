@@ -1,0 +1,321 @@
+/* ============================================================
+   CONSOLEX — 3d.css
+   Master3D experience layer — perspective, glass, reveals,
+   magnetic buttons, scroll-driven depth, PS5 gaming aesthetic
+   ============================================================ */
+
+/* ── Global perspective ──────────────────────────────────── */
+.scene-perspective {
+    perspective: 1200px;
+    perspective-origin: 50% 50%;
+}
+
+/* ── 3D depth layers ─────────────────────────────────────── */
+.depth-layer {
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+.depth-layer-1 { transform: translateZ(20px); }
+.depth-layer-2 { transform: translateZ(40px); }
+.depth-layer-3 { transform: translateZ(60px); }
+
+/* ── Glass morphism cards ────────────────────────────────── */
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+.glass-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 1px;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.12) 0%,
+        transparent 50%,
+        rgba(0, 240, 255, 0.08) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+/* ── Magnetic button base ────────────────────────────────── */
+.magnetic {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+}
+.magnetic-inner {
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+}
+
+/* ── Scroll reveal system ────────────────────────────────── */
+[data-reveal] {
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+        opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-reveal="fade-up"].revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+[data-reveal="fade-left"] {
+    transform: translateX(-60px);
+}
+[data-reveal="fade-left"].revealed {
+    opacity: 1;
+    transform: translateX(0);
+}
+[data-reveal="fade-right"] {
+    transform: translateX(60px);
+}
+[data-reveal="fade-right"].revealed {
+    opacity: 1;
+    transform: translateX(0);
+}
+[data-reveal="scale"] {
+    transform: scale(0.85);
+}
+[data-reveal="scale"].revealed {
+    opacity: 1;
+    transform: scale(1);
+}
+[data-reveal="rotate"] {
+    transform: perspective(800px) rotateY(-12deg) translateX(-40px);
+}
+[data-reveal="rotate"].revealed {
+    opacity: 1;
+    transform: perspective(800px) rotateY(0) translateX(0);
+}
+/* Stagger delays */
+[data-reveal-delay="100"] { transition-delay: 0.1s; }
+[data-reveal-delay="200"] { transition-delay: 0.2s; }
+[data-reveal-delay="300"] { transition-delay: 0.3s; }
+[data-reveal-delay="400"] { transition-delay: 0.4s; }
+[data-reveal-delay="500"] { transition-delay: 0.5s; }
+[data-reveal-delay="600"] { transition-delay: 0.6s; }
+
+/* ── Section parallax wrapper ────────────────────────────── */
+.parallax-section {
+    position: relative;
+    overflow: hidden;
+}
+.parallax-bg {
+    position: absolute;
+    inset: -20%;
+    z-index: 0;
+    pointer-events: none;
+    will-change: transform;
+}
+.parallax-content {
+    position: relative;
+    z-index: 1;
+}
+
+/* ── 3D text glow effect ─────────────────────────────────── */
+.text-glow-3d {
+    text-shadow:
+        0 0 10px currentColor,
+        0 0 30px currentColor,
+        0 0 60px currentColor;
+    transition: text-shadow 0.4s ease;
+}
+.text-glow-3d:hover {
+    text-shadow:
+        0 0 15px currentColor,
+        0 0 40px currentColor,
+        0 0 80px currentColor,
+        0 0 120px currentColor;
+}
+
+/* ── Floating animation (3D) ─────────────────────────────── */
+@keyframes float3d {
+    0%, 100% {
+        transform: translateY(0) rotateX(0) rotateY(0);
+    }
+    25% {
+        transform: translateY(-12px) rotateX(2deg) rotateY(1deg);
+    }
+    50% {
+        transform: translateY(-6px) rotateX(-1deg) rotateY(-2deg);
+    }
+    75% {
+        transform: translateY(-14px) rotateX(1deg) rotateY(1deg);
+    }
+}
+.float-3d {
+    animation: float3d 6s ease-in-out infinite;
+}
+
+/* ── Neon border pulse ───────────────────────────────────── */
+@keyframes neonPulse {
+    0%, 100% {
+        box-shadow:
+            0 0 5px var(--neon-color, #00f0ff),
+            0 0 15px var(--neon-color, #00f0ff),
+            inset 0 0 5px var(--neon-color, #00f0ff);
+    }
+    50% {
+        box-shadow:
+            0 0 10px var(--neon-color, #00f0ff),
+            0 0 30px var(--neon-color, #00f0ff),
+            0 0 60px var(--neon-color, #00f0ff),
+            inset 0 0 10px var(--neon-color, #00f0ff);
+    }
+}
+.neon-border {
+    border: 1px solid var(--neon-color, #00f0ff);
+    animation: neonPulse 3s ease-in-out infinite;
+}
+
+/* ── Holographic shimmer ─────────────────────────────────── */
+@keyframes holoShimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+.holo-shimmer {
+    background: linear-gradient(
+        110deg,
+        transparent 20%,
+        rgba(0, 240, 255, 0.08) 40%,
+        rgba(191, 0, 255, 0.08) 50%,
+        rgba(255, 107, 0, 0.08) 60%,
+        transparent 80%
+    );
+    background-size: 200% 100%;
+    animation: holoShimmer 4s linear infinite;
+}
+
+/* ── 3D card hover lift ──────────────────────────────────── */
+.card-3d-lift {
+    transition:
+        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.4s ease;
+    transform-style: preserve-3d;
+}
+.card-3d-lift:hover {
+    transform: translateY(-12px) rotateX(2deg) rotateY(-1deg) scale(1.02);
+    box-shadow:
+        0 30px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(0, 240, 255, 0.1);
+}
+
+/* ── PS5-style gradient strips ───────────────────────────── */
+.ps5-strip {
+    position: relative;
+    overflow: hidden;
+}
+.ps5-strip::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+        90deg,
+        #00f0ff,
+        #bf00ff,
+        #ff6b00,
+        #00f0ff
+    );
+    background-size: 200% 100%;
+    animation: stripFlow 4s linear infinite;
+}
+@keyframes stripFlow {
+    from { background-position: 0% 0; }
+    to { background-position: 200% 0; }
+}
+
+/* ── Interactive glow cursor ─────────────────────────────── */
+.glow-cursor {
+    position: relative;
+}
+.glow-cursor::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        rgba(0, 240, 255, 0.12) 0%,
+        transparent 70%
+    );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+.glow-cursor:hover::after {
+    opacity: 1;
+}
+
+/* ── 3D section divider ──────────────────────────────────── */
+.section-divider-3d {
+    position: relative;
+    height: 80px;
+    overflow: hidden;
+}
+.section-divider-3d::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(0, 240, 255, 0.03) 50%,
+        transparent 100%
+    );
+    transform: perspective(400px) rotateX(45deg);
+    transform-origin: center top;
+}
+
+/* ── Loading spinner (3D) ────────────────────────────────── */
+@keyframes spin3d {
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
+}
+.spin-3d {
+    animation: spin3d 2s linear infinite;
+    transform-style: preserve-3d;
+}
+
+/* ── Tilted perspective on scroll ────────────────────────── */
+.tilt-on-scroll {
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Reduced motion ──────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+    .float-3d,
+    .spin-3d,
+    .neon-border,
+    .holo-shimmer,
+    .ps5-strip::after {
+        animation: none;
+    }
+    .magnetic {
+        transition: none;
+    }
+}

@@ -2,8 +2,9 @@
    CONSOLEX — three-scene.js
    Immersive 3D hero scene built with Three.js
    - Procedural PS5 console model
+   - Procedural DualSense controller
    - Floating game discs
-   - Particle field
+   - Particle field + environment orbs
    - Dynamic cyan / purple / orange lighting
    - UnrealBloom post-processing
    - Mouse-reactive camera parallax
@@ -21,7 +22,7 @@ const ORANGE  = 0xff6b00;
 const DARK    = 0x080810;
 
 let scene, camera, renderer, composer;
-let ps5Group, discs = [], particleSystem;
+let ps5Group, controllerGroup, discs = [], particleSystem, envOrbs = [];
 let mouse = { x: 0, y: 0, tx: 0, ty: 0 };
 let clock;
 let animationId;
@@ -71,8 +72,10 @@ export function initScene(canvas) {
     /* Build the scene */
     createLights();
     createPS5();
+    createController();
     createGameDiscs();
     createParticleField();
+    createEnvironmentOrbs();
     createGridFloor();
 
     /* Events */
@@ -199,6 +202,114 @@ function createPS5() {
     scene.add(ps5Group);
 }
 
+/* ── DualSense Controller (procedural geometry) ──────────── */
+function createController() {
+    controllerGroup = new THREE.Group();
+
+    const bodyMat = new THREE.MeshStandardMaterial({
+        color: 0x1a1a24,
+        roughness: 0.35,
+        metalness: 0.7,
+    });
+    const whiteMat = new THREE.MeshStandardMaterial({
+        color: 0xe0e0e8,
+        roughness: 0.4,
+        metalness: 0.4,
+    });
+    const btnMat = new THREE.MeshStandardMaterial({
+        color: 0x0a0a12,
+        roughness: 0.2,
+        metalness: 0.8,
+    });
+    const glowMat = new THREE.MeshStandardMaterial({
+        color: CYAN,
+        emissive: CYAN,
+        emissiveIntensity: 3,
+        roughness: 0,
+        metalness: 1,
+    });
+
+    /* Main body — rounded rectangle approximated with box */
+    const bodyGeo = new THREE.BoxGeometry(2.4, 0.35, 1.2, 4, 1, 4);
+    const pos = bodyGeo.attributes.position;
+    for (let i = 0; i < pos.count; i++) {
+        const x = pos.getX(i);
+        const z = pos.getZ(i);
+        /* Round the corners */
+        const edgeX = Math.max(0, Math.abs(x) - 0.9) * 1.2;
+        const edgeZ = Math.max(0, Math.abs(z) - 0.4) * 0.8;
+        const round = Math.sqrt(edgeX * edgeX + edgeZ * edgeZ);
+        pos.setY(i, pos.getY(i) - round * 0.15);
+    }
+    bodyGeo.computeVertexNormals();
+    const body = new THREE.Mesh(bodyGeo, bodyMat);
+    controllerGroup.add(body);
+
+    /* Left grip */
+    const gripGeo = new THREE.CylinderGeometry(0.28, 0.22, 0.5, 12);
+    const gripL = new THREE.Mesh(gripGeo, whiteMat);
+    gripL.position.set(-0.85, -0.25, 0.35);
+    gripL.rotation.x = 0.3;
+    controllerGroup.add(gripL);
+
+    /* Right grip */
+    const gripR = new THREE.Mesh(gripGeo, whiteMat);
+    gripR.position.set(0.85, -0.25, 0.35);
+    gripR.rotation.x = 0.3;
+    controllerGroup.add(gripR);
+
+    /* D-pad (left side) */
+    const dpadGeo = new THREE.BoxGeometry(0.06, 0.04, 0.22);
+    const dpadH = new THREE.Mesh(dpadGeo, btnMat);
+    dpadH.position.set(-0.55, 0.19, -0.05);
+    controllerGroup.add(dpadH);
+    const dpadV = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.04, 0.06), btnMat);
+    dpadV.position.set(-0.55, 0.19, -0.05);
+    controllerGroup.add(dpadV);
+
+    /* Face buttons (right side) — 4 small circles */
+    const btnPositions = [
+        { x: 0.55, z: -0.18 },
+        { x: 0.68, z: -0.05 },
+        { x: 0.55, z: 0.08 },
+        { x: 0.42, z: -0.05 },
+    ];
+    btnPositions.forEach(p => {
+        const btnGeo = new THREE.CylinderGeometry(0.05, 0.05, 0.03, 16);
+        const btn = new THREE.Mesh(btnGeo, btnMat);
+        btn.position.set(p.x, 0.19, p.z);
+        controllerGroup.add(btn);
+    });
+
+    /* Thumbsticks — 2 raised circles */
+    const stickGeo = new THREE.CylinderGeometry(0.1, 0.1, 0.06, 20);
+    const stickL = new THREE.Mesh(stickGeo, btnMat);
+    stickL.position.set(-0.35, 0.2, 0.15);
+    controllerGroup.add(stickL);
+    const stickR = new THREE.Mesh(stickGeo, btnMat);
+    stickR.position.set(0.35, 0.2, 0.15);
+    controllerGroup.add(stickR);
+
+    /* Touchpad (center) */
+    const padGeo = new THREE.BoxGeometry(0.5, 0.02, 0.35);
+    const pad = new THREE.Mesh(padGeo, bodyMat);
+    pad.position.set(0, 0.19, -0.08);
+    controllerGroup.add(pad);
+
+    /* LED light bar */
+    const ledGeo = new THREE.BoxGeometry(0.3, 0.015, 0.015);
+    const led = new THREE.Mesh(ledGeo, glowMat);
+    led.position.set(0, 0.18, -0.26);
+    controllerGroup.add(led);
+
+    /* Position the controller */
+    controllerGroup.position.set(isMobile ? 0 : -2.5, -0.8, 1.5);
+    controllerGroup.rotation.y = 0.4;
+    controllerGroup.rotation.x = -0.15;
+    controllerGroup.rotation.z = 0.05;
+    scene.add(controllerGroup);
+}
+
 /* ── Floating game discs ─────────────────────────────────── */
 function createGameDiscs() {
     const discCount = isMobile ? 4 : 7;
@@ -308,6 +419,45 @@ function createParticleField() {
     scene.add(particleSystem);
 }
 
+/* ── Environment orbs (floating glowing spheres) ─────────── */
+function createEnvironmentOrbs() {
+    const orbCount = isMobile ? 3 : 5;
+    const orbColors = [CYAN, PURPLE, ORANGE, 0x44ff44, 0xffff44];
+
+    for (let i = 0; i < orbCount; i++) {
+        const radius = 0.15 + Math.random() * 0.2;
+        const geo = new THREE.SphereGeometry(radius, 16, 16);
+        const mat = new THREE.MeshStandardMaterial({
+            color: orbColors[i % orbColors.length],
+            emissive: orbColors[i % orbColors.length],
+            emissiveIntensity: 1.5,
+            transparent: true,
+            opacity: 0.6,
+            roughness: 0,
+            metalness: 1,
+        });
+        const orb = new THREE.Mesh(geo, mat);
+
+        /* Position randomly in scene */
+        orb.position.set(
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 4,
+            (Math.random() - 0.5) * 6 - 2
+        );
+
+        orb.userData = {
+            baseY: orb.position.y,
+            speed: 0.2 + Math.random() * 0.4,
+            floatAmp: 0.3 + Math.random() * 0.5,
+            phase: Math.random() * Math.PI * 2,
+            pulseSpeed: 1 + Math.random() * 2,
+        };
+
+        envOrbs.push(orb);
+        scene.add(orb);
+    }
+}
+
 /* ── Grid floor ──────────────────────────────────────────── */
 function createGridFloor() {
     const gridGeo = new THREE.PlaneGeometry(40, 40, 40, 40);
@@ -365,6 +515,23 @@ function animate() {
         ps5Group.rotation.x = 0.05 + Math.sin(t * 0.2) * 0.03;
         ps5Group.position.y = -0.3 + Math.sin(t * 0.5) * 0.12;
     }
+
+    /* Controller floating */
+    if (controllerGroup) {
+        controllerGroup.rotation.y = 0.4 + Math.sin(t * 0.25) * 0.12 - mouse.x * 0.15;
+        controllerGroup.rotation.z = 0.05 + Math.sin(t * 0.35) * 0.04;
+        controllerGroup.position.y = -0.8 + Math.sin(t * 0.4 + 1) * 0.1;
+        controllerGroup.position.x = (isMobile ? 0 : -2.5) + Math.sin(t * 0.2) * 0.08;
+    }
+
+    /* Environment orbs */
+    envOrbs.forEach(orb => {
+        const ud = orb.userData;
+        orb.position.y = ud.baseY + Math.sin(t * ud.speed + ud.phase) * ud.floatAmp;
+        const pulse = (Math.sin(t * ud.pulseSpeed) + 1) / 2;
+        orb.material.emissiveIntensity = 1 + pulse * 2;
+        orb.material.opacity = 0.4 + pulse * 0.3;
+    });
 
     /* Floating discs */
     discs.forEach(d => {
