@@ -199,6 +199,21 @@
     flex-shrink: 0;
 }
 
+/* ── Cover image (placeholder → swap src later) ─────────── */
+.gc-cover-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.5s ease;
+}
+.gc-cover-img[src=""] { display: none; }
+.gc-cover-img[src]:not([src=""]) { display: block; opacity: 1; }
+.game-card:hover .gc-cover-img { transform: scale(1.06); }
+
 /* Gradient backgrounds per game */
 .gc-cover-bg {
     position: absolute; inset: 0;
