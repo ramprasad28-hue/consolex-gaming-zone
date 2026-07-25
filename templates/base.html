@@ -16,6 +16,12 @@
     <link rel="stylesheet" href="{% static 'css/games.css' %}">
     <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
     {% block extra_css %}{% endblock %}
+    <script>
+    (function () {
+        var t = localStorage.getItem('theme');
+        if (t) document.documentElement.setAttribute('data-theme', t);
+    })();
+    </script>
     {% block extra_head %}{% endblock %}
 </head>
 <body>
