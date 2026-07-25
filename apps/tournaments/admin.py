@@ -55,7 +55,7 @@ class TournamentAdmin(admin.ModelAdmin):
             return format_html(
                 '<img src="{}" style="height:40px;border-radius:6px;" />', src
             )
-        return format_html('<span style="color:#888;">No image</span>')
+        return format_html('<span style="color:#888;">{}</span>', "No image")
 
     @admin.display(description="Preview")
     def image_preview_detail(self, obj):
@@ -66,7 +66,8 @@ class TournamentAdmin(admin.ModelAdmin):
                 src,
             )
         return format_html(
-            '<span style="color:#888;">No image uploaded yet. Use the field above to upload or paste a URL.</span>'
+            '<span style="color:#888;">{}</span>',
+            "No image uploaded yet. Use the field above to upload or paste a URL.",
         )
 
     @admin.display(description="Date")
