@@ -1,0 +1,43 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}CONSOLEX Admin{% endblock %}
+
+{% block extrastyle %}
+<style>
+    #header {
+        background: linear-gradient(135deg, #0a0a1a 0%, #12122a 100%) !important;
+        border-bottom: 1px solid rgba(0,240,255,0.15) !important;
+    }
+    #branding h1 a,
+    #site-name a {
+        color: #f5ddff !important;
+        font-family: 'Orbitron', monospace !important;
+        font-weight: 700 !important;
+        letter-spacing: 2px !important;
+        text-decoration: none !important;
+    }
+    #branding h1 a:hover,
+    #site-name a:hover {
+        color: #fff !important;
+    }
+    #user-tools a,
+    #user-tools span {
+        color: #ccc !important;
+    }
+    #user-tools a:hover {
+        color: #00f0ff !important;
+    }
+</style>
+{% endblock %}
+
+{% block branding %}
+<div id="branding" style="display:flex;align-items:center;gap:10px;">
+    <a href="{% url 'admin:index' %}" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+        <img src="/media/logo/favicon.png" alt="CONSOLEX" width="36" height="36" style="border-radius:6px;">
+        <h1 id="site-name">
+            <a href="{% url 'admin:index' %}">CONSOLEX Admin</a>
+        </h1>
+    </a>
+</div>
+{% endblock %}

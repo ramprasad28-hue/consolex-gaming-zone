@@ -95,7 +95,8 @@ ul { list-style: none; }
 }
 .nav-logo:hover { opacity: 0.85; }
 
-.nav-logo svg { flex-shrink: 0; }
+.nav-logo svg,
+.nav-logo-img { flex-shrink: 0; border-radius: 6px; }
 
 .nav-logo-text {
     display: flex;
@@ -386,6 +387,7 @@ ul { list-style: none; }
     display: flex; align-items: center; gap: 12px;
     text-decoration: none; margin-bottom: 16px;
 }
+.footer-logo-img { border-radius: 6px; }
 .footer-brand-name {
     font-family: var(--font-head); font-weight: 900; font-size: 1.1rem;
     letter-spacing: 0.15em; color: var(--text); text-transform: uppercase;
