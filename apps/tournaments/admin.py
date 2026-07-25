@@ -8,6 +8,7 @@ class TournamentAdmin(admin.ModelAdmin):
     list_display = (
         "title",
         "game",
+        "image_preview",
         "date_display",
         "prize_display",
         "slots_display",
@@ -17,23 +18,28 @@ class TournamentAdmin(admin.ModelAdmin):
     list_filter = ("status", "is_active")
     list_editable = ("is_active",)
     search_fields = ("title", "game")
-    readonly_fields = ("created_at", "updated_at")
+    readonly_fields = ("created_at", "updated_at", "image_preview_detail")
     ordering = ("date",)
 
     fieldsets = (
-        (None, {
+        ("Tournament Info", {
+            "description": "Name, game, and description of the tournament.",
             "fields": ("title", "game", "description"),
         }),
         ("Schedule & Slots", {
+            "description": "When is it and how many players can join?",
             "fields": ("date", "total_slots", "registered_slots"),
         }),
         ("Prize & Status", {
+            "description": "Prize pool amount and current tournament status.",
             "fields": ("prize_pool", "status"),
         }),
-        ("Media", {
-            "fields": ("image_url",),
+        ("Banner Image", {
+            "description": "Upload a banner image OR paste a URL below. Uploaded file takes priority.",
+            "fields": ("image", "image_preview_detail", "image_url"),
         }),
         ("Visibility", {
+            "description": "Show or hide this tournament on the website.",
             "fields": ("is_active",),
         }),
         ("Timestamps", {
@@ -41,6 +47,27 @@ class TournamentAdmin(admin.ModelAdmin):
             "classes": ("collapse",),
         }),
     )
+
+    @admin.display(description="Image")
+    def image_preview(self, obj):
+        src = obj.image_src
+        if src:
+            return format_html(
+                '<img src="{}" style="height:40px;border-radius:6px;" />', src
+            )
+        return format_html('<span style="color:#888;">No image</span>')
+
+    @admin.display(description="Preview")
+    def image_preview_detail(self, obj):
+        src = obj.image_src
+        if src:
+            return format_html(
+                '<img src="{}" style="max-width:400px;border-radius:10px;margin-top:8px;" />',
+                src,
+            )
+        return format_html(
+            '<span style="color:#888;">No image uploaded yet. Use the field above to upload or paste a URL.</span>'
+        )
 
     @admin.display(description="Date")
     def date_display(self, obj):

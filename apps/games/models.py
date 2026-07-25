@@ -81,10 +81,16 @@ class Game(models.Model):
 
     title = models.CharField(max_length=200)
     category = models.CharField(max_length=20, choices=CATEGORIES)
+    image = models.ImageField(
+        upload_to="games/",
+        blank=True,
+        null=True,
+        help_text="Upload game cover art (JPG/PNG, recommended 400x560px)",
+    )
     image_url = models.URLField(
         blank=True,
         default="",
-        help_text="Cover art URL",
+        help_text="Fallback: paste an image URL if no file is uploaded above",
     )
     badge = models.CharField(
         max_length=20,
@@ -118,7 +124,10 @@ class Game(models.Model):
         return self.title
 
     @property
-    def tags(self):
+    def image_src(self):
+        if self.image:
+            return self.image.url
+        return self.image_url or ""
         parts = [self.category]
         if self.badge == "popular" or self.rating >= 9.0:
             parts.append("popular")

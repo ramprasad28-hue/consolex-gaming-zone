@@ -23,8 +23,8 @@
             {% for t in tournaments %}
             <div class="tourney-card stagger-child">
                 <div class="tourney-card-img">
-                    {% if t.image_url %}
-                    <img src="{{ t.image_url }}" alt="{{ t.title }}">
+                    {% if t.image_src %}
+                    <img src="{{ t.image_src }}" alt="{{ t.title }}">
                     {% else %}
                     <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=80" alt="{{ t.title }}">
                     {% endif %}

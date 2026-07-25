@@ -38,10 +38,16 @@ class Tournament(models.Model):
         choices=Status.choices,
         default=Status.UPCOMING,
     )
+    image = models.ImageField(
+        upload_to="tournaments/",
+        blank=True,
+        null=True,
+        help_text="Upload tournament banner (JPG/PNG, recommended 600x400px)",
+    )
     image_url = models.URLField(
         blank=True,
         default="",
-        help_text="Banner image URL (Unsplash, etc.)",
+        help_text="Fallback: paste an image URL if no file is uploaded above",
     )
     is_active = models.BooleanField(default=True)
 
@@ -60,6 +66,12 @@ class Tournament(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def image_src(self):
+        if self.image:
+            return self.image.url
+        return self.image_url or ""
 
     @property
     def slots_remaining(self):

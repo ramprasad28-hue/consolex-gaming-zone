@@ -32,8 +32,8 @@
             {% for g in games %}
             <div class="game-card stagger-child" data-tags="{{ g.tags }}">
                 <div class="game-card-cover">
-                    {% if g.image_url %}
-                    <img src="{{ g.image_url }}" alt="{{ g.title }}">
+                    {% if g.image_src %}
+                    <img src="{{ g.image_src }}" alt="{{ g.title }}">
                     {% else %}
                     <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80" alt="{{ g.title }}">
                     {% endif %}
