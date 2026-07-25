@@ -34,7 +34,7 @@
     radial-gradient(1000px 560px at 100% 0%, rgba(0, 217, 255, 0.14), transparent 55%),
     var(--nx-bg);
   padding: 6.5rem 1.5rem 4rem;
-  overflow: hidden;
+  overflow-x: hidden;
   font-family: 'Rajdhani', sans-serif;
   color: var(--nx-text);
 }

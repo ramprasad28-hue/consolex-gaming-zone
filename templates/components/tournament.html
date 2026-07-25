@@ -1,3 +1,4 @@
+{% if tournaments %}
 <section class="tournament-section" id="tournaments">
 
     <!-- Background -->
@@ -19,194 +20,48 @@
 
         <!-- Tournament cards -->
         <div class="tourney-grid">
-
-            <!-- Warzone Weekend Showdown -->
+            {% for t in tournaments %}
             <div class="tourney-card stagger-child">
                 <div class="tourney-card-img">
-                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=80" alt="Warzone tournament">
+                    {% if t.image_url %}
+                    <img src="{{ t.image_url }}" alt="{{ t.title }}">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=80" alt="{{ t.title }}">
+                    {% endif %}
                     <div class="tourney-card-img-scrim"></div>
-                    <span class="tourney-status tourney-status-open">Registrations Open</span>
+                    <span class="tourney-status {{ t.status_css_class }}">{{ t.status_label }}</span>
                     <div class="tourney-prize-box">
                         <span class="tourney-prize-label">Prize Pool</span>
-                        <span class="tourney-prize-val">₹5,000</span>
+                        <span class="tourney-prize-val">₹{{ t.prize_pool|floatformat:0 }}</span>
                     </div>
                 </div>
                 <div class="tourney-card-body">
-                    <h3 class="tourney-card-title">Warzone Weekend Showdown</h3>
-                    <p class="tourney-card-game">Call of Duty: Warzone</p>
+                    <h3 class="tourney-card-title">{{ t.title }}</h3>
+                    <p class="tourney-card-game">{{ t.game }}</p>
                     <div class="tourney-card-meta">
                         <span class="tourney-meta-item">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                            Aug 3, 2026
+                            {{ t.date|date:"M d, Y" }}
                         </span>
                         <span class="tourney-meta-item">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            6:00 PM
+                            {{ t.date|date:"g:i A" }}
                         </span>
                     </div>
                     <div class="tourney-slots">
                         <div class="tourney-slots-header">
                             <span>Slots Available</span>
-                            <span>6/16</span>
+                            <span>{{ t.registered_slots }}/{{ t.total_slots }}</span>
                         </div>
                         <div class="tourney-slots-bar">
-                            <div class="tourney-slots-fill" style="width: 62.5%"></div>
+                            <div class="tourney-slots-fill" style="width: {{ t.slots_filled_percent }}%"></div>
                         </div>
                     </div>
-                    <div class="tourney-countdown" data-target="2026-08-03T18:00:00"></div>
-                    <button class="tourney-btn tourney-btn-primary">Register Now</button>
+                    <div class="tourney-countdown" data-target="{{ t.date|date:'Y-m-d\TH:i:s' }}"></div>
+                    <button class="tourney-btn {{ t.btn_css_class }}">{{ t.btn_label }}</button>
                 </div>
             </div>
-
-            <!-- FIFA Championship Cup -->
-            <div class="tourney-card stagger-child">
-                <div class="tourney-card-img">
-                    <img src="https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=600&q=80" alt="FIFA tournament">
-                    <div class="tourney-card-img-scrim"></div>
-                    <span class="tourney-status tourney-status-open">Registrations Open</span>
-                    <div class="tourney-prize-box">
-                        <span class="tourney-prize-label">Prize Pool</span>
-                        <span class="tourney-prize-val">₹3,000</span>
-                    </div>
-                </div>
-                <div class="tourney-card-body">
-                    <h3 class="tourney-card-title">FIFA Championship Cup</h3>
-                    <p class="tourney-card-game">EA Sports FC 25</p>
-                    <div class="tourney-card-meta">
-                        <span class="tourney-meta-item">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                            Aug 10, 2026
-                        </span>
-                        <span class="tourney-meta-item">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            4:00 PM
-                        </span>
-                    </div>
-                    <div class="tourney-slots">
-                        <div class="tourney-slots-header">
-                            <span>Slots Available</span>
-                            <span>3/8</span>
-                        </div>
-                        <div class="tourney-slots-bar">
-                            <div class="tourney-slots-fill" style="width: 62.5%"></div>
-                        </div>
-                    </div>
-                    <div class="tourney-countdown" data-target="2026-08-10T16:00:00"></div>
-                    <button class="tourney-btn tourney-btn-primary">Register Now</button>
-                </div>
-            </div>
-
-            <!-- Mortal Kombat Grand Prix -->
-            <div class="tourney-card stagger-child">
-                <div class="tourney-card-img">
-                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&q=80" alt="Mortal Kombat tournament">
-                    <div class="tourney-card-img-scrim"></div>
-                    <span class="tourney-status tourney-status-upcoming">Coming Soon</span>
-                    <div class="tourney-prize-box">
-                        <span class="tourney-prize-label">Prize Pool</span>
-                        <span class="tourney-prize-val">₹4,000</span>
-                    </div>
-                </div>
-                <div class="tourney-card-body">
-                    <h3 class="tourney-card-title">Mortal Kombat Grand Prix</h3>
-                    <p class="tourney-card-game">Mortal Kombat 1</p>
-                    <div class="tourney-card-meta">
-                        <span class="tourney-meta-item">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                            Aug 17, 2026
-                        </span>
-                        <span class="tourney-meta-item">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            5:00 PM
-                        </span>
-                    </div>
-                    <div class="tourney-slots">
-                        <div class="tourney-slots-header">
-                            <span>Slots Available</span>
-                            <span>12/12</span>
-                        </div>
-                        <div class="tourney-slots-bar">
-                            <div class="tourney-slots-fill" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    <div class="tourney-countdown" data-target="2026-08-17T17:00:00"></div>
-                    <button class="tourney-btn tourney-btn-ghost">Notify Me</button>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Leaderboard -->
-        <div class="tourney-leaderboard stagger-child">
-            <div class="lb-header">
-                <div>
-                    <h3 class="lb-title">All-Time Leaderboard</h3>
-                    <p class="lb-subtitle">Top players at CONSOLEX Erode</p>
-                </div>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFC62E" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            </div>
-            <div class="lb-rows">
-                <div class="lb-row">
-                    <div class="lb-rank lb-rank-1">1</div>
-                    <div class="lb-avatar"></div>
-                    <div class="lb-info">
-                        <p class="lb-name">Arjun Krishnamurthy</p>
-                        <p class="lb-meta">12 tournament wins</p>
-                    </div>
-                    <div class="lb-prize">
-                        <p class="lb-prize-val">₹15,000</p>
-                        <p class="lb-prize-label">earned</p>
-                    </div>
-                </div>
-                <div class="lb-row">
-                    <div class="lb-rank lb-rank-2">2</div>
-                    <div class="lb-avatar"></div>
-                    <div class="lb-info">
-                        <p class="lb-name">Priya Subramaniam</p>
-                        <p class="lb-meta">9 tournament wins</p>
-                    </div>
-                    <div class="lb-prize">
-                        <p class="lb-prize-val">₹10,000</p>
-                        <p class="lb-prize-label">earned</p>
-                    </div>
-                </div>
-                <div class="lb-row">
-                    <div class="lb-rank lb-rank-3">3</div>
-                    <div class="lb-avatar"></div>
-                    <div class="lb-info">
-                        <p class="lb-name">Rohit Venkatesh</p>
-                        <p class="lb-meta">8 tournament wins</p>
-                    </div>
-                    <div class="lb-prize">
-                        <p class="lb-prize-val">₹8,000</p>
-                        <p class="lb-prize-label">earned</p>
-                    </div>
-                </div>
-                <div class="lb-row">
-                    <div class="lb-rank">4</div>
-                    <div class="lb-avatar"></div>
-                    <div class="lb-info">
-                        <p class="lb-name">Kavya Rajendran</p>
-                        <p class="lb-meta">7 tournament wins</p>
-                    </div>
-                    <div class="lb-prize">
-                        <p class="lb-prize-val">₹5,000</p>
-                        <p class="lb-prize-label">earned</p>
-                    </div>
-                </div>
-                <div class="lb-row">
-                    <div class="lb-rank">5</div>
-                    <div class="lb-avatar"></div>
-                    <div class="lb-info">
-                        <p class="lb-name">Dev Murugesan</p>
-                        <p class="lb-meta">6 tournament wins</p>
-                    </div>
-                    <div class="lb-prize">
-                        <p class="lb-prize-val">₹3,000</p>
-                        <p class="lb-prize-label">earned</p>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
 
     </div>
@@ -236,3 +91,4 @@
     });
 }());
 </script>
+{% endif %}

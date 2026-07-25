@@ -3,74 +3,62 @@ from django.db import models
 from django.utils import timezone
 
 
+class MembershipQuerySet(models.QuerySet):
+    def active(self):
+        return self.filter(is_active=True)
+
+    def by_tier(self, tier_level):
+        return self.filter(tier_level__gte=tier_level)
+
+
 class Membership(models.Model):
-    """
-    Master catalog of purchasable membership plans (e.g. Free, Silver,
-    Gold, Platinum). This model represents *what can be bought* — it does
-    not track who owns it or for how long. See MembershipSubscription for
-    that.
-    """
+    """Master catalog of purchasable membership plans."""
 
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=8, decimal_places=2)
     duration_days = models.PositiveIntegerField(
-        help_text="Membership validity in days"
+        help_text="Membership validity in days",
     )
     is_active = models.BooleanField(
         default=True,
         help_text="Deactivate to retire a plan without deleting its history.",
     )
-
     discount_percent = models.PositiveIntegerField(
         default=0,
-        help_text="Booking discount this plan grants, as a whole percentage "
-        "(0-100).",
+        help_text="Booking discount (0-100).",
     )
-    priority_booking = models.BooleanField(
-        default=False,
-        help_text="Whether members on this plan get priority booking access.",
-    )
-    free_hours_per_month = models.PositiveIntegerField(
-        default=0,
-        help_text="Complimentary gaming hours included per month on this plan.",
-    )
+    priority_booking = models.BooleanField(default=False)
+    free_hours_per_month = models.PositiveIntegerField(default=0)
+    included_hours = models.PositiveIntegerField(default=0)
+    weekend_hours = models.PositiveIntegerField(default=0)
+    bonus_hours = models.PositiveIntegerField(default=0)
+    badge_color = models.CharField(max_length=7, blank=True)
+    tier_level = models.PositiveIntegerField(default=0)
+    is_popular = models.BooleanField(default=False)
 
-    # ── Real CONSOLEX plan fields (additive) ──
-    included_hours = models.PositiveIntegerField(
-        default=0,
-        help_text="Weekday gaming hours included in the plan.",
-    )
-    weekend_hours = models.PositiveIntegerField(
-        default=0,
-        help_text="Additional weekend gaming hours included in the plan.",
-    )
-    bonus_hours = models.PositiveIntegerField(
-        default=0,
-        help_text="Bonus hours (e.g. rollover/extra) included in the plan.",
-    )
-    badge_color = models.CharField(
-        max_length=7,
-        blank=True,
-        help_text="Hex color (e.g. #00D9FF) used to render this tier's badge "
-        "consistently across the site.",
-    )
-    tier_level = models.PositiveIntegerField(
-        default=0,
-        help_text="Numeric rank used to compare plans (e.g. Free=0, Silver=1, "
-        "Gold=2, Platinum=3).",
-    )
-    is_popular = models.BooleanField(
-        default=False,
-        help_text="Highlights this plan as the recommended/most popular choice "
-        "on the pricing page.",
-    )
+    objects = MembershipQuerySet.as_manager()
 
     class Meta:
         ordering = ["tier_level", "price"]
 
     def __str__(self):
         return self.name
+
+    @property
+    def total_hours(self):
+        return self.included_hours + self.weekend_hours + self.bonus_hours
+
+
+class SubscriptionQuerySet(models.QuerySet):
+    def active(self):
+        return self.filter(
+            status=MembershipSubscription.STATUS_ACTIVE,
+            expires_at__gt=timezone.now(),
+        )
+
+    def for_user(self, user):
+        return self.filter(user=user).select_related("plan")
 
 
 class MembershipSubscription(models.Model):
@@ -92,38 +80,25 @@ class MembershipSubscription(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="subscriptions",
-        help_text="The member this subscription belongs to.",
     )
     plan = models.ForeignKey(
         Membership,
         on_delete=models.PROTECT,
         related_name="subscriptions",
-        help_text="Which plan this subscription is for.",
     )
     status = models.CharField(
         max_length=10,
         choices=STATUS_CHOICES,
         default=STATUS_PENDING,
-        help_text="Current lifecycle state of this subscription.",
     )
-    started_at = models.DateTimeField(
-        default=timezone.now,
-        help_text="When this subscription began.",
-    )
-    expires_at = models.DateTimeField(
-        help_text="When this subscription expires."
-    )
-    auto_renew = models.BooleanField(
-        default=False,
-        help_text="Whether this subscription should automatically renew.",
-    )
-    cancelled_at = models.DateTimeField(
-        null=True,
-        blank=True,
-        help_text="Timestamp of cancellation/upgrade/downgrade.",
-    )
+    started_at = models.DateTimeField(default=timezone.now)
+    expires_at = models.DateTimeField()
+    auto_renew = models.BooleanField(default=False)
+    cancelled_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = SubscriptionQuerySet.as_manager()
 
     class Meta:
         ordering = ["-started_at"]
@@ -133,6 +108,10 @@ class MembershipSubscription(models.Model):
                 condition=models.Q(status="active"),
                 name="unique_active_subscription_per_user",
             )
+        ]
+        indexes = [
+            models.Index(fields=["user", "status"], name="idx_sub_user_status"),
+            models.Index(fields=["status", "expires_at"], name="idx_sub_status_expiry"),
         ]
 
     def __str__(self):
@@ -148,8 +127,16 @@ class MembershipSubscription(models.Model):
         return max(remaining, 0)
 
 
+class LoyaltyProfileQuerySet(models.QuerySet):
+    def by_level(self, level):
+        return self.filter(current_level=level)
+
+    def top_spenders(self, limit=10):
+        return self.order_by("-lifetime_spending")[:limit]
+
+
 class LoyaltyProfile(models.Model):
-    """A lightweight, always-one-row-per-user rollup of a member's activity."""
+    """Always-one-row-per-user rollup of a member's activity."""
 
     LEVEL_BRONZE = "bronze"
     LEVEL_SILVER = "silver"
@@ -163,45 +150,60 @@ class LoyaltyProfile(models.Model):
         (LEVEL_PLATINUM, "Platinum"),
     ]
 
+    LEVEL_THRESHOLDS = {
+        LEVEL_BRONZE: 0,
+        LEVEL_SILVER: 500,
+        LEVEL_GOLD: 2000,
+        LEVEL_PLATINUM: 5000,
+    }
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="loyalty_profile",
-        help_text="The member this loyalty profile belongs to.",
     )
-    points = models.PositiveIntegerField(
-        default=0,
-        help_text="Current reward point balance.",
-    )
-    lifetime_spending = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        default=0,
-        help_text="Total amount ever paid by this user across all bookings.",
-    )
-    total_hours_played = models.PositiveIntegerField(
-        default=0,
-        help_text="Cumulative hours booked and played.",
-    )
-    total_bookings = models.PositiveIntegerField(
-        default=0,
-        help_text="Total number of completed bookings.",
-    )
+    points = models.PositiveIntegerField(default=0)
+    lifetime_spending = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total_hours_played = models.PositiveIntegerField(default=0)
+    total_bookings = models.PositiveIntegerField(default=0)
     current_level = models.CharField(
         max_length=10,
         choices=LEVEL_CHOICES,
         default=LEVEL_BRONZE,
-        help_text="Earned loyalty rank, independent of the member's "
-        "purchased Membership tier.",
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    objects = LoyaltyProfileQuerySet.as_manager()
+
     class Meta:
         ordering = ["-points"]
+        indexes = [
+            models.Index(fields=["current_level"], name="idx_loyalty_level"),
+        ]
 
     def __str__(self):
         return f"{self.user} — {self.get_current_level_display()} ({self.points} pts)"
+
+    def recalculate_level(self):
+        """Determine level based on lifetime spending."""
+        for level, threshold in sorted(
+            self.LEVEL_THRESHOLDS.items(), key=lambda x: x[1], reverse=True
+        ):
+            if self.lifetime_spending >= threshold:
+                if self.current_level != level:
+                    self.current_level = level
+                    self.save(update_fields=["current_level", "updated_at"])
+                return level
+        return self.current_level
+
+
+class MembershipPaymentQuerySet(models.QuerySet):
+    def captured(self):
+        return self.filter(status=MembershipPayment.Status.CAPTURED)
+
+    def pending(self):
+        return self.filter(status=MembershipPayment.Status.PENDING)
 
 
 class MembershipPayment(models.Model):
@@ -227,9 +229,16 @@ class MembershipPayment(models.Model):
     razorpay_signature = models.CharField(max_length=255, blank=True, null=True)
     amount = models.PositiveIntegerField(help_text="Amount in paise")
     currency = models.CharField(max_length=10, default="INR")
-    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING, db_index=True)
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING,
+        db_index=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = MembershipPaymentQuerySet.as_manager()
 
     class Meta:
         ordering = ["-created_at"]

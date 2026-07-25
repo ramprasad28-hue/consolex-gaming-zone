@@ -842,9 +842,72 @@ ul { list-style: none; }
 /* ── Star filled ────────────────────────────────────────── */
 .star-filled { color: #FFC62E; }
 
+/* ============================================================
+   WHATSAPP FLOATING BUTTON
+   ============================================================ */
+.whatsapp-float {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 8000;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #25d366;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.whatsapp-float:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 28px rgba(37, 211, 102, 0.55);
+}
+.whatsapp-icon {
+    width: 30px;
+    height: 30px;
+    color: #fff;
+}
+.whatsapp-pulse {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid rgba(37, 211, 102, 0.4);
+    animation: whatsappPulse 2s ease-in-out infinite;
+}
+@keyframes whatsappPulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.25); opacity: 0; }
+}
+.whatsapp-tooltip {
+    position: absolute;
+    right: 72px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(8, 8, 16, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 8px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s var(--ease);
+    border: 1px solid var(--border);
+}
+.whatsapp-float:hover .whatsapp-tooltip {
+    opacity: 1;
+}
+
 /* ── Reduced motion ─────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
     .float-anim, .float-anim-slow, .float-anim-reverse,
     .pulse-neon, .animated-gradient-bg { animation: none; }
     .reveal-up-init, .stagger-child { opacity: 1; transform: none; transition: none; }
+    .whatsapp-pulse { animation: none; }
 }
