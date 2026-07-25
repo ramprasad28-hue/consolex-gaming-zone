@@ -159,6 +159,31 @@
 }
 .mc-basic:hover .mc-inner-glow { opacity: 1; }
 
+/* ── Featured card (popular plan highlight) ──────────────── */
+.mc-featured {
+    border-color: rgba(0,240,255,0.28);
+    background: linear-gradient(
+        160deg,
+        rgba(0,240,255,0.055) 0%,
+        rgba(191,0,255,0.040) 60%,
+        rgba(8,8,16,0) 100%
+    );
+    transform: scale(1.04);
+}
+.mc-featured .mc-inner-glow {
+    background: radial-gradient(circle, rgba(0,240,255,0.28), transparent 70%);
+    opacity: 0.45;
+}
+.mc-featured:hover {
+    transform: translateY(-10px) scale(1.04);
+    border-color: rgba(0,240,255,0.52);
+    box-shadow:
+        0 32px 80px rgba(0,0,0,0.55),
+        0 0 70px rgba(0,240,255,0.12),
+        inset 0 1px 0 rgba(0,240,255,0.22);
+}
+.mc-featured:hover .mc-inner-glow { opacity: 1; }
+
 /* ── Standard card (featured) ────────────────────────────── */
 .mc-standard {
     border-color: rgba(0,240,255,0.28);

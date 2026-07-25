@@ -54,11 +54,11 @@ class PaymentAdmin(admin.ModelAdmin):
         if obj.is_demo:
             return format_html(
                 '<span style="background:#7c3aed;color:#fff;padding:2px 8px;'
-                'border-radius:8px;font-size:11px;">DEMO</span>'
+                'border-radius:8px;font-size:11px;">{}</span>', "DEMO"
             )
         return format_html(
             '<span style="background:#0f766e;color:#fff;padding:2px 8px;'
-            'border-radius:8px;font-size:11px;">LIVE</span>'
+            'border-radius:8px;font-size:11px;">{}</span>', "LIVE"
         )
 
     actions = ["mark_as_refunded"]

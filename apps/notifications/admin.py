@@ -26,10 +26,10 @@ class NotificationAdmin(admin.ModelAdmin):
     def is_read_badge(self, obj):
         if obj.is_read:
             return format_html(
-                '<span style="color:#10b981;font-weight:600;">\u2713 Read</span>'
+                '<span style="color:#10b981;font-weight:600;">{}</span>', "\u2713 Read"
             )
         return format_html(
-            '<span style="color:#f59e0b;font-weight:600;">\u25cf Unread</span>'
+            '<span style="color:#f59e0b;font-weight:600;">{}</span>', "\u25cf Unread"
         )
 
     actions = ["mark_all_read", "mark_all_unread"]

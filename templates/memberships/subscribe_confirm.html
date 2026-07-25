@@ -1,5 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Confirm Membership — CONSOLEX{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/membership.css' %}">
+{% endblock %}
 
 {% block content %}
 <section class="mem-section">
@@ -11,7 +16,8 @@
         </div>
 
         <div class="mem-grid" style="justify-content:center;">
-            <div class="mem-card mc-featured">
+            <div class="mem-card mc-standard">
+                <div class="mc-inner-glow"></div>
                 <div class="mc-header">
                     <div class="mc-tier-row">
                         <span class="mc-tier-name">{{ plan.name }}</span>
@@ -38,7 +44,7 @@
                 </ul>
                 <form method="post" action="{% url 'memberships:membership_payment_page' plan.id %}">
                     {% csrf_token %}
-                    <button type="submit" class="mc-btn">Proceed to Payment →</button>
+                    <button type="submit" class="mc-btn mc-btn-standard">Proceed to Payment →</button>
                 </form>
                 <a href="{% url 'memberships:plan_list' %}" class="mc-value-note">Cancel</a>
             </div>

@@ -16,7 +16,8 @@
         </div>
 
         <div class="mem-grid" style="justify-content:center;">
-            <div class="mem-card mc-featured" style="max-width:420px;">
+            <div class="mem-card mc-standard">
+                <div class="mc-inner-glow"></div>
                 <div class="mc-header">
                     <div class="mc-tier-row">
                         <span class="mc-tier-name">{{ plan.name }} Membership</span>
@@ -32,7 +33,7 @@
                 <div id="memPayStatus" style="text-align:center;padding:18px 0;color:#8b8fb0;">
                     Click below to pay with Razorpay.
                 </div>
-                <button id="memPayBtn" class="mc-btn" style="width:100%;text-align:center;">
+                <button id="memPayBtn" class="mc-btn mc-btn-standard" style="width:100%;text-align:center;">
                     Pay ₹{{ plan.price }} with Razorpay
                 </button>
                 <a href="{% url 'memberships:plan_list' %}" class="mc-value-note" style="display:block;text-align:center;margin-top:14px;">Cancel</a>

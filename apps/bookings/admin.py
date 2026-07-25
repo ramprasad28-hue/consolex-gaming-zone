@@ -65,7 +65,7 @@ class BookingAdmin(admin.ModelAdmin):
             return format_html(
                 '<span style="color:#f59e0b;">{}</span>', p.status.title()
             )
-        return format_html('<span style="color:#888;">No payment</span>')
+        return format_html('<span style="color:#888;">{}</span>', "No payment")
 
     actions = ["mark_confirmed", "mark_completed", "mark_cancelled"]
 

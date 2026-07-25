@@ -29,7 +29,7 @@ class CustomUserAdmin(UserAdmin):
                 obj.membership.badge_color or "#888",
                 obj.membership.name,
             )
-        return format_html('<span style="color:#888;">None</span>')
+        return format_html('<span style="color:#888;">{}</span>', "None")
 
     actions = ["verify_users", "unverify_users"]
 
