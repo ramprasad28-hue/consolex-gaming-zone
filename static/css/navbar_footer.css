@@ -184,6 +184,12 @@
     transition: color 0.25s, background 0.25s;
 }
 .nav-logout:hover { color: #ff6b6b; background: rgba(255, 60, 60, 0.08); }
+.nav-logout-btn {
+    background: none; border: none; cursor: pointer; font: inherit; color: inherit;
+}
+.mob-logout-btn {
+    background: none; border: none; cursor: pointer; font: inherit; color: inherit;
+}
 
 /* ── Hamburger ─────────────────────────────────────────────── */
 .hamburger {

@@ -49,6 +49,25 @@ class NotificationServiceTests(TestCase):
         recent = NotificationService.recent(self.user, limit=5)
         self.assertEqual(len(recent), 5)
 
+    def test_list_for_user_pagination(self):
+        for i in range(25):
+            Notification.objects.create(user=self.user, message=f"M{i}")
+        result = NotificationService.list_for_user(self.user, page=1, page_size=10)
+        self.assertEqual(result["count"], 25)
+        self.assertEqual(len(result["results"]), 10)
+        result2 = NotificationService.list_for_user(self.user, page=3, page_size=10)
+        self.assertEqual(len(result2["results"]), 5)
+
+    def test_recent_empty(self):
+        recent = NotificationService.recent(self.user)
+        self.assertEqual(len(recent), 0)
+
+    def test_mark_read_wrong_user(self):
+        user2 = User.objects.create_user(email="wrong@test.com", password="x")
+        notif = Notification.objects.create(user=user2, message="Not yours")
+        with self.assertRaises(NotFoundError):
+            NotificationService.mark_read(self.user, notif.id)
+
 
 class NotificationModelTests(TestCase):
     def test_notification_str(self):
@@ -66,3 +85,17 @@ class NotificationModelTests(TestCase):
         count = Notification.objects.mark_all_read(user)
         self.assertEqual(count, 2)
         self.assertEqual(Notification.objects.filter(user=user, is_read=False).count(), 0)
+
+    def test_queryset_for_user(self):
+        user = User.objects.create_user(email="fu@test.com", password="x")
+        user2 = User.objects.create_user(email="other@test.com", password="x")
+        Notification.objects.create(user=user, message="Mine")
+        Notification.objects.create(user=user2, message="Theirs")
+        qs = Notification.objects.for_user(user)
+        self.assertEqual(qs.count(), 1)
+
+    def test_queryset_unread(self):
+        user = User.objects.create_user(email="ur@test.com", password="x")
+        Notification.objects.create(user=user, message="U", is_read=False)
+        Notification.objects.create(user=user, message="R", is_read=True)
+        self.assertEqual(Notification.objects.unread(user).count(), 1)

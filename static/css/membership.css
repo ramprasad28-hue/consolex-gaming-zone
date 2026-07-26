@@ -244,13 +244,13 @@
 }
 
 .mc-badge-popular {
-    color: #000;
+    color: #fff;
     background: var(--cyan, #00D9FF);
     box-shadow: 0 4px 22px rgba(0,217,255,0.45);
 }
 
 .mc-badge-pro {
-    color: #000;
+    color: #fff;
     background: var(--orange, #FF6A00);
     box-shadow: 0 4px 22px rgba(255,106,0,0.45);
 }
@@ -487,12 +487,13 @@
 
 /* Standard button — solid cyan */
 .mc-btn-standard {
-    color: #000;
+    color: #fff;
     background: var(--cyan, #00D9FF);
     border: 1px solid var(--cyan, #00D9FF);
     box-shadow: 0 0 26px rgba(0,217,255,0.42);
 }
 .mc-btn-standard:hover {
+    color: #000;
     background: #fff;
     border-color: var(--text);
     box-shadow: 0 0 44px rgba(0,217,255,0.60);
@@ -501,12 +502,13 @@
 
 /* Pro button — orange gradient */
 .mc-btn-pro {
-    color: #000;
+    color: #fff;
     background: linear-gradient(135deg, var(--orange, #FF6A00), #ff9500);
     border: 1px solid var(--orange, #FF6A00);
     box-shadow: 0 0 26px rgba(255,106,0,0.40);
 }
 .mc-btn-pro:hover {
+    color: #000;
     background: linear-gradient(135deg, #ff8c00, #ffb300);
     box-shadow: 0 0 44px rgba(255,106,0,0.60);
     transform: translateY(-2px);
@@ -676,8 +678,12 @@
 /* Membership Payment */
 .membership-payment-grid { justify-content: center; }
 .membership-payment-status { text-align: center; padding: 18px 0; color: var(--text2); }
-.membership-payment-btn { width: 100%; text-align: center; }
+.membership-payment-btn { width: 100%; text-align: center; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
 .membership-payment-cancel { display: block; text-align: center; margin-top: 14px; }
+.mem-pay-btn-spinner { display: none; align-items: center; }
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
 
 /* Error Pages */
 .error-page { text-align: center; padding: 140px 20px; }

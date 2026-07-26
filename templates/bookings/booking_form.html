@@ -32,9 +32,9 @@
 
             <!-- Console -->
             <div class="form-group">
-                <label>PS5 Setup</label>
+                <label for="id_game_console">PS5 Setup</label>
 
-                <select name="game_console" required>
+                <select name="game_console" id="id_game_console" required>
 
                     <option value="">Select Console</option>
 
@@ -51,19 +51,21 @@
             <div class="form-row">
 
                 <div class="form-group">
-                    <label>Date</label>
+                    <label for="id_booking_date">Date</label>
                     <input
                         type="date"
                         name="booking_date"
+                        id="id_booking_date"
                         required
                     >
                 </div>
 
                 <div class="form-group">
-                    <label>Start Time</label>
+                    <label for="id_start_time">Start Time</label>
                     <input
                         type="time"
                         name="start_time"
+                        id="id_start_time"
                         required
                     >
                 </div>
@@ -74,9 +76,9 @@
             <div class="form-row">
 
                 <div class="form-group">
-                    <label>Duration (Hours)</label>
+                    <label for="id_duration_hours">Duration (Hours)</label>
 
-                    <select name="duration_hours">
+                    <select name="duration_hours" id="id_duration_hours">
 
                         <option value="1">1 Hour</option>
                         <option value="2">2 Hours</option>
@@ -89,9 +91,9 @@
 
                 <div class="form-group">
 
-                    <label>Players</label>
+                    <label for="id_number_of_players">Players</label>
 
-                    <select name="number_of_players">
+                    <select name="number_of_players" id="id_number_of_players">
 
                         <option value="1">1 Player</option>
                         <option value="2">2 Players</option>

@@ -32,7 +32,7 @@
                 </a>
                 <form method="POST" action="{% url 'users:logout' %}" style="display:inline;">
                     {% csrf_token %}
-                    <button type="submit" class="nav-logout" style="background:none;border:none;cursor:pointer;font:inherit;color:inherit;">Logout</button>
+                    <button type="submit" class="nav-logout nav-logout-btn">Logout</button>
                 </form>
             {% else %}
                 <a href="{% url 'bookings:booking_form' %}" class="nav-book-btn">
@@ -68,7 +68,7 @@
                 <a href="{% url 'users:dashboard' %}" class="mob-dash-link">My Bookings</a>
                 <form method="POST" action="{% url 'users:logout' %}" style="margin:0;">
                     {% csrf_token %}
-                    <button type="submit" class="mob-logout-link" style="background:none;border:none;cursor:pointer;font:inherit;color:inherit;width:100%;text-align:left;">Logout</button>
+                    <button type="submit" class="mob-logout-link mob-logout-btn" style="width:100%;text-align:left;">Logout</button>
                 </form>
             {% else %}
                 <a href="{% url 'bookings:booking_form' %}" class="mob-book-link">🎮 Book a Slot</a>

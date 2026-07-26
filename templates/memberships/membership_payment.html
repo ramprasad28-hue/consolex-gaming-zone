@@ -30,11 +30,14 @@
                     </div>
                     <span class="mc-period">per {{ plan.duration_days }} days</span>
                 </div>
-                <div id="memPayStatus" class="membership-payment-status">
+                <div id="memPayStatus" class="membership-payment-status" aria-live="polite">
                     Click below to pay with Razorpay.
                 </div>
                 <button id="memPayBtn" class="mc-btn mc-btn-standard membership-payment-btn">
-                    Pay ₹{{ plan.price }} with Razorpay
+                    <span class="mem-pay-btn-text">Pay ₹{{ plan.price }} with Razorpay</span>
+                    <span class="mem-pay-btn-spinner" aria-hidden="true" style="display:none;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-dasharray="50" stroke-dashoffset="20"/></svg>
+                    </span>
                 </button>
                 <a href="{% url 'memberships:plan_list' %}" class="mc-value-note membership-payment-cancel">Cancel</a>
             </div>
@@ -48,9 +51,13 @@
     var btn    = document.getElementById('memPayBtn');
     var status = document.getElementById('memPayStatus');
 
+    var btnText = btn.querySelector('.mem-pay-btn-text');
+    var btnSpinner = btn.querySelector('.mem-pay-btn-spinner');
+
     btn.addEventListener('click', function () {
         btn.disabled = true;
-        btn.textContent = 'Opening Razorpay...';
+        if (btnText) btnText.textContent = 'Opening Razorpay...';
+        if (btnSpinner) btnSpinner.style.display = 'inline-flex';
 
         var options = {
             key: "{{ razorpay_key_id }}",
@@ -61,6 +68,7 @@
             order_id: "{{ rp_order_id }}",
             handler: function (response) {
                 status.textContent = "Verifying payment...";
+                if (btnSpinner) btnSpinner.style.display = 'none';
                 fetch("{% url 'memberships:verify_membership_payment' %}", {
                     method: "POST",
                     headers: {
@@ -84,14 +92,16 @@
                         status.textContent = data.error || "Payment failed. Please try again.";
                         status.style.color = "#FF4444";
                         btn.disabled = false;
-                        btn.textContent = "Retry Payment";
+                        if (btnText) btnText.textContent = "Retry Payment";
+                        if (btnSpinner) btnSpinner.style.display = 'none';
                     }
                 })
                 .catch(function () {
                     status.textContent = "Network error. Please try again.";
                     status.style.color = "#ff4444";
                     btn.disabled = false;
-                    btn.textContent = "Retry Payment";
+                    if (btnText) btnText.textContent = "Retry Payment";
+                    if (btnSpinner) btnSpinner.style.display = 'none';
                 });
             },
             prefill: {},
@@ -100,12 +110,20 @@
                 ondismiss: function () {
                     status.textContent = "Payment cancelled.";
                     btn.disabled = false;
-                    btn.textContent = "Pay ₹{{ plan.price }} with Razorpay";
+                    if (btnText) btnText.textContent = "Pay ₹{{ plan.price }} with Razorpay";
+                    if (btnSpinner) btnSpinner.style.display = 'none';
                 }
             }
         };
 
         var rzp = new Razorpay(options);
+        rzp.on('payment.failed', function (response) {
+            status.textContent = "Payment failed. Please try again.";
+            status.style.color = "#FF4444";
+            btn.disabled = false;
+            if (btnText) btnText.textContent = "Pay ₹{{ plan.price }} with Razorpay";
+            if (btnSpinner) btnSpinner.style.display = 'none';
+        });
         rzp.open();
     });
 })();

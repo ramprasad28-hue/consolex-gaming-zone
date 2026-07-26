@@ -132,14 +132,20 @@
     var textContent = document.getElementById('heroTextContent');
     if (!hero || !textContent) return;
 
-    /* Parallax blobs on mouse move */
+    /* Parallax blobs on mouse move (throttled via rAF) */
+    var rafPending = false;
     hero.addEventListener('mousemove', function (e) {
-        var rect = hero.getBoundingClientRect();
-        var x = (e.clientX - rect.left) / rect.width - 0.5;
-        var y = (e.clientY - rect.top) / rect.height - 0.5;
-        hero.querySelectorAll('[data-parallax]').forEach(function (blob) {
-            var speed = parseFloat(blob.dataset.parallax);
-            blob.style.transform = 'translate(' + (x * speed * 40) + 'px, ' + (y * speed * 30) + 'px)';
+        if (rafPending) return;
+        rafPending = true;
+        requestAnimationFrame(function () {
+            var rect = hero.getBoundingClientRect();
+            var x = (e.clientX - rect.left) / rect.width - 0.5;
+            var y = (e.clientY - rect.top) / rect.height - 0.5;
+            hero.querySelectorAll('[data-parallax]').forEach(function (blob) {
+                var speed = parseFloat(blob.dataset.parallax);
+                blob.style.transform = 'translate(' + (x * speed * 40) + 'px, ' + (y * speed * 30) + 'px)';
+            });
+            rafPending = false;
         });
     });
 

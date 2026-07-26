@@ -235,7 +235,7 @@
     .pricing-toggle-btn { flex: 1; text-align: center; padding: 10px 12px; }
 }
 @media (max-width: 576px) {
-    .pricing-cards-grid { grid-template-columns: 1fr; max-width: 380px; margin-left: auto; margin-right: auto; }
+    .pricing-cards-grid { grid-template-columns: 1fr; max-width: 380px; margin-left: auto; margin-right: auto; overflow: hidden; }
 }
 @media (max-width: 480px) {
     .pricing-section { padding: 56px 12px; }

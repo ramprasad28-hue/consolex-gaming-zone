@@ -194,8 +194,11 @@
     background: var(--surface); border: 1px solid var(--border2);
     color: var(--text); font-family: var(--font-body); font-size: 0.95rem;
 }
-.wiz-field input:focus, .wiz-field select:focus {
-    outline: none; border-color: var(--cyan);
+.wiz-field input:focus:not(:focus-visible), .wiz-field select:focus:not(:focus-visible) {
+    border-color: var(--cyan);
+}
+.wiz-field input:focus-visible, .wiz-field select:focus-visible {
+    outline: 2px solid var(--cyan); outline-offset: 2px; border-color: var(--cyan);
 }
 
 .wiz-cost-preview {

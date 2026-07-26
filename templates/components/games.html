@@ -54,6 +54,11 @@
             {% endfor %}
         </div>
 
+        <!-- Empty filter state -->
+        <div class="games-empty-msg" id="gamesEmptyMsg" style="display:none;text-align:center;padding:2rem;color:var(--text2);">
+            No games found in this category.
+        </div>
+
         <!-- CTA -->
         <div class="games-cta stagger-child">
             <p class="games-cta-text">And 80+ more titles available at the lounge</p>
@@ -75,6 +80,7 @@
         });
         btn.classList.add('active');
         btn.setAttribute('aria-pressed', 'true');
+        var visibleCount = 0;
         document.querySelectorAll('.game-card').forEach(function (card) {
             var category = card.dataset.category || '';
             var badge = card.dataset.badge || '';
@@ -82,12 +88,32 @@
             if (show) {
                 card.classList.remove('gc-hidden');
                 card.classList.add('gc-visible');
+                visibleCount++;
             } else {
                 card.classList.add('gc-hidden');
                 card.classList.remove('gc-visible');
             }
         });
+        var emptyMsg = document.getElementById('gamesEmptyMsg');
+        if (emptyMsg) {
+            emptyMsg.style.display = visibleCount === 0 ? '' : 'none';
+        }
     };
 }());
 </script>
+{% else %}
+<section class="games-section" id="games">
+    <div class="games-container">
+        <div class="games-header">
+            <span class="games-pill">Game Library</span>
+            <h2 class="games-title">
+                100+ <span class="text-gradient-cyan">PS5 Titles</span>
+            </h2>
+            <p class="games-subtitle">From AAA blockbusters to indie gems. All included in every session.</p>
+        </div>
+        <div class="games-empty" style="text-align:center;padding:3rem 1rem;color:var(--text2);">
+            <p>Game library coming soon. Check back soon for our full PS5 collection!</p>
+        </div>
+    </div>
+</section>
 {% endif %}

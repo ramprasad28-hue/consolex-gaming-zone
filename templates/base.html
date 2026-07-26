@@ -4,11 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="{% block meta_description %}CONSOLEX — Premium PS5 gaming zone in Erode. Book sessions, join memberships, compete in tournaments. Walk-ins welcome.{% endblock %}">
+    <meta name="theme-color" content="#050036">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="CONSOLEX Gaming Zone">
+    <meta property="og:title" content="{% block og_title %}CONSOLEX Gaming Zone — Play Beyond{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Premium PS5 gaming zone in Erode. Book sessions, join memberships, compete in tournaments.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}/media/logo/favicon.png{% endblock %}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block tw_title %}CONSOLEX Gaming Zone — Play Beyond{% endblock %}">
+    <meta name="twitter:description" content="{% block tw_description %}Premium PS5 gaming zone in Erode. Book sessions, join memberships, compete in tournaments.{% endblock %}">
     <title>{% block title %}CONSOLEX Gaming Zone{% endblock %}</title>
     <link rel="icon" type="image/png" href="/media/logo/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
     <link rel="stylesheet" href="{% static 'css/reset.css' %}">
     <link rel="stylesheet" href="{% static 'css/typography.css' %}">
@@ -44,6 +54,17 @@
     {% include 'components/footer.html' %}
     {% include 'components/whatsapp_btn.html' %}
     <script src="{% static 'js/theme.js' %}"></script>
+    <script>
+    (function () {
+        document.querySelectorAll('form[action*="logout"] button[type="submit"]').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                if (!confirm('Are you sure you want to logout?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    }());
+    </script>
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>

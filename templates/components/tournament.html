@@ -77,10 +77,15 @@
     document.querySelectorAll('.tourney-countdown').forEach(function (el) {
         var target = el.dataset.target;
         if (!target) return;
+        var timer = null;
         function update() {
             var now = Date.now();
             var diff = new Date(target).getTime() - now;
-            if (diff <= 0) { el.innerHTML = '<span class="tourney-cd-expired">Event Started</span>'; return; }
+            if (diff <= 0) {
+                el.innerHTML = '<span class="tourney-cd-expired">Event Started</span>';
+                if (timer) clearInterval(timer);
+                return;
+            }
             var d = Math.floor(diff / 86400000);
             var h = Math.floor(diff % 86400000 / 3600000);
             var m = Math.floor(diff % 3600000 / 60000);
@@ -92,7 +97,7 @@
                 '<div class="tourney-cd-block"><span class="tourney-cd-num">' + String(s).padStart(2,'0') + '</span><span class="tourney-cd-lbl">S</span></div>';
         }
         update();
-        setInterval(update, 1000);
+        timer = setInterval(update, 1000);
     });
 }());
 </script>

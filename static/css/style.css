@@ -122,8 +122,13 @@
     box-sizing: border-box;
 }
 
-.auth-form input:focus {
-    outline: none;
+.auth-form input:focus:not(:focus-visible) {
+    border-color: var(--cx-cyan);
+    box-shadow: 0 0 0 3px var(--cx-cyan-10);
+}
+.auth-form input:focus-visible {
+    outline: 2px solid var(--cx-cyan);
+    outline-offset: 2px;
     border-color: var(--cx-cyan);
     box-shadow: 0 0 0 3px var(--cx-cyan-10);
 }
@@ -227,8 +232,10 @@
     font-family: var(--font-body);
     box-sizing: border-box;
 }
-.form-group select:focus,
-.form-group input:focus { outline: none; border-color: var(--cyan); }
+.form-group select:focus:not(:focus-visible),
+.form-group input:focus:not(:focus-visible) { border-color: var(--cyan); }
+.form-group select:focus-visible,
+.form-group input:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; border-color: var(--cyan); }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .cost-preview {
     background: var(--bg2);

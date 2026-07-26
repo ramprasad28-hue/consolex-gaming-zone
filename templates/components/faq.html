@@ -26,124 +26,124 @@
         </div>
 
         <!-- FAQ list -->
-        <div class="faq-list" id="faqList">
+        <div class="faq-list" id="faqList" role="list">
 
-            <div class="faq-item stagger-child" data-faq="1" data-category="Booking">
-                <button class="faq-question" onclick="toggleFaq(1)">
+            <div class="faq-item stagger-child" data-faq="1" data-category="Booking" role="listitem">
+                <button class="faq-question" onclick="toggleFaq(1)" aria-expanded="false" aria-controls="faq-answer-1">
                     <div class="faq-q-inner">
                         <span class="faq-cat-tag">Booking</span>
-                        <h4 class="faq-q-text">How do I book a session at CONSOLEX?</h4>
+                        <span class="faq-q-text">How do I book a session at CONSOLEX?</span>
                     </div>
                     <div class="faq-chevron">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
                 </button>
-                <div class="faq-answer">
+                <div class="faq-answer" id="faq-answer-1" role="region">
                     <p>You can book online through our website in under 60 seconds — just select your date, time, number of players, and duration. You'll receive a confirmation via WhatsApp. Walk-ins are also welcome subject to availability.</p>
                 </div>
             </div>
 
-            <div class="faq-item stagger-child" data-faq="2" data-category="Booking">
-                <button class="faq-question" onclick="toggleFaq(2)">
+            <div class="faq-item stagger-child" data-faq="2" data-category="Booking" role="listitem">
+                <button class="faq-question" onclick="toggleFaq(2)" aria-expanded="false" aria-controls="faq-answer-2">
                     <div class="faq-q-inner">
                         <span class="faq-cat-tag">Booking</span>
-                        <h4 class="faq-q-text">What is the minimum booking duration?</h4>
+                        <span class="faq-q-text">What is the minimum booking duration?</span>
                     </div>
                     <div class="faq-chevron">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
                 </button>
-                <div class="faq-answer">
+                <div class="faq-answer" id="faq-answer-2" role="region">
                     <p>The minimum booking duration is 1 hour. You can book in 30-minute increments after the first hour. Maximum single-session booking is 4 hours.</p>
                 </div>
             </div>
 
-            <div class="faq-item stagger-child" data-faq="3" data-category="Membership">
-                <button class="faq-question" onclick="toggleFaq(3)">
+            <div class="faq-item stagger-child" data-faq="3" data-category="Membership" role="listitem">
+                <button class="faq-question" onclick="toggleFaq(3)" aria-expanded="false" aria-controls="faq-answer-3">
                     <div class="faq-q-inner">
                         <span class="faq-cat-tag">Membership</span>
-                        <h4 class="faq-q-text">What is included in a membership?</h4>
+                        <span class="faq-q-text">What is included in a membership?</span>
                     </div>
                     <div class="faq-chevron">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
                 </button>
-                <div class="faq-answer">
+                <div class="faq-answer" id="faq-answer-3" role="region">
                     <p>Memberships include pre-paid gaming hours valid for 30 days. Basic (10 hrs weekdays), Standard (25+5 weekend hrs), and Pro (45 total hrs, all days). Members also get priority booking and exclusive discounts.</p>
                 </div>
             </div>
 
-            <div class="faq-item stagger-child" data-faq="4" data-category="Membership">
-                <button class="faq-question" onclick="toggleFaq(4)">
+            <div class="faq-item stagger-child" data-faq="4" data-category="Membership" role="listitem">
+                <button class="faq-question" onclick="toggleFaq(4)" aria-expanded="false" aria-controls="faq-answer-4">
                     <div class="faq-q-inner">
                         <span class="faq-cat-tag">Membership</span>
-                        <h4 class="faq-q-text">Do unused membership hours roll over?</h4>
+                        <span class="faq-q-text">Do unused membership hours roll over?</span>
                     </div>
                     <div class="faq-chevron">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
                 </button>
-                <div class="faq-answer">
+                <div class="faq-answer" id="faq-answer-4" role="region">
                     <p>Membership hours do not roll over to the next month. We recommend choosing a plan that matches your expected usage. You can upgrade your plan at any time.</p>
                 </div>
             </div>
 
-            <div class="faq-item stagger-child" data-faq="5" data-category="Payments">
-                <button class="faq-question" onclick="toggleFaq(5)">
+            <div class="faq-item stagger-child" data-faq="5" data-category="Payments" role="listitem">
+                <button class="faq-question" onclick="toggleFaq(5)" aria-expanded="false" aria-controls="faq-answer-5">
                     <div class="faq-q-inner">
                         <span class="faq-cat-tag">Payments</span>
-                        <h4 class="faq-q-text">What payment methods do you accept?</h4>
+                        <span class="faq-q-text">What payment methods do you accept?</span>
                     </div>
                     <div class="faq-chevron">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
                 </button>
-                <div class="faq-answer">
+                <div class="faq-answer" id="faq-answer-5" role="region">
                     <p>We accept UPI (GPay, PhonePe, Paytm), cash, and all major credit/debit cards. Online bookings can be paid via UPI or card. Memberships can also be purchased in-store.</p>
                 </div>
             </div>
 
-            <div class="faq-item stagger-child" data-faq="6" data-category="Refunds">
-                <button class="faq-question" onclick="toggleFaq(6)">
+            <div class="faq-item stagger-child" data-faq="6" data-category="Refunds" role="listitem">
+                <button class="faq-question" onclick="toggleFaq(6)" aria-expanded="false" aria-controls="faq-answer-6">
                     <div class="faq-q-inner">
                         <span class="faq-cat-tag">Refunds</span>
-                        <h4 class="faq-q-text">What is the refund policy for bookings?</h4>
+                        <span class="faq-q-text">What is the refund policy for bookings?</span>
                     </div>
                     <div class="faq-chevron">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
                 </button>
-                <div class="faq-answer">
+                <div class="faq-answer" id="faq-answer-6" role="region">
                     <p>Cancellations made 2+ hours before the session start time receive a full refund. Cancellations within 2 hours receive a 50% refund. No-shows are non-refundable. Membership fees are non-refundable after activation.</p>
                 </div>
             </div>
 
-            <div class="faq-item stagger-child" data-faq="7" data-category="Rules">
-                <button class="faq-question" onclick="toggleFaq(7)">
+            <div class="faq-item stagger-child" data-faq="7" data-category="Rules" role="listitem">
+                <button class="faq-question" onclick="toggleFaq(7)" aria-expanded="false" aria-controls="faq-answer-7">
                     <div class="faq-q-inner">
                         <span class="faq-cat-tag">Rules</span>
-                        <h4 class="faq-q-text">Are there any age restrictions?</h4>
+                        <span class="faq-q-text">Are there any age restrictions?</span>
                     </div>
                     <div class="faq-chevron">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
                 </button>
-                <div class="faq-answer">
+                <div class="faq-answer" id="faq-answer-7" role="region">
                     <p>Players below 16 years old must be accompanied by a parent or guardian. Some games are age-rated and we follow PEGI/ESRB guidelines. ID may be requested for age-restricted titles.</p>
                 </div>
             </div>
 
-            <div class="faq-item stagger-child" data-faq="8" data-category="Rules">
-                <button class="faq-question" onclick="toggleFaq(8)">
+            <div class="faq-item stagger-child" data-faq="8" data-category="Rules" role="listitem">
+                <button class="faq-question" onclick="toggleFaq(8)" aria-expanded="false" aria-controls="faq-answer-8">
                     <div class="faq-q-inner">
                         <span class="faq-cat-tag">Rules</span>
-                        <h4 class="faq-q-text">Can I bring food and drinks to the lounge?</h4>
+                        <span class="faq-q-text">Can I bring food and drinks to the lounge?</span>
                     </div>
                     <div class="faq-chevron">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
                 </button>
-                <div class="faq-answer">
+                <div class="faq-answer" id="faq-answer-8" role="region">
                     <p>Outside food and drinks are not permitted inside the gaming zone. We have snacks, beverages, and refreshments available at the lounge counter. No smoking or alcohol is allowed on the premises.</p>
                 </div>
             </div>
@@ -172,11 +172,17 @@
     window.toggleFaq = function (id) {
         var item = document.querySelector('[data-faq="' + id + '"]');
         if (!item) return;
+        var btn = item.querySelector('.faq-question');
         var wasOpen = item.classList.contains('faq-open');
         document.querySelectorAll('.faq-item').forEach(function (el) {
             el.classList.remove('faq-open');
+            var b = el.querySelector('.faq-question');
+            if (b) b.setAttribute('aria-expanded', 'false');
         });
-        if (!wasOpen) item.classList.add('faq-open');
+        if (!wasOpen) {
+            item.classList.add('faq-open');
+            if (btn) btn.setAttribute('aria-expanded', 'true');
+        }
     };
 
     window.filterFaq = function (cat, btn) {
