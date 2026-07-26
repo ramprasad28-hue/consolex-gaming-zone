@@ -8,21 +8,24 @@
 <section class="auth-section">
     <div class="auth-card">
 
+        <div class="auth-card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        </div>
+
         <h2>Welcome Back</h2>
         <p class="auth-sub">
-            Login to your CONSOLEX account
+            Sign in to your CONSOLEX account
         </p>
 
-        <!-- Messages -->
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
+                <div class="alert alert-{{ message.tags }}" role="alert">
                     {{ message }}
                 </div>
             {% endfor %}
         {% endif %}
 
-        <form method="POST" class="auth-form">
+        <form method="POST" class="auth-form" autocomplete="on">
 
             {% csrf_token %}
 
@@ -32,20 +35,32 @@
                     type="email"
                     id="email"
                     name="email"
-                    placeholder="Enter your email"
+                    placeholder="you@example.com"
+                    value="{{ form_data.email|default:'' }}"
                     required
+                    autocomplete="email"
+                    autofocus
                 >
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Enter your password"
-                    required
-                >
+                <div style="position:relative;">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required
+                        autocomplete="current-password"
+                        style="padding-right:2.8rem;"
+                    >
+                    <button type="button" onclick="togglePassword(this)" aria-label="Show password"
+                            style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--cx-text-3);cursor:pointer;padding:4px;">
+                        <svg class="eye-open" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    </button>
+                </div>
             </div>
 
             <button type="submit" class="btn-primary btn-full">
@@ -57,11 +72,11 @@
         <div class="auth-footer">
             Don't have an account?
             <a href="{% url 'users:register' %}">
-                Register here
+                Create one
             </a>
         </div>
 
-        <div class="auth-footer">
+        <div class="auth-footer" style="margin-top:0.5rem;">
             <a href="{% url 'users:password_reset' %}">
                 Forgot your password?
             </a>
@@ -69,5 +84,24 @@
 
     </div>
 </section>
+
+<script>
+function togglePassword(btn) {
+    var input = btn.parentElement.querySelector('input');
+    var eyeOpen = btn.querySelector('.eye-open');
+    var eyeClosed = btn.querySelector('.eye-closed');
+    if (input.type === 'password') {
+        input.type = 'text';
+        eyeOpen.style.display = 'none';
+        eyeClosed.style.display = 'block';
+        btn.setAttribute('aria-label', 'Hide password');
+    } else {
+        input.type = 'password';
+        eyeOpen.style.display = 'block';
+        eyeClosed.style.display = 'none';
+        btn.setAttribute('aria-label', 'Show password');
+    }
+}
+</script>
 
 {% endblock %}

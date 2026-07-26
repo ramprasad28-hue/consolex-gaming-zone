@@ -8,10 +8,10 @@
 {% endblock %}
 
 {% block content %}
-<section class="payment-section">
-  <div class="payment-container payment-container--narrow">
+<section class="payment-section" aria-label="Payment successful">
+  <div class="payment-container payment-container--narrow" aria-live="polite">
 
-    <div class="success-icon">✅</div>
+    <div class="success-icon" aria-hidden="true">✅</div>
     <h1 class="payment-title">Slot <span class="title-accent">Confirmed!</span></h1>
     <p class="payment-subtitle">
       Your advance of <strong>₹{{ payment.amount_rupees }}</strong> has been received.

@@ -11,9 +11,14 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 from apps.memberships.services import MembershipService
-from apps.bookings.pricing import player_hourly_rate
+from apps.bookings.pricing import (
+    player_hourly_rate,
+    RATE_PER_PLAYER_HOUR,
+    RATE_PER_PLAYER_HOUR_WEEKEND,
+)
 from apps.common.exceptions import ServiceError
 from datetime import date
+import json
 
 logger = logging.getLogger("apps.memberships")
 
@@ -21,9 +26,14 @@ logger = logging.getLogger("apps.memberships")
 def plan_list(request):
     plans = MembershipService.list_plans()
     payg_2h_weekday = player_hourly_rate(2, date(2026, 1, 5)) * 2
+    rates = {
+        "weekday": {str(k): str(v) for k, v in RATE_PER_PLAYER_HOUR.items()},
+        "weekend": {str(k): str(v) for k, v in RATE_PER_PLAYER_HOUR_WEEKEND.items()},
+    }
     return render(request, "memberships/plans.html", {
         "plans": plans,
         "payg_2h_weekday": payg_2h_weekday,
+        "rates_json": json.dumps(rates),
     })
 
 

@@ -581,7 +581,10 @@
 .mem-faq-section,
 .mem-cta-section { padding: 70px 0; border-top: 1px solid var(--surface); }
 
-.mem-table-wrap { overflow-x: auto; margin-top: 26px; }
+.mem-table-wrap { overflow-x: auto; margin-top: 26px; -webkit-overflow-scrolling: touch; }
+.mem-table-wrap::-webkit-scrollbar { height: 6px; }
+.mem-table-wrap::-webkit-scrollbar-track { background: var(--surface); border-radius: 3px; }
+.mem-table-wrap::-webkit-scrollbar-thumb { background: rgba(0,217,255,0.3); border-radius: 3px; }
 .mem-compare-table {
     width: 100%; border-collapse: collapse; min-width: 540px;
     background: var(--surface); border-radius: 16px; overflow: hidden;
@@ -650,9 +653,18 @@
 }
 .mem-faq-item summary { cursor: pointer; padding: 14px 0; color: var(--text); font-weight: 600; list-style: none; }
 .mem-faq-item summary::-webkit-details-marker { display: none; }
-.mem-faq-item summary::after { content: "+"; float: right; color: #00D9FF; font-size: 1.3rem; }
+.mem-faq-item summary::after { content: "+"; float: right; color: #00D9FF; font-size: 1.3rem; transition: transform 0.3s ease; }
 .mem-faq-item[open] summary::after { content: "−"; }
+.mem-faq-item summary { display: flex; align-items: center; justify-content: space-between; }
+.mem-faq-item summary::before { display: none; }
 .mem-faq-item p { color: var(--text2); font-size: 0.9rem; padding: 0 0 14px; margin: 0; }
+.mem-faq-item[open] p {
+    animation: faqSlideDown 0.3s ease;
+}
+@keyframes faqSlideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
 
 /* CTA */
 .mem-cta { text-align: center; }

@@ -17,21 +17,21 @@
         </div>
 
         <!-- Category filter -->
-        <div class="games-filters stagger-child">
-            <button class="games-filter active" onclick="filterGames('all', this)">All</button>
-            <button class="games-filter" onclick="filterGames('action', this)">Action</button>
-            <button class="games-filter" onclick="filterGames('adventure', this)">Adventure</button>
-            <button class="games-filter" onclick="filterGames('sports', this)">Sports</button>
-            <button class="games-filter" onclick="filterGames('racing', this)">Racing</button>
-            <button class="games-filter" onclick="filterGames('horror', this)">Horror</button>
-            <button class="games-filter" onclick="filterGames('coop', this)">Co-op</button>
-            <button class="games-filter" onclick="filterGames('popular', this)">Popular</button>
+        <div class="games-filters stagger-child" role="group" aria-label="Filter games by category">
+            <button class="games-filter active" onclick="filterGames('all', this)" aria-pressed="true">All</button>
+            <button class="games-filter" onclick="filterGames('action', this)" aria-pressed="false">Action</button>
+            <button class="games-filter" onclick="filterGames('adventure', this)" aria-pressed="false">Adventure</button>
+            <button class="games-filter" onclick="filterGames('sports', this)" aria-pressed="false">Sports</button>
+            <button class="games-filter" onclick="filterGames('racing', this)" aria-pressed="false">Racing</button>
+            <button class="games-filter" onclick="filterGames('horror', this)" aria-pressed="false">Horror</button>
+            <button class="games-filter" onclick="filterGames('coop', this)" aria-pressed="false">Co-op</button>
+            <button class="games-filter" onclick="filterGames('popular', this)" aria-pressed="false">Popular</button>
         </div>
 
         <!-- Game grid -->
         <div class="games-grid" id="gamesGrid">
             {% for g in games %}
-            <div class="game-card stagger-child" data-tags="{{ g.tags }}">
+            <div class="game-card stagger-child" data-category="{{ g.category }}" data-badge="{{ g.badge }}">
                 <div class="game-card-cover">
                     {% if g.image_src %}
                     <img src="{{ g.image_src }}" alt="{{ g.title }}">
@@ -71,11 +71,14 @@
     window.filterGames = function (tag, btn) {
         document.querySelectorAll('.games-filter').forEach(function (p) {
             p.classList.remove('active');
+            p.setAttribute('aria-pressed', 'false');
         });
         btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
         document.querySelectorAll('.game-card').forEach(function (card) {
-            var tags = card.dataset.tags || '';
-            var show = tag === 'all' || tags.indexOf(tag) !== -1;
+            var category = card.dataset.category || '';
+            var badge = card.dataset.badge || '';
+            var show = tag === 'all' || category === tag || (tag === 'popular' && badge === 'popular');
             if (show) {
                 card.classList.remove('gc-hidden');
                 card.classList.add('gc-visible');

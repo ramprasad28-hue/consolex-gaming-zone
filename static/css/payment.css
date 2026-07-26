@@ -46,6 +46,10 @@
   background-clip: text;
 }
 
+.error-text {
+  color: var(--orange);
+}
+
 .payment-subtitle {
   font-family: var(--font-body);
   font-size: 1rem;

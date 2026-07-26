@@ -47,6 +47,8 @@ def payment_page(request, booking_id):
         "rp_amount": order["amount"],
         "rp_order_id": order["order_id"],
         "razorpay_key_id": settings.RAZORPAY_KEY_ID,
+        "db_payment_id": order["payment_id"],
+        "booking_id": booking.id,
     })
 
 

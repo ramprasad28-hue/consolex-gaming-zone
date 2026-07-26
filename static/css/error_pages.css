@@ -1,0 +1,149 @@
+/* ============================================================
+   CONSOLEX — error_pages.css
+   Gaming-themed 404 / 500 pages
+   ============================================================ */
+
+.error-section {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 1rem 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.error-section::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.error-section.error-404::before {
+    background: radial-gradient(circle, rgba(0,217,255,0.06) 0%, transparent 70%);
+}
+
+.error-section.error-500::before {
+    background: radial-gradient(circle, rgba(243,38,45,0.06) 0%, transparent 70%);
+}
+
+.error-card {
+    position: relative;
+    text-align: center;
+    max-width: 520px;
+    z-index: 1;
+}
+
+.error-code {
+    font-family: var(--cx-font-display);
+    font-size: clamp(5rem, 15vw, 9rem);
+    font-weight: 900;
+    letter-spacing: var(--cx-tracking-tight);
+    line-height: 1;
+    margin: 0 0 1rem;
+}
+
+.error-404 .error-code {
+    background: linear-gradient(135deg, var(--cx-cyan), var(--cx-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 40px rgba(0,217,255,0.25));
+}
+
+.error-500 .error-code {
+    background: linear-gradient(135deg, var(--cx-orange), #F3262D);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 40px rgba(255,106,0,0.25));
+}
+
+.error-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: var(--cx-radius-lg);
+    margin-bottom: 1.5rem;
+}
+
+.error-404 .error-icon {
+    background: linear-gradient(135deg, var(--cx-cyan-8), var(--cx-purple-8));
+    border: 1px solid var(--cx-cyan-15);
+    color: var(--cx-cyan);
+}
+
+.error-500 .error-icon {
+    background: linear-gradient(135deg, rgba(255,106,0,0.08), rgba(243,38,45,0.08));
+    border: 1px solid rgba(255,106,0,0.15);
+    color: var(--cx-orange);
+}
+
+.error-msg {
+    color: var(--cx-text-2);
+    font-family: var(--cx-font-body);
+    font-size: var(--cx-text-lg);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+}
+
+.error-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 2rem;
+    border-radius: var(--cx-radius-md);
+    font-family: var(--cx-font-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: var(--cx-tracking-wide);
+    text-decoration: none;
+    transition: transform 0.3s var(--cx-ease), box-shadow 0.3s;
+}
+
+.error-404 .error-btn {
+    color: #fff;
+    background: linear-gradient(135deg, var(--cx-cyan), var(--cx-purple));
+}
+
+.error-500 .error-btn {
+    color: #fff;
+    background: linear-gradient(135deg, var(--cx-orange), #F3262D);
+}
+
+.error-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0,217,255,0.3);
+}
+
+.error-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.error-hint {
+    margin-top: 1.5rem;
+    color: var(--cx-text-3);
+    font-family: var(--cx-font-body);
+    font-size: var(--cx-text-sm);
+}
+
+.error-hint a {
+    color: var(--cx-cyan);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+@media (max-width: 480px) {
+    .error-code { font-size: 4rem; }
+    .error-msg { font-size: 1rem; }
+    .error-card { padding: 0 1rem; }
+}

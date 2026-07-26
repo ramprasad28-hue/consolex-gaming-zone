@@ -8,11 +8,11 @@
 {% endblock %}
 
 {% block content %}
-<section class="payment-section">
-  <div class="payment-container payment-container--narrow">
+<section class="payment-section" aria-label="Payment failed">
+  <div class="payment-container payment-container--narrow" aria-live="assertive">
 
-    <div class="success-icon">❌</div>
-    <h1 class="payment-title">Payment <span style="color:var(--cx-orange)">Failed</span></h1>
+    <div class="success-icon" aria-hidden="true">❌</div>
+    <h1 class="payment-title">Payment <span class="error-text">Failed</span></h1>
     <p class="payment-subtitle">
       Something went wrong with your payment. Your slot has <strong>not</strong> been confirmed yet.
     </p>

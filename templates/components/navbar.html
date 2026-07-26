@@ -1,4 +1,4 @@
-<nav class="navbar" id="navbar">
+<nav class="navbar" id="navbar" aria-label="Main navigation">
     <div class="nav-inner">
 
         <!-- Logo -->
@@ -11,7 +11,7 @@
         </a>
 
         <!-- Desktop Links -->
-        <ul class="nav-links" id="navLinks">
+        <ul class="nav-links" id="navLinks" role="list">
             <li><a href="/" class="nl {% if request.path == '/' %}active{% endif %}">Home</a></li>
             <li><a href="{% url 'bookings:booking_form' %}" class="nl {% if request.path == '/book/' %}active{% endif %}">Booking</a></li>
             <li><a href="{% url 'memberships:plan_list' %}" class="nl {% if request.path == '/memberships/' %}active{% endif %}">Membership</a></li>
@@ -57,7 +57,7 @@
     </div>
 
     <!-- Mobile Drawer -->
-    <div class="mob-drawer" id="mobDrawer" aria-hidden="true">
+    <div class="mob-drawer" id="mobDrawer" aria-hidden="true" aria-label="Mobile menu">
         <ul class="mob-links">
             <li><a href="/" class="mob-link">Home</a></li>
             <li><a href="{% url 'bookings:booking_form' %}" class="mob-link">Booking</a></li>

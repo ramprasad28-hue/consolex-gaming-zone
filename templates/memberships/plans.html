@@ -318,10 +318,7 @@
 {% block extra_scripts %}
 <script>
 (function () {
-    var RATES = {
-        weekday: {1:130, 2:250, 3:330, 4:420},
-        weekend: {1:150, 2:270, 3:400, 4:520}
-    };
+    var RATES = {{ rates_json|safe }};
     var players = document.getElementById('calcPlayers');
     var hours   = document.getElementById('calcHours');
     var day     = document.getElementById('calcDay');
@@ -331,7 +328,7 @@
     function render() {
         var p = parseInt(players.value, 10);
         var h = parseFloat(hours.value) || 0;
-        var rate = RATES[day.value][p];
+        var rate = parseFloat(RATES[day.value][p]) || 0;
         var sessionCost = rate * h;
         var planHours = buttons.length ? parseInt(buttons[0].dataset.hours, 10) : 0;
         if (result.dataset.plan != null) {

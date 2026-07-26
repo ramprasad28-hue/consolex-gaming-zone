@@ -33,11 +33,15 @@ def register(request):
 
         if not email or not password1:
             messages.error(request, "Email and password are required.")
-            return render(request, "users/register.html")
+            return render(request, "users/register.html", {
+                "form_data": {"email": email, "first_name": first_name, "last_name": last_name},
+            })
 
         if password1 != password2:
             messages.error(request, "Passwords do not match.")
-            return render(request, "users/register.html")
+            return render(request, "users/register.html", {
+                "form_data": {"email": email, "first_name": first_name, "last_name": last_name},
+            })
 
         try:
             user = UserService.register(email, password1, first_name, last_name)
@@ -46,7 +50,9 @@ def register(request):
             return redirect("home")
         except ServiceError as e:
             messages.error(request, str(e))
-            return render(request, "users/register.html")
+            return render(request, "users/register.html", {
+                "form_data": {"email": email, "first_name": first_name, "last_name": last_name},
+            })
 
     return render(request, "users/register.html")
 
@@ -71,6 +77,9 @@ def user_login(request):
             return redirect(next_url)
         except ServiceError:
             messages.error(request, "Invalid email or password.")
+            return render(request, "users/login.html", {
+                "form_data": {"email": email},
+            })
 
     return render(request, "users/login.html")
 

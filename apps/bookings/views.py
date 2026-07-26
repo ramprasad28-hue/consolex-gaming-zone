@@ -8,7 +8,7 @@ from django.contrib import messages
 from apps.bookings.models import Booking
 from apps.bookings.services import BookingService
 from apps.bookings.forms import BookingCreateForm
-from apps.bookings.pricing import RATE_PER_PLAYER_HOUR
+from apps.bookings.pricing import RATE_PER_PLAYER_HOUR, RATE_PER_PLAYER_HOUR_WEEKEND
 from apps.games.models import GameConsole
 from apps.common.exceptions import ServiceError
 
@@ -43,6 +43,8 @@ def booking_form(request):
         "form": form,
         "consoles": consoles,
         "rate_table": {str(k): float(v) for k, v in RATE_PER_PLAYER_HOUR.items()},
+        "rate_table_weekend": {str(k): float(v) for k, v in RATE_PER_PLAYER_HOUR_WEEKEND.items()},
+        "form_errors": form.errors if form.is_bound and not form.is_valid() else None,
     })
 
 
