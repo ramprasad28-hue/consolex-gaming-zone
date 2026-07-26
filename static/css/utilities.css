@@ -441,6 +441,64 @@
     justify-content: space-between;
 }
 
+/* ── Button ripple effect ────────────────────────────────── */
+.btn-ripple {
+    position: relative;
+    overflow: hidden;
+}
+.btn-ripple::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(255,255,255,0.3) 0%, transparent 60%);
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity 0.4s, transform 0.5s;
+    pointer-events: none;
+}
+.btn-ripple:active::after {
+    opacity: 1;
+    transform: scale(2.5);
+    transition: opacity 0s, transform 0s;
+}
+
+/* ── Glow border on hover ────────────────────────────────── */
+.glow-border {
+    position: relative;
+}
+.glow-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, var(--cx-cyan), var(--cx-purple), var(--cx-orange));
+    opacity: 0;
+    transition: opacity 0.4s var(--cx-ease);
+    z-index: -1;
+}
+.glow-border:hover::before {
+    opacity: 1;
+}
+
+/* ── Animated counter (used by JS) ──────────────────────── */
+.stat-counter {
+    font-family: var(--cx-font-accent);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+.stat-counter.counting {
+    color: var(--cx-cyan);
+}
+
+/* ── Section divider line ────────────────────────────────── */
+.section-divider-line {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--cx-cyan), var(--cx-purple));
+    border-radius: 3px;
+    margin: 0 auto 1.5rem;
+}
+
 /* ── Visually hidden (screen reader only) ───────────────── */
 .sr-only {
     position: absolute;

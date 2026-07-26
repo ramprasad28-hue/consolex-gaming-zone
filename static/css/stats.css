@@ -1,0 +1,105 @@
+/* ============================================================
+   CONSOLEX — stats.css
+   Gaming statistics animated counter section
+   ============================================================ */
+
+.gaming-stats {
+    position: relative;
+    padding: 72px 24px;
+    background: linear-gradient(135deg, var(--cx-bg) 0%, var(--cx-bg-2) 100%);
+    border-top: 1px solid var(--cx-border);
+    border-bottom: 1px solid var(--cx-border);
+    overflow: hidden;
+}
+
+.gaming-stats::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--cx-cyan-5) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.stats-container {
+    max-width: var(--cx-container-xl);
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 32px;
+    text-align: center;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 12px;
+    border-radius: var(--cx-radius-lg);
+    background: var(--cx-surface);
+    border: 1px solid var(--cx-border);
+    transition: transform 0.3s var(--cx-ease), border-color 0.3s;
+}
+
+.stat-item:hover {
+    transform: translateY(-4px);
+    border-color: var(--cx-cyan-30);
+}
+
+.stat-number {
+    font-family: var(--cx-font-accent);
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--cx-cyan), var(--cx-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: color 0.3s;
+}
+
+.stat-label {
+    font-family: var(--cx-font-body);
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--cx-text-2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+@media (max-width: 992px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .gaming-stats { padding: 56px 20px; }
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+    .stat-number { font-size: 2rem; }
+}
+
+@media (max-width: 480px) {
+    .gaming-stats { padding: 48px 16px; }
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+    .stat-item { padding: 16px 10px; }
+    .stat-number { font-size: 1.6rem; }
+    .stat-label { font-size: 0.72rem; }
+}

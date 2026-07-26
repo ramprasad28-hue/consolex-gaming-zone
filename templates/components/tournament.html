@@ -1,3 +1,4 @@
+{% load static %}
 {% if tournaments %}
 <section class="tournament-section" id="tournaments">
 
@@ -26,7 +27,7 @@
                     {% if t.image_src %}
                     <img src="{{ t.image_src }}" alt="{{ t.title }}">
                     {% else %}
-                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=80" alt="{{ t.title }}">
+                    <img src="{% static 'media/games/cod.jpg' %}" alt="{{ t.title }}">
                     {% endif %}
                     <div class="tourney-card-img-scrim"></div>
                     <span class="tourney-status {{ t.status_css_class }}">{{ t.status_label }}</span>

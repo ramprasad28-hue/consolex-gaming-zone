@@ -5,6 +5,7 @@
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/features.css' %}">
+  <link rel="stylesheet" href="{% static 'css/gallery.css' %}">
   <link rel="stylesheet" href="{% static 'css/testimonials.css' %}">
   <link rel="stylesheet" href="{% static 'css/faq.css' %}">
   <link rel="stylesheet" href="{% static 'css/tournament.css' %}">
@@ -15,14 +16,23 @@
   <!-- HERO -->
   {% include "components/hero.html" %}
 
+  <!-- GAMING STATISTICS -->
+  {% include "components/stats.html" %}
+
   <!-- FEATURES -->
   {% include "components/features.html" %}
 
-  <!-- PRICING -->
-  {% include "components/pricing.html" %}
+  <!-- BOOKING CTA -->
+  {% include "components/booking_cta.html" %}
+
+  <!-- GALLERY -->
+  {% include "components/gallery.html" %}
 
   <!-- GAME LIBRARY -->
   {% include "components/games.html" %}
+
+  <!-- PRICING -->
+  {% include "components/pricing.html" %}
 
   <!-- TOURNAMENTS -->
   {% include "components/tournament.html" %}
@@ -33,15 +43,17 @@
   <!-- FAQ -->
   {% include "components/faq.html" %}
 
+  <!-- SOCIAL CTA -->
+  {% include "components/social_cta.html" %}
+
 {% endblock %}
 
 {% block extra_scripts %}
   <script>
   (function () {
+      /* ── Stagger reveal ───────────────────────────────── */
       var staggerEls = document.querySelectorAll('.stagger-child');
-      if (!staggerEls.length) return;
-
-      if ('IntersectionObserver' in window) {
+      if (staggerEls.length && 'IntersectionObserver' in window) {
           var observer = new IntersectionObserver(function (entries) {
               entries.forEach(function (entry) {
                   if (entry.isIntersecting) {
@@ -61,6 +73,47 @@
               el.classList.add('is-visible');
           });
       }, 3000);
+
+      /* ── Animated counters ─────────────────────────────── */
+      var counters = document.querySelectorAll('.stat-counter[data-count-to]');
+      if (counters.length && 'IntersectionObserver' in window) {
+          var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+          var counterObs = new IntersectionObserver(function (entries) {
+              entries.forEach(function (entry) {
+                  if (entry.isIntersecting) {
+                      animateCounter(entry.target, prefersReduced);
+                      counterObs.unobserve(entry.target);
+                  }
+              });
+          }, { threshold: 0.5 });
+
+          counters.forEach(function (el) { counterObs.observe(el); });
+      }
+
+      function animateCounter(el, reduced) {
+          var target = parseInt(el.getAttribute('data-count-to'), 10);
+          var suffix = el.getAttribute('data-suffix') || '';
+          if (reduced) {
+              el.textContent = target.toLocaleString() + suffix;
+              return;
+          }
+          var duration = 1800;
+          var step = 16;
+          var increment = target / (duration / step);
+          var current = 0;
+          el.classList.add('counting');
+
+          var timer = setInterval(function () {
+              current += increment;
+              if (current >= target) {
+                  current = target;
+                  clearInterval(timer);
+                  el.classList.remove('counting');
+              }
+              el.textContent = Math.floor(current).toLocaleString() + suffix;
+          }, step);
+      }
   }());
   </script>
 {% endblock %}

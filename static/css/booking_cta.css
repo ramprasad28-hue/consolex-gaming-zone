@@ -1,0 +1,134 @@
+/* ============================================================
+   CONSOLEX — booking_cta.css
+   Full-width booking call-to-action strip
+   ============================================================ */
+
+.booking-cta-section {
+    position: relative;
+    padding: 80px 24px;
+    background: linear-gradient(135deg, var(--cx-bg) 0%, var(--cx-bg-2) 50%, var(--cx-bg) 100%);
+    overflow: hidden;
+}
+
+.booking-cta-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--cx-cyan-8) 0%, var(--cx-purple-8) 50%, var(--cx-orange-8) 100%);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.booking-cta-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cx-cyan-25), transparent);
+}
+
+.booking-cta-container {
+    max-width: var(--cx-container-xl);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    position: relative;
+    z-index: 1;
+}
+
+.booking-cta-content {
+    flex: 1;
+}
+
+.booking-cta-title {
+    font-family: var(--cx-font-display);
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--cx-text);
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+}
+
+.booking-cta-subtitle {
+    font-size: 1rem;
+    color: var(--cx-text-2);
+    margin: 0;
+}
+
+.booking-cta-actions {
+    display: flex;
+    gap: 14px;
+    flex-shrink: 0;
+}
+
+.booking-cta-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, var(--cx-cyan), var(--cx-purple));
+    color: #fff;
+    font-family: var(--cx-font-display);
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: var(--cx-radius-md);
+    text-decoration: none;
+    transition: transform 0.3s var(--cx-ease), box-shadow 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.booking-cta-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px var(--cx-cyan-25);
+}
+
+.booking-cta-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    background: transparent;
+    color: var(--cx-text);
+    font-family: var(--cx-font-display);
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border: 1px solid var(--cx-border);
+    border-radius: var(--cx-radius-md);
+    text-decoration: none;
+    transition: border-color 0.3s, color 0.3s;
+}
+
+.booking-cta-btn-ghost:hover {
+    border-color: var(--cx-cyan);
+    color: var(--cx-cyan);
+}
+
+@media (max-width: 768px) {
+    .booking-cta-section { padding: 56px 20px; }
+    .booking-cta-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 28px;
+    }
+    .booking-cta-title { font-size: 1.6rem; }
+}
+
+@media (max-width: 480px) {
+    .booking-cta-section { padding: 48px 16px; }
+    .booking-cta-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    .booking-cta-btn-primary,
+    .booking-cta-btn-ghost {
+        justify-content: center;
+        width: 100%;
+    }
+}

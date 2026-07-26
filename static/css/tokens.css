@@ -71,9 +71,9 @@
     --cx-surface-2:       rgba(255, 255, 255, 0.08);
     --cx-card-bg:         rgba(9, 4, 71, 0.6);
     --cx-input-bg:        #090447;
-    --cx-nav-bg:          rgba(8, 8, 16, 0.55);
-    --cx-nav-bg-scroll:   rgba(8, 8, 16, 0.92);
-    --cx-drawer-bg:       rgba(8, 8, 16, 0.98);
+    --cx-nav-bg:          rgba(5, 0, 54, 0.55);
+    --cx-nav-bg-scroll:   rgba(5, 0, 54, 0.92);
+    --cx-drawer-bg:       rgba(5, 0, 54, 0.98);
     --cx-footer-bg:       transparent;
     --cx-hero-scrim-l:    rgba(5, 0, 54, 0.95);
     --cx-hero-scrim-m:    rgba(5, 0, 54, 0.80);

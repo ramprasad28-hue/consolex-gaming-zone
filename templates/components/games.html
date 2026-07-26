@@ -1,3 +1,4 @@
+{% load static %}
 {% if games %}
 <section class="games-section" id="games">
 
@@ -35,7 +36,7 @@
                     {% if g.image_src %}
                     <img src="{{ g.image_src }}" alt="{{ g.title }}">
                     {% else %}
-                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80" alt="{{ g.title }}">
+                    <img src="{% static 'media/games/cod.jpg' %}" alt="{{ g.title }}">
                     {% endif %}
                     <div class="game-card-scrim"></div>
                     {% if g.badge %}

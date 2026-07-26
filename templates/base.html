@@ -14,10 +14,14 @@
     <link rel="stylesheet" href="{% static 'css/typography.css' %}">
     <link rel="stylesheet" href="{% static 'css/utilities.css' %}">
     <link rel="stylesheet" href="{% static 'css/navbar_footer.css' %}">
+    <link rel="stylesheet" href="{% static 'css/announcement.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/hero.css' %}">
     <link rel="stylesheet" href="{% static 'css/pricing.css' %}">
     <link rel="stylesheet" href="{% static 'css/games.css' %}">
+    <link rel="stylesheet" href="{% static 'css/stats.css' %}">
+    <link rel="stylesheet" href="{% static 'css/booking_cta.css' %}">
+    <link rel="stylesheet" href="{% static 'css/social_cta.css' %}">
     <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
     {% block extra_css %}{% endblock %}
     <script>
@@ -34,6 +38,7 @@
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
+    {% include 'components/announcement.html' %}
     {% include 'components/navbar.html' %}
 
     <main id="main-content">
