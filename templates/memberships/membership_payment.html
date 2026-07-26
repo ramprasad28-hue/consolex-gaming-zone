@@ -15,7 +15,7 @@
             <p class="ms-sub">Complete payment to activate your {{ plan.name }} membership.</p>
         </div>
 
-        <div class="mem-grid" style="justify-content:center;">
+        <div class="mem-grid membership-payment-grid">
             <div class="mem-card mc-standard">
                 <div class="mc-inner-glow"></div>
                 <div class="mc-header">
@@ -30,13 +30,13 @@
                     </div>
                     <span class="mc-period">per {{ plan.duration_days }} days</span>
                 </div>
-                <div id="memPayStatus" style="text-align:center;padding:18px 0;color:#8b8fb0;">
+                <div id="memPayStatus" class="membership-payment-status">
                     Click below to pay with Razorpay.
                 </div>
-                <button id="memPayBtn" class="mc-btn mc-btn-standard" style="width:100%;text-align:center;">
+                <button id="memPayBtn" class="mc-btn mc-btn-standard membership-payment-btn">
                     Pay ₹{{ plan.price }} with Razorpay
                 </button>
-                <a href="{% url 'memberships:plan_list' %}" class="mc-value-note" style="display:block;text-align:center;margin-top:14px;">Cancel</a>
+                <a href="{% url 'memberships:plan_list' %}" class="mc-value-note membership-payment-cancel">Cancel</a>
             </div>
         </div>
     </div>
@@ -79,11 +79,11 @@
                 .then(function (data) {
                     if (data.success) {
                         status.textContent = "Payment successful! Redirecting...";
-                        status.style.color = "#00f0ff";
+                        status.style.color = "#00D9FF";
                         window.location.href = data.redirect;
                     } else {
                         status.textContent = data.error || "Payment failed. Please try again.";
-                        status.style.color = "#ff4444";
+                        status.style.color = "#FF4444";
                         btn.disabled = false;
                         btn.textContent = "Retry Payment";
                     }

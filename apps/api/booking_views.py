@@ -1,13 +1,18 @@
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.throttling import UserRateThrottle
 
 from apps.bookings.services import BookingService
 from apps.bookings.pricing import RATE_PER_PLAYER_HOUR
 from apps.common.exceptions import ServiceError
 from apps.common.response import success_response, error_response, paginated_response
 from apps.api.serializers import BookingSerializer, BookingCreateSerializer
+
+
+class BookingCreateThrottle(UserRateThrottle):
+    rate = "10/minute"
 
 
 @api_view(["GET"])
@@ -20,6 +25,7 @@ def booking_list(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+@throttle_classes([BookingCreateThrottle])
 def booking_create(request):
     ser = BookingCreateSerializer(data=request.data)
     ser.is_valid(raise_exception=True)

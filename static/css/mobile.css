@@ -1,347 +1,148 @@
 /* ============================================================
-   CONSOLEX — mobile.css  (responsive overrides)
-   Uses current class names from reference-matched templates.
+   CONSOLEX — mobile.css
+   Cross-cutting responsive utilities ONLY.
+   Section-specific responsive rules live in their component CSS.
+
+   Kept here:
+   - Touch targets (WCAG 2.5.5)
+   - Typography fluid scaling
+   - WhatsApp safe area + mobile adjustments
+   - Print styles
+   - Reduced motion
+   - High contrast mode
    ============================================================ */
-
-/* ── BASE RESETS ────────────────────────────────────────── */
-html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
-
-img, video { max-width: 100%; height: auto; display: block; }
-
-/* Prevent font size inflation on iOS */
-body { -webkit-text-size-adjust: 100%; }
-
-/* ── HERO MOBILE ────────────────────────────────────────── */
-@media (max-width: 768px) {
-  .hero {
-    min-height: 100svh;
-  }
-
-  .hero-content {
-    padding: 40px 0;
-  }
-
-  .hero-title .hero-line-1,
-  .hero-title .hero-line-2 {
-    font-size: clamp(2.5rem, 12vw, 4rem);
-  }
-
-  .hero-subtitle {
-    font-size: 16px;
-    padding: 0 0.25rem;
-  }
-
-  .hero-ctas {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .hero-btn-primary,
-  .hero-btn-ghost {
-    width: 100%;
-    justify-content: center;
-    text-align: center;
-  }
-
-  .hero-stats {
-    flex-wrap: wrap;
-    gap: 24px;
-    justify-content: center;
-  }
-
-  .hero-blob {
-    opacity: 0.15;
-  }
-
-  .hero-grid-lines {
-    opacity: 0.3;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-badges {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .hero-stat-value {
-    font-size: 20px;
-  }
-
-  .hero-stat-label {
-    font-size: 10px;
-  }
-}
-
-/* ── FEATURES MOBILE ────────────────────────────────────── */
-@media (max-width: 768px) {
-  .features-section {
-    padding: 64px 16px;
-  }
-
-  .features-header {
-    margin-bottom: 40px;
-  }
-
-  .features-card {
-    min-height: 180px;
-  }
-
-  .features-card-lg {
-    min-height: 220px;
-  }
-}
-
-/* ── PRICING MOBILE ─────────────────────────────────────── */
-@media (max-width: 768px) {
-  .pricing-section {
-    padding: 64px 16px;
-  }
-
-  .pricing-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-
-  .pricing-row-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .pricing-cards-grid {
-    grid-template-columns: 1fr;
-    max-width: 360px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .pricing-membership-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .membership-card {
-    padding: 24px;
-  }
-}
-
-/* ── GAMES MOBILE ───────────────────────────────────────── */
-@media (max-width: 768px) {
-  .games-section {
-    padding: 64px 16px;
-  }
-
-  .games-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .games-filters {
-    gap: 6px;
-    margin-bottom: 24px;
-  }
-}
-
-@media (max-width: 480px) {
-  .games-filter {
-    font-size: 12px;
-    padding: 8px 14px;
-  }
-
-  .games-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-}
-
-/* ── TOURNAMENT MOBILE ──────────────────────────────────── */
-@media (max-width: 768px) {
-  .tournament-section {
-    padding: 64px 16px;
-  }
-
-  .tourney-card-img {
-    height: 150px;
-  }
-
-  .tourney-card-body {
-    padding: 20px;
-  }
-
-  .tourney-card-meta {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .lb-row {
-    padding: 12px 16px;
-    gap: 12px;
-  }
-
-  .lb-header {
-    padding: 20px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-}
-
-/* ── TESTIMONIALS MOBILE ────────────────────────────────── */
-@media (max-width: 768px) {
-  .testimonials-section {
-    padding: 64px 16px;
-  }
-
-  .testi-rating-box {
-    padding: 10px 16px;
-    gap: 12px;
-  }
-
-  .testi-rating-num {
-    font-size: 1.2rem;
-  }
-
-  .testi-card {
-    padding: 20px;
-  }
-
-  .testi-cta-box {
-    padding: 24px;
-    gap: 16px;
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .testi-cta-text {
-    text-align: center;
-  }
-}
-
-/* ── FAQ MOBILE ─────────────────────────────────────────── */
-@media (max-width: 768px) {
-  .faq-section {
-    padding: 64px 16px;
-  }
-
-  .faq-filters {
-    gap: 6px;
-  }
-
-  .faq-filter {
-    font-size: 12px;
-    padding: 6px 12px;
-  }
-
-  .faq-question {
-    padding: 16px;
-  }
-
-  .faq-q-inner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .faq-cta-box {
-    padding: 20px;
-    gap: 16px;
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .faq-cta-text {
-    text-align: center;
-  }
-}
-
-/* ── FOOTER MOBILE ──────────────────────────────────────── */
-@media (max-width: 768px) {
-  .site-footer {
-    padding: 48px 16px 24px;
-  }
-
-  .footer-links-group {
-    gap: 32px;
-  }
-
-  .footer-bottom {
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    text-align: center;
-  }
-
-  .footer-socials {
-    gap: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .footer-brand {
-    max-width: 100%;
-  }
-}
-
-/* ── AUTH PAGE MOBILE ───────────────────────────────────── */
-@media (max-width: 480px) {
-  .auth-card {
-    padding: 1.5rem;
-  }
-}
-
-/* ── BOOKING PAGE MOBILE ────────────────────────────────── */
-@media (max-width: 768px) {
-  .booking-form-wrap {
-    grid-template-columns: 1fr;
-  }
-
-  .payment-wrap {
-    grid-template-columns: 1fr;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboard-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-/* ── TOUCH TARGETS ──────────────────────────────────────── */
-@media (max-width: 768px) {
-  a, button {
-    min-height: 44px;
-    min-width: 44px;
-  }
-
-  /* Override for inline/icon elements */
-  .games-filter,
-  .faq-filter,
-  .hf-star,
-  .hero-pill-dot {
-    min-height: unset;
-    min-width: unset;
-  }
-}
 
 /* ── SAFE AREA for notched phones ───────────────────────── */
 .whatsapp-float {
-  bottom: max(1.5rem, env(safe-area-inset-bottom) + 1rem);
-  right:  max(1.5rem, env(safe-area-inset-right)  + 1rem);
+    bottom: max(1.5rem, env(safe-area-inset-bottom) + 1rem);
+    right:  max(1.5rem, env(safe-area-inset-right) + 1rem);
+}
+
+/* ── WHATSAPP MOBILE ────────────────────────────────────── */
+@media (max-width: 480px) {
+    .whatsapp-float {
+        width: 52px;
+        height: 52px;
+        bottom: max(1rem, env(safe-area-inset-bottom) + 1rem);
+        right: max(1rem, env(safe-area-inset-right) + 1rem);
+    }
+    .whatsapp-icon {
+        width: 26px;
+        height: 26px;
+    }
+    .whatsapp-tooltip {
+        display: none;
+    }
+}
+
+/* ── TOUCH TARGETS (WCAG 2.5.5 — minimum 44x44px) ─────── */
+@media (max-width: 768px) {
+    a, button, input[type="submit"], input[type="button"] {
+        min-height: 44px;
+    }
+
+    .games-filter,
+    .faq-filter,
+    .hf-star,
+    .hero-pill-dot,
+    .nl,
+    .mob-link,
+    .pricing-toggle-btn,
+    .badge,
+    .btn-action {
+        min-height: unset;
+    }
+
+    .games-filter,
+    .faq-filter {
+        min-height: 40px;
+        padding: 8px 16px;
+    }
+
+    .mob-link {
+        padding: 16px 0;
+    }
+    .mob-login-link,
+    .mob-dash-link,
+    .mob-logout-link {
+        padding: 14px;
+        min-height: 48px;
+    }
+    .mob-book-link {
+        padding: 16px;
+        min-height: 52px;
+    }
+    .hamburger {
+        width: 44px;
+        height: 44px;
+    }
+    .theme-toggle {
+        width: 44px;
+        height: 44px;
+    }
+}
+
+/* ── TYPOGRAPHY FLUID SCALING ───────────────────────────── */
+@media (max-width: 480px) {
+    .features-title,
+    .games-title,
+    .tourney-title,
+    .testi-title,
+    .faq-title,
+    .ms-title,
+    .pricing-title,
+    .pricing-membership-title {
+        font-size: clamp(1.4rem, 5vw, 1.8rem);
+    }
 }
 
 /* ── REDUCED MOTION ─────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration:   0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration:  0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ── PRINT STYLES ───────────────────────────────────────── */
+@media print {
+    .navbar,
+    .site-footer,
+    .whatsapp-float,
+    .mob-backdrop,
+    .mob-drawer,
+    .hero-scroll,
+    .hero-blob,
+    .hero-grid-lines {
+        display: none !important;
+    }
+    body {
+        background: #fff;
+        color: #000;
+    }
+    .payment-summary-card,
+    .booking-summary,
+    .pricing-card {
+        border: 1px solid #ccc;
+        background: #fff;
+    }
+}
+
+/* ── HIGH CONTRAST MODE ─────────────────────────────────── */
+@media (forced-colors: active) {
+    .hero-btn-primary,
+    .nav-book-btn,
+    .btn-pay,
+    .mc-btn-standard,
+    .mc-btn-pro,
+    .tourney-btn-primary {
+        border: 2px solid ButtonText;
+    }
+    .nl.active::after {
+        background: Highlight;
+    }
 }

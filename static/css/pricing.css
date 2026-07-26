@@ -40,7 +40,7 @@
     display: inline-flex; align-items: center; gap: 8px;
     padding: 6px 16px; border-radius: 100px;
     font-family: var(--font-body); font-size: 13px; font-weight: 600;
-    color: var(--cyan); background: rgba(0,217,255,0.08); border: 1px solid rgba(0,217,255,0.20);
+    color: var(--cyan); background: var(--cyan-dim); border: 1px solid rgba(0,217,255,0.20);
 }
 .pricing-pill-purple {
     display: inline-flex; align-items: center; gap: 8px;
@@ -67,7 +67,7 @@
 }
 .pricing-toggle {
     display: flex; gap: 4px; padding: 4px;
-    background: rgba(9,4,71,0.6); border: 1px solid var(--border); border-radius: 12px;
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
 }
 .pricing-toggle-btn {
     padding: 10px 20px; border-radius: 8px; border: none;
@@ -87,9 +87,9 @@
 
 .pricing-card {
     padding: 24px; border-radius: 16px; border: 1px solid var(--border);
-    background: rgba(9,4,71,0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     display: flex; flex-direction: column; gap: 16px;
-    transition: all 0.3s var(--ease);
+    transition: all 0.3s var(--ease), background var(--theme-speed) ease, color var(--theme-speed) ease, border-color var(--theme-speed) ease;
 }
 .pricing-card:hover { border-color: rgba(0,217,255,0.3); transform: translateY(-2px); }
 
@@ -135,9 +135,9 @@
 
 .membership-card {
     padding: 32px; border-radius: 24px; border: 1px solid var(--border);
-    background: rgba(9,4,71,0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     display: flex; flex-direction: column; gap: 24px;
-    transition: all 0.3s var(--ease); position: relative;
+    transition: all 0.3s var(--ease), background var(--theme-speed) ease, color var(--theme-speed) ease, border-color var(--theme-speed) ease; position: relative;
 }
 .membership-card:hover { transform: translateY(-2px); }
 .membership-card-featured { border-color: rgba(138,43,226,0.4); }
@@ -171,7 +171,7 @@
 
 .mc-hours-box {
     padding: 16px; border-radius: 14px;
-    background: rgba(9,4,71,0.4); border: 1px solid var(--border);
+    background: var(--card-bg); border: 1px solid var(--border);
 }
 .mc-hours-row {
     display: flex; justify-content: space-between; align-items: center; padding: 4px 0;
@@ -221,4 +221,26 @@
 .text-gradient-orange {
     background: linear-gradient(135deg, var(--orange), #cc5500);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 992px) {
+    .pricing-section { padding: 72px 20px; }
+}
+@media (max-width: 768px) {
+    .pricing-section { padding: 64px 16px; }
+    .pricing-cards-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .pricing-row-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .pricing-toggle { width: 100%; }
+    .pricing-toggle-btn { flex: 1; text-align: center; padding: 10px 12px; }
+}
+@media (max-width: 576px) {
+    .pricing-cards-grid { grid-template-columns: 1fr; max-width: 380px; margin-left: auto; margin-right: auto; }
+}
+@media (max-width: 480px) {
+    .pricing-section { padding: 56px 12px; }
+    .pricing-card { padding: 20px; }
+    .pricing-amount { font-size: 1.6rem; }
+    .pricing-membership-grid { grid-template-columns: 1fr; }
+    .membership-card { padding: 24px; }
 }

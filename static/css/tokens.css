@@ -1,0 +1,291 @@
+/* ============================================================
+   CONSOLEX — tokens.css
+   Single source of truth for all design tokens.
+   Every color, spacing, font, shadow, and layout value
+   used across the project is defined here.
+   ============================================================ */
+
+:root {
+
+    /* ── Color: Core palette ──────────────────────────────── */
+    --cx-navy:            #050036;
+    --cx-navy-2:          #090447;
+    --cx-cyan:            #00D9FF;
+    --cx-purple:          #8A2BE2;
+    --cx-orange:          #FF6A00;
+    --cx-gold:            #FFC62E;
+    --cx-success:         #00E676;
+    --cx-danger:          #F3262D;
+    --cx-whatsapp:        #25d366;
+
+    /* ── Color: Cyan opacity variants ─────────────────────── */
+    --cx-cyan-5:          rgba(0, 217, 255, 0.05);
+    --cx-cyan-8:          rgba(0, 217, 255, 0.08);
+    --cx-cyan-10:         rgba(0, 217, 255, 0.10);
+    --cx-cyan-15:         rgba(0, 217, 255, 0.15);
+    --cx-cyan-25:         rgba(0, 217, 255, 0.25);
+    --cx-cyan-30:         rgba(0, 217, 255, 0.30);
+    --cx-cyan-35:         rgba(0, 217, 255, 0.35);
+    --cx-cyan-40:         rgba(0, 217, 255, 0.40);
+    --cx-cyan-50:         rgba(0, 217, 255, 0.50);
+
+    /* ── Color: Purple opacity variants ───────────────────── */
+    --cx-purple-5:        rgba(138, 43, 226, 0.05);
+    --cx-purple-8:        rgba(138, 43, 226, 0.08);
+    --cx-purple-10:       rgba(138, 43, 226, 0.10);
+    --cx-purple-12:       rgba(138, 43, 226, 0.12);
+    --cx-purple-15:       rgba(138, 43, 226, 0.15);
+    --cx-purple-20:       rgba(138, 43, 226, 0.20);
+    --cx-purple-30:       rgba(138, 43, 226, 0.30);
+    --cx-purple-35:       rgba(138, 43, 226, 0.35);
+    --cx-purple-40:       rgba(138, 43, 226, 0.40);
+
+    /* ── Color: Orange opacity variants ───────────────────── */
+    --cx-orange-8:        rgba(255, 106, 0, 0.08);
+    --cx-orange-10:       rgba(255, 106, 0, 0.10);
+    --cx-orange-12:       rgba(255, 106, 0, 0.12);
+    --cx-orange-15:       rgba(255, 106, 0, 0.15);
+    --cx-orange-25:       rgba(255, 106, 0, 0.25);
+    --cx-orange-35:       rgba(255, 106, 0, 0.35);
+
+    /* ── Color: Gold opacity variants ─────────────────────── */
+    --cx-gold-8:          rgba(255, 198, 46, 0.08);
+    --cx-gold-10:         rgba(255, 198, 46, 0.10);
+    --cx-gold-40:         rgba(255, 198, 46, 0.40);
+
+    /* ── Color: Success opacity variants ──────────────────── */
+    --cx-success-10:      rgba(0, 230, 118, 0.10);
+    --cx-success-15:      rgba(0, 230, 118, 0.15);
+    --cx-success-40:      rgba(0, 230, 118, 0.40);
+
+    /* ── Color: Danger opacity variants ───────────────────── */
+    --cx-danger-8:        rgba(243, 38, 45, 0.08);
+    --cx-danger-10:       rgba(243, 38, 45, 0.10);
+    --cx-danger-25:       rgba(243, 38, 45, 0.25);
+
+    /* ── Color: Surfaces ──────────────────────────────────── */
+    --cx-bg:              #050036;
+    --cx-bg-2:            #090447;
+    --cx-glass:           rgba(9, 4, 71, 0.6);
+    --cx-surface:         rgba(255, 255, 255, 0.04);
+    --cx-surface-2:       rgba(255, 255, 255, 0.08);
+    --cx-card-bg:         rgba(9, 4, 71, 0.6);
+    --cx-input-bg:        #090447;
+    --cx-nav-bg:          rgba(8, 8, 16, 0.55);
+    --cx-nav-bg-scroll:   rgba(8, 8, 16, 0.92);
+    --cx-drawer-bg:       rgba(8, 8, 16, 0.98);
+    --cx-footer-bg:       transparent;
+    --cx-hero-scrim-l:    rgba(5, 0, 54, 0.95);
+    --cx-hero-scrim-m:    rgba(5, 0, 54, 0.80);
+    --cx-hero-scrim-r:    rgba(5, 0, 54, 0.40);
+    --cx-hero-scrim-b:    rgba(5, 0, 54, 0.90);
+    --cx-hero-scrim-bt:   rgba(5, 0, 54, 0.50);
+    --cx-grid-line:       rgba(0, 217, 255, 0.03);
+    --cx-card-gradient:   rgba(9, 4, 71, 0.90);
+    --cx-card-gradient-m: rgba(9, 4, 71, 0.50);
+    --cx-card-gradient-e: rgba(9, 4, 71, 0.20);
+
+    /* ── Color: Text ──────────────────────────────────────── */
+    --cx-text:            #e8eaf0;
+    --cx-text-2:          #9b9bc7;
+    --cx-text-3:          #5a5d7a;
+    --cx-text-inverse:    #000000;
+
+    /* ── Color: Borders ───────────────────────────────────── */
+    --cx-border:          rgba(0, 217, 255, 0.15);
+    --cx-border-2:        rgba(0, 217, 255, 0.25);
+
+    /* ── Shadows ──────────────────────────────────────────── */
+    --cx-shadow-sm:       0 2px 8px rgba(0, 0, 0, 0.3);
+    --cx-shadow-md:       0 8px 24px rgba(0, 0, 0, 0.4);
+    --cx-shadow-lg:       0 20px 60px rgba(0, 0, 0, 0.5);
+
+    /* ── Scrollbar ────────────────────────────────────────── */
+    --cx-scrollbar-thumb: rgba(0, 217, 255, 0.3);
+    --cx-scrollbar-hover: rgba(0, 217, 255, 0.5);
+
+    /* ── Typography ───────────────────────────────────────── */
+    --cx-font-display:    'Manrope', system-ui, -apple-system, sans-serif;
+    --cx-font-body:       'DM Sans', system-ui, -apple-system, sans-serif;
+    --cx-font-accent:     'Orbitron', system-ui, sans-serif;
+    --cx-font-mono:       'JetBrains Mono', ui-monospace, monospace;
+
+    /* Type scale */
+    --cx-text-xs:         0.75rem;
+    --cx-text-sm:         0.875rem;
+    --cx-text-base:       1rem;
+    --cx-text-lg:         1.125rem;
+    --cx-text-xl:         1.25rem;
+    --cx-text-2xl:        1.5rem;
+    --cx-text-3xl:        1.875rem;
+    --cx-text-4xl:        2.25rem;
+    --cx-text-5xl:        3rem;
+    --cx-text-6xl:        3.75rem;
+
+    /* Line heights */
+    --cx-leading-none:    1;
+    --cx-leading-tight:   1.1;
+    --cx-leading-snug:    1.25;
+    --cx-leading-normal:  1.5;
+    --cx-leading-relaxed: 1.625;
+
+    /* Letter spacing */
+    --cx-tracking-tighter: -0.04em;
+    --cx-tracking-tight:   -0.02em;
+    --cx-tracking-normal:  0;
+    --cx-tracking-wide:    0.05em;
+    --cx-tracking-wider:   0.1em;
+
+    /* ── Spacing (4px base scale) ─────────────────────────── */
+    --cx-space-0:         0;
+    --cx-space-1:         0.25rem;
+    --cx-space-2:         0.5rem;
+    --cx-space-3:         0.75rem;
+    --cx-space-4:         1rem;
+    --cx-space-5:         1.25rem;
+    --cx-space-6:         1.5rem;
+    --cx-space-8:         2rem;
+    --cx-space-10:        2.5rem;
+    --cx-space-12:        3rem;
+    --cx-space-16:        4rem;
+    --cx-space-20:        5rem;
+    --cx-space-24:        6rem;
+    --cx-space-32:        8rem;
+
+    /* ── Border radius ────────────────────────────────────── */
+    --cx-radius-sm:       8px;
+    --cx-radius-md:       12px;
+    --cx-radius-lg:       16px;
+    --cx-radius-xl:       24px;
+    --cx-radius-pill:     100px;
+    --cx-radius-full:     50%;
+
+    /* ── Z-index layers ───────────────────────────────────── */
+    --cx-z-base:          1;
+    --cx-z-dropdown:      100;
+    --cx-z-sticky:        200;
+    --cx-z-overlay:       300;
+    --cx-z-modal:         400;
+    --cx-z-toast:         500;
+    --cx-z-whatsapp:      8000;
+    --cx-z-drawer:        8999;
+    --cx-z-backdrop:      8999;
+    --cx-z-navbar:        9000;
+    --cx-z-skip:          99999;
+
+    /* ── Layout ───────────────────────────────────────────── */
+    --cx-container-sm:    640px;
+    --cx-container-md:    768px;
+    --cx-container-lg:    1024px;
+    --cx-container-xl:    1200px;
+    --cx-container-2xl:   1280px;
+    --cx-nav-h:           72px;
+
+    /* ── Breakpoints (for reference — use in @media only) ─── */
+    /* --bp-sm:  640px   */
+    /* --bp-md:  768px   */
+    /* --bp-lg:  1024px  */
+    /* --bp-xl:  1280px  */
+    /* --bp-2xl: 1440px  */
+
+    /* ── Transitions ──────────────────────────────────────── */
+    --cx-ease:            cubic-bezier(0.4, 0, 0.2, 1);
+    --cx-ease-out:        cubic-bezier(0, 0, 0.2, 1);
+    --cx-ease-in:         cubic-bezier(0.4, 0, 1, 1);
+    --cx-ease-bounce:     cubic-bezier(0.34, 1.56, 0.64, 1);
+    --cx-duration-fast:   0.15s;
+    --cx-duration-base:   0.25s;
+    --cx-duration-slow:   0.35s;
+    --cx-duration-slower: 0.5s;
+    --cx-theme-speed:     0.35s;
+
+    /* ── Legacy aliases ─────────────────────────────────────
+       These map old token names to the new cx- system.
+       They will be removed once all CSS files are migrated.
+       ───────────────────────────────────────────────────── */
+    --bg:                 var(--cx-bg);
+    --bg2:                var(--cx-bg-2);
+    --glass:              var(--cx-glass);
+    --surface:            var(--cx-surface);
+    --surface2:           var(--cx-surface-2);
+    --card-bg:            var(--cx-card-bg);
+    --input-bg:           var(--cx-input-bg);
+    --nav-bg:             var(--cx-nav-bg);
+    --nav-bg-scroll:      var(--cx-nav-bg-scroll);
+    --drawer-bg:          var(--cx-drawer-bg);
+    --footer-bg:          var(--cx-footer-bg);
+    --hero-scrim-l:       var(--cx-hero-scrim-l);
+    --hero-scrim-m:       var(--cx-hero-scrim-m);
+    --hero-scrim-r:       var(--cx-hero-scrim-r);
+    --hero-scrim-b:       var(--cx-hero-scrim-b);
+    --hero-scrim-bt:      var(--cx-hero-scrim-bt);
+    --grid-line:          var(--cx-grid-line);
+    --card-gradient:      var(--cx-card-gradient);
+    --card-gradient-m:    var(--cx-card-gradient-m);
+    --card-gradient-e:    var(--cx-card-gradient-e);
+    --border:             var(--cx-border);
+    --border2:            var(--cx-border-2);
+    --cyan:               var(--cx-cyan);
+    --cyan-dim:           var(--cx-cyan-10);
+    --cyan-glow:          var(--cx-cyan-35);
+    --purple:             var(--cx-purple);
+    --purple-dim:         var(--cx-purple-10);
+    --orange:             var(--cx-orange);
+    --success:            var(--cx-success);
+    --warning:            var(--cx-gold);
+    --danger:             var(--cx-danger);
+    --text:               var(--cx-text);
+    --text2:              var(--cx-text-2);
+    --text3:              var(--cx-text-3);
+    --text-inverse:       var(--cx-text-inverse);
+    --shadow-sm:          var(--cx-shadow-sm);
+    --shadow-md:          var(--cx-shadow-md);
+    --shadow-lg:          var(--cx-shadow-lg);
+    --scrollbar-thumb:    var(--cx-scrollbar-thumb);
+    --scrollbar-hover:    var(--cx-scrollbar-hover);
+    --font-head:          var(--cx-font-display);
+    --font-body:          var(--cx-font-body);
+    --nav-h:              var(--cx-nav-h);
+    --radius:             var(--cx-radius-lg);
+    --ease:               var(--cx-ease);
+    --theme-speed:        var(--cx-theme-speed);
+}
+
+/* ── Light theme overrides ──────────────────────────────── */
+[data-theme="light"] {
+    --cx-bg:              #f4f5f9;
+    --cx-bg-2:            #e8eaf2;
+    --cx-glass:           rgba(255, 255, 255, 0.75);
+    --cx-surface:         rgba(0, 0, 0, 0.03);
+    --cx-surface-2:       rgba(0, 0, 0, 0.06);
+    --cx-card-bg:         rgba(255, 255, 255, 0.70);
+    --cx-input-bg:        #ffffff;
+    --cx-nav-bg:          rgba(255, 255, 255, 0.72);
+    --cx-nav-bg-scroll:   rgba(255, 255, 255, 0.92);
+    --cx-drawer-bg:       rgba(255, 255, 255, 0.98);
+    --cx-footer-bg:       #eef0f6;
+    --cx-hero-scrim-l:    rgba(244, 245, 249, 0.95);
+    --cx-hero-scrim-m:    rgba(244, 245, 249, 0.80);
+    --cx-hero-scrim-r:    rgba(244, 245, 249, 0.35);
+    --cx-hero-scrim-b:    rgba(244, 245, 249, 0.92);
+    --cx-hero-scrim-bt:   rgba(244, 245, 249, 0.55);
+    --cx-grid-line:       rgba(0, 100, 180, 0.06);
+    --cx-card-gradient:   rgba(255, 255, 255, 0.92);
+    --cx-card-gradient-m: rgba(255, 255, 255, 0.60);
+    --cx-card-gradient-e: rgba(255, 255, 255, 0.20);
+
+    --cx-border:          rgba(0, 100, 180, 0.12);
+    --cx-border-2:        rgba(0, 100, 180, 0.22);
+
+    --cx-text:            #1a1a2e;
+    --cx-text-2:          #555580;
+    --cx-text-3:          #8888aa;
+    --cx-text-inverse:    #ffffff;
+
+    --cx-shadow-sm:       0 2px 8px rgba(0, 0, 0, 0.06);
+    --cx-shadow-md:       0 8px 24px rgba(0, 0, 0, 0.08);
+    --cx-shadow-lg:       0 20px 60px rgba(0, 0, 0, 0.10);
+
+    --cx-scrollbar-thumb: rgba(0, 100, 180, 0.20);
+    --cx-scrollbar-hover: rgba(0, 100, 180, 0.35);
+}

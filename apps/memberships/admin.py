@@ -18,6 +18,8 @@ class MembershipAdmin(admin.ModelAdmin):
     list_filter = ("is_active", "is_popular", "tier_level")
     search_fields = ("name",)
     ordering = ("tier_level", "price")
+    list_per_page = 25
+    save_on_top = True
 
     fieldsets = (
         ("Plan", {
@@ -62,11 +64,13 @@ class MembershipSubscriptionAdmin(admin.ModelAdmin):
         "id", "user_email", "plan_name", "status_badge",
         "started_at", "expires_at", "days_remaining",
     )
+    list_display_links = ("id", "user_email")
     list_filter = ("status",)
     search_fields = ("user__email", "plan__name")
     readonly_fields = ("created_at", "updated_at")
     date_hierarchy = "started_at"
     ordering = ("-started_at",)
+    list_per_page = 25
 
     @admin.display(description="User")
     def user_email(self, obj):

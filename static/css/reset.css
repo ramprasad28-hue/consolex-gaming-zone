@@ -1,0 +1,119 @@
+/* ============================================================
+   CONSOLEX — reset.css
+   Global resets and base element styles.
+   ============================================================ */
+
+/* ── Box model reset ────────────────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ── Body ───────────────────────────────────────────────── */
+body {
+    font-family: var(--cx-font-body);
+    background: var(--cx-bg);
+    color: var(--cx-text);
+    overflow-x: hidden;
+    transition: background var(--cx-theme-speed) ease,
+                color var(--cx-theme-speed) ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Links ──────────────────────────────────────────────── */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ── Lists ──────────────────────────────────────────────── */
+ul, ol {
+    list-style: none;
+}
+
+/* ── Images ─────────────────────────────────────────────── */
+img, video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    transition: opacity var(--cx-theme-speed) ease;
+}
+
+/* ── Buttons ────────────────────────────────────────────── */
+button {
+    font: inherit;
+    cursor: pointer;
+}
+
+/* ── Inputs ─────────────────────────────────────────────── */
+input, select, textarea {
+    font: inherit;
+}
+
+/* ── Tables ─────────────────────────────────────────────── */
+table {
+    border-collapse: collapse;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cx-bg); }
+::-webkit-scrollbar-thumb { background: var(--cx-scrollbar-thumb); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--cx-scrollbar-hover); }
+
+.horizontal-scroll::-webkit-scrollbar { height: 3px; }
+.horizontal-scroll::-webkit-scrollbar-track { background: var(--cx-surface); border-radius: 2px; }
+.horizontal-scroll::-webkit-scrollbar-thumb { background: var(--cx-scrollbar-thumb); border-radius: 2px; }
+
+/* ── Smooth scroll ──────────────────────────────────────── */
+html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+}
+
+/* ── Focus visible ──────────────────────────────────────── */
+:focus-visible {
+    outline: 2px solid var(--cx-cyan);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--cx-cyan);
+    outline-offset: 2px;
+}
+
+/* ── Skip link ──────────────────────────────────────────── */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 16px;
+    z-index: var(--cx-z-skip);
+    padding: 12px 24px;
+    background: var(--cx-cyan);
+    color: var(--cx-bg);
+    font-weight: 700;
+    border-radius: var(--cx-radius-sm);
+    text-decoration: none;
+    transition: top 0.2s;
+}
+.skip-link:focus {
+    top: 16px;
+}
+
+/* ── Reduced motion ─────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    html { scroll-behavior: auto; }
+}

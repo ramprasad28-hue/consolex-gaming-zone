@@ -29,7 +29,7 @@
     border: 1px solid var(--border);
 }
 .wiz-alert-error   { background: rgba(243, 38, 45, 0.08); border-color: rgba(243, 38, 45, 0.3); color: #ff8b8f; }
-.wiz-alert-success { background: rgba(0, 240, 255, 0.08); border-color: rgba(0, 240, 255, 0.3); color: var(--cyan); }
+.wiz-alert-success { background: rgba(0, 217, 255, 0.08); border-color: rgba(0, 217, 255, 0.3); color: var(--cyan); }
 
 /* ── Progress bar ─────────────────────────────────────────── */
 .wiz-progress {
@@ -54,11 +54,11 @@
 .wiz-step-indicator.wiz-active .wiz-step-circle {
     background: linear-gradient(135deg, var(--cyan), var(--purple));
     border-color: transparent; color: #05050a;
-    box-shadow: 0 0 18px rgba(0, 240, 255, 0.4);
+    box-shadow: 0 0 18px rgba(0, 217, 255, 0.4);
 }
 .wiz-step-indicator.wiz-active .wiz-step-label { color: var(--cyan); font-weight: 600; }
 .wiz-step-indicator.wiz-done .wiz-step-circle {
-    background: rgba(0, 240, 255, 0.12); border-color: var(--cyan); color: var(--cyan);
+    background: rgba(0, 217, 255, 0.12); border-color: var(--cyan); color: var(--cyan);
 }
 .wiz-step-indicator.wiz-done .wiz-step-label { color: var(--text2); }
 
@@ -105,17 +105,17 @@
     display: block; cursor: pointer;
     background: var(--surface); border: 1.5px solid var(--border);
     border-radius: var(--radius); overflow: hidden;
-    transition: transform 0.3s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    transition: transform 0.3s var(--ease), background var(--theme-speed) ease, color var(--theme-speed) ease, border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
 .wiz-console-card:hover {
     transform: translateY(-5px);
-    border-color: rgba(0, 240, 255, 0.3);
-    box-shadow: 0 14px 32px rgba(0, 240, 255, 0.08);
+    border-color: rgba(0, 217, 255, 0.3);
+    box-shadow: 0 14px 32px rgba(0, 217, 255, 0.08);
 }
 
 .wiz-console-radio:checked + .wiz-console-card {
     border-color: var(--cyan);
-    box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.15), 0 14px 34px rgba(0, 240, 255, 0.15);
+    box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.15), 0 14px 34px rgba(0, 217, 255, 0.15);
     transform: translateY(-4px);
 }
 .wiz-console-radio:focus-visible + .wiz-console-card {
@@ -124,7 +124,7 @@
 
 .wiz-console-media {
     position: relative; aspect-ratio: 4 / 3; overflow: hidden;
-    background: linear-gradient(135deg, rgba(0,240,255,0.06), rgba(191,0,255,0.06));
+    background: linear-gradient(135deg, rgba(0,217,255,0.06), rgba(138,43,226,0.06));
 }
 .wiz-console-media img {
     width: 100%; height: 100%; object-fit: cover; display: block;
@@ -137,7 +137,7 @@
 .wiz-console-check {
     position: absolute; top: 10px; right: 10px;
     width: 26px; height: 26px; border-radius: 50%;
-    background: rgba(5, 5, 10, 0.65); border: 1.5px solid var(--border2);
+    background: var(--bg); border: 1.5px solid var(--border2);
     color: transparent; display: flex; align-items: center; justify-content: center;
     transition: all 0.3s var(--ease);
 }
@@ -161,11 +161,11 @@
 }
 .wiz-status-dot { width: 7px; height: 7px; border-radius: 50%; }
 .wiz-status-available {
-    background: rgba(0, 240, 255, 0.1); color: var(--cyan);
+    background: rgba(0, 217, 255, 0.1); color: var(--cyan);
 }
 .wiz-status-available .wiz-status-dot { background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
 .wiz-status-inactive {
-    background: rgba(255, 255, 255, 0.05); color: var(--text3);
+    background: var(--surface); color: var(--text3);
 }
 .wiz-status-inactive .wiz-status-dot { background: var(--text3); }
 
@@ -191,7 +191,7 @@
 }
 .wiz-field input, .wiz-field select {
     width: 100%; padding: 0.7rem 0.9rem; border-radius: 8px;
-    background: rgba(255,255,255,0.03); border: 1px solid var(--border2);
+    background: var(--surface); border: 1px solid var(--border2);
     color: var(--text); font-family: var(--font-body); font-size: 0.95rem;
 }
 .wiz-field input:focus, .wiz-field select:focus {
@@ -200,7 +200,7 @@
 
 .wiz-cost-preview {
     margin-top: 0.6rem; padding: 0.9rem 1.1rem; border-radius: 8px;
-    background: rgba(0, 240, 255, 0.06); border: 1px solid rgba(0, 240, 255, 0.2);
+    background: rgba(0, 217, 255, 0.06); border: 1px solid rgba(0, 217, 255, 0.2);
     color: var(--text2); font-size: 0.92rem;
 }
 .wiz-cost-preview strong { color: var(--cyan); font-family: var(--font-head); }
@@ -221,24 +221,37 @@
 .wiz-btn-primary {
     color: #05050a; background: linear-gradient(90deg, var(--cyan), var(--purple));
 }
-.wiz-btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(0, 240, 255, 0.25); }
+.wiz-btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(0, 217, 255, 0.25); }
 .wiz-btn-ghost {
     color: var(--text2); background: var(--surface); border: 1px solid var(--border2);
 }
 .wiz-btn-ghost:hover { color: var(--text); border-color: var(--border2); }
 
 /* ── Responsive ────────────────────────────────────────────── */
-@media (max-width: 780px) {
+@media (max-width: 992px) {
     .wiz-console-grid { grid-template-columns: repeat(2, 1fr); }
-    .wiz-progress { max-width: 100%; }
-    .wiz-step-indicator { width: 60px; }
-    .wiz-step-label { font-size: 0.62rem; }
 }
-@media (max-width: 540px) {
+@media (max-width: 768px) {
+    .wiz-progress { max-width: 100%; }
+    .wiz-step-indicator { width: 64px; }
+    .wiz-step-label { font-size: 0.62rem; }
+    .wiz-console-grid { gap: 0.8rem; }
+}
+@media (max-width: 576px) {
     .wiz-section { padding: calc(var(--nav-h, 72px) + 1.5rem) 1rem 3.5rem; }
-    .wiz-console-grid { grid-template-columns: 1fr; }
+    .wiz-console-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
     .wiz-field-row { grid-template-columns: 1fr; }
     .wiz-step-label { display: none; }
+    .wiz-step-indicator { width: 48px; }
+    .wiz-step-circle { width: 32px; height: 32px; font-size: 0.8rem; }
     .wiz-actions { flex-direction: column-reverse; gap: 0.8rem; }
     .wiz-actions .wiz-btn { width: 100%; justify-content: center; }
+    .wiz-panel-head { margin-bottom: 1.5rem; }
+    .wiz-panel-title { font-size: 1.2rem; }
+}
+@media (max-width: 480px) {
+    .wiz-section { padding: calc(var(--nav-h, 72px) + 1rem) 0.75rem 2.5rem; }
+    .wiz-head { margin-bottom: 1.5rem; }
+    .wiz-title { font-size: 1.4rem; }
+    .wiz-interim { padding: 1.2rem; }
 }

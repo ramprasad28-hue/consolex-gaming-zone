@@ -10,11 +10,14 @@ class BookingAdmin(admin.ModelAdmin):
         "start_time", "end_time", "players", "total_cost_display",
         "advance_display", "status_badge", "payment_status", "created_at",
     )
+    list_display_links = ("id", "user_email")
     list_filter = ("status", "booking_date", "game_console")
     search_fields = ("user__email", "user__first_name", "user__last_name")
     readonly_fields = ("total_cost", "created_at", "updated_at")
     ordering = ("-booking_date", "-start_time")
     date_hierarchy = "booking_date"
+    list_per_page = 25
+    save_on_top = True
 
     @admin.display(description="Customer")
     def user_email(self, obj):

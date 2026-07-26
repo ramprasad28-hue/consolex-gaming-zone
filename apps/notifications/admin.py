@@ -11,6 +11,7 @@ class NotificationAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at",)
     ordering = ("-created_at",)
     date_hierarchy = "created_at"
+    list_per_page = 25
 
     @admin.display(description="User")
     def user_email(self, obj):

@@ -20,6 +20,8 @@ class TournamentAdmin(admin.ModelAdmin):
     search_fields = ("title", "game")
     readonly_fields = ("created_at", "updated_at", "image_preview_detail")
     ordering = ("date",)
+    list_per_page = 25
+    save_on_top = True
 
     fieldsets = (
         ("Tournament Info", {

@@ -13,6 +13,8 @@ class GameConsoleAdmin(admin.ModelAdmin):
     list_editable = ("is_active",)
     search_fields = ("name",)
     readonly_fields = ()
+    list_per_page = 25
+    save_on_top = True
 
     @admin.display(description="Weekday Rate")
     def weekday_rate_display(self, obj):
@@ -55,6 +57,8 @@ class GameAdmin(admin.ModelAdmin):
     search_fields = ("title",)
     readonly_fields = ("created_at", "updated_at", "image_preview_detail")
     ordering = ("sort_order", "title")
+    list_per_page = 25
+    save_on_top = True
 
     fieldsets = (
         ("Game Info", {

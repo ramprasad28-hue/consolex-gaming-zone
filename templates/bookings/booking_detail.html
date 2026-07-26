@@ -13,7 +13,7 @@
 
     <div class="dash-topbar nx-animate">
       <div class="dash-topbar-left">
-        <a href="{% url 'users:dashboard' %}" class="dash-icon-btn" style="text-decoration:none;color:#8b8fb0;">
+        <a href="{% url 'users:dashboard' %}" class="dash-icon-btn dash-back-link">
           ← Back to Dashboard
         </a>
       </div>
@@ -22,10 +22,10 @@
       </div>
     </div>
 
-    <div class="dashboard-card nx-animate" style="max-width:680px;margin:28px auto;">
+    <div class="dashboard-card nx-animate booking-detail-card">
       <h2 class="dashboard-card-title">📋 Booking #{{ booking.id }}</h2>
 
-      <div class="dash-profile-list" style="margin-top:18px;">
+      <div class="dash-profile-list booking-detail-list">
         <div class="dash-profile-row">
           <span>Console</span>
           <span>{{ booking.game_console.name|default:"—" }}</span>
@@ -48,7 +48,7 @@
         </div>
         <div class="dash-profile-row">
           <span>Total Cost</span>
-          <span style="color:#00f0ff;font-weight:700;">₹{{ booking.total_cost }}</span>
+          <span class="receipt-value--cyan">₹{{ booking.total_cost }}</span>
         </div>
         <div class="dash-profile-row">
           <span>Advance Paid</span>
@@ -97,7 +97,7 @@
         </div>
       </div>
 
-      <div style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;">
+      <div class="booking-detail-actions">
         {% if booking.status == 'pending' and not booking.is_paid %}
           <a href="{% url 'payments:payment_page' booking.id %}" class="btn-action btn-pay-now">Pay Now</a>
         {% endif %}

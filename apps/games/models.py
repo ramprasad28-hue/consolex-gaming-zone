@@ -128,10 +128,6 @@ class Game(models.Model):
         if self.image:
             return self.image.url
         return self.image_url or ""
-        parts = [self.category]
-        if self.badge == "popular" or self.rating >= 9.0:
-            parts.append("popular")
-        return " ".join(parts)
 
     @property
     def badge_css_class(self):

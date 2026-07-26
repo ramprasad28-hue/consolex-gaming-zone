@@ -1,12 +1,17 @@
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
+from rest_framework.throttling import UserRateThrottle
 
 from apps.memberships.services import MembershipService
 from apps.common.exceptions import ServiceError
 from apps.common.response import error_response
 from apps.api.serializers import MembershipPlanSerializer, MembershipSubscriptionSerializer
+
+
+class MembershipVerifyThrottle(UserRateThrottle):
+    rate = "20/minute"
 
 
 @api_view(["GET"])
@@ -37,6 +42,7 @@ def subscribe(request, plan_id):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+@throttle_classes([MembershipVerifyThrottle])
 def verify_payment(request):
     subscription_id = request.data.get("subscription_id")
     if not subscription_id:

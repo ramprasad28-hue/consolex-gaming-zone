@@ -45,6 +45,11 @@ class Membership(models.Model):
     def __str__(self):
         return self.name
 
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.discount_percent > 100:
+            raise ValidationError("Discount cannot exceed 100%.")
+
     @property
     def total_hours(self):
         return self.included_hours + self.weekend_hours + self.bonus_hours
@@ -116,6 +121,11 @@ class MembershipSubscription(models.Model):
 
     def __str__(self):
         return f"{self.user} — {self.plan.name} ({self.status})"
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.started_at and self.expires_at and self.started_at >= self.expires_at:
+            raise ValidationError("Expiry must be after start date.")
 
     @property
     def is_active_valid(self):

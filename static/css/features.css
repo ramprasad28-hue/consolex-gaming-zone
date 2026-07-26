@@ -52,7 +52,7 @@
     font-size: 13px;
     font-weight: 600;
     color: var(--cyan);
-    background: rgba(0,217,255,0.08);
+    background: var(--cyan-dim);
     border: 1px solid rgba(0,217,255,0.20);
     margin-bottom: 16px;
 }
@@ -101,11 +101,11 @@
     min-height: 220px;
     border-radius: 20px;
     border: 1px solid var(--border);
-    background: rgba(9,4,71,0.6);
+    background: var(--card-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     overflow: hidden;
-    transition: all 0.3s var(--ease);
+    transition: all 0.3s var(--ease), background var(--theme-speed) ease, color var(--theme-speed) ease, border-color var(--theme-speed) ease;
     display: flex;
     flex-direction: column;
 }
@@ -137,13 +137,13 @@
 .fcard-bg-scrim {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(9,4,71,0.90), rgba(9,4,71,0.50), rgba(9,4,71,0.20));
+    background: linear-gradient(to top, var(--card-gradient), var(--card-gradient-m), var(--card-gradient-e));
 }
 .fcard-bg-scrim-left {
-    background: linear-gradient(to right, rgba(9,4,71,0.90), rgba(9,4,71,0.50), rgba(9,4,71,0.20));
+    background: linear-gradient(to right, var(--card-gradient), var(--card-gradient-m), var(--card-gradient-e));
 }
 .fcard-bg-scrim-right {
-    background: linear-gradient(to right, rgba(9,4,71,0.90), rgba(9,4,71,0.40));
+    background: linear-gradient(to right, var(--card-gradient), var(--card-bg));
 }
 
 /* ── Card content ─────────────────────────────────────────── */
@@ -275,4 +275,26 @@
 .stagger-child.is-visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 992px) {
+    .features-section { padding: 72px 20px; }
+    .features-header { margin-bottom: 48px; }
+}
+@media (max-width: 768px) {
+    .features-section { padding: 64px 16px; }
+    .features-header { margin-bottom: 40px; }
+    .features-card { min-height: 180px; }
+    .features-card-lg { min-height: 220px; }
+    .fcard-content { padding: 20px; }
+    .fcard-title { font-size: 1.1rem; }
+    .fcard-desc { font-size: 13px; }
+}
+@media (max-width: 480px) {
+    .features-section { padding: 56px 12px; }
+    .features-card { min-height: 160px; }
+    .fcard-content { padding: 16px; }
+    .fcard-icon { width: 36px; height: 36px; border-radius: 10px; margin-bottom: 12px; }
+    .fcard-stat-num { font-size: 1.2rem; }
 }

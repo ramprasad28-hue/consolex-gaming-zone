@@ -2,22 +2,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.shortcuts import render
 
-from apps.memberships.models import Membership
-from apps.tournaments.models import Tournament
-from apps.games.models import Game
+from apps.core.views import home
 
-
-def home(request):
-    plans = Membership.objects.filter(is_active=True)
-    tournaments = Tournament.objects.filter(is_active=True).order_by("date")[:6]
-    games = Game.objects.filter(is_active=True).order_by("sort_order", "title")[:12]
-    return render(request, "pages/home.html", {
-        "plans": plans,
-        "tournaments": tournaments,
-        "games": games,
-    })
+admin.site.site_header = "CONSOLEX Admin"
+admin.site.site_title = "CONSOLEX"
+admin.site.index_title = "Management"
 
 
 urlpatterns = [

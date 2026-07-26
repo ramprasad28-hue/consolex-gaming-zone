@@ -10,6 +10,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "id", "booking_link", "user_email",
         "amount_display", "status_badge", "mode_badge", "created_at",
     )
+    list_display_links = ("id", "booking_link")
     list_filter = ("status", "is_demo", "currency")
     search_fields = ("razorpay_order_id", "razorpay_payment_id", "user__email")
     readonly_fields = (
@@ -17,6 +18,8 @@ class PaymentAdmin(admin.ModelAdmin):
         "razorpay_signature", "created_at", "updated_at",
     )
     ordering = ("-created_at",)
+    list_per_page = 25
+    save_on_top = True
 
     @admin.display(description="Booking")
     def booking_link(self, obj):

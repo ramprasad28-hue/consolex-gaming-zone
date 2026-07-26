@@ -34,6 +34,7 @@
     padding: 2.5rem;
     width: 100%;
     max-width: 440px;
+    transition: background var(--theme-speed) ease, color var(--theme-speed) ease, border-color var(--theme-speed) ease;
 }
 .auth-card h2 {
     color: var(--text);
@@ -143,7 +144,7 @@
 .pricing-info h4 { color: var(--text); margin-bottom: 1rem; }
 .price-table { width: 100%; border-collapse: collapse; }
 .price-table th { color: var(--cyan); font-size: 0.85rem; padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--border); }
-.price-table td { color: var(--text2); font-size: 0.9rem; padding: 0.6rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.price-table td { color: var(--text2); font-size: 0.9rem; padding: 0.6rem 0.5rem;     border-bottom: 1px solid var(--surface); }
 
 /* ── Payment Page ───────────────────────────────────────── */
 .payment-section { padding: 3rem 0; }
@@ -161,7 +162,7 @@
     display: flex;
     justify-content: space-between;
     padding: 0.7rem 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid var(--surface);
     color: var(--text2);
 }
 .summary-row strong { color: var(--text); }
@@ -195,4 +196,17 @@
     .payment-wrap { grid-template-columns: 1fr; }
     .form-row { grid-template-columns: 1fr; }
     .dashboard-header { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 480px) {
+    .booking-section { padding: 2rem 0; }
+    .booking-form { padding: 1.2rem; }
+    .price-table { font-size: 0.82rem; }
+    .price-table th, .price-table td { padding: 0.4rem; }
+    .auth-section { padding: 4.5rem 1rem 2rem; min-height: auto; }
+    .auth-card { padding: 1.5rem; border-radius: 12px; }
+    .auth-card h2 { font-size: 1.5rem; }
+    .auth-form input { padding: 0.65rem 0.85rem; font-size: 16px; }
+}
+@media (max-width: 768px) {
+    .auth-section { padding: 5rem 1rem 2rem; }
 }

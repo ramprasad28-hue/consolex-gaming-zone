@@ -67,6 +67,11 @@ class Tournament(models.Model):
     def __str__(self):
         return self.title
 
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.registered_slots > self.total_slots:
+            raise ValidationError("Registered slots cannot exceed total slots.")
+
     @property
     def image_src(self):
         if self.image:

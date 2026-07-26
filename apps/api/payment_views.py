@@ -1,12 +1,17 @@
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.throttling import UserRateThrottle
 
 from apps.payments.services import PaymentService
 from apps.common.exceptions import ServiceError
 from apps.common.response import error_response
 from apps.api.serializers import PaymentSerializer
+
+
+class PaymentVerifyThrottle(UserRateThrottle):
+    rate = "20/minute"
 
 
 @api_view(["POST"])
@@ -26,6 +31,7 @@ def create_order(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+@throttle_classes([PaymentVerifyThrottle])
 def verify_payment(request):
     payment_id = request.data.get("payment_id")
     if not payment_id:

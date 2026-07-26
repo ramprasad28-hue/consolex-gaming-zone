@@ -22,7 +22,7 @@
 .games-pill {
     display: inline-flex; padding: 6px 16px; border-radius: 100px;
     font-family: var(--font-body); font-size: 13px; font-weight: 600;
-    color: var(--cyan); background: rgba(0,217,255,0.08); border: 1px solid rgba(0,217,255,0.20);
+    color: var(--cyan); background: var(--cyan-dim); border: 1px solid rgba(0,217,255,0.20);
 }
 .games-title {
     font-family: var(--font-head); font-weight: 900;
@@ -40,8 +40,8 @@
 .games-filters::-webkit-scrollbar { display: none; }
 .games-filter {
     flex-shrink: 0; padding: 10px 18px; border-radius: 10px; border: 1px solid var(--border);
-    background: rgba(9,4,71,0.6); font-family: var(--font-body); font-size: 14px; font-weight: 700;
-    color: var(--text2); cursor: pointer; transition: all 0.2s var(--ease);
+    background: var(--card-bg); font-family: var(--font-body); font-size: 14px; font-weight: 700;
+    color: var(--text2); cursor: pointer; transition: all 0.2s var(--ease), background var(--theme-speed) ease, color var(--theme-speed) ease, border-color var(--theme-speed) ease;
 }
 .games-filter:hover { color: var(--cyan); border-color: rgba(0,217,255,0.3); }
 .games-filter.active { background: var(--cyan); color: var(--bg); border-color: var(--cyan); }
@@ -72,7 +72,7 @@
 
 .game-card-scrim {
     position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(5,0,54,0.90), transparent 60%);
+    background: linear-gradient(to top, var(--hero-scrim-b), transparent 60%);
     opacity: 0; transition: opacity 0.3s;
 }
 .game-card:hover .game-card-scrim { opacity: 1; }
@@ -119,4 +119,25 @@
 }
 .games-cta-btn:hover {
     border-color: var(--cyan); color: var(--cyan); transform: translateY(-2px);
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 992px) {
+    .games-section { padding: 72px 20px; }
+}
+@media (max-width: 768px) {
+    .games-section { padding: 64px 16px; }
+    .games-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .games-filters { gap: 6px; margin-bottom: 24px; padding-bottom: 12px; }
+    .games-header { margin-bottom: 32px; }
+}
+@media (max-width: 480px) {
+    .games-section { padding: 56px 12px; }
+    .games-filter { font-size: 12px; padding: 8px 14px; min-height: 36px; }
+    .games-grid { gap: 8px; }
+    .game-card-badge { font-size: 9px; padding: 2px 8px; }
+    .game-card-hover-title { font-size: 11px; }
+}
+@media (max-width: 360px) {
+    .games-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
 }
