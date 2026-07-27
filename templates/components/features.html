@@ -23,6 +23,12 @@
 
             {% for f in cms_features %}
             <div class="features-card features-card-lg stagger-child">
+                {% if f.image %}
+                <div class="fcard-bg-img">
+                    <img src="{{ f.image.url }}" alt="{{ f.title }}">
+                    <div class="fcard-bg-scrim"></div>
+                </div>
+                {% endif %}
                 <div class="fcard-content">
                     <div class="fcard-icon fcard-icon-cyan">
                         {{ f.icon|safe }}

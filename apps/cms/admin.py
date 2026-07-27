@@ -82,9 +82,15 @@ class SiteStatAdmin(admin.ModelAdmin):
 
 @admin.register(Feature)
 class FeatureAdmin(admin.ModelAdmin):
-    list_display = ["title", "section", "sort_order"]
+    list_display = ["title", "section", "image_preview", "sort_order"]
     list_editable = ["sort_order"]
     list_filter = ["section"]
+
+    def image_preview(self, obj):
+        if obj.image:
+            return format_html('<img src="{}" height="40" />', obj.image.url)
+        return "—"
+    image_preview.short_description = "Image"
 
 
 @admin.register(FAQItem)

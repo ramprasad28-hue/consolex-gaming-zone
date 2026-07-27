@@ -117,6 +117,12 @@ class Feature(models.Model):
     icon = models.CharField(max_length=50, blank=True, help_text="Emoji or SVG name")
     title = models.CharField(max_length=200)
     description = models.TextField()
+    image = models.ImageField(
+        upload_to="cms/features/",
+        blank=True,
+        default="",
+        help_text="Background image for the feature card (optional).",
+    )
     stat_value = models.CharField(max_length=50, blank=True, help_text="e.g. 120")
     stat_label = models.CharField(max_length=100, blank=True, help_text="e.g. Hz refresh rate")
     tag = models.CharField(max_length=100, blank=True, help_text="e.g. Weekly Events")

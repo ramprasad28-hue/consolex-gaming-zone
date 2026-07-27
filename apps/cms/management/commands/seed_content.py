@@ -251,29 +251,34 @@ class Command(BaseCommand):
                 "section": "features", "icon": "🎮", "sort_order": 1,
                 "title": "Premium PS5 Consoles",
                 "description": "Latest PlayStation 5 consoles with DualSense haptic controllers. Zero lag, maximum immersion.",
+                "image": "consoles/plan.jpeg",
             },
             {
                 "section": "features", "icon": "📺", "sort_order": 2,
                 "title": "4K HDR Displays",
                 "description": '55" OLED screens, 120Hz, HDR10+.',
                 "stat_value": "120", "stat_label": "Hz refresh rate",
+                "image": "cxdesign/Center.jpeg",
             },
             {
                 "section": "features", "icon": "🌐", "sort_order": 3,
                 "title": "High-Speed Internet",
                 "description": "1Gbps fiber for zero-lag online play.",
                 "stat_value": "1Gbps", "stat_label": "fiber optic",
+                "image": "cxdesign/first.jpeg",
             },
             {
                 "section": "features", "icon": "🛋️", "sort_order": 4,
                 "title": "Comfortable Lounge",
                 "description": "Premium gaming chairs, AC, snacks. Built for long sessions.",
+                "image": "cxdesign/Whole.jpeg",
             },
             {
                 "section": "features", "icon": "📱", "sort_order": 5,
                 "title": "Online Booking",
                 "description": "Reserve your spot in 60 seconds. No queue, no wait.",
                 "tag": "Book in 60 seconds →",
+                "image": "cxdesign/first.jpeg",
             },
             {
                 "section": "features", "icon": "🏆", "sort_order": 6,
@@ -281,18 +286,21 @@ class Command(BaseCommand):
                 "description": "Weekly esports events with real cash prizes. Prove your skill.",
                 "tag": "Weekly Events",
                 "tag_url": "/tournaments/",
+                "image": "tournaments/EA_Sports_FC_26.jpg",
             },
             {
                 "section": "features", "icon": "👥", "sort_order": 7,
                 "title": "Friends & Group Gaming",
                 "description": "Side-by-side setups. Bring your squad for the ultimate co-op experience.",
                 "tag": "Up to 4 Players",
+                "image": "games/spiderman.jpg",
             },
             {
                 "section": "features", "icon": "💎", "sort_order": 8,
                 "title": "Membership Plans",
                 "description": "Monthly plans from ₹1,199. Hours that roll over, weekend access, bonus sessions.",
                 "stat_value": "₹1,199", "stat_label": "/month starting",
+                "image": "consoles/plan.jpeg",
             },
         ]
         why_choose = [
@@ -352,9 +360,13 @@ class Command(BaseCommand):
         all_features = features + why_choose + booking_steps
         created = 0
         for data in all_features:
-            _, was_created = Feature.objects.get_or_create(
+            image = data.pop("image", "")
+            obj, was_created = Feature.objects.get_or_create(
                 section=data["section"], title=data["title"], defaults=data,
             )
+            if not was_created and image and not obj.image:
+                obj.image = image
+                obj.save(update_fields=["image"])
             if was_created:
                 created += 1
         self.stdout.write(f"  Features: {created} created, {len(all_features) - created} already existed.")
