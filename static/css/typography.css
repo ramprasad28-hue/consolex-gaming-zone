@@ -176,15 +176,6 @@
     background-clip: text;
 }
 
-/* ── Text glow ──────────────────────────────────────────── */
-.t-glow-cyan {
-    text-shadow: 0 0 20px rgba(0, 217, 255, 0.6), 0 0 40px rgba(0, 217, 255, 0.3);
-}
-
-.t-glow-purple {
-    text-shadow: 0 0 20px rgba(138, 43, 226, 0.6), 0 0 40px rgba(138, 43, 226, 0.3);
-}
-
 /* ── Hero text sizes (fluid clamp) ──────────────────────── */
 .t-hero-xl {
     font-size: clamp(64px, 12vw, 160px);

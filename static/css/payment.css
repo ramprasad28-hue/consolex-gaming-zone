@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────
-   File: static/css/payment.css
+   CONSOLEX — payment.css  (light theme)
    ───────────────────────────────────────────── */
 
 .payment-section {
@@ -24,7 +24,7 @@
   font-family: var(--font-head);
   font-size: 0.65rem;
   letter-spacing: 0.25em;
-  color: var(--cyan);
+  color: var(--cx-blue);
   text-transform: uppercase;
   margin-bottom: 0.75rem;
   opacity: 0.8;
@@ -40,14 +40,14 @@
 }
 
 .title-accent {
-  background: linear-gradient(90deg, var(--cyan), var(--purple));
+  background: linear-gradient(90deg, var(--cx-blue), var(--cx-purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .error-text {
-  color: var(--orange);
+  color: var(--cx-orange);
 }
 
 .payment-subtitle {
@@ -60,13 +60,11 @@
 
 /* Summary card */
 .payment-summary-card {
-  background: var(--glass);
+  background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 1.75rem;
   margin-bottom: 1.25rem;
-  backdrop-filter: blur(10px);
-  transition: background var(--theme-speed) ease, color var(--theme-speed) ease, border-color var(--theme-speed) ease;
 }
 
 .summary-row {
@@ -99,7 +97,7 @@
   font-size: 1rem;
 }
 
-.accent-cyan   { color: var(--cyan) !important; }
+.accent-cyan   { color: var(--cx-blue) !important; }
 .accent-muted  { color: var(--text2) !important; }
 
 .summary-divider {
@@ -113,8 +111,8 @@
   font-family: var(--font-body);
   font-size: 0.88rem;
   color: var(--text2);
-  background: rgba(0,217,255,0.04);
-  border: 1px solid rgba(0,217,255,0.12);
+  background: var(--cyan-dim);
+  border: 1px solid var(--cx-cyan-15);
   border-radius: 10px;
   padding: 0.85rem 1.1rem;
   margin-bottom: 1.75rem;
@@ -129,8 +127,8 @@
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: var(--bg);
-  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  color: #fff;
+  background: var(--cx-blue);
   border: none;
   border-radius: 10px;
   padding: 1rem;
@@ -143,7 +141,7 @@
 .btn-pay:hover {
   opacity: 0.9;
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(0,217,255,0.3);
+  box-shadow: 0 8px 28px rgba(0,112,210,0.2);
 }
 
 .btn-pay:disabled {
@@ -183,8 +181,8 @@
   text-align: center;
 }
 
-.payment-status.error { background: rgba(243,38,45,0.10); color: var(--danger); border: 1px solid rgba(243,38,45,0.30); }
-.payment-status.warn  { background: rgba(255,106,0,0.1);  color: var(--orange); border: 1px solid rgba(255,106,0,0.2); }
+.payment-status.error { background: var(--cx-danger-8); color: var(--cx-danger); border: 1px solid var(--cx-danger-20); }
+.payment-status.warn  { background: var(--cx-orange-8); color: var(--cx-orange); border: 1px solid var(--cx-orange-20); }
 .payment-status.hidden { display: none; }
 
 /* Success / failed */

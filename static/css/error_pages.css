@@ -1,6 +1,5 @@
 /* ============================================================
-   CONSOLEX — error_pages.css
-   Gaming-themed 404 / 500 pages
+   CONSOLEX — error_pages.css  (light theme)
    ============================================================ */
 
 .error-section {
@@ -11,26 +10,6 @@
     padding: 6rem 1rem 3rem;
     position: relative;
     overflow: hidden;
-}
-
-.error-section::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 700px;
-    height: 700px;
-    border-radius: 50%;
-    pointer-events: none;
-}
-
-.error-section.error-404::before {
-    background: radial-gradient(circle, rgba(0,217,255,0.06) 0%, transparent 70%);
-}
-
-.error-section.error-500::before {
-    background: radial-gradient(circle, rgba(243,38,45,0.06) 0%, transparent 70%);
 }
 
 .error-card {
@@ -54,7 +33,6 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 0 40px rgba(0,217,255,0.25));
 }
 
 .error-500 .error-code {
@@ -62,7 +40,6 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 0 40px rgba(255,106,0,0.25));
 }
 
 .error-icon {
@@ -76,14 +53,14 @@
 }
 
 .error-404 .error-icon {
-    background: linear-gradient(135deg, var(--cx-cyan-8), var(--cx-purple-8));
+    background: var(--cyan-dim);
     border: 1px solid var(--cx-cyan-15);
     color: var(--cx-cyan);
 }
 
 .error-500 .error-icon {
-    background: linear-gradient(135deg, rgba(255,106,0,0.08), rgba(243,38,45,0.08));
-    border: 1px solid rgba(255,106,0,0.15);
+    background: var(--cx-orange-8);
+    border: 1px solid var(--cx-orange-20);
     color: var(--cx-orange);
 }
 
@@ -121,7 +98,7 @@
 
 .error-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(0,217,255,0.3);
+    box-shadow: 0 8px 28px rgba(0,112,210,0.2);
 }
 
 .error-btn svg {

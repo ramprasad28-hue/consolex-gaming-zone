@@ -1,35 +1,11 @@
 /* ============================================================
-   CONSOLEX — pricing.css  (reference-matched)
+   CONSOLEX — pricing.css  (light theme)
    ============================================================ */
 
 .pricing-section {
     position: relative;
     padding: 96px 24px;
     overflow: hidden;
-}
-
-/* ── Background blobs ─────────────────────────────────────── */
-.pricing-blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(100px);
-    pointer-events: none;
-}
-.pricing-blob-purple {
-    top: 50%;
-    right: 0;
-    width: 600px;
-    height: 600px;
-    background: var(--purple);
-    opacity: 0.12;
-}
-.pricing-blob-cyan {
-    top: 0;
-    left: 0;
-    width: 400px;
-    height: 400px;
-    background: var(--cyan);
-    opacity: 0.08;
 }
 
 .pricing-container { max-width: 1200px; margin: 0 auto; }
@@ -40,13 +16,13 @@
     display: inline-flex; align-items: center; gap: 8px;
     padding: 6px 16px; border-radius: 100px;
     font-family: var(--font-body); font-size: 13px; font-weight: 600;
-    color: var(--cyan); background: var(--cyan-dim); border: 1px solid rgba(0,217,255,0.20);
+    color: var(--cyan); background: var(--cyan-dim); border: 1px solid var(--cx-cyan-20);
 }
 .pricing-pill-purple {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 6px 16px; border-radius: 100px;
     font-family: var(--font-body); font-size: 13px; font-weight: 600;
-    color: var(--purple); background: rgba(138,43,226,0.08); border: 1px solid rgba(138,43,226,0.20);
+    color: var(--cx-purple); background: var(--cx-purple-8); border: 1px solid var(--cx-purple-20);
 }
 .pricing-title, .pricing-membership-title {
     font-family: var(--font-head); font-weight: 900;
@@ -76,7 +52,7 @@
     transition: all 0.3s var(--ease);
 }
 .pricing-toggle-btn.active {
-    background: var(--cyan); color: var(--bg); box-shadow: 0 0 20px rgba(0,217,255,0.3);
+    background: var(--cx-blue); color: #fff;
 }
 
 /* ── Pricing cards grid ───────────────────────────────────── */
@@ -87,16 +63,17 @@
 
 .pricing-card {
     padding: 24px; border-radius: 16px; border: 1px solid var(--border);
-    background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    background: var(--card-bg);
     display: flex; flex-direction: column; gap: 16px;
-    transition: all 0.3s var(--ease), background var(--theme-speed) ease, color var(--theme-speed) ease, border-color var(--theme-speed) ease;
+    transition: border-color var(--theme-speed) ease, transform 0.3s var(--ease),
+                background var(--theme-speed) ease;
 }
-.pricing-card:hover { border-color: rgba(0,217,255,0.3); transform: translateY(-2px); }
+.pricing-card:hover { border-color: var(--cx-cyan-30); transform: translateY(-2px); }
 
 .pricing-card-icon {
     width: 42px; height: 42px; border-radius: 12px;
-    background: rgba(0,217,255,0.10); border: 1px solid rgba(0,217,255,0.20);
-    display: flex; align-items: center; justify-content: center; color: var(--cyan);
+    background: var(--cx-blue-8); border: 1px solid var(--cx-blue-15);
+    display: flex; align-items: center; justify-content: center; color: var(--cx-blue);
 }
 .pricing-card-label {
     font-family: var(--font-body); font-size: 12px; text-transform: uppercase;
@@ -106,15 +83,15 @@
     display: flex; align-items: baseline; gap: 2px;
 }
 .pricing-rupee {
-    font-family: var(--font-head); font-weight: 900; font-size: 1rem; color: var(--cyan);
+    font-family: var(--font-head); font-weight: 900; font-size: 1rem; color: var(--cx-blue);
 }
 .pricing-amount {
-    font-family: var(--font-head); font-weight: 900; font-size: 2rem; color: var(--cyan);
+    font-family: var(--font-head); font-weight: 900; font-size: 2rem; color: var(--cx-blue);
     transition: opacity 0.2s;
 }
 .pricing-per { font-size: 13px; color: var(--text2); }
 .pricing-card-note {
-    font-size: 11px; color: var(--orange); font-weight: 600; min-height: 16px;
+    font-size: 11px; color: var(--cx-orange); font-weight: 600; min-height: 16px;
 }
 .pricing-footnote {
     text-align: center; font-size: 13px; color: var(--text2); margin-top: 16px;
@@ -135,9 +112,10 @@
 
 .membership-card {
     padding: 32px; border-radius: 24px; border: 1px solid var(--border);
-    background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    background: var(--card-bg);
     display: flex; flex-direction: column; gap: 24px;
-    transition: all 0.3s var(--ease), background var(--theme-speed) ease, color var(--theme-speed) ease, border-color var(--theme-speed) ease; position: relative;
+    transition: transform 0.3s var(--ease), border-color var(--theme-speed) ease,
+                background var(--theme-speed) ease; position: relative;
 }
 .membership-card:hover { transform: translateY(-2px); }
 .membership-card-featured { border-color: rgba(138,43,226,0.4); }
@@ -148,25 +126,25 @@
     font-family: var(--font-head); font-size: 11px; font-weight: 800;
     text-transform: uppercase; letter-spacing: 0.05em; z-index: 10;
 }
-.mc-badge-popular { background: var(--purple); color: var(--text); }
-.mc-badge-pro { background: var(--orange); color: var(--text); }
+.mc-badge-popular { background: var(--cx-purple); color: #fff; }
+.mc-badge-pro { background: var(--cx-orange); color: #fff; }
 
 .mc-header { text-align: left; }
 .mc-name {
     font-family: var(--font-head); font-weight: 900; font-size: 1.5rem; color: var(--text);
     margin-bottom: 4px;
 }
-.mc-name-purple { color: var(--purple); }
-.mc-name-orange { color: var(--orange); }
+.mc-name-purple { color: var(--cx-purple); }
+.mc-name-orange { color: var(--cx-orange); }
 .mc-tagline { font-size: 13px; color: var(--text2); }
 
 .mc-price { display: flex; align-items: baseline; gap: 4px; }
 .mc-amount {
     font-family: var(--font-head); font-weight: 900; font-size: 2.5rem;
 }
-.mc-cyan { color: var(--cyan); }
-.mc-purple { color: var(--purple); }
-.mc-orange { color: var(--orange); }
+.mc-cyan { color: var(--cx-blue); }
+.mc-purple { color: var(--cx-purple); }
+.mc-orange { color: var(--cx-orange); }
 .mc-period { font-size: 14px; color: var(--text2); }
 
 .mc-hours-box {
@@ -189,8 +167,8 @@
 }
 .mc-features li::before {
     content: ''; width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0;
-    background: rgba(0,217,255,0.15); border: 1px solid rgba(0,217,255,0.3);
-    background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2300D9FF' stroke-width='3' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+    background: var(--cx-blue-8); border: 1px solid var(--cx-blue-15);
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%230070D2' stroke-width='3' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
     background-repeat: no-repeat; background-position: center;
 }
 
@@ -201,25 +179,25 @@
     transition: all 0.3s var(--ease); border: none; cursor: pointer;
 }
 .mc-btn-ghost {
-    background: transparent; color: var(--text); border: 1px solid var(--border);
+    background: transparent; color: var(--text2); border: 1px solid var(--border);
 }
-.mc-btn-ghost:hover { border-color: var(--cyan); color: var(--cyan); }
+.mc-btn-ghost:hover { border-color: var(--cx-blue); color: var(--cx-blue); }
 .mc-btn-purple {
-    background: var(--purple); color: var(--text);
+    background: var(--cx-purple); color: #fff;
 }
-.mc-btn-purple:hover { box-shadow: 0 0 30px rgba(138,43,226,0.4); transform: translateY(-2px); }
+.mc-btn-purple:hover { transform: translateY(-2px); opacity: 0.9; }
 .mc-btn-orange {
-    background: var(--orange); color: var(--text);
+    background: var(--cx-orange); color: #fff;
 }
-.mc-btn-orange:hover { box-shadow: 0 0 30px rgba(255,106,0,0.4); transform: translateY(-2px); }
+.mc-btn-orange:hover { transform: translateY(-2px); opacity: 0.9; }
 
 /* ── Gradient text utility ────────────────────────────────── */
 .text-gradient-cyan {
-    background: linear-gradient(135deg, var(--cyan), #00a3cc);
+    background: linear-gradient(135deg, var(--cx-blue), var(--cx-cyan));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .text-gradient-orange {
-    background: linear-gradient(135deg, var(--orange), #cc5500);
+    background: linear-gradient(135deg, var(--cx-orange), #cc5500);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 

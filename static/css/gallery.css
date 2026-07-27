@@ -1,14 +1,12 @@
 /* ============================================================
-   CONSOLEX — gallery.css
-   Infinite scrolling image marquee — store photos + game art
+   CONSOLEX — gallery.css  (light theme)
+   Infinite scrolling image marquee
    ============================================================ */
 
-/* ── Section shell ───────────────────────────────────────── */
 .gallery-section {
     position: relative;
     padding: 60px 0 40px;
     overflow: hidden;
-    background: var(--bg);
 }
 
 /* ── Header ──────────────────────────────────────────────── */
@@ -27,9 +25,9 @@
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--cyan, #00D9FF);
-    background: rgba(0, 217, 255, 0.08);
-    border: 1px solid rgba(0, 217, 255, 0.22);
+    color: var(--cx-blue);
+    background: var(--cx-blue-8);
+    border: 1px solid var(--cx-blue-15);
     padding: 6px 16px;
     border-radius: 50px;
     margin-bottom: 14px;
@@ -45,16 +43,13 @@
 }
 
 .gallery-neon {
-    color: var(--cyan, #00D9FF);
-    text-shadow:
-        0 0 20px rgba(0, 217, 255, 0.55),
-        0 0 60px rgba(0, 217, 255, 0.20);
+    color: var(--cx-blue);
 }
 
 .gallery-sub {
     font-family: var(--font-body);
     font-size: 0.95rem;
-    color: var(--text2, #9a9db8);
+    color: var(--text2);
     max-width: 440px;
     margin: 0 auto;
     line-height: 1.6;
@@ -68,7 +63,6 @@
     padding: 10px 0;
 }
 
-/* Gradient fade edges */
 .gallery-track-wrap::before,
 .gallery-track-wrap::after {
     content: '';
@@ -95,7 +89,6 @@
     animation: galleryScroll 35s linear infinite;
 }
 
-/* Pause on hover */
 .gallery-track-wrap:hover .gallery-track {
     animation-play-state: paused;
 }
@@ -105,7 +98,6 @@
     100% { transform: translateX(-50%); }
 }
 
-/* Reverse row */
 .gallery-track--reverse {
     animation: galleryScrollReverse 40s linear infinite;
 }
@@ -125,21 +117,18 @@
     border-radius: 14px;
     overflow: hidden;
     position: relative;
-    border: 1px solid var(--surface);
+    border: 1px solid var(--border);
     background: var(--surface);
-    transition:
-        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-        border-color 0.3s ease,
-        box-shadow 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
     cursor: pointer;
 }
 
 .gallery-card:hover {
     transform: scale(1.05) translateY(-6px);
-    border-color: rgba(0, 217, 255, 0.3);
-    box-shadow:
-        0 20px 50px rgba(0, 0, 0, 0.5),
-        0 0 30px rgba(0, 217, 255, 0.1);
+    border-color: var(--cx-cyan-30);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
     z-index: 5;
 }
 
@@ -155,16 +144,11 @@
     transform: scale(1.08);
 }
 
-/* Overlay gradient */
 .gallery-card::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        180deg,
-        transparent 50%,
-        rgba(8, 8, 16, 0.7) 100%
-    );
+    background: linear-gradient(180deg, transparent 50%, rgba(15,23,42,0.6) 100%);
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -174,7 +158,6 @@
     opacity: 1;
 }
 
-/* Caption */
 .gallery-caption {
     position: absolute;
     bottom: 0;
@@ -195,8 +178,8 @@
     font-size: 0.82rem;
     font-weight: 700;
     letter-spacing: 0.5px;
-    color: var(--text);
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 /* ── Row spacing ─────────────────────────────────────────── */
@@ -209,43 +192,18 @@
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 768px) {
     .gallery-section { padding: 40px 0 24px; }
-
-    .gallery-card {
-        width: 240px;
-        height: 150px;
-    }
-
-    .gallery-track {
-        gap: 14px;
-        animation-duration: 25s;
-    }
-    .gallery-track--reverse {
-        animation-duration: 30s;
-    }
-
-    .gallery-track-wrap::before,
-    .gallery-track-wrap::after {
-        width: 60px;
-    }
+    .gallery-card { width: 240px; height: 150px; }
+    .gallery-track { gap: 14px; animation-duration: 25s; }
+    .gallery-track--reverse { animation-duration: 30s; }
+    .gallery-track-wrap::before, .gallery-track-wrap::after { width: 60px; }
 }
 
 @media (max-width: 480px) {
     .gallery-section { padding: 32px 0 16px; }
-    .gallery-card {
-        width: 200px;
-        height: 130px;
-    }
-
-    .gallery-track {
-        gap: 10px;
-        animation-duration: 20s;
-    }
+    .gallery-card { width: 200px; height: 130px; }
+    .gallery-track { gap: 10px; animation-duration: 20s; }
 }
 
-/* ── Reduced motion ──────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-    .gallery-track,
-    .gallery-track--reverse {
-        animation: none;
-    }
+    .gallery-track, .gallery-track--reverse { animation: none; }
 }

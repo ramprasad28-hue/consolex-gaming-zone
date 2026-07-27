@@ -1,15 +1,6 @@
 /* ============================================================
-   CONSOLEX — mobile.css
+   CONSOLEX — mobile.css  (light theme)
    Cross-cutting responsive utilities ONLY.
-   Section-specific responsive rules live in their component CSS.
-
-   Kept here:
-   - Touch targets (WCAG 2.5.5)
-   - Typography fluid scaling
-   - WhatsApp safe area + mobile adjustments
-   - Print styles
-   - Reduced motion
-   - High contrast mode
    ============================================================ */
 
 /* ── SAFE AREA for notched phones ───────────────────────── */
@@ -115,9 +106,7 @@
     .whatsapp-float,
     .mob-backdrop,
     .mob-drawer,
-    .hero-scroll,
-    .hero-blob,
-    .hero-grid-lines {
+    .hero-scroll {
         display: none !important;
     }
     body {

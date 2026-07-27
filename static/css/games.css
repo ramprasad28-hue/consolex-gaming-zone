@@ -1,18 +1,11 @@
 /* ============================================================
-   CONSOLEX — games.css  (reference-matched)
+   CONSOLEX — games.css  (light theme)
    ============================================================ */
 
 .games-section {
     position: relative;
     padding: 96px 24px;
     overflow: hidden;
-}
-
-.games-blob {
-    position: absolute; top: 0; right: 0;
-    width: 500px; height: 500px; border-radius: 50%;
-    background: var(--cyan); opacity: 0.08;
-    filter: blur(100px); pointer-events: none;
 }
 
 .games-container { max-width: 1200px; margin: 0 auto; }
@@ -22,7 +15,7 @@
 .games-pill {
     display: inline-flex; padding: 6px 16px; border-radius: 100px;
     font-family: var(--font-body); font-size: 13px; font-weight: 600;
-    color: var(--cyan); background: var(--cyan-dim); border: 1px solid rgba(0,217,255,0.20);
+    color: var(--cyan); background: var(--cyan-dim); border: 1px solid var(--cx-cyan-20);
 }
 .games-title {
     font-family: var(--font-head); font-weight: 900;
@@ -41,10 +34,10 @@
 .games-filter {
     flex-shrink: 0; padding: 10px 18px; border-radius: 10px; border: 1px solid var(--border);
     background: var(--card-bg); font-family: var(--font-body); font-size: 14px; font-weight: 700;
-    color: var(--text2); cursor: pointer; transition: all 0.2s var(--ease), background var(--theme-speed) ease, color var(--theme-speed) ease, border-color var(--theme-speed) ease;
+    color: var(--text2); cursor: pointer; transition: all 0.2s var(--ease);
 }
-.games-filter:hover { color: var(--cyan); border-color: rgba(0,217,255,0.3); }
-.games-filter.active { background: var(--cyan); color: var(--bg); border-color: var(--cyan); }
+.games-filter:hover { color: var(--cyan); border-color: var(--cx-cyan-30); }
+.games-filter.active { background: var(--cyan); color: #fff; border-color: var(--cyan); }
 
 /* ── Game grid ────────────────────────────────────────────── */
 .games-grid {
@@ -57,6 +50,7 @@
 .game-card {
     position: relative; border-radius: 14px; overflow: hidden;
     cursor: pointer; transition: all 0.3s var(--ease);
+    border: 1px solid var(--border);
 }
 .game-card:hover { transform: translateY(-4px) scale(1.02); }
 .game-card.gc-hidden { display: none; }
@@ -72,7 +66,7 @@
 
 .game-card-scrim {
     position: absolute; inset: 0;
-    background: linear-gradient(to top, var(--hero-scrim-b), transparent 60%);
+    background: linear-gradient(to top, rgba(15,23,42,0.7), transparent 60%);
     opacity: 0; transition: opacity 0.3s;
 }
 .game-card:hover .game-card-scrim { opacity: 1; }
@@ -81,12 +75,12 @@
     position: absolute; top: 8px; left: 8px;
     padding: 3px 10px; border-radius: 100px;
     font-size: 10px; font-weight: 700;
-    background: rgba(0,217,255,0.15); border: 1px solid rgba(0,217,255,0.30); color: var(--cyan);
+    background: rgba(0,112,210,0.15); border: 1px solid rgba(0,112,210,0.25); color: var(--cx-blue);
     backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
 }
-.game-card-badge-gold { background: rgba(255,198,46,0.15); border-color: rgba(255,198,46,0.30); color: #FFC62E; }
-.game-card-badge-red { background: rgba(255,106,0,0.15); border-color: rgba(255,106,0,0.30); color: var(--orange); }
-.game-card-badge-cyan { background: rgba(0,217,255,0.15); border-color: rgba(0,217,255,0.30); color: var(--cyan); }
+.game-card-badge-gold { background: rgba(255,198,46,0.15); border-color: rgba(255,198,46,0.25); color: var(--cx-gold); }
+.game-card-badge-red { background: rgba(255,106,0,0.15); border-color: rgba(255,106,0,0.25); color: var(--cx-orange); }
+.game-card-badge-cyan { background: rgba(0,112,210,0.15); border-color: rgba(0,112,210,0.25); color: var(--cx-blue); }
 
 .game-card-hover {
     position: absolute; bottom: 0; left: 0; right: 0;
@@ -102,7 +96,7 @@
     display: flex; align-items: center; gap: 4px;
 }
 .game-card-rating span {
-    font-family: var(--font-head); font-size: 11px; font-weight: 700; color: #FFC62E;
+    font-family: var(--font-head); font-size: 11px; font-weight: 700; color: var(--cx-gold);
 }
 
 /* ── CTA ──────────────────────────────────────────────────── */

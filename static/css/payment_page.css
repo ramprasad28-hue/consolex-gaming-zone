@@ -1,6 +1,5 @@
 /* ============================================================
-   CONSOLEX — payment_page.css
-   Styles for the payment confirmation page.
+   CONSOLEX — payment_page.css  (light theme)
    ============================================================ */
 
 .payment-wrapper {
@@ -9,11 +8,10 @@
 }
 
 .payment-card {
-    background: var(--glass);
+    background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 18px;
     padding: 35px;
-    box-shadow: var(--shadow-lg);
 }
 
 .payment-card .payment-title {
@@ -52,8 +50,8 @@
 
 .total-box {
     margin-top: 30px;
-    background: var(--glass);
-    border: 2px solid var(--cyan);
+    background: var(--card-bg);
+    border: 2px solid var(--cx-blue);
     border-radius: 16px;
     padding: 25px;
 }
@@ -65,7 +63,7 @@
 }
 
 .advance {
-    color: var(--cyan);
+    color: var(--cx-blue);
     font-weight: bold;
     font-size: 24px;
 }
@@ -79,13 +77,14 @@
     cursor: pointer;
     font-size: 18px;
     font-weight: bold;
-    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    background: var(--cx-blue);
     color: white;
     transition: .3s;
 }
 
 .pay-btn:hover {
     transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,112,210,0.2);
 }
 
 .pay-btn:disabled {
@@ -102,13 +101,13 @@
 
 .status-success {
     display: block;
-    background: var(--success);
+    background: var(--cx-success);
     color: #fff;
 }
 
 .status-error {
     display: block;
-    background: var(--danger);
+    background: var(--cx-danger);
     color: #fff;
 }
 
@@ -124,9 +123,7 @@
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
 }
 
 @media (max-width: 768px) {

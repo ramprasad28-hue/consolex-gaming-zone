@@ -10,18 +10,10 @@
     var DARK = 'dark';
     var LIGHT = 'light';
 
-    /** Detect system preference */
-    function getSystemPreference() {
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-            return LIGHT;
-        }
-        return DARK;
-    }
-
-    /** Load saved theme or fall back to system */
+    /** Load saved theme — light is always the default */
     function loadTheme() {
         var saved = localStorage.getItem(STORAGE_KEY);
-        return saved || getSystemPreference();
+        return saved || LIGHT;
     }
 
     /** Apply theme to document */
@@ -57,14 +49,13 @@
         saveTheme(next);
     }
 
-    /** Listen for system preference changes */
+    /** Listen for system preference changes (only if user has no saved preference) */
     function watchSystemPreference() {
         if (!window.matchMedia) return;
-        var mq = window.matchMedia('(prefers-color-scheme: light)');
+        var mq = window.matchMedia('(prefers-color-scheme: dark)');
         var handler = function (e) {
-            // Only auto-switch if user hasn't manually set a preference
             if (!localStorage.getItem(STORAGE_KEY)) {
-                applyTheme(e.matches ? LIGHT : DARK);
+                applyTheme(e.matches ? DARK : LIGHT);
             }
         };
         if (mq.addEventListener) {

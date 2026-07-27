@@ -1,6 +1,5 @@
 /* ============================================================
-   CONSOLEX — receipt.css
-   Styles for the payment receipt page.
+   CONSOLEX — receipt.css  (light theme)
    ============================================================ */
 
 .receipt-card {
@@ -15,7 +14,7 @@
 }
 
 .receipt-header h2 {
-    color: var(--cyan);
+    color: var(--cx-blue);
     margin: 0;
 }
 
@@ -50,7 +49,7 @@
 }
 
 .receipt-value--cyan {
-    color: var(--cyan);
+    color: var(--cx-blue);
     text-align: right;
     font-weight: 700;
 }
@@ -67,7 +66,7 @@
 }
 
 .receipt-divider--thick {
-    border-top: 2px solid var(--cyan-dim);
+    border-top: 2px solid var(--cx-cyan-20);
     margin: 16px 0;
     padding-top: 16px;
 }

@@ -1,12 +1,12 @@
 /* ============================================================
    CONSOLEX — announcement.css
-   Top announcement banner bar
+   Top announcement banner bar — solid blue
    ============================================================ */
 
 .announcement-bar {
     position: relative;
     z-index: calc(var(--cx-z-navbar) + 1);
-    background: linear-gradient(90deg, var(--cx-cyan), var(--cx-purple));
+    background: var(--cx-cyan);
     color: #fff;
     text-align: center;
     padding: 0;

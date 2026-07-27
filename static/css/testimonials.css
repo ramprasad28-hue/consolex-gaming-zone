@@ -1,30 +1,20 @@
 /* ============================================================
-   CONSOLEX — testimonials.css
+   CONSOLEX — testimonials.css  (light theme)
    ============================================================ */
 
-/* ── Testimonials ─────────────────────────────────────────── */
 .testimonials-section {
     position: relative;
     padding: 96px 24px;
     overflow: hidden;
 }
-.testi-bg-gradient {
-    position: absolute; inset: 0; pointer-events: none;
-    background: linear-gradient(to bottom, transparent, rgba(0,217,255,0.02), transparent);
-}
-.testi-blob {
-    position: absolute; bottom: 0; right: 0;
-    width: 500px; height: 500px; border-radius: 50%;
-    background: var(--cyan); opacity: 0.08;
-    filter: blur(100px); pointer-events: none;
-}
+
 .testi-container { max-width: 1200px; margin: 0 auto; }
 
 .testi-header { text-align: center; margin-bottom: 64px; }
 .testi-pill {
     display: inline-flex; padding: 6px 16px; border-radius: 100px;
     font-family: var(--font-body); font-size: 13px; font-weight: 600;
-    color: var(--cyan); background: rgba(0,217,255,0.08); border: 1px solid rgba(0,217,255,0.20);
+    color: var(--cyan); background: var(--cyan-dim); border: 1px solid var(--cx-cyan-20);
 }
 .testi-title {
     font-family: var(--font-head); font-weight: 900;
@@ -35,7 +25,6 @@
     display: inline-flex; align-items: center; gap: 16px;
     padding: 12px 24px; border-radius: 16px;
     background: var(--card-bg); border: 1px solid var(--border);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
 }
 .testi-stars { display: flex; gap: 2px; }
 .testi-rating-num {
@@ -58,11 +47,12 @@
 /* ── Card ─────────────────────────────────────────────────── */
 .testi-card {
     padding: 24px; border-radius: 24px; border: 1px solid var(--border);
-    background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    background: var(--card-bg);
     display: flex; flex-direction: column; gap: 20px;
-    transition: background var(--theme-speed) ease, color var(--theme-speed) ease, border-color var(--theme-speed) ease, transform 0.3s var(--ease);
+    transition: border-color var(--theme-speed) ease, transform 0.3s var(--ease),
+                background var(--theme-speed) ease;
 }
-.testi-card:hover { border-color: rgba(0,217,255,0.3); transform: translateY(-2px); }
+.testi-card:hover { border-color: var(--cx-cyan-30); transform: translateY(-2px); }
 .testi-stars-sm { display: flex; gap: 2px; }
 .testi-review {
     font-size: 14px; line-height: 1.7; color: var(--text2); flex: 1;
@@ -70,7 +60,7 @@
 .testi-game-tag {
     display: inline-flex; padding: 4px 12px; border-radius: 100px;
     font-size: 11px; font-weight: 600; width: fit-content;
-    color: var(--cyan); background: rgba(0,217,255,0.08); border: 1px solid rgba(0,217,255,0.15);
+    color: var(--cx-blue); background: var(--cx-blue-8); border: 1px solid var(--cx-blue-15);
 }
 .testi-author {
     display: flex; align-items: center; gap: 12px;
@@ -78,7 +68,7 @@
 }
 .testi-avatar {
     width: 40px; height: 40px; border-radius: 50%;
-    background: var(--bg2); border: 2px solid var(--border); flex-shrink: 0;
+    background: var(--surface2); border: 2px solid var(--border); flex-shrink: 0;
 }
 .testi-name { font-family: var(--font-head); font-weight: 700; font-size: 14px; color: var(--text); }
 .testi-role { font-size: 12px; color: var(--text2); }
@@ -89,7 +79,6 @@
     display: inline-flex; align-items: center; gap: 24px; flex-wrap: wrap;
     padding: 32px 40px; border-radius: 24px;
     background: var(--card-bg); border: 1px solid var(--border);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
 }
 .testi-cta-text { text-align: left; }
 .testi-cta-title {
@@ -102,11 +91,10 @@
     padding: 14px 28px; border-radius: var(--radius);
     font-family: var(--font-head); font-weight: 800; font-size: 14px;
     text-transform: uppercase; letter-spacing: 0.05em;
-    background: var(--cyan); color: var(--bg); text-decoration: none;
-    box-shadow: 0 0 30px rgba(0,217,255,0.3);
+    background: var(--cx-blue); color: #fff; text-decoration: none;
     transition: all 0.3s var(--ease);
 }
-.testi-cta-btn:hover { box-shadow: 0 0 50px rgba(0,217,255,0.5); transform: translateY(-2px); }
+.testi-cta-btn:hover { transform: translateY(-2px); opacity: 0.9; }
 
 /* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 992px) {

@@ -1,19 +1,12 @@
 /* ============================================================
-   CONSOLEX — faq.css
+   CONSOLEX — faq.css  (light theme)
    ============================================================ */
 
-/* ── FAQ Section ──────────────────────────────────────────── */
 .faq-section {
     position: relative;
     padding: 96px 24px;
     overflow: hidden;
 }
-.faq-blob {
-    position: absolute; border-radius: 50%;
-    filter: blur(100px); pointer-events: none;
-}
-.faq-blob-purple { top: 0; left: 0; width: 400px; height: 400px; background: var(--purple); opacity: 0.08; }
-.faq-blob-cyan { bottom: 0; right: 0; width: 400px; height: 400px; background: var(--cyan); opacity: 0.08; }
 
 .faq-container { max-width: 800px; margin: 0 auto; }
 
@@ -22,7 +15,7 @@
 .faq-pill {
     display: inline-flex; padding: 6px 16px; border-radius: 100px;
     font-family: var(--font-body); font-size: 13px; font-weight: 600;
-    color: var(--cyan); background: rgba(0,217,255,0.08); border: 1px solid rgba(0,217,255,0.20);
+    color: var(--cyan); background: var(--cyan-dim); border: 1px solid var(--cx-cyan-20);
 }
 .faq-title {
     font-family: var(--font-head); font-weight: 900;
@@ -38,13 +31,13 @@
 }
 .faq-filter {
     padding: 8px 16px; border-radius: 12px; border: 1px solid var(--border);
-    background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    background: var(--card-bg);
     color: var(--text2); font-family: var(--font-head); font-weight: 700; font-size: 13px;
-    cursor: pointer; transition: background var(--theme-speed) ease, color var(--theme-speed) ease, border-color var(--theme-speed) ease;
+    cursor: pointer; transition: all 0.2s var(--ease);
 }
-.faq-filter:hover { color: var(--cyan); border-color: rgba(0,217,255,0.30); }
+.faq-filter:hover { color: var(--cyan); border-color: var(--cx-cyan-30); }
 .faq-filter.active {
-    background: var(--cyan); color: var(--bg); border-color: var(--cyan);
+    background: var(--cx-blue); color: #fff; border-color: var(--cx-blue);
 }
 
 /* ── FAQ list ─────────────────────────────────────────────── */
@@ -52,10 +45,11 @@
 
 .faq-item {
     border-radius: 16px; border: 1px solid var(--border);
-    background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    overflow: hidden; transition: background var(--theme-speed) ease, color var(--theme-speed) ease, border-color var(--theme-speed) ease;
+    background: var(--card-bg);
+    overflow: hidden; transition: border-color var(--theme-speed) ease,
+                background var(--theme-speed) ease;
 }
-.faq-item:hover { border-color: rgba(0,217,255,0.2); }
+.faq-item:hover { border-color: var(--cx-cyan-30); }
 
 .faq-question {
     width: 100%; display: flex; align-items: center; justify-content: space-between;
@@ -67,7 +61,7 @@
 .faq-cat-tag {
     flex-shrink: 0; padding: 3px 10px; border-radius: 100px;
     font-size: 11px; font-weight: 600;
-    color: var(--cyan); background: rgba(0,217,255,0.08); border: 1px solid rgba(0,217,255,0.15);
+    color: var(--cx-blue); background: var(--cx-blue-8); border: 1px solid var(--cx-blue-15);
 }
 .faq-q-text {
     font-family: var(--font-head); font-weight: 700; font-size: 1rem; color: var(--text);
@@ -79,8 +73,8 @@
     transition: all 0.3s var(--ease);
 }
 .faq-item.faq-open .faq-chevron {
-    background: rgba(0,217,255,0.10); border-color: rgba(0,217,255,0.30);
-    color: var(--cyan); transform: rotate(180deg);
+    background: var(--cx-blue-8); border-color: var(--cx-blue-15);
+    color: var(--cx-blue); transform: rotate(180deg);
 }
 
 .faq-answer {
@@ -103,7 +97,6 @@
     display: inline-flex; align-items: center; gap: 24px; flex-wrap: wrap;
     padding: 24px 32px; border-radius: 24px;
     background: var(--card-bg); border: 1px solid var(--border);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
 }
 .faq-cta-text { text-align: left; }
 .faq-cta-title {
@@ -116,11 +109,10 @@
     padding: 12px 24px; border-radius: 12px;
     font-family: var(--font-head); font-weight: 800; font-size: 13px;
     text-transform: uppercase; letter-spacing: 0.05em;
-    background: var(--cyan); color: var(--bg); text-decoration: none;
-    box-shadow: 0 0 20px rgba(0,217,255,0.3);
+    background: var(--cx-blue); color: #fff; text-decoration: none;
     transition: all 0.3s var(--ease);
 }
-.faq-cta-btn:hover { box-shadow: 0 0 40px rgba(0,217,255,0.5); transform: translateY(-2px); }
+.faq-cta-btn:hover { transform: translateY(-2px); opacity: 0.9; }
 
 /* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 992px) {

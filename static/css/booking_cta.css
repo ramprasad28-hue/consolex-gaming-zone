@@ -1,32 +1,12 @@
 /* ============================================================
-   CONSOLEX — booking_cta.css
-   Full-width booking call-to-action strip
+   CONSOLEX — booking_cta.css  (light theme)
    ============================================================ */
 
 .booking-cta-section {
     position: relative;
     padding: 80px 24px;
-    background: linear-gradient(135deg, var(--cx-bg) 0%, var(--cx-bg-2) 50%, var(--cx-bg) 100%);
+    background: var(--surface);
     overflow: hidden;
-}
-
-.booking-cta-section::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, var(--cx-cyan-8) 0%, var(--cx-purple-8) 50%, var(--cx-orange-8) 100%);
-    opacity: 0.5;
-    pointer-events: none;
-}
-
-.booking-cta-section::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--cx-cyan-25), transparent);
 }
 
 .booking-cta-container {
@@ -40,9 +20,7 @@
     z-index: 1;
 }
 
-.booking-cta-content {
-    flex: 1;
-}
+.booking-cta-content { flex: 1; }
 
 .booking-cta-title {
     font-family: var(--cx-font-display);
@@ -70,7 +48,7 @@
     align-items: center;
     gap: 8px;
     padding: 14px 28px;
-    background: linear-gradient(135deg, var(--cx-cyan), var(--cx-purple));
+    background: var(--cx-blue);
     color: #fff;
     font-family: var(--cx-font-display);
     font-size: 0.88rem;
@@ -85,7 +63,7 @@
 
 .booking-cta-btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px var(--cx-cyan-25);
+    box-shadow: 0 8px 30px rgba(0,112,210,0.2);
 }
 
 .booking-cta-btn-ghost {
@@ -106,8 +84,8 @@
 }
 
 .booking-cta-btn-ghost:hover {
-    border-color: var(--cx-cyan);
-    color: var(--cx-cyan);
+    border-color: var(--cx-blue);
+    color: var(--cx-blue);
 }
 
 @media (max-width: 768px) {
@@ -122,13 +100,6 @@
 
 @media (max-width: 480px) {
     .booking-cta-section { padding: 48px 16px; }
-    .booking-cta-actions {
-        flex-direction: column;
-        width: 100%;
-    }
-    .booking-cta-btn-primary,
-    .booking-cta-btn-ghost {
-        justify-content: center;
-        width: 100%;
-    }
+    .booking-cta-actions { flex-direction: column; width: 100%; }
+    .booking-cta-btn-primary, .booking-cta-btn-ghost { justify-content: center; width: 100%; }
 }

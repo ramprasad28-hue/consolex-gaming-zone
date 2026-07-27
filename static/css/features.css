@@ -1,35 +1,11 @@
 /* ============================================================
-   CONSOLEX — features.css  (bento grid, reference-matched)
+   CONSOLEX — features.css  (bento grid, light theme)
    ============================================================ */
 
 .features-section {
     position: relative;
     padding: 96px 24px;
     overflow: hidden;
-}
-
-/* ── Background blobs ─────────────────────────────────────── */
-.features-blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(100px);
-    pointer-events: none;
-}
-.features-blob-purple {
-    top: 0;
-    right: 0;
-    width: 500px;
-    height: 500px;
-    background: var(--purple);
-    opacity: 0.15;
-}
-.features-blob-cyan {
-    bottom: 0;
-    left: 0;
-    width: 400px;
-    height: 400px;
-    background: var(--cyan);
-    opacity: 0.10;
 }
 
 /* ── Container ────────────────────────────────────────────── */
@@ -53,7 +29,7 @@
     font-weight: 600;
     color: var(--cyan);
     background: var(--cyan-dim);
-    border: 1px solid rgba(0,217,255,0.20);
+    border: 1px solid var(--cx-cyan-20);
     margin-bottom: 16px;
 }
 .features-title {
@@ -66,7 +42,7 @@
     line-height: 1.15;
 }
 .text-gradient-cyan {
-    background: linear-gradient(135deg, var(--cyan), #00a3cc);
+    background: linear-gradient(135deg, var(--cx-cyan), var(--cx-purple));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -102,17 +78,16 @@
     border-radius: 20px;
     border: 1px solid var(--border);
     background: var(--card-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     overflow: hidden;
     transition: all 0.3s var(--ease), background var(--theme-speed) ease, color var(--theme-speed) ease, border-color var(--theme-speed) ease;
     display: flex;
     flex-direction: column;
+    box-shadow: var(--cx-shadow-sm);
 }
 .features-card:hover {
-    border-color: rgba(0,217,255,0.3);
+    border-color: var(--cx-cyan-30);
     transform: translateY(-2px);
-    box-shadow: 0 0 30px rgba(0,217,255,0.08);
+    box-shadow: var(--cx-shadow-md);
 }
 .features-card-lg {
     min-height: 280px;
@@ -128,11 +103,11 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.22;
+    opacity: 0.15;
     transition: opacity 0.5s;
 }
 .features-card:hover .fcard-bg-img img {
-    opacity: 0.32;
+    opacity: 0.25;
 }
 .fcard-bg-scrim {
     position: absolute;
@@ -170,29 +145,29 @@
     margin-bottom: 16px;
 }
 .fcard-icon-cyan {
-    color: var(--cyan);
-    background: rgba(0,217,255,0.10);
-    border-color: rgba(0,217,255,0.20);
+    color: var(--cx-cyan);
+    background: var(--cx-cyan-10);
+    border-color: var(--cx-cyan-20);
 }
 .fcard-icon-purple {
-    color: var(--purple);
-    background: rgba(138,43,226,0.10);
-    border-color: rgba(138,43,226,0.20);
+    color: var(--cx-purple);
+    background: var(--cx-purple-10);
+    border-color: var(--cx-purple-20);
 }
 .fcard-icon-orange {
-    color: var(--orange);
-    background: rgba(255,106,0,0.10);
-    border-color: rgba(255,106,0,0.20);
+    color: var(--cx-orange);
+    background: var(--cx-orange-10);
+    border-color: var(--cx-orange-20);
 }
 .fcard-icon-green {
-    color: #00E676;
-    background: rgba(0,230,118,0.10);
-    border-color: rgba(0,230,118,0.20);
+    color: var(--cx-success);
+    background: var(--cx-success-10);
+    border-color: var(--cx-success-40);
 }
 .fcard-icon-yellow {
-    color: #FFC62E;
-    background: rgba(255,198,46,0.10);
-    border-color: rgba(255,198,46,0.20);
+    color: var(--cx-gold);
+    background: var(--cx-gold-10);
+    border-color: var(--cx-gold-40);
 }
 
 /* ── Text ─────────────────────────────────────────────────── */
@@ -222,16 +197,16 @@
     font-weight: 900;
     font-size: 1.5rem;
 }
-.fcard-stat-cyan  { color: var(--cyan); }
-.fcard-stat-purple { color: var(--purple); }
-.fcard-stat-orange { color: var(--orange); }
+.fcard-stat-cyan  { color: var(--cx-cyan); }
+.fcard-stat-purple { color: var(--cx-purple); }
+.fcard-stat-orange { color: var(--cx-orange); }
 .fcard-stat-label {
     font-size: 12px;
     color: var(--text2);
 }
 .fcard-stat-link {
     font-size: 13px;
-    color: #00E676;
+    color: var(--cx-success);
     font-weight: 600;
 }
 
@@ -251,19 +226,19 @@
     font-weight: 600;
 }
 .fcard-tag-orange {
-    color: var(--orange);
-    background: rgba(255,106,0,0.10);
-    border: 1px solid rgba(255,106,0,0.20);
+    color: var(--cx-orange);
+    background: var(--cx-orange-10);
+    border: 1px solid var(--cx-orange-20);
 }
 .fcard-tag-purple {
-    color: var(--purple);
-    background: rgba(138,43,226,0.10);
-    border: 1px solid rgba(138,43,226,0.20);
+    color: var(--cx-purple);
+    background: var(--cx-purple-10);
+    border: 1px solid var(--cx-purple-20);
 }
 .fcard-tag-text {
     font-size: 14px;
     font-weight: 700;
-    color: #FFC62E;
+    color: var(--cx-gold);
 }
 
 /* ── Stagger animation ────────────────────────────────────── */

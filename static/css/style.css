@@ -12,10 +12,10 @@
     font-size: 0.95rem;
     font-family: var(--font-body);
 }
-.alert-success { background: rgba(0,230,118,0.10); color: #00E676; border: 1px solid rgba(0,230,118,0.30); }
-.alert-error, .alert-danger { background: rgba(243,38,45,0.10); color: #F3262D; border: 1px solid rgba(243,38,45,0.30); }
-.alert-info { background: rgba(0,217,255,0.10); color: var(--cyan); border: 1px solid rgba(0,217,255,0.30); }
-.field-error { color: #F3262D; font-size: 0.85rem; margin-top: 4px; display: block; }
+.alert-success { background: var(--cx-success-10); color: var(--cx-success); border: 1px solid var(--cx-success-40); }
+.alert-error, .alert-danger { background: var(--cx-danger-10); color: var(--cx-danger); border: 1px solid var(--cx-danger-25); }
+.alert-info { background: var(--cx-cyan-10); color: var(--cx-cyan); border: 1px solid var(--cx-cyan-30); }
+.field-error { color: var(--cx-danger); font-size: 0.85rem; margin-top: 4px; display: block; }
 
 /* ── Auth Pages ─────────────────────────────────────────── */
 .auth-section {
@@ -27,23 +27,9 @@
     position: relative;
 }
 
-.auth-section::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(0,217,255,0.06) 0%, transparent 70%);
-    pointer-events: none;
-}
-
 .auth-card {
     position: relative;
-    background: var(--cx-glass);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    background: var(--cx-card-bg);
     border: 1px solid var(--cx-border);
     border-radius: var(--cx-radius-xl);
     padding: 2.5rem;
@@ -61,7 +47,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--cx-cyan), var(--cx-purple), var(--cx-orange));
+    background: var(--cx-cyan);
 }
 
 .auth-card-icon {
@@ -72,7 +58,7 @@
     height: 56px;
     margin: 0 auto 1.25rem;
     border-radius: var(--cx-radius-lg);
-    background: linear-gradient(135deg, var(--cx-cyan-8), var(--cx-purple-8));
+    background: var(--cx-cyan-8);
     border: 1px solid var(--cx-cyan-15);
 }
 
@@ -111,8 +97,8 @@
 
 .auth-form input {
     width: 100%;
-    background: var(--cx-bg-2);
-    border: 1px solid var(--cx-border);
+    background: var(--cx-input-bg);
+    border: 1px solid var(--cx-border-2);
     border-radius: var(--cx-radius-md);
     padding: 0.75rem 1rem;
     color: var(--cx-text);
@@ -171,7 +157,7 @@
     font-weight: 700;
     letter-spacing: var(--cx-tracking-wide);
     color: #fff;
-    background: linear-gradient(135deg, var(--cx-cyan), var(--cx-purple));
+    background: var(--cx-cyan);
     border: none;
     border-radius: var(--cx-radius-md);
     padding: 0.85rem 1.5rem;
@@ -183,7 +169,7 @@
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(0,217,255,0.3);
+    box-shadow: 0 4px 12px var(--cx-cyan-25);
 }
 
 .btn-primary:disabled {
@@ -197,110 +183,102 @@
 .dashboard-section { min-height: 100vh; }
 
 /* ── Status Badges ──────────────────────────────────────── */
-.badge-pending   { background: rgba(255,198,46,0.15); color: #FFC62E; padding: 3px 10px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; }
-.badge-confirmed { background: rgba(0,230,118,0.15); color: #00E676; padding: 3px 10px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; }
-.badge-completed { background: rgba(155,155,199,0.15); color: var(--text2); padding: 3px 10px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; }
-.badge-cancelled { background: rgba(243,38,45,0.15); color: #F3262D; padding: 3px 10px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; }
-.empty-state { text-align: center; color: var(--text2); padding: 3rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-.empty-state a { color: var(--cyan); }
+.badge-pending   { background: var(--cx-gold-10); color: var(--cx-gold); padding: 3px 10px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; }
+.badge-confirmed { background: var(--cx-success-10); color: var(--cx-success); padding: 3px 10px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; }
+.badge-completed { background: var(--cx-surface); color: var(--cx-text-2); padding: 3px 10px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; }
+.badge-cancelled { background: var(--cx-danger-10); color: var(--cx-danger); padding: 3px 10px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; }
+.empty-state { text-align: center; color: var(--cx-text-2); padding: 3rem; background: var(--cx-card-bg); border: 1px solid var(--cx-border); border-radius: var(--radius); }
+.empty-state a { color: var(--cx-cyan); }
 
 /* ── Booking Form ───────────────────────────────────────── */
 .booking-section { padding: 3rem 0; }
-.section-sub { color: var(--text2); margin-bottom: 2rem; }
+.section-sub { color: var(--cx-text-2); margin-bottom: 2rem; }
 .booking-form-wrap { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; align-items: start; }
 .booking-form {
-    background: var(--glass);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--border);
+    background: var(--cx-card-bg);
+    border: 1px solid var(--cx-border);
     border-radius: var(--radius);
     padding: 2rem;
 }
 .form-group { margin-bottom: 1.4rem; }
-.form-group label { display: block; color: var(--text2); font-size: 0.9rem; margin-bottom: 6px; }
+.form-group label { display: block; color: var(--cx-text-2); font-size: 0.9rem; margin-bottom: 6px; }
 .form-group select,
 .form-group input[type="date"],
 .form-group input[type="number"],
 .form-group input[type="time"] {
     width: 100%;
-    background: var(--bg2);
-    border: 1px solid var(--border);
+    background: var(--cx-input-bg);
+    border: 1px solid var(--cx-border-2);
     border-radius: 12px;
     padding: 0.75rem 1rem;
-    color: var(--text);
+    color: var(--cx-text);
     font-size: 1rem;
     font-family: var(--font-body);
     box-sizing: border-box;
 }
 .form-group select:focus:not(:focus-visible),
-.form-group input:focus:not(:focus-visible) { border-color: var(--cyan); }
+.form-group input:focus:not(:focus-visible) { border-color: var(--cx-cyan); }
 .form-group select:focus-visible,
-.form-group input:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; border-color: var(--cyan); }
+.form-group input:focus-visible { outline: 2px solid var(--cx-cyan); outline-offset: 2px; border-color: var(--cx-cyan); }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .cost-preview {
-    background: var(--bg2);
-    border: 1px solid var(--cyan);
+    background: var(--cx-bg-2);
+    border: 1px solid var(--cx-cyan-25);
     border-radius: var(--radius);
     padding: 1rem;
-    color: var(--text2);
+    color: var(--cx-text-2);
     margin-bottom: 1.5rem;
     text-align: center;
 }
-.cost-preview strong { color: var(--cyan); font-size: 1.1rem; }
+.cost-preview strong { color: var(--cx-cyan); font-size: 1.1rem; }
 .pricing-info {
-    background: var(--glass);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--border);
+    background: var(--cx-card-bg);
+    border: 1px solid var(--cx-border);
     border-radius: var(--radius);
     padding: 1.5rem;
 }
-.pricing-info h4 { color: var(--text); margin-bottom: 1rem; }
+.pricing-info h4 { color: var(--cx-text); margin-bottom: 1rem; }
 .price-table { width: 100%; border-collapse: collapse; }
-.price-table th { color: var(--cyan); font-size: 0.85rem; padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--border); }
-.price-table td { color: var(--text2); font-size: 0.9rem; padding: 0.6rem 0.5rem;     border-bottom: 1px solid var(--surface); }
+.price-table th { color: var(--cx-cyan); font-size: 0.85rem; padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--cx-border); }
+.price-table td { color: var(--cx-text-2); font-size: 0.9rem; padding: 0.6rem 0.5rem; border-bottom: 1px solid var(--cx-surface); }
 
 /* ── Payment Page ───────────────────────────────────────── */
 .payment-section { padding: 3rem 0; }
 .payment-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
 .booking-summary {
-    background: var(--glass);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--border);
+    background: var(--cx-card-bg);
+    border: 1px solid var(--cx-border);
     border-radius: var(--radius);
     padding: 2rem;
 }
-.booking-summary h3 { color: var(--text); margin-bottom: 1.5rem; }
+.booking-summary h3 { color: var(--cx-text); margin-bottom: 1.5rem; }
 .summary-row {
     display: flex;
     justify-content: space-between;
     padding: 0.7rem 0;
-    border-bottom: 1px solid var(--surface);
-    color: var(--text2);
+    border-bottom: 1px solid var(--cx-surface);
+    color: var(--cx-text-2);
 }
-.summary-row strong { color: var(--text); }
-.total-row { border-top: 2px solid var(--border); margin-top: 0.5rem; color: var(--text); font-size: 1.1rem; }
-.total-row strong { color: var(--cyan); font-size: 1.2rem; }
-.advance-row { color: #00E676; }
-.advance-row strong { color: #00E676; font-size: 1.1rem; }
+.summary-row strong { color: var(--cx-text); }
+.total-row { border-top: 2px solid var(--cx-border); margin-top: 0.5rem; color: var(--cx-text); font-size: 1.1rem; }
+.total-row strong { color: var(--cx-cyan); font-size: 1.2rem; }
+.advance-row { color: var(--cx-success); }
+.advance-row strong { color: var(--cx-success); font-size: 1.1rem; }
 .payment-box {
-    background: var(--glass);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--border);
+    background: var(--cx-card-bg);
+    border: 1px solid var(--cx-border);
     border-radius: var(--radius);
     padding: 2rem;
 }
-.payment-box h3 { color: var(--text); margin-bottom: 1rem; }
-.payment-box p { color: var(--text2); margin-bottom: 1.5rem; line-height: 1.7; }
+.payment-box h3 { color: var(--cx-text); margin-bottom: 1rem; }
+.payment-box p { color: var(--cx-text-2); margin-bottom: 1.5rem; line-height: 1.7; }
 .payment-note {
-    background: rgba(0,230,118,0.08);
-    border: 1px solid rgba(0,230,118,0.25);
+    background: var(--cx-success-10);
+    border: 1px solid var(--cx-success-40);
     border-radius: 12px;
     padding: 1rem;
     margin-bottom: 1.5rem;
-    color: var(--text2);
+    color: var(--cx-text-2);
     font-size: 0.9rem;
 }
 

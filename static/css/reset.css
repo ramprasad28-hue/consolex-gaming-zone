@@ -98,7 +98,7 @@ textarea:focus-visible {
     z-index: var(--cx-z-skip);
     padding: 12px 24px;
     background: var(--cx-cyan);
-    color: var(--cx-bg);
+    color: #fff;
     font-weight: 700;
     border-radius: var(--cx-radius-sm);
     text-decoration: none;

@@ -1,108 +1,108 @@
 /* ============================================================
    CONSOLEX — tokens.css
    Single source of truth for all design tokens.
-   Every color, spacing, font, shadow, and layout value
-   used across the project is defined here.
+   LIGHT theme is default. Dark theme via [data-theme="dark"].
    ============================================================ */
 
 :root {
 
-    /* ── Color: Core palette ──────────────────────────────── */
-    --cx-navy:            #050036;
-    --cx-navy-2:          #090447;
-    --cx-cyan:            #00D9FF;
-    --cx-purple:          #8A2BE2;
-    --cx-orange:          #FF6A00;
-    --cx-gold:            #FFC62E;
-    --cx-success:         #00E676;
-    --cx-danger:          #F3262D;
+    /* ── Color: Core palette (Light) ──────────────────────── */
+    --cx-navy:            #0070D2;
+    --cx-navy-2:          #005BB5;
+    --cx-cyan:            #0070D2;
+    --cx-purple:          #7C3AED;
+    --cx-orange:          #F97316;
+    --cx-gold:            #D97706;
+    --cx-success:         #059669;
+    --cx-danger:          #DC2626;
     --cx-whatsapp:        #25d366;
 
     /* ── Color: Cyan opacity variants ─────────────────────── */
-    --cx-cyan-5:          rgba(0, 217, 255, 0.05);
-    --cx-cyan-8:          rgba(0, 217, 255, 0.08);
-    --cx-cyan-10:         rgba(0, 217, 255, 0.10);
-    --cx-cyan-15:         rgba(0, 217, 255, 0.15);
-    --cx-cyan-25:         rgba(0, 217, 255, 0.25);
-    --cx-cyan-30:         rgba(0, 217, 255, 0.30);
-    --cx-cyan-35:         rgba(0, 217, 255, 0.35);
-    --cx-cyan-40:         rgba(0, 217, 255, 0.40);
-    --cx-cyan-50:         rgba(0, 217, 255, 0.50);
+    --cx-cyan-5:          rgba(0, 112, 210, 0.05);
+    --cx-cyan-8:          rgba(0, 112, 210, 0.08);
+    --cx-cyan-10:         rgba(0, 112, 210, 0.10);
+    --cx-cyan-15:         rgba(0, 112, 210, 0.15);
+    --cx-cyan-25:         rgba(0, 112, 210, 0.25);
+    --cx-cyan-30:         rgba(0, 112, 210, 0.30);
+    --cx-cyan-35:         rgba(0, 112, 210, 0.35);
+    --cx-cyan-40:         rgba(0, 112, 210, 0.40);
+    --cx-cyan-50:         rgba(0, 112, 210, 0.50);
 
     /* ── Color: Purple opacity variants ───────────────────── */
-    --cx-purple-5:        rgba(138, 43, 226, 0.05);
-    --cx-purple-8:        rgba(138, 43, 226, 0.08);
-    --cx-purple-10:       rgba(138, 43, 226, 0.10);
-    --cx-purple-12:       rgba(138, 43, 226, 0.12);
-    --cx-purple-15:       rgba(138, 43, 226, 0.15);
-    --cx-purple-20:       rgba(138, 43, 226, 0.20);
-    --cx-purple-30:       rgba(138, 43, 226, 0.30);
-    --cx-purple-35:       rgba(138, 43, 226, 0.35);
-    --cx-purple-40:       rgba(138, 43, 226, 0.40);
+    --cx-purple-5:        rgba(124, 58, 237, 0.05);
+    --cx-purple-8:        rgba(124, 58, 237, 0.08);
+    --cx-purple-10:       rgba(124, 58, 237, 0.10);
+    --cx-purple-12:       rgba(124, 58, 237, 0.12);
+    --cx-purple-15:       rgba(124, 58, 237, 0.15);
+    --cx-purple-20:       rgba(124, 58, 237, 0.20);
+    --cx-purple-30:       rgba(124, 58, 237, 0.30);
+    --cx-purple-35:       rgba(124, 58, 237, 0.35);
+    --cx-purple-40:       rgba(124, 58, 237, 0.40);
 
     /* ── Color: Orange opacity variants ───────────────────── */
-    --cx-orange-8:        rgba(255, 106, 0, 0.08);
-    --cx-orange-10:       rgba(255, 106, 0, 0.10);
-    --cx-orange-12:       rgba(255, 106, 0, 0.12);
-    --cx-orange-15:       rgba(255, 106, 0, 0.15);
-    --cx-orange-25:       rgba(255, 106, 0, 0.25);
-    --cx-orange-35:       rgba(255, 106, 0, 0.35);
+    --cx-orange-8:        rgba(249, 115, 22, 0.08);
+    --cx-orange-10:       rgba(249, 115, 22, 0.10);
+    --cx-orange-12:       rgba(249, 115, 22, 0.12);
+    --cx-orange-15:       rgba(249, 115, 22, 0.15);
+    --cx-orange-25:       rgba(249, 115, 22, 0.25);
+    --cx-orange-35:       rgba(249, 115, 22, 0.35);
 
     /* ── Color: Gold opacity variants ─────────────────────── */
-    --cx-gold-8:          rgba(255, 198, 46, 0.08);
-    --cx-gold-10:         rgba(255, 198, 46, 0.10);
-    --cx-gold-40:         rgba(255, 198, 46, 0.40);
+    --cx-gold-8:          rgba(217, 119, 6, 0.08);
+    --cx-gold-10:         rgba(217, 119, 6, 0.10);
+    --cx-gold-40:         rgba(217, 119, 6, 0.40);
 
     /* ── Color: Success opacity variants ──────────────────── */
-    --cx-success-10:      rgba(0, 230, 118, 0.10);
-    --cx-success-15:      rgba(0, 230, 118, 0.15);
-    --cx-success-40:      rgba(0, 230, 118, 0.40);
+    --cx-success-10:      rgba(5, 150, 105, 0.10);
+    --cx-success-15:      rgba(5, 150, 105, 0.15);
+    --cx-success-40:      rgba(5, 150, 105, 0.40);
 
     /* ── Color: Danger opacity variants ───────────────────── */
-    --cx-danger-8:        rgba(243, 38, 45, 0.08);
-    --cx-danger-10:       rgba(243, 38, 45, 0.10);
-    --cx-danger-25:       rgba(243, 38, 45, 0.25);
+    --cx-danger-8:        rgba(220, 38, 38, 0.08);
+    --cx-danger-10:       rgba(220, 38, 38, 0.10);
+    --cx-danger-25:       rgba(220, 38, 38, 0.25);
 
-    /* ── Color: Surfaces ──────────────────────────────────── */
-    --cx-bg:              #050036;
-    --cx-bg-2:            #090447;
-    --cx-glass:           rgba(9, 4, 71, 0.6);
-    --cx-surface:         rgba(255, 255, 255, 0.04);
-    --cx-surface-2:       rgba(255, 255, 255, 0.08);
-    --cx-card-bg:         rgba(9, 4, 71, 0.6);
-    --cx-input-bg:        #090447;
-    --cx-nav-bg:          rgba(5, 0, 54, 0.55);
-    --cx-nav-bg-scroll:   rgba(5, 0, 54, 0.92);
-    --cx-drawer-bg:       rgba(5, 0, 54, 0.98);
-    --cx-footer-bg:       transparent;
-    --cx-hero-scrim-l:    rgba(5, 0, 54, 0.95);
-    --cx-hero-scrim-m:    rgba(5, 0, 54, 0.80);
-    --cx-hero-scrim-r:    rgba(5, 0, 54, 0.40);
-    --cx-hero-scrim-b:    rgba(5, 0, 54, 0.90);
-    --cx-hero-scrim-bt:   rgba(5, 0, 54, 0.50);
-    --cx-grid-line:       rgba(0, 217, 255, 0.03);
-    --cx-card-gradient:   rgba(9, 4, 71, 0.90);
-    --cx-card-gradient-m: rgba(9, 4, 71, 0.50);
-    --cx-card-gradient-e: rgba(9, 4, 71, 0.20);
+    /* ── Color: Surfaces (Light) ──────────────────────────── */
+    --cx-bg:              #F8FAFC;
+    --cx-bg-2:            #F1F5F9;
+    --cx-glass:           rgba(255, 255, 255, 0.80);
+    --cx-surface:         rgba(0, 0, 0, 0.03);
+    --cx-surface-2:       rgba(0, 0, 0, 0.06);
+    --cx-card-bg:         rgba(255, 255, 255, 0.90);
+    --cx-input-bg:        #ffffff;
+    --cx-nav-bg:          rgba(255, 255, 255, 0.80);
+    --cx-nav-bg-scroll:   rgba(255, 255, 255, 0.95);
+    --cx-drawer-bg:       rgba(255, 255, 255, 0.98);
+    --cx-footer-bg:       #F1F5F9;
+    --cx-hero-scrim-l:    rgba(248, 250, 252, 0.95);
+    --cx-hero-scrim-m:    rgba(248, 250, 252, 0.80);
+    --cx-hero-scrim-r:    rgba(248, 250, 252, 0.35);
+    --cx-hero-scrim-b:    rgba(248, 250, 252, 0.90);
+    --cx-hero-scrim-bt:   rgba(248, 250, 252, 0.50);
+    --cx-grid-line:       rgba(0, 112, 210, 0.05);
+    --cx-card-gradient:   rgba(255, 255, 255, 0.95);
+    --cx-card-gradient-m: rgba(255, 255, 255, 0.60);
+    --cx-card-gradient-e: rgba(255, 255, 255, 0.15);
 
-    /* ── Color: Text ──────────────────────────────────────── */
-    --cx-text:            #e8eaf0;
-    --cx-text-2:          #9b9bc7;
-    --cx-text-3:          #5a5d7a;
-    --cx-text-inverse:    #000000;
+    /* ── Color: Text (Light) ──────────────────────────────── */
+    --cx-text:            #0F172A;
+    --cx-text-2:          #475569;
+    --cx-text-3:          #94A3B8;
+    --cx-text-inverse:    #ffffff;
 
-    /* ── Color: Borders ───────────────────────────────────── */
-    --cx-border:          rgba(0, 217, 255, 0.15);
-    --cx-border-2:        rgba(0, 217, 255, 0.25);
+    /* ── Color: Borders (Light) ───────────────────────────── */
+    --cx-border:          rgba(0, 0, 0, 0.08);
+    --cx-border-2:        rgba(0, 0, 0, 0.15);
 
-    /* ── Shadows ──────────────────────────────────────────── */
-    --cx-shadow-sm:       0 2px 8px rgba(0, 0, 0, 0.3);
-    --cx-shadow-md:       0 8px 24px rgba(0, 0, 0, 0.4);
-    --cx-shadow-lg:       0 20px 60px rgba(0, 0, 0, 0.5);
+    /* ── Shadows (Light) ──────────────────────────────────── */
+    --cx-shadow-sm:       0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --cx-shadow-md:       0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+    --cx-shadow-lg:       0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+    --cx-shadow-xl:       0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
 
-    /* ── Scrollbar ────────────────────────────────────────── */
-    --cx-scrollbar-thumb: rgba(0, 217, 255, 0.3);
-    --cx-scrollbar-hover: rgba(0, 217, 255, 0.5);
+    /* ── Scrollbar (Light) ────────────────────────────────── */
+    --cx-scrollbar-thumb: rgba(0, 112, 210, 0.20);
+    --cx-scrollbar-hover: rgba(0, 112, 210, 0.35);
 
     /* ── Typography ───────────────────────────────────────── */
     --cx-font-display:    'Manrope', system-ui, -apple-system, sans-serif;
@@ -181,13 +181,6 @@
     --cx-container-2xl:   1280px;
     --cx-nav-h:           72px;
 
-    /* ── Breakpoints (for reference — use in @media only) ─── */
-    /* --bp-sm:  640px   */
-    /* --bp-md:  768px   */
-    /* --bp-lg:  1024px  */
-    /* --bp-xl:  1280px  */
-    /* --bp-2xl: 1440px  */
-
     /* ── Transitions ──────────────────────────────────────── */
     --cx-ease:            cubic-bezier(0.4, 0, 0.2, 1);
     --cx-ease-out:        cubic-bezier(0, 0, 0.2, 1);
@@ -199,10 +192,7 @@
     --cx-duration-slower: 0.5s;
     --cx-theme-speed:     0.35s;
 
-    /* ── Legacy aliases ─────────────────────────────────────
-       These map old token names to the new cx- system.
-       They will be removed once all CSS files are migrated.
-       ───────────────────────────────────────────────────── */
+    /* ── Legacy aliases ───────────────────────────────────── */
     --bg:                 var(--cx-bg);
     --bg2:                var(--cx-bg-2);
     --glass:              var(--cx-glass);
@@ -251,41 +241,90 @@
     --theme-speed:        var(--cx-theme-speed);
 }
 
-/* ── Light theme overrides ──────────────────────────────── */
-[data-theme="light"] {
-    --cx-bg:              #f4f5f9;
-    --cx-bg-2:            #e8eaf2;
-    --cx-glass:           rgba(255, 255, 255, 0.75);
-    --cx-surface:         rgba(0, 0, 0, 0.03);
-    --cx-surface-2:       rgba(0, 0, 0, 0.06);
-    --cx-card-bg:         rgba(255, 255, 255, 0.70);
-    --cx-input-bg:        #ffffff;
-    --cx-nav-bg:          rgba(255, 255, 255, 0.72);
-    --cx-nav-bg-scroll:   rgba(255, 255, 255, 0.92);
-    --cx-drawer-bg:       rgba(255, 255, 255, 0.98);
-    --cx-footer-bg:       #eef0f6;
-    --cx-hero-scrim-l:    rgba(244, 245, 249, 0.95);
-    --cx-hero-scrim-m:    rgba(244, 245, 249, 0.80);
-    --cx-hero-scrim-r:    rgba(244, 245, 249, 0.35);
-    --cx-hero-scrim-b:    rgba(244, 245, 249, 0.92);
-    --cx-hero-scrim-bt:   rgba(244, 245, 249, 0.55);
-    --cx-grid-line:       rgba(0, 100, 180, 0.06);
-    --cx-card-gradient:   rgba(255, 255, 255, 0.92);
-    --cx-card-gradient-m: rgba(255, 255, 255, 0.60);
-    --cx-card-gradient-e: rgba(255, 255, 255, 0.20);
+/* ── Dark theme overrides ───────────────────────────────── */
+[data-theme="dark"] {
+    --cx-navy:            #050036;
+    --cx-navy-2:          #090447;
+    --cx-cyan:            #00D9FF;
+    --cx-purple:          #8A2BE2;
+    --cx-orange:          #FF6A00;
+    --cx-gold:            #FFC62E;
+    --cx-success:         #00E676;
+    --cx-danger:          #F3262D;
+    --cx-whatsapp:        #25d366;
 
-    --cx-border:          rgba(0, 100, 180, 0.12);
-    --cx-border-2:        rgba(0, 100, 180, 0.22);
+    --cx-cyan-5:          rgba(0, 217, 255, 0.05);
+    --cx-cyan-8:          rgba(0, 217, 255, 0.08);
+    --cx-cyan-10:         rgba(0, 217, 255, 0.10);
+    --cx-cyan-15:         rgba(0, 217, 255, 0.15);
+    --cx-cyan-25:         rgba(0, 217, 255, 0.25);
+    --cx-cyan-30:         rgba(0, 217, 255, 0.30);
+    --cx-cyan-35:         rgba(0, 217, 255, 0.35);
+    --cx-cyan-40:         rgba(0, 217, 255, 0.40);
+    --cx-cyan-50:         rgba(0, 217, 255, 0.50);
 
-    --cx-text:            #1a1a2e;
-    --cx-text-2:          #555580;
-    --cx-text-3:          #8888aa;
-    --cx-text-inverse:    #ffffff;
+    --cx-purple-5:        rgba(138, 43, 226, 0.05);
+    --cx-purple-8:        rgba(138, 43, 226, 0.08);
+    --cx-purple-10:       rgba(138, 43, 226, 0.10);
+    --cx-purple-12:       rgba(138, 43, 226, 0.12);
+    --cx-purple-15:       rgba(138, 43, 226, 0.15);
+    --cx-purple-20:       rgba(138, 43, 226, 0.20);
+    --cx-purple-30:       rgba(138, 43, 226, 0.30);
+    --cx-purple-35:       rgba(138, 43, 226, 0.35);
+    --cx-purple-40:       rgba(138, 43, 226, 0.40);
 
-    --cx-shadow-sm:       0 2px 8px rgba(0, 0, 0, 0.06);
-    --cx-shadow-md:       0 8px 24px rgba(0, 0, 0, 0.08);
-    --cx-shadow-lg:       0 20px 60px rgba(0, 0, 0, 0.10);
+    --cx-orange-8:        rgba(255, 106, 0, 0.08);
+    --cx-orange-10:       rgba(255, 106, 0, 0.10);
+    --cx-orange-12:       rgba(255, 106, 0, 0.12);
+    --cx-orange-15:       rgba(255, 106, 0, 0.15);
+    --cx-orange-25:       rgba(255, 106, 0, 0.25);
+    --cx-orange-35:       rgba(255, 106, 0, 0.35);
 
-    --cx-scrollbar-thumb: rgba(0, 100, 180, 0.20);
-    --cx-scrollbar-hover: rgba(0, 100, 180, 0.35);
+    --cx-gold-8:          rgba(255, 198, 46, 0.08);
+    --cx-gold-10:         rgba(255, 198, 46, 0.10);
+    --cx-gold-40:         rgba(255, 198, 46, 0.40);
+
+    --cx-success-10:      rgba(0, 230, 118, 0.10);
+    --cx-success-15:      rgba(0, 230, 118, 0.15);
+    --cx-success-40:      rgba(0, 230, 118, 0.40);
+
+    --cx-danger-8:        rgba(243, 38, 45, 0.08);
+    --cx-danger-10:       rgba(243, 38, 45, 0.10);
+    --cx-danger-25:       rgba(243, 38, 45, 0.25);
+
+    --cx-bg:              #050036;
+    --cx-bg-2:            #090447;
+    --cx-glass:           rgba(9, 4, 71, 0.6);
+    --cx-surface:         rgba(255, 255, 255, 0.04);
+    --cx-surface-2:       rgba(255, 255, 255, 0.08);
+    --cx-card-bg:         rgba(9, 4, 71, 0.6);
+    --cx-input-bg:        #090447;
+    --cx-nav-bg:          rgba(5, 0, 54, 0.55);
+    --cx-nav-bg-scroll:   rgba(5, 0, 54, 0.92);
+    --cx-drawer-bg:       rgba(5, 0, 54, 0.98);
+    --cx-footer-bg:       transparent;
+    --cx-hero-scrim-l:    rgba(5, 0, 54, 0.95);
+    --cx-hero-scrim-m:    rgba(5, 0, 54, 0.80);
+    --cx-hero-scrim-r:    rgba(5, 0, 54, 0.40);
+    --cx-hero-scrim-b:    rgba(5, 0, 54, 0.90);
+    --cx-hero-scrim-bt:   rgba(5, 0, 54, 0.50);
+    --cx-grid-line:       rgba(0, 217, 255, 0.03);
+    --cx-card-gradient:   rgba(9, 4, 71, 0.90);
+    --cx-card-gradient-m: rgba(9, 4, 71, 0.50);
+    --cx-card-gradient-e: rgba(9, 4, 71, 0.20);
+
+    --cx-text:            #e8eaf0;
+    --cx-text-2:          #9b9bc7;
+    --cx-text-3:          #5a5d7a;
+    --cx-text-inverse:    #000000;
+
+    --cx-border:          rgba(0, 217, 255, 0.15);
+    --cx-border-2:        rgba(0, 217, 255, 0.25);
+
+    --cx-shadow-sm:       0 2px 8px rgba(0, 0, 0, 0.3);
+    --cx-shadow-md:       0 8px 24px rgba(0, 0, 0, 0.4);
+    --cx-shadow-lg:       0 20px 60px rgba(0, 0, 0, 0.5);
+
+    --cx-scrollbar-thumb: rgba(0, 217, 255, 0.3);
+    --cx-scrollbar-hover: rgba(0, 217, 255, 0.5);
 }

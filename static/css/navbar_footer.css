@@ -1,7 +1,6 @@
 /* ============================================================
    CONSOLEX — navbar_footer.css
-   Navbar, footer, WhatsApp button, theme toggle.
-   Tokens → tokens.css | Resets → reset.css | Utilities → utilities.css
+   Clean white navbar, simple footer, WhatsApp button, theme toggle.
    ============================================================ */
 
 /* ============================================================
@@ -24,7 +23,7 @@
 .navbar.nav-scrolled {
     background: var(--nav-bg-scroll);
     border-bottom-color: var(--border2);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-sm);
 }
 
 .nav-inner {
@@ -60,7 +59,7 @@
     font-size: 1.05rem;
     font-weight: 700;
     letter-spacing: 2px;
-    color: #fff;
+    color: var(--text);
 }
 .nav-logo-tag {
     font-family: var(--font-body);
@@ -97,7 +96,7 @@
     bottom: 0; left: 50%;
     transform: translateX(-50%);
     width: 0; height: 2px;
-    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    background: var(--cyan);
     border-radius: 2px;
     transition: width 0.3s var(--ease);
 }
@@ -144,18 +143,16 @@
     font-size: 0.88rem;
     font-weight: 700;
     letter-spacing: 0.3px;
-    color: #000;
+    color: #fff;
     padding: 8px 18px;
     background: var(--cyan);
     border-radius: 8px;
-    box-shadow: 0 0 18px var(--cyan-glow);
     transition: background 0.25s var(--ease),
                 box-shadow 0.25s var(--ease),
                 transform 0.2s var(--ease);
 }
 .nav-book-btn:hover {
-    background: #fff;
-    box-shadow: 0 0 32px var(--cyan-glow);
+    background: var(--cx-cyan-50);
     transform: translateY(-2px);
 }
 
@@ -172,7 +169,7 @@
     border-radius: 8px;
     transition: color 0.25s, border-color 0.25s;
 }
-.nav-user-btn:hover { color: var(--cyan); border-color: var(--cyan-dim); }
+.nav-user-btn:hover { color: var(--cyan); border-color: var(--cx-cyan-30); }
 
 .nav-logout {
     font-family: var(--font-body);
@@ -183,7 +180,7 @@
     border-radius: 8px;
     transition: color 0.25s, background 0.25s;
 }
-.nav-logout:hover { color: #ff6b6b; background: rgba(255, 60, 60, 0.08); }
+.nav-logout:hover { color: var(--cx-danger); background: var(--cx-danger-8); }
 .nav-logout-btn {
     background: none; border: none; cursor: pointer; font: inherit; color: inherit;
 }
@@ -228,7 +225,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     z-index: 8999;
@@ -304,8 +301,8 @@
     transition: color 0.25s, border-color 0.25s, background 0.25s;
 }
 .mob-login-link:hover,
-.mob-dash-link:hover  { color: var(--cyan); border-color: var(--cyan-dim); background: var(--cyan-dim); }
-.mob-logout-link:hover { color: #ff6b6b; border-color: rgba(255,60,60,0.25); background: rgba(255,60,60,0.06); }
+.mob-dash-link:hover  { color: var(--cyan); border-color: var(--cx-cyan-30); background: var(--cyan-dim); }
+.mob-logout-link:hover { color: var(--cx-danger); border-color: var(--cx-danger-25); background: var(--cx-danger-8); }
 
 .mob-book-link {
     display: block;
@@ -313,14 +310,13 @@
     font-family: var(--font-body);
     font-size: 1rem;
     font-weight: 700;
-    color: #000;
+    color: #fff;
     padding: 14px;
     background: var(--cyan);
     border-radius: 10px;
-    box-shadow: 0 0 22px var(--cyan-glow);
     transition: background 0.25s, box-shadow 0.25s;
 }
-.mob-book-link:hover { background: #fff; box-shadow: 0 0 36px var(--cyan-glow); }
+.mob-book-link:hover { background: var(--cx-cyan-50); }
 
 /* ── Responsive breakpoints ────────────────────────────────── */
 @media (max-width: 900px) {
@@ -343,12 +339,7 @@
     border-top: 1px solid var(--border);
     padding: 64px 24px 32px;
     overflow: hidden;
-}
-.footer-glow {
-    position: absolute; bottom: 0; left: 25%;
-    width: 384px; height: 192px; border-radius: 50%;
-    background: var(--cyan); opacity: 0.15;
-    filter: blur(100px); pointer-events: none;
+    background: var(--cx-footer-bg);
 }
 .footer-container { max-width: 1200px; margin: 0 auto; }
 
@@ -377,11 +368,11 @@
 }
 .footer-open-badge {
     display: inline-flex; align-items: center; gap: 8px;
-    font-size: 12px; color: #00E676; font-weight: 600;
+    font-size: 12px; color: var(--cx-success); font-weight: 600;
 }
 .footer-open-dot {
     width: 8px; height: 8px; border-radius: 50%;
-    background: #00E676;
+    background: var(--cx-success);
     animation: pulse 2s ease-in-out infinite;
 }
 
@@ -423,8 +414,8 @@
     transition: all 0.2s var(--ease);
 }
 .footer-social-icon:hover {
-    color: var(--cyan); border-color: rgba(0,217,255,0.4);
-    background: rgba(0,217,255,0.05);
+    color: var(--cyan); border-color: var(--cx-cyan-30);
+    background: var(--cyan-dim);
 }
 .footer-social-icon-green:hover {
     color: #25d366; border-color: rgba(37,211,102,0.4);
@@ -496,12 +487,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
     transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
 .whatsapp-float:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 28px rgba(37, 211, 102, 0.55);
+    box-shadow: 0 6px 24px rgba(37, 211, 102, 0.45);
 }
 .whatsapp-icon {
     width: 30px;
@@ -538,16 +529,8 @@
     pointer-events: none;
     transition: opacity 0.25s var(--ease), background var(--theme-speed) ease;
     border: 1px solid var(--border);
+    box-shadow: var(--cx-shadow-sm);
 }
 .whatsapp-float:hover .whatsapp-tooltip {
     opacity: 1;
 }
-
-/* ============================================================
-   LIGHT THEME OVERRIDES (navbar & footer specific)
-   ============================================================ */
-[data-theme="light"] .nav-logo-name { color: var(--text); }
-[data-theme="light"] .nav-book-btn { color: var(--text-inverse); }
-[data-theme="light"] .mob-link { color: var(--text); }
-[data-theme="light"] .mob-dash-link { color: var(--cyan); }
-[data-theme="light"] .footer-brand-name { color: var(--text); }
