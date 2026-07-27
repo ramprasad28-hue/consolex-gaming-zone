@@ -26,19 +26,19 @@
             </linearGradient>
           </defs>
         </svg>
-        <span>@consolexerode</span>
+        <span>{{ site.instagram_handle }}</span>
       </div>
-      <h2 class="insta-title">Follow the <span class="title-accent">Chaos</span></h2>
+      <h2 class="insta-title">{{ cb.social_instagram_title }}</h2>
       <p class="insta-desc">
-        Behind-the-scenes gaming sessions, tournament clips, weekend highlights, and exclusive offers — all on Instagram.
+        {{ cb.social_instagram_subtitle }}
       </p>
       <a
-        href="https://instagram.com/consolexerode"
+        href="{{ site.instagram_url }}"
         target="_blank"
         rel="noopener noreferrer"
         class="btn-insta"
       >
-        Follow @consolexerode
+        {{ cb.social_instagram_btn }}
       </a>
     </div>
 
@@ -70,7 +70,7 @@
         </div>
       </div>
       <div class="insta-follower-count">
-        <span class="follower-number">2.1K</span>
+        <span class="follower-number">{{ site.instagram_follower_count }}</span>
         <span class="follower-label">followers and growing</span>
       </div>
     </div>
@@ -90,21 +90,21 @@
         <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
       </svg>
       <div class="google-rating-block">
-        <span class="google-score">4.9</span>
+        <span class="google-score">{{ site.google_rating }}</span>
         <div class="google-stars-row">
           <span class="gstar">★</span><span class="gstar">★</span><span class="gstar">★</span><span class="gstar">★</span><span class="gstar half">★</span>
         </div>
-        <span class="google-count">Based on 87 reviews</span>
+        <span class="google-count">Based on {{ site.google_review_count }} reviews</span>
       </div>
     </div>
 
     <div class="google-review-content">
-      <h3 class="google-review-title">Loved your session?</h3>
+      <h3 class="google-review-title">{{ cb.social_review_title }}</h3>
       <p class="google-review-subtitle">
-        Drop a Google review — it takes 30 seconds and helps more gamers discover CONSOLEX.
+        {{ cb.social_review_subtitle }}
       </p>
       <a
-        href="https://search.google.com/local/writereview?placeid=ChIJPlaceholder"
+        href="{{ site.google_review_url }}"
         target="_blank"
         rel="noopener noreferrer"
         class="btn-google-review"
@@ -115,7 +115,7 @@
           <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
           <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
         </svg>
-        Write a Google Review
+        {{ cb.social_review_btn }}
       </a>
     </div>
 

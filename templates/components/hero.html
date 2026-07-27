@@ -26,20 +26,20 @@
             <div class="hero-badges" data-stagger>
                 <span class="hero-pill hero-pill-cyan">
                     <span class="hero-pill-dot"></span>
-                    Now Open in Erode
+                    {{ cb.hero_pill_1 }}
                 </span>
-                <span class="hero-pill hero-pill-purple">PS5 Gaming Lounge</span>
+                <span class="hero-pill hero-pill-purple">{{ cb.hero_pill_2 }}</span>
             </div>
 
             <!-- Headline -->
             <h1 class="hero-title" data-stagger>
-                <span class="hero-line-1">PLAY</span>
-                <span class="hero-line-2">BEYOND</span>
+                <span class="hero-line-1">{{ cb.hero_headline_1 }}</span>
+                <span class="hero-line-2">{{ cb.hero_headline_2 }}</span>
             </h1>
 
             <!-- Subtitle -->
             <p class="hero-subtitle" data-stagger>
-                Experience premium console gaming with high-end PlayStation 5 setups, online booking, memberships, tournaments, and immersive multiplayer experiences.
+                {{ cb.hero_subtitle }}
             </p>
 
             <!-- CTAs -->
@@ -48,33 +48,33 @@
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M8 5v14l11-7z"/>
                     </svg>
-                    Book Now
+                    {{ cb.hero_cta_primary }}
                 </a>
                 <a href="{% url 'memberships:plan_list' %}" class="hero-btn-ghost">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
                     </svg>
-                    Explore Memberships
+                    {{ cb.hero_cta_ghost }}
                 </a>
             </div>
 
             <!-- Stats row -->
             <div class="hero-stats" data-stagger>
                 <div class="hero-stat">
-                    <span class="hero-stat-value">10+</span>
-                    <span class="hero-stat-label">PS5 Consoles</span>
+                    <span class="hero-stat-value">{{ cb.hero_stat_1_value }}</span>
+                    <span class="hero-stat-label">{{ cb.hero_stat_1_label }}</span>
                 </div>
                 <div class="hero-stat">
-                    <span class="hero-stat-value">4K</span>
-                    <span class="hero-stat-label">HDR Displays</span>
+                    <span class="hero-stat-value">{{ cb.hero_stat_2_value }}</span>
+                    <span class="hero-stat-label">{{ cb.hero_stat_2_label }}</span>
                 </div>
                 <div class="hero-stat">
-                    <span class="hero-stat-value">100+</span>
-                    <span class="hero-stat-label">PS5 Games</span>
+                    <span class="hero-stat-value">{{ cb.hero_stat_3_value }}</span>
+                    <span class="hero-stat-label">{{ cb.hero_stat_3_label }}</span>
                 </div>
                 <div class="hero-stat">
-                    <span class="hero-stat-value">₹130</span>
-                    <span class="hero-stat-label">Starting /hr</span>
+                    <span class="hero-stat-value">{{ cb.hero_stat_4_value }}</span>
+                    <span class="hero-stat-label">{{ cb.hero_stat_4_label }}</span>
                 </div>
             </div>
 
@@ -91,12 +91,12 @@
             </svg>
         </div>
         <div>
-            <p class="hf-title">Next Tournament</p>
-            <p class="hf-sub">Prize Pool: ₹5,000</p>
+            <p class="hf-title">{{ cb.hero_floating_tournament }}</p>
+            <p class="hf-sub">{{ cb.hero_floating_pool }}</p>
         </div>
         <div class="hf-live">
             <span class="hf-live-dot"></span>
-            Registrations Open
+            {{ cb.hero_floating_badge }}
         </div>
     </div>
 
@@ -107,7 +107,7 @@
             <div class="hf-avatar"></div>
         </div>
         <div>
-            <p class="hf-title">+24 Playing Now</p>
+            <p class="hf-title">{{ cb.hero_floating_players }}</p>
             <div class="hf-stars">
                 <span class="hf-star"></span>
                 <span class="hf-star"></span>

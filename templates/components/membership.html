@@ -16,7 +16,7 @@
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
                 </svg>
-                Membership Plans
+                {{ cb.membership_pill }}
             </span>
             <h2 class="ms-title">
                 Level Up with a <span class="ms-neon">Membership</span>
@@ -55,7 +55,7 @@
                         <span class="mc-tier-icon">🎮</span>
                         <span class="mc-tier-name">{{ plan.name }}</span>
                     </div>
-                    <p class="mc-tier-desc">{{ plan.description|default:"A CONSOLEX membership plan." }}</p>
+                    <p class="mc-tier-desc">{{ plan.description|default:"A membership plan." }}</p>
                 </div>
 
                 <div class="mc-price-block">

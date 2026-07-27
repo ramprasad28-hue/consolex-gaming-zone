@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Secure Payment | CONSOLEX{% endblock %}
+{% block title %}Secure Payment | {{ site.brand_name }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/payment.css' %}">
@@ -15,11 +15,11 @@
 <div class="payment-card">
 
 <h1 class="payment-title">
-Confirm Your Booking
+{{ cb.payment_title|default:"Confirm Your Booking" }}
 </h1>
 
 <p class="payment-subtitle">
-Complete your advance payment securely using Razorpay.
+{{ cb.payment_subtitle|default:"Complete your advance payment securely." }}
 </p>
 
 <div class="summary">
@@ -140,7 +140,7 @@ payBtn.addEventListener("click", function () {
 
         currency: "INR",
 
-        name: "CONSOLEX Gaming Zone",
+        name: "{{ site.brand_name }} Gaming Zone",
 
         description: "Advance Payment",
 

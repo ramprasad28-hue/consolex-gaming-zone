@@ -1,9 +1,11 @@
+{% if cms_announcement and cms_announcement.is_active %}
 <div class="announcement-bar" role="banner" aria-label="Announcement">
     <div class="announcement-inner">
-        <span class="announcement-icon">🏆</span>
+        <span class="announcement-icon">{{ cms_announcement.icon }}</span>
         <p class="announcement-text">
-            <strong>Next Tournament: Jul 20</strong> — ₹5,000 Prize Pool
-            <a href="{% url 'bookings:booking_form' %}" class="announcement-link">Register Now →</a>
+            {{ cms_announcement.text }}
+            <a href="{{ cms_announcement.cta_url }}" class="announcement-link">{{ cms_announcement.cta_text }}</a>
         </p>
     </div>
 </div>
+{% endif %}

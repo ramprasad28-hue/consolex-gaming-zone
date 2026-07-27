@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
-{% block title %}Book a Slot — CONSOLEX{% endblock %}
+{% block title %}Book a Slot — {{ site.brand_name }}{% endblock %}
 
 {% block content %}
 
 <section class="booking-section container">
 
-    <h2 class="section-title">Book Your PS5 Slot</h2>
+    <h2 class="section-title">{{ cb.booking_form_title|default:"Book Your PS5 Slot" }}</h2>
     <p class="section-sub">
-        Select your console, date, time and number of players.
+        {{ cb.booking_form_subtitle|default:"Select your console, date, time and number of players." }}
     </p>
 
     {% if messages %}

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}My Dashboard — CONSOLEX{% endblock %}
+{% block title %}My Dashboard — {{ site.brand_name }}{% endblock %}
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
@@ -82,7 +82,7 @@
     <!-- ══════════ HERO CARD ══════════ -->
     <div class="dash-hero nx-animate nx-d1">
       <h1 class="dash-hero-title">Welcome back, <span class="accent">{{ user_display }}</span></h1>
-      <p class="dash-hero-sub">Here's what's happening with your CONSOLEX account.</p>
+      <p class="dash-hero-sub">Here's what's happening with your {{ site.brand_name }} account.</p>
 
       <div class="dash-hero-meta">
         <div class="dash-hero-meta-item">
@@ -162,7 +162,7 @@
         <div class="dash-qa-icon">🎮</div>
         <div class="dash-qa-label">Browse Games</div>
       </a>
-      <a href="https://wa.me/9193444140?text=Hi%20CONSOLEX!%20I%20need%20help%20with%20my%20booking."
+      <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hi%20{{ site.brand_name }}!%20I%20need%20help%20with%20my%20booking."
          target="_blank" rel="noopener noreferrer" class="dash-qa-card nx-animate nx-d4">
         <div class="dash-qa-icon">💬</div>
         <div class="dash-qa-label">Support</div>

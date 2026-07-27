@@ -8,10 +8,10 @@
                 <circle cx="8.5" cy="8.5" r="1.5"/>
                 <path d="M21 15l-5-5L5 21"/>
             </svg>
-            Our Space
+            {{ cb.gallery_pill }}
         </span>
-        <h2 class="gallery-title">Inside <span class="gallery-neon">CONSOLEX</span></h2>
-        <p class="gallery-sub">Take a peek at the lounge — premium setups, epic vibes, and the games waiting for you.</p>
+        <h2 class="gallery-title">{{ cb.gallery_title }}</h2>
+        <p class="gallery-sub">{{ cb.gallery_subtitle }}</p>
     </div>
 
     <div class="gallery-rows">
@@ -19,116 +19,36 @@
         <!-- Row 1 — scrolls left -->
         <div class="gallery-track-wrap">
             <div class="gallery-track" id="galleryTrack1">
-
+                {% for item in cms_gallery %}
                 <div class="gallery-card">
-                    <img src="{% static 'media/cxdesign/first.jpeg' %}" alt="CONSOLEX Gaming Lounge" loading="lazy">
-                    <div class="gallery-caption"><span>Our Gaming Lounge</span></div>
+                    <img src="{{ item.image.url }}" alt="{{ item.alt_text }}" loading="lazy">
+                    <div class="gallery-caption"><span>{{ item.caption }}</span></div>
                 </div>
+                {% endfor %}
+                {% for item in cms_gallery %}
                 <div class="gallery-card">
-                    <img src="{% static 'media/games/cod.jpg' %}" alt="Call of Duty" loading="lazy">
-                    <div class="gallery-caption"><span>Call of Duty</span></div>
+                    <img src="{{ item.image.url }}" alt="{{ item.alt_text }}" loading="lazy">
+                    <div class="gallery-caption"><span>{{ item.caption }}</span></div>
                 </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/consoles/plan.jpeg' %}" alt="CONSOLEX Setup" loading="lazy">
-                    <div class="gallery-caption"><span>Premium PS5 Setup</span></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/png for web/spiderman.png' %}" alt="Spider-Man" loading="lazy">
-                    <div class="gallery-caption"><span>Spider-Man 2</span></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/cxdesign/Center.jpeg' %}" alt="CONSOLEX Interior" loading="lazy">
-                    <div class="gallery-caption"><span>4K Gaming Zone</span></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/games/kratos.png' %}" alt="God of War" loading="lazy">
-                    <div class="gallery-caption"><span>God of War</span></div>
-                </div>
-
-                <!-- Duplicate set for seamless loop -->
-                <div class="gallery-card">
-                    <img src="{% static 'media/cxdesign/first.jpeg' %}" alt="CONSOLEX Gaming Lounge" loading="lazy">
-                    <div class="gallery-caption"><span>Our Gaming Lounge</span></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/games/cod.jpg' %}" alt="Call of Duty" loading="lazy">
-                    <div class="gallery-caption"><span>Call of Duty</span></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/consoles/plan.jpeg' %}" alt="CONSOLEX Setup" loading="lazy">
-                    <div class="gallery-caption"><span>Premium PS5 Setup</span></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/png for web/spiderman.png' %}" alt="Spider-Man" loading="lazy">
-                    <div class="gallery-caption"><span>Spider-Man 2</span></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/cxdesign/Center.jpeg' %}" alt="CONSOLEX Interior" loading="lazy">
-                    <div class="gallery-caption"><span>4K Gaming Zone</span></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/games/kratos.png' %}" alt="God of War" loading="lazy">
-                    <div class="gallery-caption"><span>God of War</span></div>
-                </div>
-
+                {% endfor %}
             </div>
         </div>
 
         <!-- Row 2 — scrolls right (reverse) -->
         <div class="gallery-track-wrap">
             <div class="gallery-track gallery-track--reverse" id="galleryTrack2">
-
+                {% for item in cms_gallery %}
                 <div class="gallery-card">
-                    <img src="{% static 'media/png for web/gtav.png' %}" alt="GTA V" loading="lazy">
-                    <div class="gallery-caption"><span>GTA V</span></div>
+                    <img src="{{ item.image.url }}" alt="{{ item.alt_text }}" loading="lazy">
+                    <div class="gallery-caption"><span>{{ item.caption }}</span></div>
                 </div>
+                {% endfor %}
+                {% for item in cms_gallery %}
                 <div class="gallery-card">
-                    <img src="{% static 'media/png for web/arthur.png' %}" alt="Red Dead Redemption" loading="lazy">
-                    <div class="gallery-caption"><span>Red Dead Redemption 2</span></div>
+                    <img src="{{ item.image.url }}" alt="{{ item.alt_text }}" loading="lazy">
+                    <div class="gallery-caption"><span>{{ item.caption }}</span></div>
                 </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/png for web/ronald.png' %}" alt="FC 26" loading="lazy">
-                    <div class="gallery-caption"><span>FC 26</span></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/cxdesign/Whole.jpeg' %}" alt="CONSOLEX Lounge" loading="lazy">
-                    <div class="gallery-caption"><span>Walk-In Gaming</span></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/png for web/ghost.png' %}" alt="COD" loading="lazy">
-                    <div class="gallery-caption"><span>Tactical Warfare</span></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/consoles/plan.jpeg' %}" alt="CONSOLEX" loading="lazy">
-                    <div class="gallery-caption"><span>Squad Setup</span></div>
-                </div>
-
-                <!-- Duplicate set for seamless loop -->
-                <div class="gallery-card">
-                    <img src="{% static 'media/png for web/gtav.png' %}" alt="GTA V" loading="lazy">
-                    <div class="gallery-caption"><span>GTA V</span></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/png for web/arthur.png' %}" alt="Red Dead Redemption" loading="lazy">
-                    <div class="gallery-caption"><span>Red Dead Redemption 2</span></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/png for web/ronald.png' %}" alt="FC 26" loading="lazy">
-                    <div class="gallery-caption"><span>FC 26</span></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/cxdesign/Whole.jpeg' %}" alt="CONSOLEX Lounge" loading="lazy">
-                    <div class="gallery-caption"><span>Walk-In Gaming</span></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/png for web/ghost.png' %}" alt="COD" loading="lazy">
-                    <div class="gallery-caption"><span>Tactical Warfare</span></div>
-                </div>
-                <div class="gallery-card">
-                    <img src="{% static 'media/consoles/plan.jpeg' %}" alt="CONSOLEX" loading="lazy">
-                    <div class="gallery-caption"><span>Squad Setup</span></div>
-                </div>
-
+                {% endfor %}
             </div>
         </div>
 

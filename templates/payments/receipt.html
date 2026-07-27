@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Receipt — Booking #{{ booking.id }} — CONSOLEX{% endblock %}
+{% block title %}Receipt — Booking #{{ booking.id }} — {{ site.brand_name }}{% endblock %}
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
@@ -25,8 +25,8 @@
 
     <div class="receipt-card dashboard-card nx-animate">
       <div class="receipt-header">
-        <h2>CONSOLEX</h2>
-        <p>Gaming Zone — Play Beyond</p>
+        <h2>{{ site.brand_name }}</h2>
+        <p>{{ site.tagline }}</p>
       </div>
 
       <h3 class="receipt-title">Payment Receipt</h3>
@@ -101,7 +101,7 @@
       {% endif %}
 
       <div class="receipt-footer">
-        <p>Thank you for playing at CONSOLEX!</p>
+        <p>Thank you for playing at {{ site.brand_name }}!</p>
         <p class="receipt-support">For support: WhatsApp us at the number on our website.</p>
       </div>
     </div>

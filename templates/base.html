@@ -4,17 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="{% block meta_description %}CONSOLEX — Premium PS5 gaming zone in Erode. Book sessions, join memberships, compete in tournaments. Walk-ins welcome.{% endblock %}">
-    <meta name="theme-color" content="#050036">
+    <meta name="description" content="{% block meta_description %}{{ site.meta_description }}{% endblock %}">
+    <meta name="theme-color" content="{{ site.theme_color }}">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="CONSOLEX Gaming Zone">
-    <meta property="og:title" content="{% block og_title %}CONSOLEX Gaming Zone — Play Beyond{% endblock %}">
-    <meta property="og:description" content="{% block og_description %}Premium PS5 gaming zone in Erode. Book sessions, join memberships, compete in tournaments.{% endblock %}">
+    <meta property="og:site_name" content="{{ site.brand_name }}">
+    <meta property="og:title" content="{% block og_title %}{{ site.og_title }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ site.og_description }}{% endblock %}">
     <meta property="og:image" content="{% block og_image %}/media/logo/favicon.png{% endblock %}">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{% block tw_title %}CONSOLEX Gaming Zone — Play Beyond{% endblock %}">
-    <meta name="twitter:description" content="{% block tw_description %}Premium PS5 gaming zone in Erode. Book sessions, join memberships, compete in tournaments.{% endblock %}">
-    <title>{% block title %}CONSOLEX Gaming Zone{% endblock %}</title>
+    <meta name="twitter:title" content="{% block tw_title %}{{ site.og_title }}{% endblock %}">
+    <meta name="twitter:description" content="{% block tw_description %}{{ site.og_description }}{% endblock %}">
+    <title>{% block title %}{{ site.brand_name }} — {{ site.tagline }}{% endblock %}</title>
     <link rel="icon" type="image/png" href="/media/logo/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

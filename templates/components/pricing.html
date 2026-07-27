@@ -8,19 +8,19 @@
 
         <!-- Header -->
         <div class="pricing-header stagger-child">
-            <span class="pricing-pill">Pricing</span>
+            <span class="pricing-pill">{{ cb.pricing_pill }}</span>
             <h2 class="pricing-title">
-                Transparent, <span class="text-gradient-cyan">Fair Pricing</span>
+                {{ cb.pricing_title }}
             </h2>
             <p class="pricing-subtitle">
-                Pay per hour or go unlimited with a membership. No hidden charges.
+                {{ cb.pricing_subtitle }}
             </p>
         </div>
 
         <!-- Hourly Pricing -->
         <div class="pricing-hourly">
             <div class="pricing-row-header stagger-child">
-                <h3 class="pricing-row-title">Hourly Rates</h3>
+                <h3 class="pricing-row-title">{{ cb.pricing_subsection }}</h3>
                 <div class="pricing-toggle" role="group" aria-label="Select pricing day">
                     <button class="pricing-toggle-btn active" id="btnWeekday" onclick="setPricing('weekday')">Weekdays</button>
                     <button class="pricing-toggle-btn" id="btnWeekend" onclick="setPricing('weekend')">Weekends</button>
@@ -82,125 +82,50 @@
             </div>
 
             <p class="pricing-footnote stagger-child">
-                Mon–Fri: Weekday rates · Sat–Sun: Weekend rates · Minimum 1 hour per booking
+                {{ cb.pricing_footnote }}
             </p>
         </div>
 
         <!-- Divider -->
         <div class="pricing-divider"></div>
 
-        <!-- Membership Plans -->
+        <!-- Membership Plans (from DB) -->
         <div class="pricing-memberships">
             <div class="pricing-membership-header stagger-child">
-                <span class="pricing-pill-purple">Memberships</span>
+                <span class="pricing-pill-purple">{{ cb.membership_pill }}</span>
                 <h3 class="pricing-membership-title">
-                    Go Unlimited with a <span class="text-gradient-cyan">Monthly Plan</span>
+                    {{ cb.membership_title }}
                 </h3>
                 <p class="pricing-membership-subtitle">
-                    Lock in your hours, save more, and access exclusive member perks.
+                    {{ cb.membership_subtitle }}
                 </p>
             </div>
 
             <div class="pricing-membership-grid">
-
-                <!-- Basic -->
-                <div class="membership-card stagger-child">
+                {% for plan in plans %}
+                <div class="membership-card stagger-child{% if plan.is_popular %} membership-card-featured{% endif %}">
+                    {% if plan.is_popular %}<div class="mc-badge mc-badge-popular">Most Popular</div>{% endif %}
                     <div class="mc-header">
-                        <h4 class="mc-name">Basic</h4>
-                        <p class="mc-tagline">Perfect for casual gamers</p>
+                        <h4 class="mc-name">{{ plan.name }}</h4>
                     </div>
                     <div class="mc-price">
-                        <span class="mc-amount mc-cyan">₹1,199</span>
+                        <span class="mc-amount mc-cyan">₹{{ plan.price|floatformat:0 }}</span>
                         <span class="mc-period">/month</span>
                     </div>
                     <div class="mc-hours-box">
                         <div class="mc-hours-row">
                             <span class="mc-hours-label">Total Hours</span>
-                            <span class="mc-hours-val mc-cyan">10 hrs</span>
+                            <span class="mc-hours-val mc-cyan">{{ plan.total_hours }} hrs</span>
                         </div>
                         <div class="mc-hours-divider"></div>
                         <div class="mc-hours-row">
                             <span class="mc-hours-label">Validity</span>
-                            <span class="mc-hours-val">30 Days</span>
+                            <span class="mc-hours-val">{{ plan.duration_days }} Days</span>
                         </div>
                     </div>
-                    <ul class="mc-features">
-                        <li>10 Gaming Hours</li>
-                        <li>Weekdays Only (Mon–Fri)</li>
-                        <li>All PS5 Games</li>
-                        <li>Standard Seating</li>
-                        <li>Online Booking</li>
-                    </ul>
-                    <a href="{% url 'memberships:plan_list' %}" class="mc-btn mc-btn-ghost">Get Basic</a>
+                    <a href="{% url 'memberships:plan_list' %}" class="mc-btn mc-btn-ghost">Get {{ plan.name }}</a>
                 </div>
-
-                <!-- Standard -->
-                <div class="membership-card membership-card-featured stagger-child">
-                    <div class="mc-badge mc-badge-popular">Most Popular</div>
-                    <div class="mc-header">
-                        <h4 class="mc-name mc-name-purple">Standard</h4>
-                        <p class="mc-tagline">Most popular choice</p>
-                    </div>
-                    <div class="mc-price">
-                        <span class="mc-amount mc-purple">₹2,499</span>
-                        <span class="mc-period">/month</span>
-                    </div>
-                    <div class="mc-hours-box">
-                        <div class="mc-hours-row">
-                            <span class="mc-hours-label">Total Hours</span>
-                            <span class="mc-hours-val mc-purple">30 hrs</span>
-                        </div>
-                        <div class="mc-hours-divider"></div>
-                        <div class="mc-hours-row">
-                            <span class="mc-hours-label">Validity</span>
-                            <span class="mc-hours-val">30 Days</span>
-                        </div>
-                    </div>
-                    <ul class="mc-features">
-                        <li>25 Weekday Hours</li>
-                        <li>5 Weekend Hours</li>
-                        <li>All PS5 Games</li>
-                        <li>Priority Seating</li>
-                        <li>Online Booking</li>
-                        <li>Member Discounts</li>
-                    </ul>
-                    <a href="{% url 'memberships:plan_list' %}" class="mc-btn mc-btn-purple">Get Standard</a>
-                </div>
-
-                <!-- Pro -->
-                <div class="membership-card membership-card-featured stagger-child">
-                    <div class="mc-badge mc-badge-pro">Best Value</div>
-                    <div class="mc-header">
-                        <h4 class="mc-name mc-name-orange">Pro</h4>
-                        <p class="mc-tagline">Maximum value for hardcore gamers</p>
-                    </div>
-                    <div class="mc-price">
-                        <span class="mc-amount mc-orange">₹3,999</span>
-                        <span class="mc-period">/month</span>
-                    </div>
-                    <div class="mc-hours-box">
-                        <div class="mc-hours-row">
-                            <span class="mc-hours-label">Total Hours</span>
-                            <span class="mc-hours-val mc-orange">45 hrs</span>
-                        </div>
-                        <div class="mc-hours-divider"></div>
-                        <div class="mc-hours-row">
-                            <span class="mc-hours-label">Validity</span>
-                            <span class="mc-hours-val">30 Days</span>
-                        </div>
-                    </div>
-                    <ul class="mc-features">
-                        <li>40 Hours + 5 Bonus = 45 Total</li>
-                        <li>Weekdays + Weekends</li>
-                        <li>All PS5 Games</li>
-                        <li>VIP Seating</li>
-                        <li>Tournament Priority</li>
-                        <li>Member Discounts</li>
-                        <li>Dedicated Support</li>
-                    </ul>
-                    <a href="{% url 'memberships:plan_list' %}" class="mc-btn mc-btn-orange">Get Pro</a>
-                </div>
-
+                {% endfor %}
             </div>
         </div>
 

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Booking Confirmed — CONSOLEX{% endblock %}
+{% block title %}Booking Confirmed — {{ site.brand_name }}{% endblock %}
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/payment.css' %}">
@@ -15,7 +15,7 @@
     <h1 class="payment-title">Slot <span class="title-accent">Confirmed!</span></h1>
     <p class="payment-subtitle">
       Your advance of <strong>₹{{ payment.amount_rupees }}</strong> has been received.
-      See you at CONSOLEX!
+      See you at {{ site.brand_name }}!
     </p>
 
     <div class="payment-summary-card">

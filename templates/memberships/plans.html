@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Membership Plans — CONSOLEX Gaming Zone{% endblock %}
+{% block title %}Membership Plans — {{ site.brand_name }} Gaming Zone{% endblock %}
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/membership.css' %}">
@@ -23,12 +23,11 @@
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
                 </svg>
-                Membership Plans
+                {{ cb.membership_pill|default:"Membership Plans" }}
             </span>
-            <h1 class="ms-title">Level Up with a <span class="ms-neon">Membership</span></h1>
+            <h1 class="ms-title">{{ cb.membership_title|default:"Level Up with a" }} <span class="ms-neon">{{ cb.membership_title_gradient|default:"Membership" }}</span></h1>
             <p class="ms-sub">
-                Unlock exclusive hours, priority booking and member-only perks every month.
-                The more you play, the more you save.
+                {{ cb.membership_subtitle|default:"Unlock exclusive hours, priority booking and member-only perks every month." }}
             </p>
         </div>
 
@@ -59,7 +58,7 @@
                         <span class="mc-tier-icon">🎮</span>
                         <span class="mc-tier-name">{{ plan.name }}</span>
                     </div>
-                    <p class="mc-tier-desc">{{ plan.description|default:"A CONSOLEX membership plan." }}</p>
+                    <p class="mc-tier-desc">{{ plan.description|default:"A membership plan." }}</p>
                 </div>
 
                 <div class="mc-price-block">
@@ -139,7 +138,7 @@
     <div class="mem-container">
         <div class="ms-head">
             <h2 class="ms-title">Compare <span class="ms-neon">Plans</span></h2>
-            <p class="ms-sub">Everything included in each CONSOLEX membership.</p>
+            <p class="ms-sub">Everything included in each {{ site.brand_name }} membership.</p>
         </div>
         <div class="mem-table-wrap">
             <table class="mem-compare-table">
@@ -294,7 +293,7 @@
             </details>
             <details class="mem-faq-item">
                 <summary>Can I cancel or get a refund?</summary>
-                <p>Plans are billed monthly. Contact the CONSOLEX team on WhatsApp for cancellation and refund queries.</p>
+                <p>Plans are billed monthly. Contact the {{ site.brand_name }} team on WhatsApp for cancellation and refund queries.</p>
             </details>
         </div>
     </div>
@@ -304,7 +303,7 @@
 <section class="mem-section mem-cta-section">
     <div class="mem-container mem-cta">
         <h2 class="ms-title">Ready to <span class="ms-neon">Play Beyond?</span></h2>
-        <p class="ms-sub">Join CONSOLEX and unlock your gaming hours today.</p>
+        <p class="ms-sub">Join {{ site.brand_name }} and unlock your gaming hours today.</p>
         <div class="mem-cta-actions">
             {% for plan in plans %}
             <a href="{% url 'memberships:subscribe' plan.id %}" class="mc-btn">Become a {{ plan.name }} Member</a>

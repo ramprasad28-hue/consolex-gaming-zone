@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Pay for {{ plan.name }} — CONSOLEX{% endblock %}
+{% block title %}Pay for {{ plan.name }} — {{ site.brand_name }}{% endblock %}
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/membership.css' %}">
@@ -63,7 +63,7 @@
             key: "{{ razorpay_key_id }}",
             amount: "{{ rp_amount }}",
             currency: "INR",
-            name: "CONSOLEX Gaming Zone",
+            name: "{{ site.brand_name }} Gaming Zone",
             description: "{{ plan.name }} Membership — {{ plan.duration_days }} days",
             order_id: "{{ rp_order_id }}",
             handler: function (response) {

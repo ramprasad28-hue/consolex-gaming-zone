@@ -9,11 +9,11 @@
 
         <!-- Header -->
         <div class="games-header stagger-child">
-            <span class="games-pill">Game Library</span>
+            <span class="games-pill">{{ cb.games_pill }}</span>
             <h2 class="games-title">
-                100+ <span class="text-gradient-cyan">PS5 Titles</span>
+                {{ cb.games_title }} <span class="text-gradient-cyan">{{ cb.games_title_gradient }}</span>
             </h2>
-            <p class="games-subtitle">From AAA blockbusters to indie gems. All included in every session.</p>
+            <p class="games-subtitle">{{ cb.games_subtitle }}</p>
         </div>
 
         <!-- Category filter -->
@@ -56,14 +56,14 @@
 
         <!-- Empty filter state -->
         <div class="games-empty-msg" id="gamesEmptyMsg" style="display:none;text-align:center;padding:2rem;color:var(--text2);">
-            No games found in this category.
+            {{ cb.games_empty }}
         </div>
 
         <!-- CTA -->
         <div class="games-cta stagger-child">
-            <p class="games-cta-text">And 80+ more titles available at the lounge</p>
+            <p class="games-cta-text">{{ cb.games_cta_text }}</p>
             <a href="{% url 'bookings:booking_form' %}" class="games-cta-btn">
-                View Full Library
+                {{ cb.games_cta_btn }}
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
         </div>
@@ -105,14 +105,14 @@
 <section class="games-section" id="games">
     <div class="games-container">
         <div class="games-header">
-            <span class="games-pill">Game Library</span>
+            <span class="games-pill">{{ cb.games_pill }}</span>
             <h2 class="games-title">
-                100+ <span class="text-gradient-cyan">PS5 Titles</span>
+                {{ cb.games_title }} <span class="text-gradient-cyan">{{ cb.games_title_gradient }}</span>
             </h2>
-            <p class="games-subtitle">From AAA blockbusters to indie gems. All included in every session.</p>
+            <p class="games-subtitle">{{ cb.games_subtitle }}</p>
         </div>
         <div class="games-empty" style="text-align:center;padding:3rem 1rem;color:var(--text2);">
-            <p>Game library coming soon. Check back soon for our full PS5 collection!</p>
+            <p>{{ cb.games_empty }}</p>
         </div>
     </div>
 </section>

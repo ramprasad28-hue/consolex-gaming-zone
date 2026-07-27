@@ -10,12 +10,12 @@
 
         <!-- Header -->
         <div class="tourney-header stagger-child">
-            <span class="tourney-pill">Tournaments</span>
+            <span class="tourney-pill">{{ cb.tournament_pill }}</span>
             <h2 class="tourney-title">
-                Compete. Win. <span class="text-gradient-orange">Dominate.</span>
+                {{ cb.tournament_title }}
             </h2>
             <p class="tourney-subtitle">
-                Weekly tournaments with real cash prizes. Open to all members and walk-ins.
+                {{ cb.tournament_subtitle }}
             </p>
         </div>
 
@@ -60,7 +60,7 @@
                     </div>
                     <div class="tourney-countdown" data-target="{{ t.date|date:'Y-m-d\TH:i:s' }}"></div>
                     {% if t.btn_label == "Register Now" or t.btn_label == "Notify Me" %}
-                    <a href="https://wa.me/919876543210?text=Hi!%20I%27m%20interested%20in%20the%20{{ t.title|urlencode }}%20tournament." class="tourney-btn {{ t.btn_css_class }}" target="_blank" rel="noopener noreferrer">{{ t.btn_label }}</a>
+                    <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hi!%20I%27m%20interested%20in%20the%20{{ t.title|urlencode }}%20tournament." class="tourney-btn {{ t.btn_css_class }}" target="_blank" rel="noopener noreferrer">{{ t.btn_label }}</a>
                     {% else %}
                     <span class="tourney-btn {{ t.btn_css_class }}" aria-disabled="true">{{ t.btn_label }}</span>
                     {% endif %}
@@ -82,7 +82,7 @@
             var now = Date.now();
             var diff = new Date(target).getTime() - now;
             if (diff <= 0) {
-                el.innerHTML = '<span class="tourney-cd-expired">Event Started</span>';
+                el.innerHTML = '<span class="tourney-cd-expired">{{ cb.tournament_expired }}</span>';
                 if (timer) clearInterval(timer);
                 return;
             }

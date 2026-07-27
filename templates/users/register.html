@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Register — CONSOLEX{% endblock %}
+{% block title %}Register — {{ site.brand_name }}{% endblock %}
 
 {% block content %}
 
@@ -12,9 +12,9 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
         </div>
 
-        <h2>Create Account</h2>
+        <h2>{{ cb.auth_register_title|default:"Create Account" }}</h2>
         <p class="auth-sub">
-            Join CONSOLEX and start booking your PS5 sessions.
+            {{ cb.auth_register_subtitle|default:"Join and start booking your sessions." }}
         </p>
 
         {% if messages %}
