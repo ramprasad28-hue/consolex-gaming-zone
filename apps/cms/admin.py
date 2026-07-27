@@ -28,6 +28,9 @@ class SiteSettingsAdmin(admin.ModelAdmin):
         ("Theme", {
             "fields": ["theme_color", "theme_color_light"],
         }),
+        ("Dashboard", {
+            "fields": ["dashboard_hero_image"],
+        }),
     ]
 
     def has_add_permission(self, request):

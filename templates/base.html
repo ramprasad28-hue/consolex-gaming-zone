@@ -44,7 +44,7 @@
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    {% include 'components/announcement.html' %}
+    {% block announcement %}{% include 'components/announcement.html' %}{% endblock %}
     {% include 'components/navbar.html' %}
 
     <main id="main-content">

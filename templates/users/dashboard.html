@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 {% endblock %}
 
+{% block announcement %}{% endblock %}
+
 {% block content %}
 <section class="dashboard-section">
   <div class="dashboard-container">
@@ -81,27 +83,35 @@
 
     <!-- ══════════ HERO CARD ══════════ -->
     <div class="dash-hero nx-animate nx-d1">
-      <h1 class="dash-hero-title">Welcome back, <span class="accent">{{ user_display }}</span></h1>
-      <p class="dash-hero-sub">Here's what's happening with your {{ site.brand_name }} account.</p>
+      <div class="dash-hero-content">
+        <h1 class="dash-hero-title">Welcome back, <span class="accent">{{ user_display }}</span></h1>
+        <p class="dash-hero-sub">Here's what's happening with your {{ site.brand_name }} account.</p>
 
-      <div class="dash-hero-meta">
-        <div class="dash-hero-meta-item">
-          <div class="dash-hero-meta-label">Member Since</div>
-          <div class="dash-hero-meta-value">{{ request.user.created_at|date:"M Y" }}</div>
-        </div>
-        <div class="dash-hero-meta-item">
-          <div class="dash-hero-meta-label">Membership</div>
-          <div class="dash-hero-meta-value is-accent">{{ request.user.membership.name|default:"None" }}</div>
-        </div>
-        <div class="dash-hero-meta-item">
-          <div class="dash-hero-meta-label">Hours Played</div>
-          <div class="dash-hero-meta-value">{{ total_hours_played }}</div>
-        </div>
-        <div class="dash-hero-meta-item">
-          <div class="dash-hero-meta-label">Favorite Console</div>
-          <div class="dash-hero-meta-value">{{ favorite_console|default:"—" }}</div>
+        <div class="dash-hero-meta">
+          <div class="dash-hero-meta-item">
+            <div class="dash-hero-meta-label">Member Since</div>
+            <div class="dash-hero-meta-value">{{ request.user.created_at|date:"M Y" }}</div>
+          </div>
+          <div class="dash-hero-meta-item">
+            <div class="dash-hero-meta-label">Membership</div>
+            <div class="dash-hero-meta-value is-accent">{{ request.user.membership.name|default:"None" }}</div>
+          </div>
+          <div class="dash-hero-meta-item">
+            <div class="dash-hero-meta-label">Hours Played</div>
+            <div class="dash-hero-meta-value">{{ total_hours_played }}</div>
+          </div>
+          <div class="dash-hero-meta-item">
+            <div class="dash-hero-meta-label">Favorite Console</div>
+            <div class="dash-hero-meta-value">{{ favorite_console|default:"—" }}</div>
+          </div>
         </div>
       </div>
+
+      {% if site.dashboard_hero_image %}
+      <div class="dash-hero-image">
+        <img src="{{ site.dashboard_hero_image.url }}" alt="{{ site.brand_name }} Hero">
+      </div>
+      {% endif %}
     </div>
 
     <!-- ══════════ STATS GRID ══════════ -->

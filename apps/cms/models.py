@@ -33,6 +33,13 @@ class SiteSettings(models.Model):
     theme_color = models.CharField(max_length=10, default="#050036")
     theme_color_light = models.CharField(max_length=10, default="#00e5ff")
 
+    dashboard_hero_image = models.ImageField(
+        upload_to="cms/dashboard/",
+        blank=True,
+        default="",
+        help_text="Image shown in the user dashboard hero section.",
+    )
+
     objects = SiteSettingsManager()
 
     class Meta:
