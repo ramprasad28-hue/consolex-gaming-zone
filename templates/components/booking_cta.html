@@ -5,13 +5,11 @@
             <p class="booking-cta-subtitle">{{ cb.booking_cta_subtitle }}</p>
         </div>
         <div class="booking-cta-actions">
-            <a href="{% url 'bookings:booking_form' %}" class="booking-cta-btn-primary btn-ripple">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M8 5v14l11-7z"/>
-                </svg>
+            <a href="{% url 'bookings:booking_form' %}" class="cx-btn cx-btn--primary cx-btn--lg">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                 {{ cb.booking_cta_primary }}
             </a>
-            <a href="{% url 'home' %}#games" class="booking-cta-btn-ghost">
+            <a href="{% url 'home' %}#games" class="cx-btn cx-btn--outline cx-btn--lg">
                 {{ cb.booking_cta_ghost }}
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>

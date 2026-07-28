@@ -1,25 +1,13 @@
 {% load static %}
 {% if tournaments %}
 <section class="tournament-section" id="tournaments">
-
-    <!-- Background -->
-    <div class="tourney-bg-gradient"></div>
-    <div class="tourney-blob"></div>
-
     <div class="tourney-container">
-
-        <!-- Header -->
         <div class="tourney-header stagger-child">
-            <span class="tourney-pill">{{ cb.tournament_pill }}</span>
-            <h2 class="tourney-title">
-                {{ cb.tournament_title }}
-            </h2>
-            <p class="tourney-subtitle">
-                {{ cb.tournament_subtitle }}
-            </p>
+            <span class="cx-badge cx-badge--warning">{{ cb.tournament_pill }}</span>
+            <h2 class="tourney-title">{{ cb.tournament_title }}</h2>
+            <p class="tourney-subtitle">{{ cb.tournament_subtitle }}</p>
         </div>
 
-        <!-- Tournament cards -->
         <div class="tourney-grid">
             {% for t in tournaments %}
             <div class="tourney-card stagger-child">
@@ -33,7 +21,7 @@
                     <span class="tourney-status {{ t.status_css_class }}">{{ t.status_label }}</span>
                     <div class="tourney-prize-box">
                         <span class="tourney-prize-label">Prize Pool</span>
-                        <span class="tourney-prize-val">₹{{ t.prize_pool|floatformat:0 }}</span>
+                        <span class="tourney-prize-val">&#8377;{{ t.prize_pool|floatformat:0 }}</span>
                     </div>
                 </div>
                 <div class="tourney-card-body">
@@ -60,15 +48,14 @@
                     </div>
                     <div class="tourney-countdown" data-target="{{ t.date|date:'Y-m-d\TH:i:s' }}"></div>
                     {% if t.btn_label == "Register Now" or t.btn_label == "Notify Me" %}
-                    <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hi!%20I%27m%20interested%20in%20the%20{{ t.title|urlencode }}%20tournament." class="tourney-btn {{ t.btn_css_class }}" target="_blank" rel="noopener noreferrer">{{ t.btn_label }}</a>
+                    <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hi!%20I%27m%20interested%20in%20the%20{{ t.title|urlencode }}%20tournament." class="cx-btn cx-btn--primary" target="_blank" rel="noopener noreferrer" style="width:100%;justify-content:center;">{{ t.btn_label }}</a>
                     {% else %}
-                    <span class="tourney-btn {{ t.btn_css_class }}" aria-disabled="true">{{ t.btn_label }}</span>
+                    <span class="cx-btn cx-btn--outline" aria-disabled="true" style="width:100%;justify-content:center;opacity:0.5;cursor:not-allowed;">{{ t.btn_label }}</span>
                     {% endif %}
                 </div>
             </div>
             {% endfor %}
         </div>
-
     </div>
 </section>
 

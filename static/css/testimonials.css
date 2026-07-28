@@ -1,41 +1,35 @@
 /* ============================================================
-   CONSOLEX — testimonials.css  (light theme)
+   CONSOLEX — testimonials.css (V3 clean)
    ============================================================ */
 
 .testimonials-section {
     position: relative;
-    padding: 96px 24px;
+    padding: var(--cx-space-24) var(--cx-space-6);
     overflow: hidden;
 }
 
-.testi-container { max-width: 1200px; margin: 0 auto; }
+.testi-container { max-width: var(--cx-container-xl); margin: 0 auto; }
 
-.testi-header { text-align: center; margin-bottom: 64px; }
-.testi-pill {
-    display: inline-flex; padding: 6px 16px; border-radius: 100px;
-    font-family: var(--font-body); font-size: 13px; font-weight: 600;
-    color: var(--cyan); background: var(--cyan-dim); border: 1px solid var(--cx-cyan-20);
-}
+.testi-header { text-align: center; margin-bottom: var(--cx-space-16); }
 .testi-title {
-    font-family: var(--font-head); font-weight: 900;
-    font-size: clamp(1.8rem, 4vw, 2.5rem); color: var(--text);
-    margin-top: 16px; margin-bottom: 20px; line-height: 1.15;
+    font-family: var(--cx-font-accent); font-weight: 900;
+    font-size: clamp(1.8rem, 4vw, 2.5rem); color: var(--cx-text);
+    margin-top: var(--cx-space-4); margin-bottom: var(--cx-space-5); line-height: var(--cx-leading-tight);
 }
 .testi-rating-box {
-    display: inline-flex; align-items: center; gap: 16px;
-    padding: 12px 24px; border-radius: 16px;
-    background: var(--card-bg); border: 1px solid var(--border);
+    display: inline-flex; align-items: center; gap: var(--cx-space-4);
+    padding: var(--cx-space-3) var(--cx-space-6); border-radius: var(--cx-radius-xl);
+    background: var(--cx-card-bg); border: 1px solid var(--cx-border);
 }
 .testi-stars { display: flex; gap: 2px; }
 .testi-rating-num {
-    font-family: var(--font-head); font-weight: 900; font-size: 1.5rem; color: var(--text);
-    display: block; line-height: 1;
+    font-family: var(--cx-font-accent); font-weight: 900; font-size: 1.5rem;
+    color: var(--cx-text); display: block; line-height: 1;
 }
-.testi-rating-label { font-size: 12px; color: var(--text2); }
+.testi-rating-label { font-size: var(--cx-text-xs); color: var(--cx-text-3); }
 
-/* ── Grids ────────────────────────────────────────────────── */
 .testi-grid {
-    display: grid; gap: 24px; margin-bottom: 24px;
+    display: grid; gap: var(--cx-space-6); margin-bottom: var(--cx-space-6);
 }
 .testi-grid-3 { grid-template-columns: 1fr; }
 @media (min-width: 768px) { .testi-grid-3 { grid-template-columns: repeat(3, 1fr); } }
@@ -44,74 +38,58 @@
 }
 @media (min-width: 768px) { .testi-grid-2 { grid-template-columns: repeat(2, 1fr); } }
 
-/* ── Card ─────────────────────────────────────────────────── */
 .testi-card {
-    padding: 24px; border-radius: 24px; border: 1px solid var(--border);
-    background: var(--card-bg);
-    display: flex; flex-direction: column; gap: 20px;
-    transition: border-color var(--theme-speed) ease, transform 0.3s var(--ease),
-                background var(--theme-speed) ease;
+    padding: var(--cx-space-6); border-radius: var(--cx-radius-xl);
+    border: 1px solid var(--cx-border); background: var(--cx-card-bg);
+    display: flex; flex-direction: column; gap: var(--cx-space-5);
+    transition: border-color var(--cx-duration-normal) var(--cx-ease),
+                transform var(--cx-duration-normal) var(--cx-ease),
+                background var(--cx-theme-speed) ease;
 }
-.testi-card:hover { border-color: var(--cx-cyan-30); transform: translateY(-2px); }
+.testi-card:hover { border-color: var(--cx-primary-border); transform: translateY(-2px); }
 .testi-stars-sm { display: flex; gap: 2px; }
 .testi-review {
-    font-size: 14px; line-height: 1.7; color: var(--text2); flex: 1;
-}
-.testi-game-tag {
-    display: inline-flex; padding: 4px 12px; border-radius: 100px;
-    font-size: 11px; font-weight: 600; width: fit-content;
-    color: var(--cx-blue); background: var(--cx-blue-8); border: 1px solid var(--cx-blue-15);
+    font-size: var(--cx-text-sm); line-height: var(--cx-leading-relaxed);
+    color: var(--cx-text-2); flex: 1;
 }
 .testi-author {
-    display: flex; align-items: center; gap: 12px;
-    padding-top: 16px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: var(--cx-space-3);
+    padding-top: var(--cx-space-4); border-top: 1px solid var(--cx-border);
 }
-.testi-avatar {
-    width: 40px; height: 40px; border-radius: 50%;
-    background: var(--surface2); border: 2px solid var(--border); flex-shrink: 0;
+.testi-name {
+    font-family: var(--cx-font-accent); font-weight: 700;
+    font-size: var(--cx-text-sm); color: var(--cx-text);
 }
-.testi-name { font-family: var(--font-head); font-weight: 700; font-size: 14px; color: var(--text); }
-.testi-role { font-size: 12px; color: var(--text2); }
+.testi-role { font-size: var(--cx-text-xs); color: var(--cx-text-3); }
 
-/* ── CTA ──────────────────────────────────────────────────── */
-.testi-cta { text-align: center; margin-top: 64px; }
+.testi-cta { text-align: center; margin-top: var(--cx-space-16); }
 .testi-cta-box {
-    display: inline-flex; align-items: center; gap: 24px; flex-wrap: wrap;
-    padding: 32px 40px; border-radius: 24px;
-    background: var(--card-bg); border: 1px solid var(--border);
+    display: inline-flex; align-items: center; gap: var(--cx-space-6); flex-wrap: wrap;
+    padding: var(--cx-space-8) var(--cx-space-10); border-radius: var(--cx-radius-xl);
+    background: var(--cx-card-bg); border: 1px solid var(--cx-border);
 }
 .testi-cta-text { text-align: left; }
 .testi-cta-title {
-    font-family: var(--font-head); font-weight: 800; font-size: 1.25rem; color: var(--text);
-    margin-bottom: 4px;
+    font-family: var(--cx-font-accent); font-weight: 800; font-size: 1.25rem;
+    color: var(--cx-text); margin-bottom: var(--cx-space-1);
 }
-.testi-cta-sub { font-size: 14px; color: var(--text2); }
-.testi-cta-btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 14px 28px; border-radius: var(--radius);
-    font-family: var(--font-head); font-weight: 800; font-size: 14px;
-    text-transform: uppercase; letter-spacing: 0.05em;
-    background: var(--cx-blue); color: var(--text-inverse); text-decoration: none;
-    transition: all 0.3s var(--ease);
-}
-.testi-cta-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+.testi-cta-sub { font-size: var(--cx-text-sm); color: var(--cx-text-3); }
 
-/* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 992px) {
-    .testimonials-section { padding: 72px 20px; }
+    .testimonials-section { padding: var(--cx-space-18) var(--cx-space-5); }
 }
 @media (max-width: 768px) {
-    .testimonials-section { padding: 64px 16px; }
-    .testi-header { margin-bottom: 40px; }
-    .testi-rating-box { padding: 10px 16px; gap: 12px; }
+    .testimonials-section { padding: var(--cx-space-16) var(--cx-space-4); }
+    .testi-header { margin-bottom: var(--cx-space-10); }
+    .testi-rating-box { padding: var(--cx-space-2) var(--cx-space-4); gap: var(--cx-space-3); }
     .testi-rating-num { font-size: 1.2rem; }
-    .testi-card { padding: 20px; }
-    .testi-review { font-size: 13px; }
-    .testi-cta-box { padding: 24px; gap: 16px; flex-direction: column; text-align: center; }
+    .testi-card { padding: var(--cx-space-5); }
+    .testi-review { font-size: var(--cx-text-xs); }
+    .testi-cta-box { padding: var(--cx-space-6); gap: var(--cx-space-4); flex-direction: column; text-align: center; }
     .testi-cta-text { text-align: center; }
 }
 @media (max-width: 480px) {
-    .testimonials-section { padding: 56px 12px; }
-    .testi-card { padding: 16px; }
-    .testi-name { font-size: 13px; }
+    .testimonials-section { padding: var(--cx-space-14) var(--cx-space-3); }
+    .testi-card { padding: var(--cx-space-4); }
+    .testi-name { font-size: var(--cx-text-xs); }
 }

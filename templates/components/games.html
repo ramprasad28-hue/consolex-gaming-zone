@@ -1,22 +1,15 @@
 {% load static %}
 {% if games %}
 <section class="games-section" id="games">
-
-    <!-- Background -->
-    <div class="games-blob"></div>
-
     <div class="games-container">
-
-        <!-- Header -->
         <div class="games-header stagger-child">
-            <span class="games-pill">{{ cb.games_pill }}</span>
+            <span class="cx-badge cx-badge--primary">{{ cb.games_pill }}</span>
             <h2 class="games-title">
                 {{ cb.games_title }} <span class="text-gradient-cyan">{{ cb.games_title_gradient }}</span>
             </h2>
             <p class="games-subtitle">{{ cb.games_subtitle }}</p>
         </div>
 
-        <!-- Category filter -->
         <div class="games-filters stagger-child" role="group" aria-label="Filter games by category">
             <button class="games-filter active" onclick="filterGames('all', this)" aria-pressed="true">All</button>
             <button class="games-filter" onclick="filterGames('action', this)" aria-pressed="false">Action</button>
@@ -28,7 +21,6 @@
             <button class="games-filter" onclick="filterGames('popular', this)" aria-pressed="false">Popular</button>
         </div>
 
-        <!-- Game grid -->
         <div class="games-grid" id="gamesGrid">
             {% for g in games %}
             <div class="game-card stagger-child" data-category="{{ g.category }}" data-badge="{{ g.badge }}">
@@ -45,7 +37,7 @@
                     <div class="game-card-hover">
                         <p class="game-card-hover-title">{{ g.title }}</p>
                         <div class="game-card-rating">
-                            <svg width="10" height="10" viewBox="0 0 24 24" fill="#FFC62E" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="var(--cx-gold)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                             <span>{{ g.rating }}</span>
                         </div>
                     </div>
@@ -54,20 +46,17 @@
             {% endfor %}
         </div>
 
-        <!-- Empty filter state -->
-        <div class="games-empty-msg" id="gamesEmptyMsg" style="display:none;text-align:center;padding:2rem;color:var(--text2);">
+        <div class="games-empty-msg" id="gamesEmptyMsg" style="display:none;">
             {{ cb.games_empty }}
         </div>
 
-        <!-- CTA -->
         <div class="games-cta stagger-child">
             <p class="games-cta-text">{{ cb.games_cta_text }}</p>
-            <a href="{% url 'bookings:booking_form' %}" class="games-cta-btn">
+            <a href="{% url 'bookings:booking_form' %}" class="cx-btn cx-btn--primary">
                 {{ cb.games_cta_btn }}
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
         </div>
-
     </div>
 </section>
 
@@ -105,13 +94,13 @@
 <section class="games-section" id="games">
     <div class="games-container">
         <div class="games-header">
-            <span class="games-pill">{{ cb.games_pill }}</span>
+            <span class="cx-badge cx-badge--primary">{{ cb.games_pill }}</span>
             <h2 class="games-title">
                 {{ cb.games_title }} <span class="text-gradient-cyan">{{ cb.games_title_gradient }}</span>
             </h2>
             <p class="games-subtitle">{{ cb.games_subtitle }}</p>
         </div>
-        <div class="games-empty" style="text-align:center;padding:3rem 1rem;color:var(--text2);">
+        <div class="games-empty">
             <p>{{ cb.games_empty }}</p>
         </div>
     </div>

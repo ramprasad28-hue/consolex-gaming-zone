@@ -1,20 +1,11 @@
 <section class="testimonials-section" id="reviews">
-
-    <!-- Background -->
-    <div class="testi-bg-gradient"></div>
-    <div class="testi-blob"></div>
-
     <div class="testi-container">
-
-        <!-- Header -->
         <div class="testi-header stagger-child">
-            <span class="testi-pill">{{ cb.testimonials_pill }}</span>
-            <h2 class="testi-title">
-                {{ cb.testimonials_title }}
-            </h2>
+            <span class="cx-badge cx-badge--primary">{{ cb.testimonials_pill }}</span>
+            <h2 class="testi-title">{{ cb.testimonials_title }}</h2>
             <div class="testi-rating-box">
                 <div class="testi-stars">
-                    {% for _ in "12345" %}<svg width="18" height="18" viewBox="0 0 24 24" fill="#FFC62E" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>{% endfor %}
+                    {% for _ in "12345" %}<svg width="18" height="18" viewBox="0 0 24 24" fill="var(--cx-gold)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>{% endfor %}
                 </div>
                 <div>
                     <span class="testi-rating-num">{{ site.google_rating }}</span>
@@ -23,17 +14,16 @@
             </div>
         </div>
 
-        <!-- Testimonials grid — row 1 (3 cards) -->
         <div class="testi-grid testi-grid-3">
             {% for t in cms_testimonials|slice:":3" %}
             <div class="testi-card stagger-child">
                 <div class="testi-stars-sm">
-                    {% for _ in "12345" %}<svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC62E" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>{% endfor %}
+                    {% for _ in "12345" %}<svg width="14" height="14" viewBox="0 0 24 24" fill="var(--cx-gold)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>{% endfor %}
                 </div>
                 <p class="testi-review">"{{ t.quote }}"</p>
-                {% if t.game_tag %}<span class="testi-game-tag">{{ t.game_tag }}</span>{% endif %}
+                {% if t.game_tag %}<span class="cx-badge cx-badge--primary">{{ t.game_tag }}</span>{% endif %}
                 <div class="testi-author">
-                    <div class="testi-avatar"></div>
+                    <div class="cx-avatar cx-avatar--md" aria-hidden="true">{{ t.name|first }}</div>
                     <div>
                         <p class="testi-name">{{ t.name }}</p>
                         <p class="testi-role">{{ t.role }}</p>
@@ -43,18 +33,17 @@
             {% endfor %}
         </div>
 
-        <!-- Row 2 (remaining cards) -->
         {% if cms_testimonials|length > 3 %}
         <div class="testi-grid testi-grid-2">
             {% for t in cms_testimonials|slice:"3:" %}
             <div class="testi-card stagger-child">
                 <div class="testi-stars-sm">
-                    {% for _ in "12345" %}<svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC62E" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>{% endfor %}
+                    {% for _ in "12345" %}<svg width="14" height="14" viewBox="0 0 24 24" fill="var(--cx-gold)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>{% endfor %}
                 </div>
                 <p class="testi-review">"{{ t.quote }}"</p>
-                {% if t.game_tag %}<span class="testi-game-tag">{{ t.game_tag }}</span>{% endif %}
+                {% if t.game_tag %}<span class="cx-badge cx-badge--primary">{{ t.game_tag }}</span>{% endif %}
                 <div class="testi-author">
-                    <div class="testi-avatar"></div>
+                    <div class="cx-avatar cx-avatar--md" aria-hidden="true">{{ t.name|first }}</div>
                     <div>
                         <p class="testi-name">{{ t.name }}</p>
                         <p class="testi-role">{{ t.role }}</p>
@@ -65,19 +54,17 @@
         </div>
         {% endif %}
 
-        <!-- CTA -->
         <div class="testi-cta stagger-child">
             <div class="testi-cta-box">
                 <div class="testi-cta-text">
                     <h3 class="testi-cta-title">{{ cb.booking_cta_title }}</h3>
                     <p class="testi-cta-sub">{{ cb.booking_cta_subtitle }}</p>
                 </div>
-                <a href="{% url 'bookings:booking_form' %}" class="testi-cta-btn">
+                <a href="{% url 'bookings:booking_form' %}" class="cx-btn cx-btn--primary cx-btn--lg">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                     {{ cb.booking_cta_primary }}
                 </a>
             </div>
         </div>
-
     </div>
 </section>

@@ -1,66 +1,42 @@
 /* ============================================================
-   CONSOLEX — gallery.css  (light theme)
-   Infinite scrolling image marquee
+   CONSOLEX — gallery.css (V3 clean)
    ============================================================ */
 
 .gallery-section {
     position: relative;
-    padding: 60px 0 40px;
+    padding: var(--cx-space-16) 0 var(--cx-space-10);
     overflow: hidden;
 }
 
-/* ── Header ──────────────────────────────────────────────── */
 .gallery-head {
     text-align: center;
-    margin-bottom: 36px;
-    padding: 0 28px;
-}
-
-.gallery-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    font-family: var(--font-body);
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--cx-blue);
-    background: var(--cx-blue-8);
-    border: 1px solid var(--cx-blue-15);
-    padding: 6px 16px;
-    border-radius: 50px;
-    margin-bottom: 14px;
+    margin-bottom: var(--cx-space-9);
+    padding: 0 var(--cx-space-7);
 }
 
 .gallery-title {
-    font-family: var(--font-head);
+    font-family: var(--cx-font-accent);
     font-size: clamp(1.4rem, 3.5vw, 2.2rem);
     font-weight: 700;
-    color: var(--text);
-    line-height: 1.2;
-    margin-bottom: 10px;
-}
-
-.gallery-neon {
-    color: var(--cx-blue);
+    color: var(--cx-text);
+    line-height: var(--cx-leading-tight);
+    margin-bottom: var(--cx-space-2);
 }
 
 .gallery-sub {
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    color: var(--text2);
+    font-family: var(--cx-font-ui);
+    font-size: var(--cx-text-base);
+    color: var(--cx-text-3);
     max-width: 440px;
     margin: 0 auto;
-    line-height: 1.6;
+    line-height: var(--cx-leading-relaxed);
 }
 
-/* ── Marquee track ───────────────────────────────────────── */
 .gallery-track-wrap {
     position: relative;
     width: 100%;
     overflow: hidden;
-    padding: 10px 0;
+    padding: var(--cx-space-2) 0;
 }
 
 .gallery-track-wrap::before,
@@ -75,16 +51,16 @@
 }
 .gallery-track-wrap::before {
     left: 0;
-    background: linear-gradient(90deg, var(--bg) 0%, transparent 100%);
+    background: linear-gradient(90deg, var(--cx-bg) 0%, transparent 100%);
 }
 .gallery-track-wrap::after {
     right: 0;
-    background: linear-gradient(270deg, var(--bg) 0%, transparent 100%);
+    background: linear-gradient(270deg, var(--cx-bg) 0%, transparent 100%);
 }
 
 .gallery-track {
     display: flex;
-    gap: 20px;
+    gap: var(--cx-space-5);
     width: max-content;
     animation: galleryScroll 35s linear infinite;
 }
@@ -109,16 +85,15 @@
     100% { transform: translateX(0); }
 }
 
-/* ── Individual image card ───────────────────────────────── */
 .gallery-card {
     flex-shrink: 0;
     width: 320px;
     height: 200px;
-    border-radius: 14px;
+    border-radius: var(--cx-radius-lg);
     overflow: hidden;
     position: relative;
-    border: 1px solid var(--border);
-    background: var(--surface);
+    border: 1px solid var(--cx-border);
+    background: var(--cx-surface);
     transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
                 border-color 0.3s ease,
                 box-shadow 0.3s ease;
@@ -127,7 +102,7 @@
 
 .gallery-card:hover {
     transform: scale(1.05) translateY(-6px);
-    border-color: var(--cx-cyan-30);
+    border-color: var(--cx-primary-border);
     box-shadow: var(--cx-shadow-xl);
     z-index: 5;
 }
@@ -163,7 +138,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 14px 16px;
+    padding: var(--cx-space-3) var(--cx-space-4);
     z-index: 1;
     transform: translateY(100%);
     transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
@@ -174,34 +149,32 @@
 }
 
 .gallery-caption span {
-    font-family: var(--font-body);
-    font-size: 0.82rem;
+    font-family: var(--cx-font-ui);
+    font-size: var(--cx-text-sm);
     font-weight: 700;
     letter-spacing: 0.5px;
-    color: var(--text-inverse);
+    color: var(--cx-text-inverse);
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-/* ── Row spacing ─────────────────────────────────────────── */
 .gallery-rows {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: var(--cx-space-5);
 }
 
-/* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 768px) {
-    .gallery-section { padding: 40px 0 24px; }
+    .gallery-section { padding: var(--cx-space-10) 0 var(--cx-space-6); }
     .gallery-card { width: 240px; height: 150px; }
-    .gallery-track { gap: 14px; animation-duration: 25s; }
+    .gallery-track { gap: var(--cx-space-3); animation-duration: 25s; }
     .gallery-track--reverse { animation-duration: 30s; }
     .gallery-track-wrap::before, .gallery-track-wrap::after { width: 60px; }
 }
 
 @media (max-width: 480px) {
-    .gallery-section { padding: 32px 0 16px; }
+    .gallery-section { padding: var(--cx-space-8) 0 var(--cx-space-4); }
     .gallery-card { width: 200px; height: 130px; }
-    .gallery-track { gap: 10px; animation-duration: 20s; }
+    .gallery-track { gap: var(--cx-space-2); animation-duration: 20s; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,26 +1,13 @@
 {% load static %}
 <section class="features-section" id="features">
-
-    <!-- Background blobs -->
-    <div class="features-blob features-blob-purple"></div>
-    <div class="features-blob features-blob-cyan"></div>
-
     <div class="features-container">
-
-        <!-- Header -->
         <div class="features-header stagger-child">
-            <span class="features-pill">{{ cb.features_pill }}</span>
-            <h2 class="features-title">
-                {{ cb.features_title }}
-            </h2>
-            <p class="features-subtitle">
-                {{ cb.features_subtitle }}
-            </p>
+            <span class="cx-badge cx-badge--primary">{{ cb.features_pill }}</span>
+            <h2 class="features-title">{{ cb.features_title }}</h2>
+            <p class="features-subtitle">{{ cb.features_subtitle }}</p>
         </div>
 
-        <!-- Bento Grid -->
         <div class="features-grid">
-
             {% for f in cms_features %}
             <div class="features-card features-card-lg stagger-child">
                 {% if f.image %}
@@ -30,9 +17,7 @@
                 </div>
                 {% endif %}
                 <div class="fcard-content">
-                    <div class="fcard-icon fcard-icon-cyan">
-                        {{ f.icon|safe }}
-                    </div>
+                    <div class="fcard-icon fcard-icon-cyan">{{ f.icon|safe }}</div>
                     <h3 class="fcard-title">{{ f.title }}</h3>
                     <p class="fcard-desc">{{ f.description }}</p>
                     {% if f.stat_value %}
@@ -43,16 +28,12 @@
                     {% endif %}
                     {% if f.tag %}
                     <div class="fcard-tags">
-                        <span class="fcard-tag fcard-tag-orange">{{ f.tag }}</span>
-                        {% if f.tag_url %}
-                        <span class="fcard-tag-text"><a href="{{ f.tag_url }}"></a></span>
-                        {% endif %}
+                        <span class="cx-badge cx-badge--warning">{{ f.tag }}</span>
                     </div>
                     {% endif %}
                 </div>
             </div>
             {% endfor %}
-
         </div>
     </div>
 </section>

@@ -1,10 +1,9 @@
 /* ============================================================
-   CONSOLEX — social_cta.css  (light theme)
+   CONSOLEX — social_cta.css (V3 clean)
    ============================================================ */
 
-/* ── Instagram CTA ─────────────────────────────────────── */
 .instagram-cta {
-    padding: 80px 24px;
+    padding: var(--cx-space-20) var(--cx-space-6);
     background: var(--cx-bg);
     overflow: hidden;
 }
@@ -14,18 +13,18 @@
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 64px;
+    gap: var(--cx-space-16);
     align-items: center;
 }
 
 .insta-eyebrow {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
+    gap: var(--cx-space-2);
+    margin-bottom: var(--cx-space-4);
     font-family: var(--cx-font-ui);
     font-size: var(--cx-text-sm);
-    color: var(--cx-text-2);
+    color: var(--cx-text-3);
     letter-spacing: var(--cx-tracking-wide);
     text-transform: uppercase;
 }
@@ -33,26 +32,19 @@
 .insta-logo-icon { width: 22px; height: 22px; }
 
 .insta-title {
-    font-family: var(--cx-font-ui);
+    font-family: var(--cx-font-accent);
     font-size: 2.5rem;
     font-weight: 800;
     color: var(--cx-text);
-    margin: 0 0 16px;
+    margin: 0 0 var(--cx-space-4);
     letter-spacing: var(--cx-tracking-tight);
     line-height: var(--cx-leading-tight);
-}
-
-.insta-title .title-accent {
-    background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 .insta-desc {
     font-size: var(--cx-text-lg);
     color: var(--cx-text-2);
-    margin: 0 0 32px;
+    margin: 0 0 var(--cx-space-8);
     line-height: var(--cx-leading-relaxed);
     max-width: 480px;
 }
@@ -60,17 +52,17 @@
 .btn-insta {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 14px 32px;
+    gap: var(--cx-space-2);
+    padding: var(--cx-space-3) var(--cx-space-8);
     background: linear-gradient(135deg, #f09433, #dc2743, #bc1888);
-    color: var(--text-inverse);
+    color: var(--cx-text-inverse);
     font-family: var(--cx-font-ui);
-    font-size: 0.88rem;
+    font-size: var(--cx-text-sm);
     font-weight: 700;
     letter-spacing: var(--cx-tracking-wide);
     border-radius: var(--cx-radius-md);
     text-decoration: none;
-    transition: transform 0.3s var(--cx-ease), box-shadow 0.3s;
+    transition: transform var(--cx-duration-normal) var(--cx-ease), box-shadow 0.3s;
 }
 
 .btn-insta:hover {
@@ -82,28 +74,28 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 24px;
+    gap: var(--cx-space-6);
 }
 
 .insta-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: var(--cx-space-3);
     width: 100%;
     max-width: 320px;
 }
 
 .insta-tile {
-    padding: 24px 16px;
+    padding: var(--cx-space-6) var(--cx-space-4);
     border-radius: var(--cx-radius-md);
     background: var(--cx-surface);
     border: 1px solid var(--cx-border);
     text-align: center;
-    transition: transform 0.3s var(--cx-ease), border-color 0.3s;
+    transition: transform var(--cx-duration-normal) var(--cx-ease), border-color 0.3s;
 }
 
 .insta-tile:hover { transform: translateY(-4px); }
-.insta-tile.tile-glow-cyan:hover   { border-color: var(--cx-cyan); }
+.insta-tile.tile-glow-cyan:hover   { border-color: var(--cx-primary); }
 .insta-tile.tile-glow-purple:hover { border-color: var(--cx-purple); }
 .insta-tile.tile-glow-orange:hover { border-color: var(--cx-orange); }
 
@@ -111,7 +103,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: var(--cx-space-2);
 }
 
 .tile-icon { font-size: 1.75rem; }
@@ -129,20 +121,19 @@
     font-family: var(--cx-font-accent);
     font-size: var(--cx-text-2xl);
     font-weight: 700;
-    color: var(--cx-blue);
+    color: var(--cx-primary);
 }
 
 .follower-label {
     display: block;
     font-size: var(--cx-text-sm);
     color: var(--cx-text-3);
-    margin-top: 4px;
+    margin-top: var(--cx-space-1);
 }
 
-/* ── Google Review CTA ────────────────────────────────── */
 .google-review-cta {
-    padding: 80px 24px;
-    background: var(--surface);
+    padding: var(--cx-space-20) var(--cx-space-6);
+    background: var(--cx-surface);
     border-top: 1px solid var(--cx-border);
 }
 
@@ -152,7 +143,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 40px;
+    gap: var(--cx-space-10);
     text-align: center;
 }
 
@@ -160,7 +151,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: var(--cx-space-4);
 }
 
 .google-logo { width: 40px; height: 40px; }
@@ -169,7 +160,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: var(--cx-space-2);
 }
 
 .google-score {
@@ -180,7 +171,7 @@
     letter-spacing: var(--cx-tracking-tighter);
 }
 
-.google-stars-row { display: flex; gap: 4px; }
+.google-stars-row { display: flex; gap: var(--cx-space-1); }
 
 .gstar { font-size: 1.5rem; color: #FBBC05; line-height: 1; }
 .gstar.half { opacity: 0.5; }
@@ -191,18 +182,18 @@
 }
 
 .google-review-title {
-    font-family: var(--cx-font-ui);
+    font-family: var(--cx-font-accent);
     font-size: 2rem;
     font-weight: 800;
     color: var(--cx-text);
-    margin: 0 0 12px;
+    margin: 0 0 var(--cx-space-3);
     letter-spacing: var(--cx-tracking-tight);
 }
 
 .google-review-subtitle {
     font-size: var(--cx-text-lg);
     color: var(--cx-text-2);
-    margin: 0 0 32px;
+    margin: 0 0 var(--cx-space-8);
     max-width: 520px;
     line-height: var(--cx-leading-relaxed);
 }
@@ -211,16 +202,16 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 14px 32px;
+    padding: var(--cx-space-3) var(--cx-space-8);
     background: #4285F4;
-    color: var(--text-inverse);
+    color: var(--cx-text-inverse);
     font-family: var(--cx-font-ui);
-    font-size: 0.88rem;
+    font-size: var(--cx-text-sm);
     font-weight: 700;
     letter-spacing: var(--cx-tracking-wide);
     border-radius: var(--cx-radius-md);
     text-decoration: none;
-    transition: transform 0.3s var(--cx-ease), box-shadow 0.3s;
+    transition: transform var(--cx-duration-normal) var(--cx-ease), box-shadow 0.3s;
 }
 
 .btn-google-review:hover {
@@ -228,28 +219,27 @@
     box-shadow: 0 8px 30px rgba(66, 133, 244, 0.25);
 }
 
-/* ── Responsive ────────────────────────────────────────── */
 @media (max-width: 768px) {
-    .instagram-cta { padding: 56px 20px; }
+    .instagram-cta { padding: var(--cx-space-14) var(--cx-space-5); }
     .instagram-cta-inner {
         grid-template-columns: 1fr;
-        gap: 40px;
+        gap: var(--cx-space-10);
         text-align: center;
     }
     .insta-left { order: 1; }
     .insta-right { order: 2; }
     .insta-title { font-size: 2rem; }
     .insta-desc { margin-left: auto; margin-right: auto; }
-    .google-review-cta { padding: 56px 20px; }
+    .google-review-cta { padding: var(--cx-space-14) var(--cx-space-5); }
     .google-review-title { font-size: 1.6rem; }
 }
 
 @media (max-width: 480px) {
-    .instagram-cta { padding: 48px 16px; }
+    .instagram-cta { padding: var(--cx-space-12) var(--cx-space-4); }
     .insta-title { font-size: 1.75rem; }
     .insta-grid { max-width: 260px; }
-    .insta-tile { padding: 18px 12px; }
-    .google-review-cta { padding: 48px 16px; }
+    .insta-tile { padding: var(--cx-space-4) var(--cx-space-3); }
+    .google-review-cta { padding: var(--cx-space-12) var(--cx-space-4); }
     .google-score { font-size: var(--cx-text-4xl); }
     .google-review-title { font-size: 1.4rem; }
 }

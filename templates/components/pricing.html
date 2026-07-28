@@ -1,23 +1,11 @@
 <section class="pricing-section" id="pricing">
-
-    <!-- Background blobs -->
-    <div class="pricing-blob pricing-blob-purple"></div>
-    <div class="pricing-blob pricing-blob-cyan"></div>
-
     <div class="pricing-container">
-
-        <!-- Header -->
         <div class="pricing-header stagger-child">
-            <span class="pricing-pill">{{ cb.pricing_pill }}</span>
-            <h2 class="pricing-title">
-                {{ cb.pricing_title }}
-            </h2>
-            <p class="pricing-subtitle">
-                {{ cb.pricing_subtitle }}
-            </p>
+            <span class="cx-badge cx-badge--primary">{{ cb.pricing_pill }}</span>
+            <h2 class="pricing-title">{{ cb.pricing_title }}</h2>
+            <p class="pricing-subtitle">{{ cb.pricing_subtitle }}</p>
         </div>
 
-        <!-- Hourly Pricing -->
         <div class="pricing-hourly">
             <div class="pricing-row-header stagger-child">
                 <h3 class="pricing-row-title">{{ cb.pricing_subsection }}</h3>
@@ -34,7 +22,7 @@
                     </div>
                     <p class="pricing-card-label">1 Player</p>
                     <div class="pricing-card-price">
-                        <span class="pricing-rupee">₹</span>
+                        <span class="pricing-rupee">&#8377;</span>
                         <span class="pricing-amount" data-weekday="130" data-weekend="150">130</span>
                         <span class="pricing-per">/hr</span>
                     </div>
@@ -47,7 +35,7 @@
                     </div>
                     <p class="pricing-card-label">2 Players</p>
                     <div class="pricing-card-price">
-                        <span class="pricing-rupee">₹</span>
+                        <span class="pricing-rupee">&#8377;</span>
                         <span class="pricing-amount" data-weekday="250" data-weekend="270">250</span>
                         <span class="pricing-per">/hr</span>
                     </div>
@@ -60,7 +48,7 @@
                     </div>
                     <p class="pricing-card-label">3 Players</p>
                     <div class="pricing-card-price">
-                        <span class="pricing-rupee">₹</span>
+                        <span class="pricing-rupee">&#8377;</span>
                         <span class="pricing-amount" data-weekday="330" data-weekend="400">330</span>
                         <span class="pricing-per">/hr</span>
                     </div>
@@ -73,7 +61,7 @@
                     </div>
                     <p class="pricing-card-label">4 Players</p>
                     <div class="pricing-card-price">
-                        <span class="pricing-rupee">₹</span>
+                        <span class="pricing-rupee">&#8377;</span>
                         <span class="pricing-amount" data-weekday="420" data-weekend="520">420</span>
                         <span class="pricing-per">/hr</span>
                     </div>
@@ -81,35 +69,27 @@
                 </div>
             </div>
 
-            <p class="pricing-footnote stagger-child">
-                {{ cb.pricing_footnote }}
-            </p>
+            <p class="pricing-footnote stagger-child">{{ cb.pricing_footnote }}</p>
         </div>
 
-        <!-- Divider -->
         <div class="pricing-divider"></div>
 
-        <!-- Membership Plans (from DB) -->
         <div class="pricing-memberships">
             <div class="pricing-membership-header stagger-child">
-                <span class="pricing-pill-purple">{{ cb.membership_pill }}</span>
-                <h3 class="pricing-membership-title">
-                    {{ cb.membership_title }}
-                </h3>
-                <p class="pricing-membership-subtitle">
-                    {{ cb.membership_subtitle }}
-                </p>
+                <span class="cx-badge cx-badge--primary">{{ cb.membership_pill }}</span>
+                <h3 class="pricing-membership-title">{{ cb.membership_title }}</h3>
+                <p class="pricing-membership-subtitle">{{ cb.membership_subtitle }}</p>
             </div>
 
             <div class="pricing-membership-grid">
                 {% for plan in plans %}
                 <div class="membership-card stagger-child{% if plan.is_popular %} membership-card-featured{% endif %}">
-                    {% if plan.is_popular %}<div class="mc-badge mc-badge-popular">Most Popular</div>{% endif %}
+                    {% if plan.is_popular %}<div class="cx-badge cx-badge--primary mc-badge">Most Popular</div>{% endif %}
                     <div class="mc-header">
                         <h4 class="mc-name">{{ plan.name }}</h4>
                     </div>
                     <div class="mc-price">
-                        <span class="mc-amount mc-cyan">₹{{ plan.price|floatformat:0 }}</span>
+                        <span class="mc-amount mc-cyan">&#8377;{{ plan.price|floatformat:0 }}</span>
                         <span class="mc-period">/month</span>
                     </div>
                     <div class="mc-hours-box">
@@ -123,12 +103,11 @@
                             <span class="mc-hours-val">{{ plan.duration_days }} Days</span>
                         </div>
                     </div>
-                    <a href="{% url 'memberships:plan_list' %}" class="mc-btn mc-btn-ghost">Get {{ plan.name }}</a>
+                    <a href="{% url 'memberships:plan_list' %}" class="cx-btn cx-btn--outline" style="width:100%;justify-content:center;">Get {{ plan.name }}</a>
                 </div>
                 {% endfor %}
             </div>
         </div>
-
     </div>
 </section>
 

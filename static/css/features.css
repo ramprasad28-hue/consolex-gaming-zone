@@ -1,91 +1,74 @@
 /* ============================================================
-   CONSOLEX — features.css  (bento grid, light theme)
+   CONSOLEX — features.css (V3 clean — bento grid)
    ============================================================ */
 
 .features-section {
     position: relative;
-    padding: 96px 24px;
+    padding: var(--cx-space-24) var(--cx-space-6);
     overflow: hidden;
 }
 
-/* ── Container ────────────────────────────────────────────── */
 .features-container {
-    max-width: 1200px;
+    max-width: var(--cx-container-xl);
     margin: 0 auto;
 }
 
-/* ── Header ───────────────────────────────────────────────── */
 .features-header {
-    margin-bottom: 64px;
-}
-.features-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 16px;
-    border-radius: 100px;
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--cyan);
-    background: var(--cyan-dim);
-    border: 1px solid var(--cx-cyan-20);
-    margin-bottom: 16px;
+    margin-bottom: var(--cx-space-16);
 }
 .features-title {
-    font-family: var(--font-head);
+    font-family: var(--cx-font-accent);
     font-weight: 900;
     font-size: clamp(1.8rem, 4vw, 2.5rem);
-    color: var(--text);
-    margin-top: 16px;
-    margin-bottom: 16px;
-    line-height: 1.15;
+    color: var(--cx-text);
+    margin-top: var(--cx-space-4);
+    margin-bottom: var(--cx-space-4);
+    line-height: var(--cx-leading-tight);
 }
 .text-gradient-cyan {
-    background: linear-gradient(135deg, var(--cx-cyan), var(--cx-purple));
+    background: linear-gradient(135deg, var(--cx-primary), var(--cx-cyan));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 .features-subtitle {
-    font-family: var(--font-body);
-    font-size: 18px;
-    color: var(--text2);
+    font-family: var(--cx-font-ui);
+    font-size: var(--cx-text-lg);
+    color: var(--cx-text-2);
     max-width: 560px;
-    line-height: 1.6;
+    line-height: var(--cx-leading-relaxed);
 }
 
-/* ── Bento Grid ───────────────────────────────────────────── */
 .features-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: var(--cx-space-4);
 }
 @media (min-width: 640px) {
     .features-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (min-width: 1024px) {
     .features-grid { grid-template-columns: repeat(4, 1fr); }
-    .features-card-lg {
-        grid-column: span 2;
-    }
+    .features-card-lg { grid-column: span 2; }
 }
 
-/* ── Card base ────────────────────────────────────────────── */
 .features-card {
     position: relative;
     min-height: 220px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: var(--card-bg);
+    border-radius: var(--cx-radius-xl);
+    border: 1px solid var(--cx-border);
+    background: var(--cx-card-bg);
     overflow: hidden;
-    transition: all 0.3s var(--ease), background var(--theme-speed) ease, color var(--theme-speed) ease, border-color var(--theme-speed) ease;
+    transition: border-color var(--cx-duration-normal) var(--cx-ease),
+                transform var(--cx-duration-normal) var(--cx-ease),
+                box-shadow var(--cx-duration-normal) var(--cx-ease),
+                background var(--cx-theme-speed) ease;
     display: flex;
     flex-direction: column;
     box-shadow: var(--cx-shadow-sm);
 }
 .features-card:hover {
-    border-color: var(--cx-cyan-30);
+    border-color: var(--cx-primary-border);
     transform: translateY(-2px);
     box-shadow: var(--cx-shadow-md);
 }
@@ -93,7 +76,6 @@
     min-height: 280px;
 }
 
-/* ── Card background image ────────────────────────────────── */
 .fcard-bg-img {
     position: absolute;
     inset: 0;
@@ -103,29 +85,22 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.15;
+    opacity: 0.12;
     transition: opacity 0.5s;
 }
 .features-card:hover .fcard-bg-img img {
-    opacity: 0.25;
+    opacity: 0.2;
 }
 .fcard-bg-scrim {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, var(--card-gradient), var(--card-gradient-m), var(--card-gradient-e));
-}
-.fcard-bg-scrim-left {
-    background: linear-gradient(to right, var(--card-gradient), var(--card-gradient-m), var(--card-gradient-e));
-}
-.fcard-bg-scrim-right {
-    background: linear-gradient(to right, var(--card-gradient), var(--card-bg));
+    background: linear-gradient(to top, var(--cx-card-bg), rgba(255,255,255,0.6), transparent);
 }
 
-/* ── Card content ─────────────────────────────────────────── */
 .fcard-content {
     position: relative;
     z-index: 10;
-    padding: 28px;
+    padding: var(--cx-space-7);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -133,21 +108,20 @@
     flex: 1;
 }
 
-/* ── Icon ─────────────────────────────────────────────────── */
 .fcard-icon {
     width: 42px;
     height: 42px;
-    border-radius: 12px;
+    border-radius: var(--cx-radius-lg);
     border: 1px solid;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: var(--cx-space-4);
 }
 .fcard-icon-cyan {
-    color: var(--cx-cyan);
-    background: var(--cx-cyan-10);
-    border-color: var(--cx-cyan-20);
+    color: var(--cx-primary);
+    background: var(--cx-primary-subtle);
+    border-color: var(--cx-primary-border);
 }
 .fcard-icon-purple {
     color: var(--cx-purple);
@@ -170,78 +144,46 @@
     border-color: var(--cx-gold-40);
 }
 
-/* ── Text ─────────────────────────────────────────────────── */
 .fcard-title {
-    font-family: var(--font-head);
+    font-family: var(--cx-font-accent);
     font-weight: 800;
     font-size: 1.25rem;
-    color: var(--text);
-    margin-bottom: 8px;
+    color: var(--cx-text);
+    margin-bottom: var(--cx-space-2);
 }
 .fcard-desc {
-    font-family: var(--font-body);
-    font-size: 14px;
-    color: var(--text2);
-    line-height: 1.5;
+    font-family: var(--cx-font-ui);
+    font-size: var(--cx-text-sm);
+    color: var(--cx-text-2);
+    line-height: var(--cx-leading-normal);
 }
 
-/* ── Stats inside cards ───────────────────────────────────── */
 .fcard-stat {
     display: flex;
     align-items: baseline;
-    gap: 8px;
-    margin-top: 16px;
+    gap: var(--cx-space-2);
+    margin-top: var(--cx-space-4);
 }
 .fcard-stat-num {
-    font-family: var(--font-head);
+    font-family: var(--cx-font-accent);
     font-weight: 900;
     font-size: 1.5rem;
 }
-.fcard-stat-cyan  { color: var(--cx-cyan); }
+.fcard-stat-cyan { color: var(--cx-primary); }
 .fcard-stat-purple { color: var(--cx-purple); }
 .fcard-stat-orange { color: var(--cx-orange); }
 .fcard-stat-label {
-    font-size: 12px;
-    color: var(--text2);
-}
-.fcard-stat-link {
-    font-size: 13px;
-    color: var(--cx-success);
-    font-weight: 600;
+    font-size: var(--cx-text-xs);
+    color: var(--cx-text-3);
 }
 
-/* ── Tags inside cards ────────────────────────────────────── */
 .fcard-tags {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-top: 16px;
-}
-.fcard-tag {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 12px;
-    border-radius: 100px;
-    font-size: 12px;
-    font-weight: 600;
-}
-.fcard-tag-orange {
-    color: var(--cx-orange);
-    background: var(--cx-orange-10);
-    border: 1px solid var(--cx-orange-20);
-}
-.fcard-tag-purple {
-    color: var(--cx-purple);
-    background: var(--cx-purple-10);
-    border: 1px solid var(--cx-purple-20);
-}
-.fcard-tag-text {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--cx-gold);
+    gap: var(--cx-space-3);
+    margin-top: var(--cx-space-4);
 }
 
-/* ── Stagger animation ────────────────────────────────────── */
 .stagger-child {
     opacity: 0;
     transform: translateY(20px);
@@ -252,24 +194,23 @@
     transform: translateY(0);
 }
 
-/* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 992px) {
-    .features-section { padding: 72px 20px; }
-    .features-header { margin-bottom: 48px; }
+    .features-section { padding: var(--cx-space-18) var(--cx-space-5); }
+    .features-header { margin-bottom: var(--cx-space-12); }
 }
 @media (max-width: 768px) {
-    .features-section { padding: 64px 16px; }
-    .features-header { margin-bottom: 40px; }
+    .features-section { padding: var(--cx-space-16) var(--cx-space-4); }
+    .features-header { margin-bottom: var(--cx-space-10); }
     .features-card { min-height: 180px; }
     .features-card-lg { min-height: 220px; }
-    .fcard-content { padding: 20px; }
+    .fcard-content { padding: var(--cx-space-5); }
     .fcard-title { font-size: 1.1rem; }
-    .fcard-desc { font-size: 13px; }
+    .fcard-desc { font-size: var(--cx-text-xs); }
 }
 @media (max-width: 480px) {
-    .features-section { padding: 56px 12px; }
+    .features-section { padding: var(--cx-space-14) var(--cx-space-3); }
     .features-card { min-height: 160px; }
-    .fcard-content { padding: 16px; }
-    .fcard-icon { width: 36px; height: 36px; border-radius: 10px; margin-bottom: 12px; }
+    .fcard-content { padding: var(--cx-space-4); }
+    .fcard-icon { width: 36px; height: 36px; border-radius: var(--cx-radius-md); margin-bottom: var(--cx-space-3); }
     .fcard-stat-num { font-size: 1.2rem; }
 }

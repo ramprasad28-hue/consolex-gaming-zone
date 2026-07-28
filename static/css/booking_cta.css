@@ -1,12 +1,12 @@
 /* ============================================================
-   CONSOLEX — booking_cta.css  (light theme)
+   CONSOLEX — booking_cta.css (V3 clean)
    ============================================================ */
 
 .booking-cta-section {
     position: relative;
-    padding: 80px 24px;
-    background: var(--surface);
-    overflow: hidden;
+    padding: var(--cx-space-20) var(--cx-space-6);
+    background: var(--cx-surface);
+    border-top: 1px solid var(--cx-border);
 }
 
 .booking-cta-container {
@@ -15,91 +15,44 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 40px;
-    position: relative;
-    z-index: 1;
+    gap: var(--cx-space-10);
 }
 
 .booking-cta-content { flex: 1; }
 
 .booking-cta-title {
-    font-family: var(--cx-font-ui);
+    font-family: var(--cx-font-accent);
     font-size: 2rem;
     font-weight: 800;
     color: var(--cx-text);
-    margin: 0 0 8px;
+    margin: 0 0 var(--cx-space-2);
     letter-spacing: -0.02em;
 }
 
 .booking-cta-subtitle {
-    font-size: 1rem;
+    font-size: var(--cx-text-lg);
     color: var(--cx-text-2);
     margin: 0;
 }
 
 .booking-cta-actions {
     display: flex;
-    gap: 14px;
+    gap: var(--cx-space-3);
     flex-shrink: 0;
 }
 
-.booking-cta-btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 28px;
-    background: var(--cx-blue);
-    color: var(--text-inverse);
-    font-family: var(--cx-font-ui);
-    font-size: 0.88rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    border-radius: var(--cx-radius-md);
-    text-decoration: none;
-    transition: transform 0.3s var(--cx-ease), box-shadow 0.3s;
-    border: none;
-    cursor: pointer;
-}
-
-.booking-cta-btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px var(--cx-primary-20);
-}
-
-.booking-cta-btn-ghost {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 28px;
-    background: transparent;
-    color: var(--cx-text);
-    font-family: var(--cx-font-ui);
-    font-size: 0.88rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    border: 1px solid var(--cx-border);
-    border-radius: var(--cx-radius-md);
-    text-decoration: none;
-    transition: border-color 0.3s, color 0.3s;
-}
-
-.booking-cta-btn-ghost:hover {
-    border-color: var(--cx-blue);
-    color: var(--cx-blue);
-}
-
 @media (max-width: 768px) {
-    .booking-cta-section { padding: 56px 20px; }
+    .booking-cta-section { padding: var(--cx-space-14) var(--cx-space-5); }
     .booking-cta-container {
         flex-direction: column;
         text-align: center;
-        gap: 28px;
+        gap: var(--cx-space-7);
     }
     .booking-cta-title { font-size: 1.6rem; }
 }
 
 @media (max-width: 480px) {
-    .booking-cta-section { padding: 48px 16px; }
+    .booking-cta-section { padding: var(--cx-space-12) var(--cx-space-4); }
     .booking-cta-actions { flex-direction: column; width: 100%; }
-    .booking-cta-btn-primary, .booking-cta-btn-ghost { justify-content: center; width: 100%; }
+    .booking-cta-actions .cx-btn { width: 100%; justify-content: center; }
 }
