@@ -1,7 +1,8 @@
 /* ============================================================
    CONSOLEX — style.css  (page utilities + inner pages)
    All homepage component CSS lives in dedicated files.
-   This file handles: auth, dashboard, booking, payment, alerts.
+   This file handles: auth, dashboard, alerts.
+   Booking: booking.css | Payment: payment.css
    ============================================================ */
 
 /* ── Alerts / Messages ──────────────────────────────────── */
@@ -190,112 +191,13 @@
 .empty-state { text-align: center; color: var(--cx-text-2); padding: 3rem; background: var(--cx-card-bg); border: 1px solid var(--cx-border); border-radius: var(--radius); }
 .empty-state a { color: var(--cx-cyan); }
 
-/* ── Booking Form ───────────────────────────────────────── */
-.booking-section { padding: 3rem 0; }
-.section-sub { color: var(--cx-text-2); margin-bottom: 2rem; }
-.booking-form-wrap { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; align-items: start; }
-.booking-form {
-    background: var(--cx-card-bg);
-    border: 1px solid var(--cx-border);
-    border-radius: var(--radius);
-    padding: 2rem;
-}
-.form-group { margin-bottom: 1.4rem; }
-.form-group label { display: block; color: var(--cx-text-2); font-size: 0.9rem; margin-bottom: 6px; }
-.form-group select,
-.form-group input[type="date"],
-.form-group input[type="number"],
-.form-group input[type="time"] {
-    width: 100%;
-    background: var(--cx-input-bg);
-    border: 1px solid var(--cx-border-2);
-    border-radius: 12px;
-    padding: 0.75rem 1rem;
-    color: var(--cx-text);
-    font-size: 1rem;
-    font-family: var(--font-body);
-    box-sizing: border-box;
-}
-.form-group select:focus:not(:focus-visible),
-.form-group input:focus:not(:focus-visible) { border-color: var(--cx-cyan); }
-.form-group select:focus-visible,
-.form-group input:focus-visible { outline: 2px solid var(--cx-cyan); outline-offset: 2px; border-color: var(--cx-cyan); }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-.cost-preview {
-    background: var(--cx-bg-2);
-    border: 1px solid var(--cx-cyan-25);
-    border-radius: var(--radius);
-    padding: 1rem;
-    color: var(--cx-text-2);
-    margin-bottom: 1.5rem;
-    text-align: center;
-}
-.cost-preview strong { color: var(--cx-cyan); font-size: 1.1rem; }
-.pricing-info {
-    background: var(--cx-card-bg);
-    border: 1px solid var(--cx-border);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-}
-.pricing-info h4 { color: var(--cx-text); margin-bottom: 1rem; }
-.price-table { width: 100%; border-collapse: collapse; }
-.price-table th { color: var(--cx-cyan); font-size: 0.85rem; padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--cx-border); }
-.price-table td { color: var(--cx-text-2); font-size: 0.9rem; padding: 0.6rem 0.5rem; border-bottom: 1px solid var(--cx-surface); }
-
-/* ── Payment Page ───────────────────────────────────────── */
-.payment-section { padding: 3rem 0; }
-.payment-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
-.booking-summary {
-    background: var(--cx-card-bg);
-    border: 1px solid var(--cx-border);
-    border-radius: var(--radius);
-    padding: 2rem;
-}
-.booking-summary h3 { color: var(--cx-text); margin-bottom: 1.5rem; }
-.summary-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.7rem 0;
-    border-bottom: 1px solid var(--cx-surface);
-    color: var(--cx-text-2);
-}
-.summary-row strong { color: var(--cx-text); }
-.total-row { border-top: 2px solid var(--cx-border); margin-top: 0.5rem; color: var(--cx-text); font-size: 1.1rem; }
-.total-row strong { color: var(--cx-cyan); font-size: 1.2rem; }
-.advance-row { color: var(--cx-success); }
-.advance-row strong { color: var(--cx-success); font-size: 1.1rem; }
-.payment-box {
-    background: var(--cx-card-bg);
-    border: 1px solid var(--cx-border);
-    border-radius: var(--radius);
-    padding: 2rem;
-}
-.payment-box h3 { color: var(--cx-text); margin-bottom: 1rem; }
-.payment-box p { color: var(--cx-text-2); margin-bottom: 1.5rem; line-height: 1.7; }
-.payment-note {
-    background: var(--cx-success-10);
-    border: 1px solid var(--cx-success-40);
-    border-radius: 12px;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    color: var(--cx-text-2);
-    font-size: 0.9rem;
-}
-
 /* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 768px) {
-    .booking-form-wrap { grid-template-columns: 1fr; }
-    .payment-wrap { grid-template-columns: 1fr; }
-    .form-row { grid-template-columns: 1fr; }
     .dashboard-header { flex-direction: column; align-items: flex-start; }
     .auth-section { padding: 5rem 1rem 2rem; }
     .auth-card { max-width: 100%; }
 }
 @media (max-width: 480px) {
-    .booking-section { padding: 2rem 0; }
-    .booking-form { padding: 1.2rem; }
-    .price-table { font-size: 0.82rem; }
-    .price-table th, .price-table td { padding: 0.4rem; }
     .auth-section { padding: 4.5rem 1rem 2rem; min-height: auto; }
     .auth-card { padding: 1.5rem; border-radius: var(--cx-radius-lg); }
     .auth-card h2 { font-size: 1.4rem; }

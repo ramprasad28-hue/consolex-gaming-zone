@@ -1,224 +1,431 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}Book a Slot — {{ site.brand_name }}{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/booking.css' %}">
+{% endblock %}
+
 {% block content %}
+<section class="wiz-section" aria-label="Booking wizard">
+  <div class="wiz-wrap">
 
-<section class="booking-section container">
-
-    <h2 class="section-title">{{ cb.booking_form_title|default:"Book Your PS5 Slot" }}</h2>
-    <p class="section-sub">
-        {{ cb.booking_form_subtitle|default:"Select your console, date, time and number of players." }}
-    </p>
+    <div class="wiz-head">
+      <h1 class="wiz-title">{{ cb.booking_form_title|default:"Book Your Slot" }}</h1>
+      <p class="wiz-sub">{{ cb.booking_form_subtitle|default:"Select your console, choose a time, and confirm your booking." }}</p>
+    </div>
 
     {% if messages %}
-        {% for msg in messages %}
-            <div class="alert alert-{{ msg.tags }}">
-                {{ msg }}
-            </div>
-        {% endfor %}
+      {% for msg in messages %}
+        <div class="cx-alert cx-alert--{% if msg.tags == 'error' %}danger{% else %}{{ msg.tags }}{% endif %}" role="alert">
+          <svg class="cx-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            {% if msg.tags == 'error' %}<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+            {% else %}<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>{% endif %}
+          </svg>
+          <div class="cx-alert-content">{{ msg }}</div>
+        </div>
+      {% endfor %}
     {% endif %}
 
     {% if form_errors %}
-        <div class="alert alert-error">
-            Please correct the errors below.
-        </div>
+      <div class="cx-alert cx-alert--danger" role="alert">
+        <svg class="cx-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <div class="cx-alert-content">Please correct the errors below.</div>
+      </div>
     {% endif %}
 
-    <div class="booking-form-wrap">
+    <!-- Step Indicator -->
+    <nav class="wiz-progress" aria-label="Booking progress" role="navigation">
+      <div class="wiz-step-indicator wiz-active" data-step="1" aria-current="step">
+        <div class="wiz-step-circle" aria-hidden="true">1</div>
+        <div class="wiz-step-label">Console</div>
+      </div>
+      <div class="wiz-step-line" aria-hidden="true"></div>
+      <div class="wiz-step-indicator" data-step="2">
+        <div class="wiz-step-circle" aria-hidden="true">2</div>
+        <div class="wiz-step-label">Date</div>
+      </div>
+      <div class="wiz-step-line" aria-hidden="true"></div>
+      <div class="wiz-step-indicator" data-step="3">
+        <div class="wiz-step-circle" aria-hidden="true">3</div>
+        <div class="wiz-step-label">Time</div>
+      </div>
+      <div class="wiz-step-line" aria-hidden="true"></div>
+      <div class="wiz-step-indicator" data-step="4">
+        <div class="wiz-step-circle" aria-hidden="true">4</div>
+        <div class="wiz-step-label">Players</div>
+      </div>
+      <div class="wiz-step-line" aria-hidden="true"></div>
+      <div class="wiz-step-indicator" data-step="5">
+        <div class="wiz-step-circle" aria-hidden="true">5</div>
+        <div class="wiz-step-label">Summary</div>
+      </div>
+      <div class="wiz-step-line" aria-hidden="true"></div>
+      <div class="wiz-step-indicator" data-step="6">
+        <div class="wiz-step-circle" aria-hidden="true">6</div>
+        <div class="wiz-step-label">Payment</div>
+      </div>
+    </nav>
 
-        <form method="POST" class="booking-form" id="bookingForm">
+    <form method="POST" id="bookingForm" novalidate>
+      {% csrf_token %}
 
-            {% csrf_token %}
+      <!-- Hidden fields populated by JS -->
+      <input type="hidden" name="game_console" id="hf_console" value="">
+      <input type="hidden" name="booking_date" id="hf_date" value="">
+      <input type="hidden" name="start_time" id="hf_time" value="">
+      <input type="hidden" name="duration_hours" id="hf_duration" value="1">
+      <input type="hidden" name="number_of_players" id="hf_players" value="1">
 
-            <!-- Console -->
-            <div class="form-group">
-                <label for="id_game_console">PS5 Setup</label>
-
-                <select name="game_console" id="id_game_console" required>
-
-                    <option value="">Select Console</option>
-
-                    {% for console in consoles %}
-                        <option value="{{ console.id }}">
-                            {{ console.name }}
-                        </option>
-                    {% endfor %}
-
-                </select>
-            </div>
-
-            <!-- Date -->
-            <div class="form-row">
-
-                <div class="form-group">
-                    <label for="id_booking_date">Date</label>
-                    <input
-                        type="date"
-                        name="booking_date"
-                        id="id_booking_date"
-                        required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="id_start_time">Start Time</label>
-                    <input
-                        type="time"
-                        name="start_time"
-                        id="id_start_time"
-                        required
-                    >
-                </div>
-
-            </div>
-
-            <!-- Duration -->
-            <div class="form-row">
-
-                <div class="form-group">
-                    <label for="id_duration_hours">Duration (Hours)</label>
-
-                    <select name="duration_hours" id="id_duration_hours">
-
-                        <option value="1">1 Hour</option>
-                        <option value="2">2 Hours</option>
-                        <option value="3">3 Hours</option>
-                        <option value="4">4 Hours</option>
-
-                    </select>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label for="id_number_of_players">Players</label>
-
-                    <select name="number_of_players" id="id_number_of_players">
-
-                        <option value="1">1 Player</option>
-                        <option value="2">2 Players</option>
-                        <option value="3">3 Players</option>
-                        <option value="4">4 Players</option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-            <!-- Live Cost -->
-
-            <div class="cost-preview" id="costPreview">
-
-                Estimated Total:
-                <strong>₹{{ rate_table.1|floatformat:0 }}</strong>
-
-            </div>
-
-            <button class="btn-primary btn-full">
-
-                Proceed to Payment →
-
-            </button>
-
-        </form>
-
-        <div class="pricing-info">
-            <h4>Pricing Guide</h4>
-            <table class="price-table">
-                <thead>
-                    <tr>
-                        <th>Players</th>
-                        <th>Weekday / Hr</th>
-                        <th>Weekend / Hr</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td>1 Player</td><td>₹130</td><td>₹150</td></tr>
-                    <tr><td>2 Players</td><td>₹250</td><td>₹270</td></tr>
-                    <tr><td>3 Players</td><td>₹330</td><td>₹400</td></tr>
-                    <tr><td>4 Players</td><td>₹420</td><td>₹520</td></tr>
-                </tbody>
-            </table>
+      <!-- ═══════════════════════════════════════════════════════
+           STEP 1: Choose Console
+           ═══════════════════════════════════════════════════════ -->
+      <div class="wiz-panel wiz-panel-active" id="step-1" role="tabpanel" aria-label="Step 1: Choose Console">
+        <div class="wiz-panel-head">
+          <h2 class="wiz-panel-title">Choose Your Console</h2>
+          <p class="wiz-panel-sub">Select the gaming setup you'd like to book.</p>
         </div>
 
-    </div>
+        <div class="wiz-console-grid" role="radiogroup" aria-label="Available consoles">
+          {% for console in consoles %}
+            <label class="wiz-console-card{% if not console.is_active %} wiz-console-disabled{% endif %}" data-console-id="{{ console.id }}" data-console-name="{{ console.name }}" data-rate-wd="{{ console.hourly_rate_weekday }}" data-rate-we="{{ console.hourly_rate_weekend }}">
+              <input type="radio" name="console_select" value="{{ console.id }}" class="wiz-console-radio" aria-label="{{ console.name }} — {{ console.get_console_type_display }}"{% if not console.is_active %} disabled{% endif %}>
 
+              <div class="wiz-console-media">
+                {% if console.image %}
+                  <img src="{{ console.image.url }}" alt="{{ console.name }}" loading="lazy">
+                {% else %}
+                  <div class="wiz-console-placeholder" aria-hidden="true">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="14" y1="10" x2="14" y2="14"/><line x1="18" y1="10" x2="18" y2="14"/></svg>
+                  </div>
+                {% endif %}
+                <div class="wiz-console-check" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+              </div>
+
+              <div class="wiz-console-body">
+                <div class="wiz-console-name">{{ console.name }}</div>
+                <span class="wiz-console-type">{{ console.get_console_type_display }}</span>
+                <div class="wiz-status wiz-status-available">
+                  <span class="wiz-status-dot"></span> Available
+                </div>
+              </div>
+            </label>
+          {% empty %}
+            <div class="wiz-empty">
+              <svg class="wiz-empty-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              <p>No consoles available at the moment.</p>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="wiz-error" id="err-console" role="alert" aria-live="polite"></div>
+
+        <div class="wiz-actions wiz-actions-end">
+          <button type="button" class="wiz-btn wiz-btn-primary" data-wiz-next="2" aria-label="Continue to date selection">
+            Choose Date
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           STEP 2: Choose Date
+           ═══════════════════════════════════════════════════════ -->
+      <div class="wiz-panel" id="step-2" role="tabpanel" aria-label="Step 2: Choose Date">
+        <div class="wiz-panel-head">
+          <h2 class="wiz-panel-title">Pick a Date</h2>
+          <p class="wiz-panel-sub">Select when you'd like to play.</p>
+        </div>
+
+        <div class="wiz-calendar-wrap">
+          <div class="wiz-calendar-header">
+            <button type="button" class="wiz-cal-nav" id="calPrev" aria-label="Previous month">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="wiz-cal-month" id="calMonth" aria-live="polite"></div>
+            <button type="button" class="wiz-cal-nav" id="calNext" aria-label="Next month">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+          <div class="wiz-calendar-weekdays" aria-hidden="true">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+          </div>
+          <div class="wiz-calendar-grid" id="calGrid" role="grid" aria-label="Calendar"></div>
+        </div>
+
+        <div class="wiz-selected-display" id="selectedDateDisplay" aria-live="polite">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="selectedDateText">No date selected</span>
+        </div>
+
+        <div class="wiz-error" id="err-date" role="alert" aria-live="polite"></div>
+
+        <div class="wiz-actions">
+          <button type="button" class="wiz-btn wiz-btn-ghost" data-wiz-prev="1" aria-label="Go back to console selection">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back
+          </button>
+          <button type="button" class="wiz-btn wiz-btn-primary" data-wiz-next="3" aria-label="Continue to time selection">
+            Choose Time
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           STEP 3: Choose Time Slot
+           ═══════════════════════════════════════════════════════ -->
+      <div class="wiz-panel" id="step-3" role="tabpanel" aria-label="Step 3: Choose Time">
+        <div class="wiz-panel-head">
+          <h2 class="wiz-panel-title">Select Time Slot</h2>
+          <p class="wiz-panel-sub">Choose your start time. Sessions run hourly.</p>
+        </div>
+
+        <div class="wiz-timeslot-grid" id="timeslotGrid" role="radiogroup" aria-label="Available time slots">
+        </div>
+
+        <div class="wiz-selected-display" id="selectedTimeDisplay" aria-live="polite">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span id="selectedTimeText">No time selected</span>
+        </div>
+
+        <div class="wiz-error" id="err-time" role="alert" aria-live="polite"></div>
+
+        <div class="wiz-actions">
+          <button type="button" class="wiz-btn wiz-btn-ghost" data-wiz-prev="2" aria-label="Go back to date selection">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back
+          </button>
+          <button type="button" class="wiz-btn wiz-btn-primary" data-wiz-next="4" aria-label="Continue to player selection">
+            Choose Players
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           STEP 4: Players & Duration
+           ═══════════════════════════════════════════════════════ -->
+      <div class="wiz-panel" id="step-4" role="tabpanel" aria-label="Step 4: Players and Duration">
+        <div class="wiz-panel-head">
+          <h2 class="wiz-panel-title">Players & Duration</h2>
+          <p class="wiz-panel-sub">How many players and for how long?</p>
+        </div>
+
+        <div class="wiz-interim">
+
+          <div class="wiz-field wiz-field--gap">
+            <label class="cx-label" id="players-label">Number of Players</label>
+            <div class="wiz-player-grid" role="radiogroup" aria-labelledby="players-label">
+              <button type="button" class="wiz-player-btn" data-players="1" role="radio" aria-checked="false" aria-label="1 Player">
+                <span class="wiz-player-num">1</span>
+                <span class="wiz-player-txt">Player</span>
+              </button>
+              <button type="button" class="wiz-player-btn" data-players="2" role="radio" aria-checked="false" aria-label="2 Players">
+                <span class="wiz-player-num">2</span>
+                <span class="wiz-player-txt">Players</span>
+              </button>
+              <button type="button" class="wiz-player-btn" data-players="3" role="radio" aria-checked="false" aria-label="3 Players">
+                <span class="wiz-player-num">3</span>
+                <span class="wiz-player-txt">Players</span>
+              </button>
+              <button type="button" class="wiz-player-btn" data-players="4" role="radio" aria-checked="false" aria-label="4 Players">
+                <span class="wiz-player-num">4</span>
+                <span class="wiz-player-txt">Players</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="wiz-field wiz-field--gap">
+            <label class="cx-label" for="durationSelect">Duration</label>
+            <select class="cx-select" id="durationSelect" aria-describedby="duration-hint">
+              <option value="1">1 Hour</option>
+              <option value="2">2 Hours</option>
+              <option value="3">3 Hours</option>
+              <option value="4">4 Hours</option>
+            </select>
+            <span class="cx-hint" id="duration-hint">You can book up to 4 hours.</span>
+          </div>
+
+          <div class="wiz-cost-preview" id="costPreview" aria-live="polite">
+            <svg class="wiz-cost-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span>Estimated Total: <strong id="costTotal">₹0</strong></span>
+            <span class="wiz-cost-sep">|</span>
+            <span>Advance: <strong id="costAdvance">₹0</strong></span>
+          </div>
+
+          <div class="wiz-pricing-table-wrap">
+            <h4 class="wiz-pricing-title">Pricing Guide</h4>
+            <div class="cx-table-wrap">
+              <table class="cx-table" aria-label="Pricing rates">
+                <thead>
+                  <tr>
+                    <th scope="col">Players</th>
+                    <th scope="col">Weekday / Hr</th>
+                    <th scope="col">Weekend / Hr</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>1 Player</td><td>₹130</td><td>₹150</td></tr>
+                  <tr><td>2 Players</td><td>₹250</td><td>₹270</td></tr>
+                  <tr><td>3 Players</td><td>₹330</td><td>₹400</td></tr>
+                  <tr><td>4 Players</td><td>₹420</td><td>₹520</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="wiz-error" id="err-players" role="alert" aria-live="polite"></div>
+
+        <div class="wiz-actions">
+          <button type="button" class="wiz-btn wiz-btn-ghost" data-wiz-prev="3" aria-label="Go back to time selection">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back
+          </button>
+          <button type="button" class="wiz-btn wiz-btn-primary" data-wiz-next="5" aria-label="Continue to booking summary">
+            Review Booking
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           STEP 5: Booking Summary
+           ═══════════════════════════════════════════════════════ -->
+      <div class="wiz-panel" id="step-5" role="tabpanel" aria-label="Step 5: Booking Summary">
+        <div class="wiz-panel-head">
+          <h2 class="wiz-panel-title">Review Your Booking</h2>
+          <p class="wiz-panel-sub">Please confirm all details before proceeding.</p>
+        </div>
+
+        <div class="wiz-summary-card">
+          <div class="wiz-summary-row">
+            <span class="wiz-summary-label">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/></svg>
+              Console
+            </span>
+            <span class="wiz-summary-value" id="sumConsole">—</span>
+          </div>
+          <div class="wiz-summary-row">
+            <span class="wiz-summary-label">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Date
+            </span>
+            <span class="wiz-summary-value" id="sumDate">—</span>
+          </div>
+          <div class="wiz-summary-row">
+            <span class="wiz-summary-label">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Time
+            </span>
+            <span class="wiz-summary-value" id="sumTime">—</span>
+          </div>
+          <div class="wiz-summary-row">
+            <span class="wiz-summary-label">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Players
+            </span>
+            <span class="wiz-summary-value" id="sumPlayers">—</span>
+          </div>
+          <div class="wiz-summary-row">
+            <span class="wiz-summary-label">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Duration
+            </span>
+            <span class="wiz-summary-value" id="sumDuration">—</span>
+          </div>
+
+          <hr class="cx-divider cx-divider--thick">
+
+          <div class="wiz-summary-row">
+            <span class="wiz-summary-label">Subtotal</span>
+            <span class="wiz-summary-value" id="sumSubtotal">—</span>
+          </div>
+          <div class="wiz-summary-row wiz-summary-total">
+            <span class="wiz-summary-label">Advance (30%)</span>
+            <span class="wiz-summary-value" id="sumAdvance">—</span>
+          </div>
+          <div class="wiz-summary-row">
+            <span class="wiz-summary-label">Balance at Venue</span>
+            <span class="wiz-summary-value" id="sumBalance">—</span>
+          </div>
+        </div>
+
+        <div class="wiz-actions">
+          <button type="button" class="wiz-btn wiz-btn-ghost" data-wiz-prev="4" aria-label="Go back to player selection">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back
+          </button>
+          <button type="button" class="wiz-btn wiz-btn-primary" data-wiz-next="6" aria-label="Proceed to payment">
+            Proceed to Payment
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           STEP 6: Confirm & Pay
+           ═══════════════════════════════════════════════════════ -->
+      <div class="wiz-panel" id="step-6" role="tabpanel" aria-label="Step 6: Confirm and Pay">
+        <div class="wiz-panel-head">
+          <h2 class="wiz-panel-title">Confirm & Pay</h2>
+          <p class="wiz-panel-sub">Submit your booking. You'll be redirected to complete payment.</p>
+        </div>
+
+        <div class="wiz-interim wiz-confirm-box">
+          <div class="wiz-confirm-row">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <div>
+              <div class="wiz-confirm-title">Ready to book?</div>
+              <div class="wiz-confirm-desc">By clicking "Submit Booking", your slot will be reserved and you'll be redirected to complete the advance payment.</div>
+            </div>
+          </div>
+
+          <div class="wiz-confirm-details">
+            <div class="wiz-confirm-line"><span>Console:</span> <strong id="confirmConsole">—</strong></div>
+            <div class="wiz-confirm-line"><span>Date & Time:</span> <strong id="confirmDateTime">—</strong></div>
+            <div class="wiz-confirm-line"><span>Players:</span> <strong id="confirmPlayers">—</strong></div>
+            <div class="wiz-confirm-line"><span>Duration:</span> <strong id="confirmDuration">—</strong></div>
+            <hr class="cx-divider">
+            <div class="wiz-confirm-line wiz-confirm-total"><span>Advance to Pay:</span> <strong id="confirmAdvance">—</strong></div>
+          </div>
+        </div>
+
+        <div class="wiz-actions">
+          <button type="button" class="wiz-btn wiz-btn-ghost" data-wiz-prev="5" aria-label="Go back to booking summary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back
+          </button>
+          <button type="submit" class="wiz-btn wiz-btn-primary wiz-btn-submit" id="submitBtn" aria-label="Submit booking and proceed to payment">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            Submit Booking
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
 </section>
+{% endblock %}
 
+{% block extra_scripts %}
 <script>
-
-const RATE_WEEKDAY = {
-    {% for players, rate in rate_table.items %}
-        {{ players }}: {{ rate }}{% if not forloop.last %},{% endif %}
-    {% endfor %}
+var RATE_WEEKDAY = {
+  {% for players, rate in rate_table.items %}
+    "{{ players }}": {{ rate }}{% if not forloop.last %},{% endif %}
+  {% endfor %}
 };
-
-const RATE_WEEKEND = {
-    {% for players, rate in rate_table_weekend.items %}
-        {{ players }}: {{ rate }}{% if not forloop.last %},{% endif %}
-    {% endfor %}
+var RATE_WEEKEND = {
+  {% for players, rate in rate_table_weekend.items %}
+    "{{ players }}": {{ rate }}{% if not forloop.last %},{% endif %}
+  {% endfor %}
 };
-
-(function () {
-    var dateInput = document.querySelector('[name="booking_date"]');
-    if (dateInput) {
-        var today = new Date();
-        var yyyy = today.getFullYear();
-        var mm = String(today.getMonth() + 1).padStart(2, '0');
-        var dd = String(today.getDate()).padStart(2, '0');
-        dateInput.setAttribute('min', yyyy + '-' + mm + '-' + dd);
-    }
-})();
-
-function updateCost(){
-
-    const players =
-        parseInt(
-            document.querySelector('[name="number_of_players"]').value
-        );
-
-    const duration =
-        parseInt(
-            document.querySelector('[name="duration_hours"]').value
-        );
-
-    const dateVal = document.querySelector('[name="booking_date"]').value;
-    var isWeekend = false;
-    if (dateVal) {
-        var d = new Date(dateVal);
-        isWeekend = d.getDay() === 0 || d.getDay() === 6;
-    }
-
-    var rates = isWeekend ? RATE_WEEKEND : RATE_WEEKDAY;
-    const total = (rates[players] || 0) * duration;
-    const advance = Math.round(total * 0.30);
-
-    var dayLabel = isWeekend ? ' (Weekend)' : ' (Weekday)';
-
-    document.getElementById("costPreview").innerHTML =
-
-        `Estimated Total:
-        <strong>₹${total}</strong>${dayLabel}
-        &nbsp;&nbsp;|
-        Advance:
-        <strong>₹${advance}</strong>`;
-
-}
-
-var playersInput = document.querySelector('[name="number_of_players"]');
-if (playersInput) playersInput.addEventListener("change", updateCost);
-
-var durationInput = document.querySelector('[name="duration_hours"]');
-if (durationInput) durationInput.addEventListener("change", updateCost);
-
-var bookingDateInput = document.querySelector('[name="booking_date"]');
-if (bookingDateInput) {
-    bookingDateInput.addEventListener("change", updateCost);
-}
-
-updateCost();
-
 </script>
-
+<script src="{% static 'js/booking.js' %}"></script>
 {% endblock %}

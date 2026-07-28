@@ -4,51 +4,65 @@
 {% block title %}Booking Confirmed — {{ site.brand_name }}{% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/payment.css' %}">
+<link rel="stylesheet" href="{% static 'css/payment.css' %}">
 {% endblock %}
 
 {% block content %}
-<section class="payment-section" aria-label="Payment successful">
-  <div class="payment-container payment-container--narrow" aria-live="polite">
+<section class="pay-section" aria-label="Payment successful">
+  <div class="pay-wrap pay-wrap--narrow" aria-live="polite">
 
-    <div class="success-icon" aria-hidden="true">✅</div>
-    <h1 class="payment-title">Slot <span class="title-accent">Confirmed!</span></h1>
-    <p class="payment-subtitle">
-      Your advance of <strong>₹{{ payment.amount_rupees }}</strong> has been received.
-      See you at {{ site.brand_name }}!
-    </p>
+    <div class="pay-success-card">
 
-    <div class="payment-summary-card">
-      <div class="summary-row">
-        <span class="summary-label">Booking ID</span>
-        <span class="summary-value">#{{ booking.id }}</span>
+      <div class="pay-success-icon" aria-hidden="true">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
       </div>
-      <div class="summary-row">
-        <span class="summary-label">Date</span>
-        <span class="summary-value">{{ booking.booking_date|date:"d M Y" }}</span>
-      </div>
-      <div class="summary-row">
-        <span class="summary-label">Time</span>
-        <span class="summary-value">{{ booking.start_time|time:"h:i A" }} – {{ booking.end_time|time:"h:i A" }}</span>
-      </div>
-      <div class="summary-row">
-        <span class="summary-label">Razorpay ID</span>
-        <span class="summary-value summary-small">{{ payment.razorpay_payment_id }}</span>
-      </div>
-      <div class="summary-divider"></div>
-      <div class="summary-row summary-advance">
-        <span class="summary-label">Advance Paid</span>
-        <span class="summary-value accent-cyan">₹{{ payment.amount_rupees }}</span>
-      </div>
-      <div class="summary-row">
-        <span class="summary-label">Balance at venue</span>
-        <span class="summary-value accent-muted">₹{{ booking.balance_amount}}</span>
-      </div>
-    </div>
 
-    <div class="success-actions">
-      <a href="{% url 'users:dashboard' %}" class="btn-pay">View My Bookings</a>
-      <a href="{% url 'home' %}" class="btn-secondary">Back to Home</a>
+      <h1 class="pay-title">Slot <span class="pay-title-accent">Confirmed!</span></h1>
+      <p class="pay-subtitle">
+        Your advance of <strong>₹{{ payment.amount_rupees }}</strong> has been received.
+        See you at {{ site.brand_name }}!
+      </p>
+
+      <div class="pay-summary-card">
+        <div class="pay-summary-row">
+          <span class="pay-summary-label">Booking ID</span>
+          <span class="pay-summary-value">#{{ booking.id }}</span>
+        </div>
+        <div class="pay-summary-row">
+          <span class="pay-summary-label">Date</span>
+          <span class="pay-summary-value">{{ booking.booking_date|date:"d M Y" }}</span>
+        </div>
+        <div class="pay-summary-row">
+          <span class="pay-summary-label">Time</span>
+          <span class="pay-summary-value">{{ booking.start_time|time:"h:i A" }} – {{ booking.end_time|time:"h:i A" }}</span>
+        </div>
+        <div class="pay-summary-row">
+          <span class="pay-summary-label">Razorpay ID</span>
+          <span class="pay-summary-value pay-summary-small">{{ payment.razorpay_payment_id }}</span>
+        </div>
+        <hr class="cx-divider">
+        <div class="pay-summary-row pay-summary-advance">
+          <span class="pay-summary-label">Advance Paid</span>
+          <span class="pay-summary-value pay-value-primary">₹{{ payment.amount_rupees }}</span>
+        </div>
+        <div class="pay-summary-row">
+          <span class="pay-summary-label">Balance at venue</span>
+          <span class="pay-summary-value pay-value-muted">₹{{ booking.balance_amount }}</span>
+        </div>
+      </div>
+
+      <div class="pay-success-actions">
+        <a href="{% url 'users:dashboard' %}" class="pay-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          View My Bookings
+        </a>
+        <a href="{% url 'bookings:booking_form' %}" class="pay-btn-secondary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Book Again
+        </a>
+        <a href="{% url 'home' %}" class="pay-link-btn">Back to Home</a>
+      </div>
+
     </div>
 
   </div>
