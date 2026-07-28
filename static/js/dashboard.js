@@ -1,13 +1,13 @@
-/* ─────────────────────────────────────────────
-   File: static/js/dashboard.js
-   CONSOLEX — Dashboard interactions (vanilla JS, minimal)
-   ───────────────────────────────────────────── */
+/* ============================================================
+   CONSOLEX — dashboard.js  (V3 — Batch 5)
+   Vanilla JS, IIFE-wrapped. No dependencies.
+   ============================================================ */
 (function () {
   'use strict';
 
   /* ── Notification dropdown ─────────────────────────────── */
-  var bellBtn   = document.getElementById('dashNotifBell');
-  var notifPanel = document.getElementById('dashNotifPanel');
+  var bellBtn   = document.getElementById('dxNotifBell');
+  var notifPanel = document.getElementById('dxNotifPanel');
 
   if (bellBtn && notifPanel) {
     var closeOnOutsideClick = function (e) {
@@ -31,6 +31,7 @@
       if (e.key === 'Escape') {
         notifPanel.classList.remove('is-open');
         bellBtn.setAttribute('aria-expanded', 'false');
+        bellBtn.focus();
       }
     });
   }
@@ -76,7 +77,7 @@
         if (!entry.isIntersecting) return;
         var el = entry.target;
         var pct = el.getAttribute('data-progress-fill');
-        requestAnimationFrame(function () { el.style.width = pct + '%'; });
+        requestAnimationFrame(function () { el.style.width = (pct || 0) + '%'; });
         barObserver.unobserve(el);
       });
     }, { threshold: 0.4 });
@@ -85,11 +86,11 @@
     bars.forEach(function (el) { el.style.width = (el.getAttribute('data-progress-fill') || 0) + '%'; });
   }
 
-  /* ── Toast for actions not yet wired to a backend view ──── */
-  var toast = document.getElementById('dashToast');
+  /* ── Toast for stub actions ─────────────────────────────── */
+  var toast = document.getElementById('dxToast');
   var toastTimer = null;
 
-  window.dashShowStubToast = function (message) {
+  window.dxShowStubToast = function (message) {
     if (!toast) return;
     toast.textContent = message;
     toast.classList.add('is-shown');
@@ -102,7 +103,7 @@
   document.querySelectorAll('[data-stub-action]').forEach(function (btn) {
     btn.addEventListener('click', function (e) {
       e.preventDefault();
-      window.dashShowStubToast(btn.getAttribute('data-stub-action'));
+      window.dxShowStubToast(btn.getAttribute('data-stub-action'));
     });
   });
 }());

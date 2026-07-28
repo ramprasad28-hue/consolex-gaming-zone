@@ -10,265 +10,303 @@
 {% block announcement %}{% endblock %}
 
 {% block content %}
-<section class="dashboard-section">
+<section class="dashboard-section" aria-label="User Dashboard">
   <div class="dashboard-container">
 
     {% with user_display=request.user.first_name|default:request.user.email %}
     {% with user_initial=user_display|slice:":1"|upper %}
 
     <!-- ══════════ TOP TOOLBAR ══════════ -->
-    <div class="dash-topbar nx-animate">
-      <div class="dash-topbar-left">
-        <div class="dash-avatar" aria-hidden="true">{{ user_initial }}</div>
-        <div class="dash-topbar-welcome">
-          <div class="dash-topbar-eyebrow">Player Portal</div>
-          <div class="dash-topbar-name">{{ user_display }}</div>
+    <div class="dx-topbar dx-animate" role="toolbar" aria-label="Dashboard toolbar">
+      <div class="dx-topbar-left">
+        <div class="dx-avatar" aria-hidden="true">{{ user_initial }}</div>
+        <div class="dx-topbar-welcome">
+          <div class="dx-topbar-eyebrow">Player Portal</div>
+          <div class="dx-topbar-name">{{ user_display }}</div>
         </div>
       </div>
 
-      <div class="dash-topbar-actions">
-
+      <div class="dx-topbar-actions">
         <!-- Notifications -->
-        <div class="dash-notif-wrap">
+        <div class="dx-notif-wrap">
           <button type="button"
-                  id="dashNotifBell"
-                  class="dash-icon-btn"
-                  aria-label="Notifications"
+                  id="dxNotifBell"
+                  class="dx-icon-btn"
+                  aria-label="Notifications{% if unread_notifications_count %} ({{ unread_notifications_count }} unread){% endif %}"
                   aria-haspopup="true"
                   aria-expanded="false">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
             </svg>
             {% if unread_notifications_count %}
-              <span class="dash-badge-dot">{{ unread_notifications_count }}</span>
+              <span class="dx-badge-dot" aria-hidden="true">{{ unread_notifications_count }}</span>
             {% endif %}
           </button>
 
-          <div id="dashNotifPanel" class="dash-notif-panel" role="menu">
-            <div class="dash-notif-head">Notifications</div>
+          <div id="dxNotifPanel" class="dx-notif-panel" role="menu" aria-label="Notifications">
+            <div class="dx-notif-head">Notifications</div>
             {% if notifications %}
               {% for n in notifications %}
-                <div class="dash-notif-item {% if not n.is_read %}is-unread{% endif %}" role="menuitem">
-                  <span class="dash-notif-dot" aria-hidden="true"></span>
+                <div class="dx-notif-item {% if not n.is_read %}is-unread{% endif %}" role="menuitem">
+                  <span class="dx-notif-dot" aria-hidden="true"></span>
                   <div>
-                    <div class="dash-notif-text">{{ n.message }}</div>
-                    <div class="dash-notif-time">{{ n.created_at|timesince }} ago</div>
+                    <div class="dx-notif-text">{{ n.message }}</div>
+                    <div class="dx-notif-time">{{ n.created_at|timesince }} ago</div>
                   </div>
                 </div>
               {% endfor %}
             {% else %}
-              <div class="dash-notif-empty">You're all caught up — no notifications yet.</div>
+              <div class="dx-notif-empty">You're all caught up.</div>
             {% endif %}
           </div>
         </div>
 
-        <!-- Settings (placeholder — no settings view exists yet) -->
+        <!-- Settings (placeholder) -->
         <button type="button"
-                class="dash-icon-btn"
-                aria-label="Settings"
+                class="dx-icon-btn"
+                aria-label="Account settings (coming soon)"
                 data-stub-action="Account settings are coming soon.">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="3"/>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.36.4.66.75.85.24.13.5.19.76.19H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
           </svg>
         </button>
 
-        <form method="POST" action="{% url 'users:logout' %}" style="display:inline;">
+        <form method="POST" action="{% url 'users:logout' %}" aria-label="Logout">
           {% csrf_token %}
-          <button type="submit" class="dash-logout-link" style="background:none;border:none;cursor:pointer;font:inherit;color:inherit;">Logout</button>
+          <button type="submit" class="dx-logout-btn">Logout</button>
         </form>
       </div>
     </div>
 
     <!-- ══════════ HERO CARD ══════════ -->
-    <div class="dash-hero nx-animate nx-d1">
-      <div class="dash-hero-content">
-        <h1 class="dash-hero-title">Welcome back, <span class="accent">{{ user_display }}</span></h1>
-        <p class="dash-hero-sub">Here's what's happening with your {{ site.brand_name }} account.</p>
+    <div class="dx-hero dx-animate dx-d1">
+      <div class="dx-hero-content">
+        <h1 class="dx-hero-title">Welcome back, {{ user_display }}</h1>
+        <p class="dx-hero-sub">Here's what's happening with your {{ site.brand_name }} account.</p>
 
-        <div class="dash-hero-meta">
-          <div class="dash-hero-meta-item">
-            <div class="dash-hero-meta-label">Member Since</div>
-            <div class="dash-hero-meta-value">{{ request.user.created_at|date:"M Y" }}</div>
+        <div class="dx-hero-meta" role="list" aria-label="Account summary">
+          <div class="dx-hero-meta-item" role="listitem">
+            <div class="dx-hero-meta-label">Member Since</div>
+            <div class="dx-hero-meta-value">{{ request.user.created_at|date:"M Y" }}</div>
           </div>
-          <div class="dash-hero-meta-item">
-            <div class="dash-hero-meta-label">Membership</div>
-            <div class="dash-hero-meta-value is-accent">{{ request.user.membership.name|default:"None" }}</div>
+          <div class="dx-hero-meta-item" role="listitem">
+            <div class="dx-hero-meta-label">Membership</div>
+            <div class="dx-hero-meta-value dx-hero-meta-value--accent">{{ request.user.membership.name|default:"None" }}</div>
           </div>
-          <div class="dash-hero-meta-item">
-            <div class="dash-hero-meta-label">Hours Played</div>
-            <div class="dash-hero-meta-value">{{ total_hours_played }}</div>
+          <div class="dx-hero-meta-item" role="listitem">
+            <div class="dx-hero-meta-label">Hours Played</div>
+            <div class="dx-hero-meta-value">{{ total_hours_played }}</div>
           </div>
-          <div class="dash-hero-meta-item">
-            <div class="dash-hero-meta-label">Favorite Console</div>
-            <div class="dash-hero-meta-value">{{ favorite_console|default:"—" }}</div>
+          <div class="dx-hero-meta-item" role="listitem">
+            <div class="dx-hero-meta-label">Favorite Console</div>
+            <div class="dx-hero-meta-value">{{ favorite_console|default:"—" }}</div>
           </div>
         </div>
       </div>
 
       {% if site.dashboard_hero_image %}
-      <div class="dash-hero-image">
-        <img src="{{ site.dashboard_hero_image.url }}" alt="{{ site.brand_name }} Hero">
+      <div class="dx-hero-image">
+        <img src="{{ site.dashboard_hero_image.url }}" alt="{{ site.brand_name }} hero" loading="lazy">
       </div>
       {% endif %}
     </div>
 
     <!-- ══════════ STATS GRID ══════════ -->
-    <div class="dash-stats-grid">
-      <div class="dash-stat-card is-cyan nx-animate nx-d1">
-        <div class="dash-stat-icon">🎮</div>
-        <div class="dash-stat-value" data-count-to="{{ total_bookings }}">0</div>
-        <div class="dash-stat-label">Total Bookings</div>
+    <div class="dx-stats-grid" role="list" aria-label="Booking statistics">
+      <div class="dx-stat-card dx-animate dx-d1" role="listitem">
+        <div class="dx-stat-icon dx-stat-icon--primary" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div class="dx-stat-value" data-count-to="{{ total_bookings }}">0</div>
+        <div class="dx-stat-label">Total Bookings</div>
       </div>
-      <div class="dash-stat-card is-cyan nx-animate nx-d2">
-        <div class="dash-stat-icon">✅</div>
-        <div class="dash-stat-value" data-count-to="{{ confirmed_bookings }}">0</div>
-        <div class="dash-stat-label">Confirmed Bookings</div>
+
+      <div class="dx-stat-card dx-animate dx-d2" role="listitem">
+        <div class="dx-stat-icon dx-stat-icon--success" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div class="dx-stat-value" data-count-to="{{ confirmed_bookings }}">0</div>
+        <div class="dx-stat-label">Confirmed</div>
       </div>
-      <div class="dash-stat-card is-highlight nx-animate nx-d3">
-        <div class="dash-stat-icon">⏳</div>
-        <div class="dash-stat-value" data-count-to="{{ pending_bookings }}">0</div>
-        <div class="dash-stat-label">Pending Bookings</div>
+
+      <div class="dx-stat-card dx-animate dx-d3" role="listitem">
+        <div class="dx-stat-icon dx-stat-icon--warning" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="dx-stat-value" data-count-to="{{ pending_bookings }}">0</div>
+        <div class="dx-stat-label">Pending</div>
       </div>
-      <div class="dash-stat-card is-purple nx-animate nx-d4">
-        <div class="dash-stat-icon">🏁</div>
-        <div class="dash-stat-value" data-count-to="{{ completed_bookings }}">0</div>
-        <div class="dash-stat-label">Completed Sessions</div>
+
+      <div class="dx-stat-card dx-animate dx-d4" role="listitem">
+        <div class="dx-stat-icon dx-stat-icon--purple" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="dx-stat-value" data-count-to="{{ completed_bookings }}">0</div>
+        <div class="dx-stat-label">Completed</div>
       </div>
-      <div class="dash-stat-card is-orange nx-animate nx-d1">
-        <div class="dash-stat-icon">💰</div>
-        <div class="dash-stat-value" data-count-to="{{ total_spent }}" data-prefix="₹" data-decimals="0">₹0</div>
-        <div class="dash-stat-label">Total Amount Spent</div>
+
+      <div class="dx-stat-card dx-animate dx-d1" role="listitem">
+        <div class="dx-stat-icon dx-stat-icon--gold" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="dx-stat-value" data-count-to="{{ total_spent }}" data-prefix="₹" data-decimals="0">₹0</div>
+        <div class="dx-stat-label">Total Spent</div>
       </div>
-      <div class="dash-stat-card is-cyan nx-animate nx-d2">
-        <div class="dash-stat-icon">🕒</div>
-        <div class="dash-stat-value" data-count-to="{{ total_hours_played }}" data-decimals="1">0</div>
-        <div class="dash-stat-label">Total Hours Played</div>
+
+      <div class="dx-stat-card dx-animate dx-d2" role="listitem">
+        <div class="dx-stat-icon dx-stat-icon--primary" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="dx-stat-value" data-count-to="{{ total_hours_played }}" data-decimals="1">0</div>
+        <div class="dx-stat-label">Hours Played</div>
       </div>
-      <div class="dash-stat-card is-purple nx-animate nx-d3">
-        <div class="dash-stat-icon">🕹️</div>
-        <div class="dash-stat-value" style="font-size:1.05rem;">{{ favorite_console|default:"—" }}</div>
-        <div class="dash-stat-label">Favorite Console</div>
+
+      <div class="dx-stat-card dx-animate dx-d3" role="listitem">
+        <div class="dx-stat-icon dx-stat-icon--purple" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
+        </div>
+        <div class="dx-stat-value dx-stat-value--sm">{{ favorite_console|default:"—" }}</div>
+        <div class="dx-stat-label">Favorite Console</div>
       </div>
-      <div class="dash-stat-card is-highlight nx-animate nx-d4">
-        <div class="dash-stat-icon">🎫</div>
-        <div class="dash-stat-value" style="font-size:1.05rem;">{{ request.user.membership.name|default:"None" }}</div>
-        <div class="dash-stat-label">Current Membership</div>
+
+      <div class="dx-stat-card dx-animate dx-d4" role="listitem">
+        <div class="dx-stat-icon dx-stat-icon--orange" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+        </div>
+        <div class="dx-stat-value dx-stat-value--sm">{{ request.user.membership.name|default:"None" }}</div>
+        <div class="dx-stat-label">Membership</div>
       </div>
     </div>
 
     <!-- ══════════ QUICK ACTIONS ══════════ -->
-    <div class="dash-quick-actions">
-      <a href="{% url 'bookings:booking_form' %}" class="dash-qa-card nx-animate nx-d1">
-        <div class="dash-qa-icon">➕</div>
-        <div class="dash-qa-label">Book New Slot</div>
+    <nav class="dx-quick-actions" aria-label="Quick actions">
+      <a href="{% url 'bookings:booking_form' %}" class="dx-qa-card dx-animate dx-d1">
+        <div class="dx-qa-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div class="dx-qa-label">Book New Slot</div>
       </a>
-      <a href="{% url 'memberships:plan_list' %}" class="dash-qa-card nx-animate nx-d2">
-        <div class="dash-qa-icon">🎫</div>
-        <div class="dash-qa-label">Membership</div>
+      <a href="{% url 'memberships:plan_list' %}" class="dx-qa-card dx-animate dx-d2">
+        <div class="dx-qa-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+        </div>
+        <div class="dx-qa-label">Membership</div>
       </a>
-      <a href="{% url 'home' %}#games" class="dash-qa-card nx-animate nx-d3">
-        <div class="dash-qa-icon">🎮</div>
-        <div class="dash-qa-label">Browse Games</div>
+      <a href="{% url 'home' %}#games" class="dx-qa-card dx-animate dx-d3">
+        <div class="dx-qa-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
+        </div>
+        <div class="dx-qa-label">Browse Games</div>
       </a>
       <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hi%20{{ site.brand_name }}!%20I%20need%20help%20with%20my%20booking."
-         target="_blank" rel="noopener noreferrer" class="dash-qa-card nx-animate nx-d4">
-        <div class="dash-qa-icon">💬</div>
-        <div class="dash-qa-label">Support</div>
+         target="_blank" rel="noopener noreferrer" class="dx-qa-card dx-animate dx-d4">
+        <div class="dx-qa-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        </div>
+        <div class="dx-qa-label">Support</div>
       </a>
-      <button type="button" class="dash-qa-card nx-animate nx-d5"
-              onclick="document.getElementById('dashNotifBell').click();">
-        <div class="dash-qa-icon">🔔</div>
-        <div class="dash-qa-label">Notifications</div>
+      <button type="button" class="dx-qa-card dx-animate dx-d5"
+              onclick="document.getElementById('dxNotifBell').click();"
+              aria-label="View notifications">
+        <div class="dx-qa-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <div class="dx-qa-label">Notifications</div>
       </button>
-    </div>
+    </nav>
 
     <!-- ══════════ MAIN GRID ══════════ -->
-    <div class="dash-main-grid">
+    <div class="dx-main-grid">
 
       <!-- LEFT: Booking history -->
       <div>
-        <div class="dashboard-card nx-animate">
-          <h2 class="dashboard-card-title">📋 Booking History</h2>
+        <div class="dx-card dx-animate" aria-label="Booking history">
+          <h2 class="dx-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Booking History
+          </h2>
 
           {% if bookings %}
-            <div class="bookings-table-wrap">
-              <table class="bookings-table">
+            <div class="dx-table-wrap">
+              <table class="dx-table" aria-label="Your bookings">
                 <thead>
                   <tr>
-                    <th>Booking ID</th>
-                    <th>Console</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Players</th>
-                    <th>Amount</th>
-                    <th>Payment</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Console</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Players</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Payment</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                   {% for booking in page_obj %}
+                  {% for booking in page_obj %}
                   <tr>
-                    <td class="td-id">#{{ booking.id }}</td>
+                    <td class="dx-td-id">#{{ booking.id }}</td>
                     <td>{{ booking.game_console.name|default:"—" }}</td>
                     <td>{{ booking.booking_date|date:"d M Y" }}</td>
-                    <td class="td-time">
-                      {{ booking.start_time|time:"h:i A" }}<br>
-                      <span class="td-muted">{{ booking.end_time|time:"h:i A" }}</span>
+                    <td class="dx-td-time">
+                      {{ booking.start_time|time:"h:i A" }}
+                      <br>
+                      <span class="dx-td-muted">{{ booking.end_time|time:"h:i A" }}</span>
                     </td>
-                    <td class="td-center">{{ booking.number_of_players }}</td>
+                    <td class="dx-td-center">{{ booking.number_of_players }}</td>
                     <td>
-                      ₹{{ booking.total_cost }}<br>
-                      <span class="td-muted td-advance">Adv ₹{{ booking.advance_amount }}</span>
+                      ₹{{ booking.total_cost }}
+                      <br>
+                      <span class="dx-td-muted dx-td-advance">Adv ₹{{ booking.advance_amount }}</span>
                     </td>
 
                     <!-- Payment status -->
                     <td>
                       {% if booking.payment %}
                         {% if booking.payment.status == 'captured' %}
-                          <span class="badge badge-confirmed">Paid</span>
+                          <span class="dx-badge dx-badge--confirmed">Paid</span>
                         {% elif booking.payment.status == 'demo' %}
-                          <span class="badge badge-demo">Demo</span>
+                          <span class="dx-badge dx-badge--demo">Demo</span>
                         {% elif booking.payment.status == 'failed' %}
-                          <span class="badge badge-cancelled">Failed</span>
+                          <span class="dx-badge dx-badge--cancelled">Failed</span>
                         {% elif booking.payment.status == 'refunded' %}
-                          <span class="badge badge-refunded">Refunded</span>
+                          <span class="dx-badge dx-badge--refunded">Refunded</span>
                         {% else %}
-                          <span class="badge badge-pending">Pending</span>
+                          <span class="dx-badge dx-badge--pending">Pending</span>
                         {% endif %}
                       {% else %}
-                        <span class="badge badge-pending">Unpaid</span>
+                        <span class="dx-badge dx-badge--unpaid">Unpaid</span>
                       {% endif %}
                     </td>
 
                     <!-- Booking status -->
                     <td>
                       {% if booking.status == 'confirmed' %}
-                        <span class="badge badge-confirmed">Confirmed</span>
+                        <span class="dx-badge dx-badge--confirmed">Confirmed</span>
                       {% elif booking.status == 'pending' %}
-                        <span class="badge badge-pending">Pending</span>
+                        <span class="dx-badge dx-badge--pending">Pending</span>
                       {% elif booking.status == 'cancelled' %}
-                        <span class="badge badge-cancelled">Cancelled</span>
+                        <span class="dx-badge dx-badge--cancelled">Cancelled</span>
                       {% elif booking.status == 'completed' %}
-                        <span class="badge badge-completed">Completed</span>
+                        <span class="dx-badge dx-badge--completed">Completed</span>
                       {% endif %}
                     </td>
 
                     <!-- Actions -->
                     <td>
-                      <div class="td-actions">
+                      <div class="dx-actions">
                         {% if booking.status == 'pending' and not booking.is_paid %}
-                          <a href="{% url 'payments:payment_page' booking.id %}" class="btn-action btn-pay-now">Pay Now</a>
+                          <a href="{% url 'payments:payment_page' booking.id %}" class="dx-action-btn dx-action-btn--pay">Pay Now</a>
                         {% endif %}
-                        <a href="{% url 'bookings:booking_detail' booking.id %}" class="btn-action btn-view">View</a>
+                        <a href="{% url 'bookings:booking_detail' booking.id %}" class="dx-action-btn dx-action-btn--view" aria-label="View booking #{{ booking.id }}">View</a>
                         {% if booking.status == 'pending' or booking.status == 'confirmed' %}
-                          <button type="button" class="btn-action btn-cancel"
-                                  data-stub-action="Cancellation isn't wired up yet — contact us on WhatsApp for now.">Cancel</button>
+                          <button type="button" class="dx-action-btn dx-action-btn--cancel"
+                                  data-stub-action="Cancellation isn't wired up yet — contact us on WhatsApp.">Cancel</button>
                         {% endif %}
                         {% if booking.is_paid %}
-                          <a href="{% url 'payments:payment_receipt' booking.id %}" class="btn-action btn-receipt">Receipt</a>
+                          <a href="{% url 'payments:payment_receipt' booking.id %}" class="dx-action-btn dx-action-btn--receipt" aria-label="Download receipt for booking #{{ booking.id }}">Receipt</a>
                         {% endif %}
                       </div>
                     </td>
@@ -279,27 +317,31 @@
             </div>
 
             {% if page_obj.paginator.num_pages > 1 %}
-            <div class="dash-pagination">
+            <nav class="dx-pagination" aria-label="Booking pages">
               {% if page_obj.has_previous %}
-                <a href="?page=1" class="dash-page-link">&laquo; First</a>
-                <a href="?page={{ page_obj.previous_page_number }}" class="dash-page-link">&lsaquo; Prev</a>
+                <a href="?page=1" class="dx-page-link" aria-label="First page">&laquo;</a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="dx-page-link" aria-label="Previous page">&lsaquo;</a>
               {% endif %}
 
-              <span class="dash-page-current">
+              <span class="dx-page-current">
                 Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
               </span>
 
               {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}" class="dash-page-link">Next &rsaquo;</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}" class="dash-page-link">Last &raquo;</a>
+                <a href="?page={{ page_obj.next_page_number }}" class="dx-page-link" aria-label="Next page">&rsaquo;</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="dx-page-link" aria-label="Last page">&raquo;</a>
               {% endif %}
-            </div>
+            </nav>
             {% endif %}
           {% else %}
-            <div class="no-bookings">
-              <span class="no-bookings-icon">🎮</span>
-              <p>No bookings yet.</p>
-              <a href="{% url 'bookings:booking_form' %}" class="btn-book-now">Book Your First Slot</a>
+            <div class="dx-empty" role="status">
+              <div class="dx-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              </div>
+              <p class="dx-empty-text">No bookings yet. Book your first gaming session!</p>
+              <div class="dx-empty-action">
+                <a href="{% url 'bookings:booking_form' %}" class="cx-btn cx-btn--primary cx-btn--md">Book Your First Slot</a>
+              </div>
             </div>
           {% endif %}
         </div>
@@ -309,69 +351,96 @@
       <div>
 
         <!-- Profile card -->
-        <div class="dashboard-card nx-animate nx-d1">
-          <div class="dash-profile-avatar">{{ user_initial }}</div>
-          <div class="dash-profile-name">{{ user_display }}</div>
-          <div class="dash-profile-membership">{{ request.user.membership.name|default:"No active membership" }}</div>
+        <div class="dx-card dx-animate dx-d1" aria-label="Profile">
+          <div class="dx-profile-avatar" aria-hidden="true">{{ user_initial }}</div>
+          <div class="dx-profile-name">{{ user_display }}</div>
+          <div class="dx-profile-membership">{{ request.user.membership.name|default:"No active membership" }}</div>
 
-          <div class="dash-profile-list">
-            <div class="dash-profile-row"><span>Email</span><span>{{ request.user.email }}</span></div>
-            <div class="dash-profile-row"><span>Phone</span><span>{{ request.user.phone|default:"—" }}</span></div>
-            <div class="dash-profile-row"><span>Joined</span><span>{{ request.user.created_at|date:"d M Y" }}</span></div>
+          <div class="dx-profile-list" role="list" aria-label="Account details">
+            <div class="dx-profile-row" role="listitem"><span>Email</span><span>{{ request.user.email }}</span></div>
+            <div class="dx-profile-row" role="listitem"><span>Phone</span><span>{{ request.user.phone|default:"—" }}</span></div>
+            <div class="dx-profile-row" role="listitem"><span>Joined</span><span>{{ request.user.created_at|date:"d M Y" }}</span></div>
           </div>
 
-          <button type="button" class="btn-edit-profile"
-                  data-stub-action="Profile editing is coming soon.">Edit Profile</button>
+          <button type="button" class="cx-btn cx-btn--outline cx-btn--md"
+                  style="width:100%;justify-content:center;"
+                  data-stub-action="Profile editing is coming soon.">
+            Edit Profile
+          </button>
         </div>
 
         <!-- Gaming progress -->
-        <div class="dashboard-card nx-animate nx-d2">
-          <h2 class="dashboard-card-title">📈 Gaming Progress</h2>
+        <div class="dx-card dx-animate dx-d2" aria-label="Gaming progress">
+          <h2 class="dx-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Gaming Progress
+          </h2>
 
-          <div class="dash-progress-row">
+          <div class="dx-progress-row">
             <span>Hours Played</span>
             <strong>{{ total_hours_played }} hrs</strong>
           </div>
-          <div class="dash-progress-track">
-            <div class="dash-progress-fill" data-progress-fill="{{ hours_progress_pct }}"></div>
+          <div class="dx-progress-track" role="progressbar" aria-valuenow="{{ hours_progress_pct }}" aria-valuemin="0" aria-valuemax="100" aria-label="Hours played progress">
+            <div class="dx-progress-fill" data-progress-fill="{{ hours_progress_pct }}"></div>
           </div>
 
-          <div class="dash-progress-row">
+          <div class="dx-progress-row">
             <span>Games Played</span>
             <strong>{{ games_played }}</strong>
           </div>
-          <div class="dash-progress-track">
-            <div class="dash-progress-fill" data-progress-fill="{{ games_progress_pct }}"></div>
+          <div class="dx-progress-track" role="progressbar" aria-valuenow="{{ games_progress_pct }}" aria-valuemin="0" aria-valuemax="100" aria-label="Games played progress">
+            <div class="dx-progress-fill" data-progress-fill="{{ games_progress_pct }}"></div>
           </div>
 
-          <div class="dash-achievements">
+          <div class="dx-achievements" role="list" aria-label="Achievements">
             {% for a in achievements %}
-              <div class="dash-achv {% if a.achieved %}is-unlocked{% endif %}">
-                <span class="dash-achv-icon">{{ a.icon }}</span>
-                <span class="dash-achv-label">{{ a.label }}</span>
+              <div class="dx-achv {% if a.achieved %}is-unlocked{% endif %}" role="listitem" aria-label="{{ a.label }}{% if a.achieved %} (unlocked){% endif %}">
+                <span class="dx-achv-icon" aria-hidden="true">
+                  {% if forloop.counter == 1 %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/></svg>
+                  {% elif forloop.counter == 2 %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  {% elif forloop.counter == 3 %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  {% elif forloop.counter == 4 %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+                  {% endif %}
+                </span>
+                <span class="dx-achv-label">{{ a.label }}</span>
               </div>
             {% endfor %}
           </div>
         </div>
 
         <!-- Recent activity -->
-        <div class="dashboard-card nx-animate nx-d3">
-          <h2 class="dashboard-card-title">🕓 Recent Activity</h2>
+        <div class="dx-card dx-animate dx-d3" aria-label="Recent activity">
+          <h2 class="dx-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Recent Activity
+          </h2>
 
           {% if activity %}
-            <ul class="dash-timeline">
+            <ul class="dx-timeline" role="list">
               {% for item in activity %}
-                <li class="dash-timeline-item">
-                  <span class="dash-timeline-icon" aria-hidden="true">{{ item.icon }}</span>
+                <li class="dx-timeline-item" role="listitem">
+                  <span class="dx-timeline-icon" aria-hidden="true">
+                    {% if 'booking' in item.icon|lower or '🎮' in item.icon %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
+                    {% elif 'payment' in item.icon|lower or '💰' in item.icon or '₹' in item.icon %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    {% else %}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    {% endif %}
+                  </span>
                   <div>
-                    <div class="dash-timeline-text">{{ item.text }}</div>
-                    <div class="dash-timeline-time">{{ item.timestamp|timesince }} ago</div>
+                    <div class="dx-timeline-text">{{ item.text }}</div>
+                    <div class="dx-timeline-time">{{ item.timestamp|timesince }} ago</div>
                   </div>
                 </li>
               {% endfor %}
             </ul>
           {% else %}
-            <p class="dash-empty-inline">No recent activity yet — your bookings will show up here.</p>
+            <p class="dx-empty-text">No recent activity yet — your bookings will show up here.</p>
           {% endif %}
         </div>
 
@@ -382,8 +451,8 @@
     {% endwith %}
   </div>
 
-  <!-- Toast for stub (not-yet-wired) actions -->
-  <div id="dashToast" class="dash-toast" role="status" aria-live="polite"></div>
+  <!-- Toast for stub actions -->
+  <div id="dxToast" class="dx-toast" role="status" aria-live="polite"></div>
 
 </section>
 {% endblock %}

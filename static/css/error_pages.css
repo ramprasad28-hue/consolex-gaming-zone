@@ -1,5 +1,5 @@
 /* ============================================================
-   CONSOLEX — error_pages.css  (light theme)
+   CONSOLEX — error_pages.css  (V3 — Batch 5)
    ============================================================ */
 
 .error-section {
@@ -29,7 +29,7 @@
 }
 
 .error-404 .error-code {
-    background: linear-gradient(135deg, var(--cx-cyan), var(--cx-purple));
+    background: linear-gradient(135deg, var(--cx-primary), var(--cx-purple));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -53,9 +53,9 @@
 }
 
 .error-404 .error-icon {
-    background: var(--cyan-dim);
-    border: 1px solid var(--cx-cyan-15);
-    color: var(--cx-cyan);
+    background: var(--cx-primary-subtle);
+    border: 1px solid var(--cx-primary-border);
+    color: var(--cx-primary);
 }
 
 .error-500 .error-icon {
@@ -87,13 +87,13 @@
 }
 
 .error-404 .error-btn {
-    color: var(--text-inverse);
-    background: linear-gradient(135deg, var(--cx-cyan), var(--cx-purple));
+    color: var(--cx-text-inverse);
+    background: var(--cx-primary);
 }
 
 .error-500 .error-btn {
-    color: var(--text-inverse);
-    background: linear-gradient(135deg, var(--cx-orange), var(--cx-danger));
+    color: var(--cx-text-inverse);
+    background: var(--cx-orange);
 }
 
 .error-btn:hover {
@@ -114,7 +114,7 @@
 }
 
 .error-hint a {
-    color: var(--cx-cyan);
+    color: var(--cx-primary);
     text-decoration: none;
     font-weight: 600;
 }

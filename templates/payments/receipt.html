@@ -12,18 +12,18 @@
 <section class="dashboard-section">
   <div class="dashboard-container">
 
-    <div class="dash-topbar nx-animate no-print">
-      <div class="dash-topbar-left">
-        <a href="{% url 'users:dashboard' %}" class="dash-icon-btn" style="text-decoration:none;color:var(--text2);">
-          ← Back to Dashboard
-        </a>
-      </div>
-      <div class="dash-topbar-actions">
-        <button onclick="window.print()" class="nav-login" style="cursor:pointer;">Print Receipt</button>
-      </div>
+    <div class="receipt-topbar no-print">
+      <a href="{% url 'users:dashboard' %}" class="receipt-back">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Dashboard
+      </a>
+      <button onclick="window.print()" class="receipt-print">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Print Receipt
+      </button>
     </div>
 
-    <div class="receipt-card dashboard-card nx-animate">
+    <div class="receipt-card">
       <div class="receipt-header">
         <h2>{{ site.brand_name }}</h2>
         <p>{{ site.tagline }}</p>
@@ -90,7 +90,7 @@
           </tr>
           <tr>
             <td class="receipt-label">Payment Status</td>
-            <td class="receipt-value--cyan" style="text-transform:capitalize;">{{ payment.status }}</td>
+            <td class="receipt-status receipt-status--success">{{ payment.status }}</td>
           </tr>
           <tr>
             <td class="receipt-label">Paid On</td>
