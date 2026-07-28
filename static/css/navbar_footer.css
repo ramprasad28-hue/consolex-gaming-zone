@@ -414,8 +414,8 @@
     background: var(--cyan-dim);
 }
 .footer-social-icon-green:hover {
-    color: #25d366; border-color: rgba(37,211,102,0.4);
-    background: rgba(37,211,102,0.05);
+    color: var(--cx-whatsapp-bg); border-color: var(--cx-whatsapp-bg-40);
+    background: var(--cx-whatsapp-bg-5);
 }
 .footer-dot { color: var(--text2); font-size: 14px; }
 .footer-bottom-link {
@@ -479,16 +479,16 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: #25d366;
+    background: var(--cx-whatsapp-bg);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+    box-shadow: 0 4px 16px var(--cx-whatsapp-bg-30);
     transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
 .whatsapp-float:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 24px rgba(37, 211, 102, 0.45);
+    box-shadow: 0 6px 24px var(--cx-whatsapp-bg-45);
 }
 .whatsapp-icon {
     width: 30px;
@@ -499,7 +499,7 @@
     position: absolute;
     inset: -6px;
     border-radius: 50%;
-    border: 2px solid rgba(37, 211, 102, 0.4);
+    border: 2px solid var(--cx-whatsapp-bg-40);
     animation: whatsappPulse 2s ease-in-out infinite;
 }
 @keyframes whatsappPulse {

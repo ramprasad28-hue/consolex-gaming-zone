@@ -27,7 +27,7 @@
                     {% if t.image_src %}
                     <img src="{{ t.image_src }}" alt="{{ t.title }}">
                     {% else %}
-                    <img src="{% static 'media/games/cod.jpg' %}" alt="{{ t.title }}">
+                    <img src="{{ MEDIA_URL }}games/cod.jpg" alt="{{ t.title }}">
                     {% endif %}
                     <div class="tourney-card-img-scrim"></div>
                     <span class="tourney-status {{ t.status_css_class }}">{{ t.status_label }}</span>

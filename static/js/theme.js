@@ -41,6 +41,14 @@
         }
     }
 
+    /** Get system color scheme preference */
+    function getSystemPreference() {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            return DARK;
+        }
+        return LIGHT;
+    }
+
     /** Toggle between dark and light */
     function toggleTheme() {
         var current = document.documentElement.getAttribute('data-theme') || getSystemPreference();

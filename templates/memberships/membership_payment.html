@@ -50,6 +50,7 @@
 (function () {
     var btn    = document.getElementById('memPayBtn');
     var status = document.getElementById('memPayStatus');
+    if (!btn) return;
 
     var btnText = btn.querySelector('.mem-pay-btn-text');
     var btnSpinner = btn.querySelector('.mem-pay-btn-spinner');

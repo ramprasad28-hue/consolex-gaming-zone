@@ -36,7 +36,7 @@
 }
 
 .error-500 .error-code {
-    background: linear-gradient(135deg, var(--cx-orange), #F3262D);
+    background: linear-gradient(135deg, var(--cx-orange), var(--cx-danger));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -93,7 +93,7 @@
 
 .error-500 .error-btn {
     color: var(--text-inverse);
-    background: linear-gradient(135deg, var(--cx-orange), #F3262D);
+    background: linear-gradient(135deg, var(--cx-orange), var(--cx-danger));
 }
 
 .error-btn:hover {

@@ -110,14 +110,14 @@
         display: none !important;
     }
     body {
-        background: #fff;
-        color: #000;
+        background: var(--cx-surface-page);
+        color: var(--cx-text);
     }
     .payment-summary-card,
     .booking-summary,
     .pricing-card {
-        border: 1px solid #ccc;
-        background: #fff;
+        border: 1px solid var(--cx-border);
+        background: var(--cx-surface-card);
     }
 }
 

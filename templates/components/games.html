@@ -36,7 +36,7 @@
                     {% if g.image_src %}
                     <img src="{{ g.image_src }}" alt="{{ g.title }}">
                     {% else %}
-                    <img src="{% static 'media/games/cod.jpg' %}" alt="{{ g.title }}">
+                    <img src="{{ MEDIA_URL }}games/cod.jpg" alt="{{ g.title }}">
                     {% endif %}
                     <div class="game-card-scrim"></div>
                     {% if g.badge %}

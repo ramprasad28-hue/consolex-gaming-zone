@@ -86,6 +86,11 @@
     --cx-gold-40:           rgba(217, 119, 6, 0.40);
 
     --cx-whatsapp:          #15803D;
+    --cx-whatsapp-bg:       #25D366;
+    --cx-whatsapp-bg-5:     rgba(37, 211, 102, 0.05);
+    --cx-whatsapp-bg-30:    rgba(37, 211, 102, 0.30);
+    --cx-whatsapp-bg-40:    rgba(37, 211, 102, 0.40);
+    --cx-whatsapp-bg-45:    rgba(37, 211, 102, 0.45);
 
     /* ═══ Surface ════════════════════════════════════════════ */
     --cx-surface-page:      #F8FAFC;
@@ -388,6 +393,14 @@
     /* Scrollbar — dark */
     --cx-scrollbar-thumb:   rgba(59, 154, 255, 0.3);
     --cx-scrollbar-hover:   rgba(59, 154, 255, 0.5);
+
+    /* WhatsApp — dark (brand colors stay consistent) */
+    --cx-whatsapp:          #15803D;
+    --cx-whatsapp-bg:       #25D366;
+    --cx-whatsapp-bg-5:     rgba(37, 211, 102, 0.05);
+    --cx-whatsapp-bg-30:    rgba(37, 211, 102, 0.30);
+    --cx-whatsapp-bg-40:    rgba(37, 211, 102, 0.40);
+    --cx-whatsapp-bg-45:    rgba(37, 211, 102, 0.45);
 
     /* Dark mode cyan/blue aliases */
     --cx-cyan:              var(--cx-primary);

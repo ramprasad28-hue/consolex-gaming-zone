@@ -288,8 +288,6 @@
     .payment-wrap { grid-template-columns: 1fr; }
     .form-row { grid-template-columns: 1fr; }
     .dashboard-header { flex-direction: column; align-items: flex-start; }
-}
-@media (max-width: 768px) {
     .auth-section { padding: 5rem 1rem 2rem; }
     .auth-card { max-width: 100%; }
 }

@@ -118,7 +118,7 @@
                 background var(--theme-speed) ease; position: relative;
 }
 .membership-card:hover { transform: translateY(-2px); }
-.membership-card-featured { border-color: rgba(138,43,226,0.4); }
+.membership-card-featured { border-color: var(--cx-purple-40); }
 
 .mc-badge {
     position: absolute; top: -12px; left: 50%; transform: translateX(-50%);

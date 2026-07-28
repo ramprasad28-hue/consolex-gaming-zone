@@ -206,14 +206,16 @@ function updateCost(){
 
 }
 
-document.querySelector('[name="number_of_players"]')
-.addEventListener("change", updateCost);
+var playersInput = document.querySelector('[name="number_of_players"]');
+if (playersInput) playersInput.addEventListener("change", updateCost);
 
-document.querySelector('[name="duration_hours"]')
-.addEventListener("change", updateCost);
+var durationInput = document.querySelector('[name="duration_hours"]');
+if (durationInput) durationInput.addEventListener("change", updateCost);
 
-document.querySelector('[name="booking_date"]')
-.addEventListener("change", updateCost);
+var bookingDateInput = document.querySelector('[name="booking_date"]');
+if (bookingDateInput) {
+    bookingDateInput.addEventListener("change", updateCost);
+}
 
 updateCost();
 
