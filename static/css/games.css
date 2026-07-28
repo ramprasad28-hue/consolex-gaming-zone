@@ -37,7 +37,7 @@
     color: var(--text2); cursor: pointer; transition: all 0.2s var(--ease);
 }
 .games-filter:hover { color: var(--cyan); border-color: var(--cx-cyan-30); }
-.games-filter.active { background: var(--cyan); color: #fff; border-color: var(--cyan); }
+.games-filter.active { background: var(--cyan); color: var(--text-inverse); border-color: var(--cyan); }
 
 /* ── Game grid ────────────────────────────────────────────── */
 .games-grid {
@@ -75,12 +75,11 @@
     position: absolute; top: 8px; left: 8px;
     padding: 3px 10px; border-radius: 100px;
     font-size: 10px; font-weight: 700;
-    background: rgba(0,112,210,0.15); border: 1px solid rgba(0,112,210,0.25); color: var(--cx-blue);
-    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    background: var(--cx-primary-subtle); border: 1px solid var(--cx-primary-border); color: var(--cx-primary);
 }
-.game-card-badge-gold { background: rgba(255,198,46,0.15); border-color: rgba(255,198,46,0.25); color: var(--cx-gold); }
-.game-card-badge-red { background: rgba(255,106,0,0.15); border-color: rgba(255,106,0,0.25); color: var(--cx-orange); }
-.game-card-badge-cyan { background: rgba(0,112,210,0.15); border-color: rgba(0,112,210,0.25); color: var(--cx-blue); }
+.game-card-badge-gold { background: var(--cx-gold-8); border-color: var(--cx-gold-20); color: var(--cx-gold); }
+.game-card-badge-red { background: var(--cx-orange-8); border-color: var(--cx-orange-20); color: var(--cx-orange); }
+.game-card-badge-cyan { background: var(--cx-primary-subtle); border-color: var(--cx-primary-border); color: var(--cx-primary); }
 
 .game-card-hover {
     position: absolute; bottom: 0; left: 0; right: 0;

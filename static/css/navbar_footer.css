@@ -12,8 +12,6 @@
     z-index: 9000;
     height: var(--nav-h);
     background: var(--nav-bg);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
     border-bottom: 1px solid var(--border);
     transition: background var(--theme-speed) ease,
                 border-color var(--theme-speed) ease,
@@ -143,7 +141,7 @@
     font-size: 0.88rem;
     font-weight: 700;
     letter-spacing: 0.3px;
-    color: #fff;
+    color: var(--text-inverse);
     padding: 8px 18px;
     background: var(--cyan);
     border-radius: 8px;
@@ -246,8 +244,6 @@
     top: 100%;
     left: 0; right: 0;
     background: var(--drawer-bg);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
     padding: 0 28px 0;
@@ -310,7 +306,7 @@
     font-family: var(--font-body);
     font-size: 1rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--text-inverse);
     padding: 14px;
     background: var(--cyan);
     border-radius: 10px;
@@ -497,7 +493,7 @@
 .whatsapp-icon {
     width: 30px;
     height: 30px;
-    color: #fff;
+    color: var(--text-inverse);
 }
 .whatsapp-pulse {
     position: absolute;

@@ -91,7 +91,7 @@
     padding: 14px 28px; border-radius: var(--radius);
     font-family: var(--font-head); font-weight: 800; font-size: 14px;
     text-transform: uppercase; letter-spacing: 0.05em;
-    background: var(--cx-blue); color: #fff; text-decoration: none;
+    background: var(--cx-blue); color: var(--text-inverse); text-decoration: none;
     transition: all 0.3s var(--ease);
 }
 .testi-cta-btn:hover { transform: translateY(-2px); opacity: 0.9; }

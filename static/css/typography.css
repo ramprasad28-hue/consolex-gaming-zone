@@ -9,7 +9,7 @@
     font-size: clamp(3rem, 8vw, 3.75rem);
     line-height: var(--cx-leading-none);
     letter-spacing: var(--cx-tracking-tighter);
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     font-weight: 800;
 }
 
@@ -17,7 +17,7 @@
     font-size: clamp(2.5rem, 6vw, 3rem);
     line-height: var(--cx-leading-none);
     letter-spacing: var(--cx-tracking-tighter);
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     font-weight: 800;
 }
 
@@ -25,7 +25,7 @@
     font-size: clamp(2rem, 5vw, 2.25rem);
     line-height: var(--cx-leading-tight);
     letter-spacing: var(--cx-tracking-tight);
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     font-weight: 700;
 }
 
@@ -33,21 +33,21 @@
     font-size: clamp(1.75rem, 4vw, 1.875rem);
     line-height: var(--cx-leading-tight);
     letter-spacing: var(--cx-tracking-tight);
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     font-weight: 700;
 }
 
 .t-display-2xl {
     font-size: var(--cx-text-2xl);
     line-height: var(--cx-leading-snug);
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     font-weight: 700;
 }
 
 .t-display-xl {
     font-size: var(--cx-text-xl);
     line-height: var(--cx-leading-snug);
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     font-weight: 700;
 }
 
@@ -55,42 +55,42 @@
 .t-h1 {
     font-size: var(--cx-text-4xl);
     line-height: var(--cx-leading-tight);
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     font-weight: 700;
 }
 
 .t-h2 {
     font-size: var(--cx-text-3xl);
     line-height: var(--cx-leading-tight);
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     font-weight: 700;
 }
 
 .t-h3 {
     font-size: var(--cx-text-2xl);
     line-height: var(--cx-leading-snug);
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     font-weight: 600;
 }
 
 .t-h4 {
     font-size: var(--cx-text-xl);
     line-height: var(--cx-leading-snug);
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     font-weight: 600;
 }
 
 .t-h5 {
     font-size: var(--cx-text-lg);
     line-height: var(--cx-leading-snug);
-    font-family: var(--cx-font-body);
+    font-family: var(--cx-font-ui);
     font-weight: 700;
 }
 
 .t-h6 {
     font-size: var(--cx-text-base);
     line-height: var(--cx-leading-snug);
-    font-family: var(--cx-font-body);
+    font-family: var(--cx-font-ui);
     font-weight: 700;
 }
 

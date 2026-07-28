@@ -7,7 +7,7 @@
     position: relative;
     z-index: calc(var(--cx-z-navbar) + 1);
     background: var(--cx-cyan);
-    color: #fff;
+    color: var(--text-inverse);
     text-align: center;
     padding: 0;
     overflow: hidden;
@@ -33,7 +33,7 @@
 
 .announcement-text {
     margin: 0;
-    color: #fff;
+    color: var(--text-inverse);
 }
 
 .announcement-text strong {
@@ -41,7 +41,7 @@
 }
 
 .announcement-link {
-    color: #fff;
+    color: var(--text-inverse);
     font-weight: 700;
     text-decoration: underline;
     text-underline-offset: 2px;

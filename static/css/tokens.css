@@ -1,330 +1,412 @@
 /* ============================================================
-   CONSOLEX — tokens.css
+   CONSOLEX — tokens.css  (V3 Design System)
    Single source of truth for all design tokens.
    LIGHT theme is default. Dark theme via [data-theme="dark"].
    ============================================================ */
 
 :root {
 
-    /* ── Color: Core palette (Light) ──────────────────────── */
-    --cx-navy:            #0070D2;
-    --cx-navy-2:          #005BB5;
-    --cx-cyan:            #0070D2;
-    --cx-purple:          #7C3AED;
-    --cx-orange:          #F97316;
-    --cx-gold:            #D97706;
-    --cx-success:         #059669;
-    --cx-danger:          #DC2626;
-    --cx-whatsapp:        #25d366;
+    /* ═══ Brand ══════════════════════════════════════════════ */
+    --cx-primary:           #0070D2;
+    --cx-primary-hover:     #005BB5;
+    --cx-primary-light:     #EFF6FF;
+    --cx-primary-subtle:    rgba(0, 112, 210, 0.08);
+    --cx-primary-border:    rgba(0, 112, 210, 0.15);
+    --cx-primary-20:        rgba(0, 112, 210, 0.20);
+    --cx-primary-25:        rgba(0, 112, 210, 0.25);
+    --cx-primary-30:        rgba(0, 112, 210, 0.30);
+    --cx-primary-35:        rgba(0, 112, 210, 0.35);
 
-    /* ── Color: Cyan opacity variants ─────────────────────── */
-    --cx-cyan-5:          rgba(0, 112, 210, 0.05);
-    --cx-cyan-8:          rgba(0, 112, 210, 0.08);
-    --cx-cyan-10:         rgba(0, 112, 210, 0.10);
-    --cx-cyan-15:         rgba(0, 112, 210, 0.15);
-    --cx-cyan-25:         rgba(0, 112, 210, 0.25);
-    --cx-cyan-30:         rgba(0, 112, 210, 0.30);
-    --cx-cyan-35:         rgba(0, 112, 210, 0.35);
-    --cx-cyan-40:         rgba(0, 112, 210, 0.40);
-    --cx-cyan-50:         rgba(0, 112, 210, 0.50);
+    /* ═══ Neutral ════════════════════════════════════════════ */
+    --cx-gray-25:           #FCFCFD;
+    --cx-gray-50:           #F8FAFC;
+    --cx-gray-100:          #F1F5F9;
+    --cx-gray-200:          #E2E8F0;
+    --cx-gray-300:          #CBD5E1;
+    --cx-gray-400:          #94A3B8;
+    --cx-gray-500:          #64748B;
+    --cx-gray-600:          #475569;
+    --cx-gray-700:          #334155;
+    --cx-gray-800:          #1E293B;
+    --cx-gray-900:          #0F172A;
 
-    /* ── Color: Purple opacity variants ───────────────────── */
-    --cx-purple-5:        rgba(124, 58, 237, 0.05);
-    --cx-purple-8:        rgba(124, 58, 237, 0.08);
-    --cx-purple-10:       rgba(124, 58, 237, 0.10);
-    --cx-purple-12:       rgba(124, 58, 237, 0.12);
-    --cx-purple-15:       rgba(124, 58, 237, 0.15);
-    --cx-purple-20:       rgba(124, 58, 237, 0.20);
-    --cx-purple-30:       rgba(124, 58, 237, 0.30);
-    --cx-purple-35:       rgba(124, 58, 237, 0.35);
-    --cx-purple-40:       rgba(124, 58, 237, 0.40);
+    /* ═══ Semantic ═══════════════════════════════════════════ */
+    --cx-success:           #047857;
+    --cx-success-light:     rgba(5, 150, 105, 0.08);
+    --cx-success-10:        rgba(5, 150, 105, 0.10);
+    --cx-success-15:        rgba(5, 150, 105, 0.15);
+    --cx-success-20:        rgba(5, 150, 105, 0.20);
+    --cx-success-40:        rgba(5, 150, 105, 0.40);
+    --cx-success-border:    rgba(5, 150, 105, 0.15);
 
-    /* ── Color: Orange opacity variants ───────────────────── */
-    --cx-orange-8:        rgba(249, 115, 22, 0.08);
-    --cx-orange-10:       rgba(249, 115, 22, 0.10);
-    --cx-orange-12:       rgba(249, 115, 22, 0.12);
-    --cx-orange-15:       rgba(249, 115, 22, 0.15);
-    --cx-orange-25:       rgba(249, 115, 22, 0.25);
-    --cx-orange-35:       rgba(249, 115, 22, 0.35);
+    --cx-warning:           #B45309;
+    --cx-warning-light:     rgba(217, 119, 6, 0.08);
+    --cx-warning-10:        rgba(217, 119, 6, 0.10);
+    --cx-warning-20:        rgba(217, 119, 6, 0.20);
+    --cx-warning-40:        rgba(217, 119, 6, 0.40);
+    --cx-warning-border:    rgba(217, 119, 6, 0.15);
 
-    /* ── Color: Gold opacity variants ─────────────────────── */
-    --cx-gold-8:          rgba(217, 119, 6, 0.08);
-    --cx-gold-10:         rgba(217, 119, 6, 0.10);
-    --cx-gold-40:         rgba(217, 119, 6, 0.40);
+    --cx-danger:            #DC2626;
+    --cx-danger-light:      rgba(220, 38, 38, 0.08);
+    --cx-danger-8:          rgba(220, 38, 38, 0.08);
+    --cx-danger-10:         rgba(220, 38, 38, 0.10);
+    --cx-danger-20:         rgba(220, 38, 38, 0.20);
+    --cx-danger-25:         rgba(220, 38, 38, 0.25);
+    --cx-danger-border:     rgba(220, 38, 38, 0.15);
 
-    /* ── Color: Success opacity variants ──────────────────── */
-    --cx-success-10:      rgba(5, 150, 105, 0.10);
-    --cx-success-15:      rgba(5, 150, 105, 0.15);
-    --cx-success-40:      rgba(5, 150, 105, 0.40);
+    /* ═══ Category ═══════════════════════════════════════════ */
+    --cx-purple:            #7C3AED;
+    --cx-purple-light:      rgba(124, 58, 237, 0.08);
+    --cx-purple-5:          rgba(124, 58, 237, 0.05);
+    --cx-purple-8:          rgba(124, 58, 237, 0.08);
+    --cx-purple-10:         rgba(124, 58, 237, 0.10);
+    --cx-purple-12:         rgba(124, 58, 237, 0.12);
+    --cx-purple-15:         rgba(124, 58, 237, 0.15);
+    --cx-purple-20:         rgba(124, 58, 237, 0.20);
+    --cx-purple-25:         rgba(124, 58, 237, 0.25);
+    --cx-purple-30:         rgba(124, 58, 237, 0.30);
+    --cx-purple-35:         rgba(124, 58, 237, 0.35);
+    --cx-purple-40:         rgba(124, 58, 237, 0.40);
 
-    /* ── Color: Danger opacity variants ───────────────────── */
-    --cx-danger-8:        rgba(220, 38, 38, 0.08);
-    --cx-danger-10:       rgba(220, 38, 38, 0.10);
-    --cx-danger-25:       rgba(220, 38, 38, 0.25);
+    --cx-orange:            #C2410C;
+    --cx-orange-light:      rgba(249, 115, 22, 0.08);
+    --cx-orange-8:          rgba(249, 115, 22, 0.08);
+    --cx-orange-10:         rgba(249, 115, 22, 0.10);
+    --cx-orange-12:         rgba(249, 115, 22, 0.12);
+    --cx-orange-15:         rgba(249, 115, 22, 0.15);
+    --cx-orange-20:         rgba(249, 115, 22, 0.20);
+    --cx-orange-25:         rgba(249, 115, 22, 0.25);
+    --cx-orange-35:         rgba(249, 115, 22, 0.35);
 
-    /* ── Color: Surfaces (Light) ──────────────────────────── */
-    --cx-bg:              #F8FAFC;
-    --cx-bg-2:            #F1F5F9;
-    --cx-glass:           rgba(255, 255, 255, 0.80);
-    --cx-surface:         rgba(0, 0, 0, 0.03);
-    --cx-surface-2:       rgba(0, 0, 0, 0.06);
-    --cx-card-bg:         rgba(255, 255, 255, 0.90);
-    --cx-input-bg:        #ffffff;
-    --cx-nav-bg:          rgba(255, 255, 255, 0.80);
-    --cx-nav-bg-scroll:   rgba(255, 255, 255, 0.95);
-    --cx-drawer-bg:       rgba(255, 255, 255, 0.98);
-    --cx-footer-bg:       #F1F5F9;
-    --cx-hero-scrim-l:    rgba(248, 250, 252, 0.95);
-    --cx-hero-scrim-m:    rgba(248, 250, 252, 0.80);
-    --cx-hero-scrim-r:    rgba(248, 250, 252, 0.35);
-    --cx-hero-scrim-b:    rgba(248, 250, 252, 0.90);
-    --cx-hero-scrim-bt:   rgba(248, 250, 252, 0.50);
-    --cx-grid-line:       rgba(0, 112, 210, 0.05);
-    --cx-card-gradient:   rgba(255, 255, 255, 0.95);
-    --cx-card-gradient-m: rgba(255, 255, 255, 0.60);
-    --cx-card-gradient-e: rgba(255, 255, 255, 0.15);
+    --cx-gold:              #B45309;
+    --cx-gold-light:        rgba(217, 119, 6, 0.08);
+    --cx-gold-8:            rgba(217, 119, 6, 0.08);
+    --cx-gold-10:           rgba(217, 119, 6, 0.10);
+    --cx-gold-20:           rgba(217, 119, 6, 0.20);
+    --cx-gold-40:           rgba(217, 119, 6, 0.40);
 
-    /* ── Color: Text (Light) ──────────────────────────────── */
-    --cx-text:            #0F172A;
-    --cx-text-2:          #475569;
-    --cx-text-3:          #94A3B8;
-    --cx-text-inverse:    #ffffff;
+    --cx-whatsapp:          #15803D;
 
-    /* ── Color: Borders (Light) ───────────────────────────── */
-    --cx-border:          rgba(0, 0, 0, 0.08);
-    --cx-border-2:        rgba(0, 0, 0, 0.15);
+    /* ═══ Surface ════════════════════════════════════════════ */
+    --cx-surface-page:      #F8FAFC;
+    --cx-surface-card:      #FFFFFF;
+    --cx-surface-elevated:  #FFFFFF;
+    --cx-surface-subtle:    #F1F5F9;
+    --cx-surface-hover:     #F8FAFC;
+    --cx-surface-input:     #FFFFFF;
+    --cx-surface:           rgba(0, 0, 0, 0.03);
+    --cx-surface-2:         rgba(0, 0, 0, 0.06);
+    --cx-nav-bg:            rgba(255, 255, 255, 0.95);
+    --cx-nav-bg-scroll:     rgba(255, 255, 255, 0.98);
+    --cx-drawer-bg:         rgba(255, 255, 255, 0.98);
+    --cx-footer-bg:         #F1F5F9;
 
-    /* ── Shadows (Light) ──────────────────────────────────── */
-    --cx-shadow-sm:       0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-    --cx-shadow-md:       0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
-    --cx-shadow-lg:       0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
-    --cx-shadow-xl:       0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    /* ═══ Text ═══════════════════════════════════════════════ */
+    --cx-text:              #0F172A;
+    --cx-text-2:            #475569;
+    --cx-text-3:            #64748B;
+    --cx-text-inverse:      #FFFFFF;
 
-    /* ── Scrollbar (Light) ────────────────────────────────── */
-    --cx-scrollbar-thumb: rgba(0, 112, 210, 0.20);
-    --cx-scrollbar-hover: rgba(0, 112, 210, 0.35);
+    /* ═══ Border ═════════════════════════════════════════════ */
+    --cx-border:            #E2E8F0;
+    --cx-border-2:          #CBD5E1;
 
-    /* ── Typography ───────────────────────────────────────── */
-    --cx-font-display:    'Manrope', system-ui, -apple-system, sans-serif;
-    --cx-font-body:       'DM Sans', system-ui, -apple-system, sans-serif;
-    --cx-font-accent:     'Orbitron', system-ui, sans-serif;
-    --cx-font-mono:       'JetBrains Mono', ui-monospace, monospace;
+    /* ═══ Shadow (Light) ═════════════════════════════════════ */
+    --cx-shadow-sm:         0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --cx-shadow-md:         0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+    --cx-shadow-lg:         0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+    --cx-shadow-xl:         0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+
+    /* ═══ Scrollbar (Light) ══════════════════════════════════ */
+    --cx-scrollbar-thumb:   rgba(0, 112, 210, 0.20);
+    --cx-scrollbar-hover:   rgba(0, 112, 210, 0.35);
+
+    /* ═══ Typography ═════════════════════════════════════════ */
+    --cx-font-ui:           'Inter', system-ui, -apple-system, sans-serif;
+    --cx-font-accent:       'Orbitron', system-ui, sans-serif;
+    --cx-font-mono:         'JetBrains Mono', ui-monospace, monospace;
 
     /* Type scale */
-    --cx-text-xs:         0.75rem;
-    --cx-text-sm:         0.875rem;
-    --cx-text-base:       1rem;
-    --cx-text-lg:         1.125rem;
-    --cx-text-xl:         1.25rem;
-    --cx-text-2xl:        1.5rem;
-    --cx-text-3xl:        1.875rem;
-    --cx-text-4xl:        2.25rem;
-    --cx-text-5xl:        3rem;
-    --cx-text-6xl:        3.75rem;
+    --cx-text-xs:           0.75rem;
+    --cx-text-sm:           0.875rem;
+    --cx-text-base:         1rem;
+    --cx-text-lg:           1.125rem;
+    --cx-text-xl:           1.25rem;
+    --cx-text-2xl:          1.5rem;
+    --cx-text-3xl:          1.875rem;
+    --cx-text-4xl:          2.25rem;
+    --cx-text-5xl:          3rem;
+    --cx-text-6xl:          3.75rem;
 
     /* Line heights */
-    --cx-leading-none:    1;
-    --cx-leading-tight:   1.1;
-    --cx-leading-snug:    1.25;
-    --cx-leading-normal:  1.5;
-    --cx-leading-relaxed: 1.625;
+    --cx-leading-none:      1;
+    --cx-leading-tight:     1.1;
+    --cx-leading-snug:      1.25;
+    --cx-leading-normal:    1.5;
+    --cx-leading-relaxed:   1.625;
 
     /* Letter spacing */
-    --cx-tracking-tighter: -0.04em;
-    --cx-tracking-tight:   -0.02em;
-    --cx-tracking-normal:  0;
-    --cx-tracking-wide:    0.05em;
-    --cx-tracking-wider:   0.1em;
+    --cx-tracking-tighter:  -0.04em;
+    --cx-tracking-tight:    -0.02em;
+    --cx-tracking-normal:   0;
+    --cx-tracking-wide:     0.05em;
+    --cx-tracking-wider:    0.1em;
 
-    /* ── Spacing (4px base scale) ─────────────────────────── */
-    --cx-space-0:         0;
-    --cx-space-1:         0.25rem;
-    --cx-space-2:         0.5rem;
-    --cx-space-3:         0.75rem;
-    --cx-space-4:         1rem;
-    --cx-space-5:         1.25rem;
-    --cx-space-6:         1.5rem;
-    --cx-space-8:         2rem;
-    --cx-space-10:        2.5rem;
-    --cx-space-12:        3rem;
-    --cx-space-16:        4rem;
-    --cx-space-20:        5rem;
-    --cx-space-24:        6rem;
-    --cx-space-32:        8rem;
+    /* ═══ Spacing (4px base scale) ═══════════════════════════ */
+    --cx-space-0:           0;
+    --cx-space-1:           0.25rem;
+    --cx-space-2:           0.5rem;
+    --cx-space-3:           0.75rem;
+    --cx-space-4:           1rem;
+    --cx-space-5:           1.25rem;
+    --cx-space-6:           1.5rem;
+    --cx-space-8:           2rem;
+    --cx-space-10:          2.5rem;
+    --cx-space-12:          3rem;
+    --cx-space-16:          4rem;
+    --cx-space-20:          5rem;
+    --cx-space-24:          6rem;
+    --cx-space-32:          8rem;
 
-    /* ── Border radius ────────────────────────────────────── */
-    --cx-radius-sm:       8px;
-    --cx-radius-md:       12px;
-    --cx-radius-lg:       16px;
-    --cx-radius-xl:       24px;
-    --cx-radius-pill:     100px;
-    --cx-radius-full:     50%;
+    /* ═══ Border radius ══════════════════════════════════════ */
+    --cx-radius-sm:         8px;
+    --cx-radius-md:         12px;
+    --cx-radius-lg:         16px;
+    --cx-radius-xl:         24px;
+    --cx-radius-pill:       100px;
+    --cx-radius-full:       50%;
 
-    /* ── Z-index layers ───────────────────────────────────── */
-    --cx-z-base:          1;
-    --cx-z-dropdown:      100;
-    --cx-z-sticky:        200;
-    --cx-z-overlay:       300;
-    --cx-z-modal:         400;
-    --cx-z-toast:         500;
-    --cx-z-whatsapp:      8000;
-    --cx-z-drawer:        8999;
-    --cx-z-backdrop:      8999;
-    --cx-z-navbar:        9000;
-    --cx-z-skip:          99999;
+    /* ═══ Z-index layers ═════════════════════════════════════ */
+    --cx-z-base:            1;
+    --cx-z-dropdown:        100;
+    --cx-z-sticky:          200;
+    --cx-z-overlay:         300;
+    --cx-z-modal:           400;
+    --cx-z-toast:           500;
+    --cx-z-whatsapp:        8000;
+    --cx-z-drawer:          8999;
+    --cx-z-backdrop:        8999;
+    --cx-z-navbar:          9000;
+    --cx-z-skip:            99999;
 
-    /* ── Layout ───────────────────────────────────────────── */
-    --cx-container-sm:    640px;
-    --cx-container-md:    768px;
-    --cx-container-lg:    1024px;
-    --cx-container-xl:    1200px;
-    --cx-container-2xl:   1280px;
-    --cx-nav-h:           72px;
+    /* ═══ Layout ═════════════════════════════════════════════ */
+    --cx-container-sm:      640px;
+    --cx-container-md:      768px;
+    --cx-container-lg:      1024px;
+    --cx-container-xl:      1200px;
+    --cx-container-2xl:     1280px;
+    --cx-nav-h:             72px;
 
-    /* ── Transitions ──────────────────────────────────────── */
-    --cx-ease:            cubic-bezier(0.4, 0, 0.2, 1);
-    --cx-ease-out:        cubic-bezier(0, 0, 0.2, 1);
-    --cx-ease-in:         cubic-bezier(0.4, 0, 1, 1);
-    --cx-ease-bounce:     cubic-bezier(0.34, 1.56, 0.64, 1);
-    --cx-duration-fast:   0.15s;
-    --cx-duration-base:   0.25s;
-    --cx-duration-slow:   0.35s;
-    --cx-duration-slower: 0.5s;
-    --cx-theme-speed:     0.35s;
+    /* ═══ Transitions ════════════════════════════════════════ */
+    --cx-ease:              cubic-bezier(0.4, 0, 0.2, 1);
+    --cx-ease-out:          cubic-bezier(0, 0, 0.2, 1);
+    --cx-ease-in:           cubic-bezier(0.4, 0, 1, 1);
+    --cx-ease-bounce:       cubic-bezier(0.34, 1.56, 0.64, 1);
+    --cx-duration-fast:     0.15s;
+    --cx-duration-base:     0.25s;
+    --cx-duration-slow:     0.35s;
+    --cx-duration-slower:   0.5s;
+    --cx-theme-speed:       0.35s;
 
-    /* ── Legacy aliases ───────────────────────────────────── */
-    --bg:                 var(--cx-bg);
-    --bg2:                var(--cx-bg-2);
-    --glass:              var(--cx-glass);
-    --surface:            var(--cx-surface);
-    --surface2:           var(--cx-surface-2);
-    --card-bg:            var(--cx-card-bg);
-    --input-bg:           var(--cx-input-bg);
-    --nav-bg:             var(--cx-nav-bg);
-    --nav-bg-scroll:      var(--cx-nav-bg-scroll);
-    --drawer-bg:          var(--cx-drawer-bg);
-    --footer-bg:          var(--cx-footer-bg);
-    --hero-scrim-l:       var(--cx-hero-scrim-l);
-    --hero-scrim-m:       var(--cx-hero-scrim-m);
-    --hero-scrim-r:       var(--cx-hero-scrim-r);
-    --hero-scrim-b:       var(--cx-hero-scrim-b);
-    --hero-scrim-bt:      var(--cx-hero-scrim-bt);
-    --grid-line:          var(--cx-grid-line);
-    --card-gradient:      var(--cx-card-gradient);
-    --card-gradient-m:    var(--cx-card-gradient-m);
-    --card-gradient-e:    var(--cx-card-gradient-e);
-    --border:             var(--cx-border);
-    --border2:            var(--cx-border-2);
-    --cyan:               var(--cx-cyan);
-    --cyan-dim:           var(--cx-cyan-10);
-    --cyan-glow:          var(--cx-cyan-35);
-    --purple:             var(--cx-purple);
-    --purple-dim:         var(--cx-purple-10);
-    --orange:             var(--cx-orange);
-    --success:            var(--cx-success);
-    --warning:            var(--cx-gold);
-    --danger:             var(--cx-danger);
-    --text:               var(--cx-text);
-    --text2:              var(--cx-text-2);
-    --text3:              var(--cx-text-3);
-    --text-inverse:       var(--cx-text-inverse);
-    --shadow-sm:          var(--cx-shadow-sm);
-    --shadow-md:          var(--cx-shadow-md);
-    --shadow-lg:          var(--cx-shadow-lg);
-    --scrollbar-thumb:    var(--cx-scrollbar-thumb);
-    --scrollbar-hover:    var(--cx-scrollbar-hover);
-    --font-head:          var(--cx-font-display);
-    --font-body:          var(--cx-font-body);
-    --nav-h:              var(--cx-nav-h);
-    --radius:             var(--cx-radius-lg);
-    --ease:               var(--cx-ease);
-    --theme-speed:        var(--cx-theme-speed);
+    /* ═══ Legacy aliases (backward compatibility) ════════════ */
+    /* --cx-cyan is the old primary name, aliased to --cx-primary */
+    --cx-cyan:              var(--cx-primary);
+    --cx-cyan-5:            var(--cx-primary-subtle);
+    --cx-cyan-8:            var(--cx-primary-subtle);
+    --cx-cyan-10:           rgba(0, 112, 210, 0.10);
+    --cx-cyan-15:           var(--cx-primary-border);
+    --cx-cyan-20:           var(--cx-primary-20);
+    --cx-cyan-25:           var(--cx-primary-25);
+    --cx-cyan-30:           var(--cx-primary-30);
+    --cx-cyan-35:           var(--cx-primary-35);
+    --cx-cyan-40:           rgba(0, 112, 210, 0.40);
+    --cx-cyan-50:           rgba(0, 112, 210, 0.50);
+
+    /* --cx-blue is the missing token referenced by 75+ files */
+    --cx-blue:              var(--cx-primary);
+    --cx-blue-8:            var(--cx-primary-subtle);
+    --cx-blue-15:           var(--cx-primary-border);
+    --cx-blue-20:           var(--cx-primary-20);
+
+    --cx-navy:              var(--cx-primary);
+    --cx-navy-2:            var(--cx-primary-hover);
+
+    /* Short aliases used by many component files */
+    --bg:                   var(--cx-surface-page);
+    --bg2:                  var(--cx-surface-subtle);
+    --cx-bg:                var(--cx-surface-page);
+    --cx-bg-2:              var(--cx-surface-subtle);
+    --glass:                var(--cx-surface-card);
+    --surface:              var(--cx-surface);
+    --surface2:             var(--cx-surface-2);
+    --card-bg:              var(--cx-surface-card);
+    --input-bg:             var(--cx-surface-input);
+    --nav-bg:               var(--cx-nav-bg);
+    --nav-bg-scroll:        var(--cx-nav-bg-scroll);
+    --drawer-bg:            var(--cx-drawer-bg);
+    --footer-bg:            var(--cx-footer-bg);
+    --border:               var(--cx-border);
+    --border2:              var(--cx-border-2);
+    --cyan:                 var(--cx-primary);
+    --cyan-dim:             var(--cx-primary-subtle);
+    --cyan-glow:            var(--cx-primary-35);
+    --purple:               var(--cx-purple);
+    --purple-dim:           var(--cx-purple-10);
+    --orange:               var(--cx-orange);
+    --success:              var(--cx-success);
+    --warning:              var(--cx-gold);
+    --danger:               var(--cx-danger);
+    --text:                 var(--cx-text);
+    --text2:                var(--cx-text-2);
+    --text3:                var(--cx-text-3);
+    --text-inverse:         var(--cx-text-inverse);
+    --shadow-sm:            var(--cx-shadow-sm);
+    --shadow-md:            var(--cx-shadow-md);
+    --shadow-lg:            var(--cx-shadow-lg);
+    --scrollbar-thumb:      var(--cx-scrollbar-thumb);
+    --scrollbar-hover:      var(--cx-scrollbar-hover);
+    --font-head:            var(--cx-font-ui);
+    --font-body:            var(--cx-font-ui);
+    --nav-h:                var(--cx-nav-h);
+    --radius:               var(--cx-radius-lg);
+    --ease:                 var(--cx-ease);
+    --theme-speed:          var(--cx-theme-speed);
 }
 
-/* ── Dark theme overrides ───────────────────────────────── */
+/* ═══ Dark theme overrides ═══════════════════════════════════ */
 [data-theme="dark"] {
-    --cx-navy:            #050036;
-    --cx-navy-2:          #090447;
-    --cx-cyan:            #00D9FF;
-    --cx-purple:          #8A2BE2;
-    --cx-orange:          #FF6A00;
-    --cx-gold:            #FFC62E;
-    --cx-success:         #00E676;
-    --cx-danger:          #F3262D;
-    --cx-whatsapp:        #25d366;
 
-    --cx-cyan-5:          rgba(0, 217, 255, 0.05);
-    --cx-cyan-8:          rgba(0, 217, 255, 0.08);
-    --cx-cyan-10:         rgba(0, 217, 255, 0.10);
-    --cx-cyan-15:         rgba(0, 217, 255, 0.15);
-    --cx-cyan-25:         rgba(0, 217, 255, 0.25);
-    --cx-cyan-30:         rgba(0, 217, 255, 0.30);
-    --cx-cyan-35:         rgba(0, 217, 255, 0.35);
-    --cx-cyan-40:         rgba(0, 217, 255, 0.40);
-    --cx-cyan-50:         rgba(0, 217, 255, 0.50);
+    /* Brand — lightened for dark bg contrast */
+    --cx-primary:           #3B9AFF;
+    --cx-primary-hover:     #2B8AEE;
+    --cx-primary-light:     rgba(59, 154, 255, 0.12);
+    --cx-primary-subtle:    rgba(59, 154, 255, 0.08);
+    --cx-primary-border:    rgba(59, 154, 255, 0.15);
+    --cx-primary-20:        rgba(59, 154, 255, 0.20);
+    --cx-primary-25:        rgba(59, 154, 255, 0.25);
+    --cx-primary-30:        rgba(59, 154, 255, 0.30);
+    --cx-primary-35:        rgba(59, 154, 255, 0.35);
 
-    --cx-purple-5:        rgba(138, 43, 226, 0.05);
-    --cx-purple-8:        rgba(138, 43, 226, 0.08);
-    --cx-purple-10:       rgba(138, 43, 226, 0.10);
-    --cx-purple-12:       rgba(138, 43, 226, 0.12);
-    --cx-purple-15:       rgba(138, 43, 226, 0.15);
-    --cx-purple-20:       rgba(138, 43, 226, 0.20);
-    --cx-purple-30:       rgba(138, 43, 226, 0.30);
-    --cx-purple-35:       rgba(138, 43, 226, 0.35);
-    --cx-purple-40:       rgba(138, 43, 226, 0.40);
+    /* Neutral — dark surfaces */
+    --cx-gray-25:           #0B0F1A;
+    --cx-gray-50:           #111827;
+    --cx-gray-100:          #1F2937;
+    --cx-gray-200:          rgba(255, 255, 255, 0.08);
+    --cx-gray-300:          rgba(255, 255, 255, 0.15);
+    --cx-gray-400:          #6B7280;
+    --cx-gray-500:          #9CA3AF;
+    --cx-gray-600:          #D1D5DB;
+    --cx-gray-700:          #E5E7EB;
+    --cx-gray-800:          #F3F4F6;
+    --cx-gray-900:          #F9FAFB;
 
-    --cx-orange-8:        rgba(255, 106, 0, 0.08);
-    --cx-orange-10:       rgba(255, 106, 0, 0.10);
-    --cx-orange-12:       rgba(255, 106, 0, 0.12);
-    --cx-orange-15:       rgba(255, 106, 0, 0.15);
-    --cx-orange-25:       rgba(255, 106, 0, 0.25);
-    --cx-orange-35:       rgba(255, 106, 0, 0.35);
+    /* Semantic — lightened */
+    --cx-success:           #34D399;
+    --cx-success-light:     rgba(52, 211, 153, 0.10);
+    --cx-success-10:        rgba(52, 211, 153, 0.10);
+    --cx-success-15:        rgba(52, 211, 153, 0.15);
+    --cx-success-20:        rgba(52, 211, 153, 0.20);
+    --cx-success-40:        rgba(52, 211, 153, 0.40);
+    --cx-success-border:    rgba(52, 211, 153, 0.15);
 
-    --cx-gold-8:          rgba(255, 198, 46, 0.08);
-    --cx-gold-10:         rgba(255, 198, 46, 0.10);
-    --cx-gold-40:         rgba(255, 198, 46, 0.40);
+    --cx-warning:           #FBBF24;
+    --cx-warning-light:     rgba(251, 191, 36, 0.10);
+    --cx-warning-10:        rgba(251, 191, 36, 0.10);
+    --cx-warning-20:        rgba(251, 191, 36, 0.20);
+    --cx-warning-40:        rgba(251, 191, 36, 0.40);
+    --cx-warning-border:    rgba(251, 191, 36, 0.15);
 
-    --cx-success-10:      rgba(0, 230, 118, 0.10);
-    --cx-success-15:      rgba(0, 230, 118, 0.15);
-    --cx-success-40:      rgba(0, 230, 118, 0.40);
+    --cx-danger:            #F87171;
+    --cx-danger-light:      rgba(248, 113, 113, 0.10);
+    --cx-danger-8:          rgba(248, 113, 113, 0.08);
+    --cx-danger-10:         rgba(248, 113, 113, 0.10);
+    --cx-danger-20:         rgba(248, 113, 113, 0.20);
+    --cx-danger-25:         rgba(248, 113, 113, 0.25);
+    --cx-danger-border:     rgba(248, 113, 113, 0.15);
 
-    --cx-danger-8:        rgba(243, 38, 45, 0.08);
-    --cx-danger-10:       rgba(243, 38, 45, 0.10);
-    --cx-danger-25:       rgba(243, 38, 45, 0.25);
+    /* Category — lightened */
+    --cx-purple:            #A78BFA;
+    --cx-purple-light:      rgba(167, 139, 250, 0.10);
+    --cx-purple-5:          rgba(167, 139, 250, 0.05);
+    --cx-purple-8:          rgba(167, 139, 250, 0.08);
+    --cx-purple-10:         rgba(167, 139, 250, 0.10);
+    --cx-purple-12:         rgba(167, 139, 250, 0.12);
+    --cx-purple-15:         rgba(167, 139, 250, 0.15);
+    --cx-purple-20:         rgba(167, 139, 250, 0.20);
+    --cx-purple-25:         rgba(167, 139, 250, 0.25);
+    --cx-purple-30:         rgba(167, 139, 250, 0.30);
+    --cx-purple-35:         rgba(167, 139, 250, 0.35);
+    --cx-purple-40:         rgba(167, 139, 250, 0.40);
 
-    --cx-bg:              #050036;
-    --cx-bg-2:            #090447;
-    --cx-glass:           rgba(9, 4, 71, 0.6);
-    --cx-surface:         rgba(255, 255, 255, 0.04);
-    --cx-surface-2:       rgba(255, 255, 255, 0.08);
-    --cx-card-bg:         rgba(9, 4, 71, 0.6);
-    --cx-input-bg:        #090447;
-    --cx-nav-bg:          rgba(5, 0, 54, 0.55);
-    --cx-nav-bg-scroll:   rgba(5, 0, 54, 0.92);
-    --cx-drawer-bg:       rgba(5, 0, 54, 0.98);
-    --cx-footer-bg:       transparent;
-    --cx-hero-scrim-l:    rgba(5, 0, 54, 0.95);
-    --cx-hero-scrim-m:    rgba(5, 0, 54, 0.80);
-    --cx-hero-scrim-r:    rgba(5, 0, 54, 0.40);
-    --cx-hero-scrim-b:    rgba(5, 0, 54, 0.90);
-    --cx-hero-scrim-bt:   rgba(5, 0, 54, 0.50);
-    --cx-grid-line:       rgba(0, 217, 255, 0.03);
-    --cx-card-gradient:   rgba(9, 4, 71, 0.90);
-    --cx-card-gradient-m: rgba(9, 4, 71, 0.50);
-    --cx-card-gradient-e: rgba(9, 4, 71, 0.20);
+    --cx-orange:            #FB923C;
+    --cx-orange-light:      rgba(251, 146, 60, 0.10);
+    --cx-orange-8:          rgba(251, 146, 60, 0.08);
+    --cx-orange-10:         rgba(251, 146, 60, 0.10);
+    --cx-orange-12:         rgba(251, 146, 60, 0.12);
+    --cx-orange-15:         rgba(251, 146, 60, 0.15);
+    --cx-orange-20:         rgba(251, 146, 60, 0.20);
+    --cx-orange-25:         rgba(251, 146, 60, 0.25);
+    --cx-orange-35:         rgba(251, 146, 60, 0.35);
 
-    --cx-text:            #e8eaf0;
-    --cx-text-2:          #9b9bc7;
-    --cx-text-3:          #5a5d7a;
-    --cx-text-inverse:    #000000;
+    --cx-gold:              #FBBF24;
+    --cx-gold-light:        rgba(251, 191, 36, 0.10);
+    --cx-gold-8:            rgba(251, 191, 36, 0.08);
+    --cx-gold-10:           rgba(251, 191, 36, 0.10);
+    --cx-gold-20:           rgba(251, 191, 36, 0.20);
+    --cx-gold-40:           rgba(251, 191, 36, 0.40);
 
-    --cx-border:          rgba(0, 217, 255, 0.15);
-    --cx-border-2:        rgba(0, 217, 255, 0.25);
+    /* Surface — dark */
+    --cx-surface-page:      #0B0F1A;
+    --cx-surface-card:      #111827;
+    --cx-surface-elevated:  #1F2937;
+    --cx-surface-subtle:    #1F2937;
+    --cx-surface-hover:     #1F2937;
+    --cx-surface-input:     #111827;
+    --cx-surface:           rgba(255, 255, 255, 0.04);
+    --cx-surface-2:         rgba(255, 255, 255, 0.08);
+    --cx-nav-bg:            rgba(11, 15, 26, 0.85);
+    --cx-nav-bg-scroll:     rgba(11, 15, 26, 0.95);
+    --cx-drawer-bg:         rgba(11, 15, 26, 0.98);
+    --cx-footer-bg:         transparent;
 
-    --cx-shadow-sm:       0 2px 8px rgba(0, 0, 0, 0.3);
-    --cx-shadow-md:       0 8px 24px rgba(0, 0, 0, 0.4);
-    --cx-shadow-lg:       0 20px 60px rgba(0, 0, 0, 0.5);
+    /* Text — dark */
+    --cx-text:              #F9FAFB;
+    --cx-text-2:            #D1D5DB;
+    --cx-text-3:            #94A3B8;
+    --cx-text-inverse:      #000000;
 
-    --cx-scrollbar-thumb: rgba(0, 217, 255, 0.3);
-    --cx-scrollbar-hover: rgba(0, 217, 255, 0.5);
+    /* Border — dark */
+    --cx-border:            rgba(255, 255, 255, 0.08);
+    --cx-border-2:          rgba(255, 255, 255, 0.15);
+
+    /* Shadow — dark (subtle) */
+    --cx-shadow-sm:         0 2px 8px rgba(0, 0, 0, 0.3);
+    --cx-shadow-md:         0 8px 24px rgba(0, 0, 0, 0.4);
+    --cx-shadow-lg:         0 20px 60px rgba(0, 0, 0, 0.5);
+    --cx-shadow-xl:         0 32px 80px rgba(0, 0, 0, 0.6);
+
+    /* Scrollbar — dark */
+    --cx-scrollbar-thumb:   rgba(59, 154, 255, 0.3);
+    --cx-scrollbar-hover:   rgba(59, 154, 255, 0.5);
+
+    /* Dark mode cyan/blue aliases */
+    --cx-cyan:              var(--cx-primary);
+    --cx-cyan-5:            var(--cx-primary-subtle);
+    --cx-cyan-8:            var(--cx-primary-subtle);
+    --cx-cyan-10:           rgba(59, 154, 255, 0.10);
+    --cx-cyan-15:           var(--cx-primary-border);
+    --cx-cyan-20:           var(--cx-primary-20);
+    --cx-cyan-25:           var(--cx-primary-25);
+    --cx-cyan-30:           var(--cx-primary-30);
+    --cx-cyan-35:           var(--cx-primary-35);
+    --cx-cyan-40:           rgba(59, 154, 255, 0.40);
+    --cx-cyan-50:           rgba(59, 154, 255, 0.50);
+
+    --cx-blue:              var(--cx-primary);
+    --cx-blue-8:            var(--cx-primary-subtle);
+    --cx-blue-15:           var(--cx-primary-border);
+    --cx-blue-20:           var(--cx-primary-20);
+
+    --cx-navy:              var(--cx-primary);
+    --cx-navy-2:            var(--cx-primary-hover);
 }

@@ -37,7 +37,7 @@
 }
 .faq-filter:hover { color: var(--cyan); border-color: var(--cx-cyan-30); }
 .faq-filter.active {
-    background: var(--cx-blue); color: #fff; border-color: var(--cx-blue);
+    background: var(--cx-blue); color: var(--text-inverse); border-color: var(--cx-blue);
 }
 
 /* ── FAQ list ─────────────────────────────────────────────── */
@@ -109,7 +109,7 @@
     padding: 12px 24px; border-radius: 12px;
     font-family: var(--font-head); font-weight: 800; font-size: 13px;
     text-transform: uppercase; letter-spacing: 0.05em;
-    background: var(--cx-blue); color: #fff; text-decoration: none;
+    background: var(--cx-blue); color: var(--text-inverse); text-decoration: none;
     transition: all 0.3s var(--ease);
 }
 .faq-cta-btn:hover { transform: translateY(-2px); opacity: 0.9; }

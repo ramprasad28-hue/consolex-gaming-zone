@@ -127,7 +127,7 @@
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: #fff;
+  color: var(--text-inverse);
   background: var(--cx-blue);
   border: none;
   border-radius: 10px;
@@ -141,7 +141,7 @@
 .btn-pay:hover {
   opacity: 0.9;
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(0,112,210,0.2);
+  box-shadow: 0 8px 28px var(--cx-primary-20);
 }
 
 .btn-pay:disabled {

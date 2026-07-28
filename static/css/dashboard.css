@@ -66,7 +66,7 @@
   font-family: var(--font-head);
   font-weight: 700;
   font-size: 1rem;
-  color: #fff;
+  color: var(--text-inverse);
   background: linear-gradient(135deg, var(--cx-blue), var(--cx-purple));
 }
 
@@ -129,7 +129,7 @@
   padding: 0 3px;
   border-radius: 999px;
   background: var(--cx-danger);
-  color: #fff;
+  color: var(--text-inverse);
   font-size: 0.62rem;
   font-weight: 700;
   line-height: 16px;
@@ -169,7 +169,7 @@
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: 12px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+  box-shadow: var(--cx-shadow-lg);
   padding: 0.6rem;
   z-index: 60;
   opacity: 0;
@@ -321,11 +321,11 @@
 .dash-stat-card:hover {
   transform: translateY(-4px);
   border-color: var(--border2);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  box-shadow: var(--cx-shadow-md);
 }
-.dash-stat-card:hover.is-cyan   { box-shadow: 0 8px 24px rgba(0,112,210,0.1); }
-.dash-stat-card:hover.is-purple { box-shadow: 0 8px 24px rgba(138,43,226,0.1); }
-.dash-stat-card:hover.is-orange { box-shadow: 0 8px 24px rgba(255,106,0,0.1); }
+.dash-stat-card:hover.is-cyan   { box-shadow: 0 8px 24px var(--cx-primary-subtle); }
+.dash-stat-card:hover.is-purple { box-shadow: 0 8px 24px var(--cx-purple-8); }
+.dash-stat-card:hover.is-orange { box-shadow: 0 8px 24px var(--cx-orange-8); }
 
 .dash-stat-icon {
   width: 38px;
@@ -514,7 +514,7 @@
 .btn-action:hover { transform: translateY(-1px); }
 
 .btn-pay-now {
-  color: #fff;
+  color: var(--text-inverse);
   background: var(--cx-blue);
   border-color: var(--cx-blue);
 }
@@ -650,7 +650,7 @@
   font-family: var(--font-head);
   font-size: 1.3rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-inverse);
   background: linear-gradient(135deg, var(--cx-blue), var(--cx-purple));
   margin: 0 auto 0.9rem;
 }
@@ -717,7 +717,7 @@
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: #fff;
+  color: var(--text-inverse);
   background: var(--cx-blue);
   border: none;
   border-radius: 10px;
@@ -759,7 +759,7 @@
   padding: 0.75rem 1.2rem;
   border-radius: 12px;
   font-size: 0.82rem;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+  box-shadow: var(--cx-shadow-lg);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s, transform 0.25s;

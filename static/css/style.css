@@ -68,7 +68,7 @@
 
 .auth-card h2 {
     color: var(--cx-text);
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     font-size: 1.75rem;
     font-weight: 800;
     margin: 0 0 0.35rem;
@@ -79,7 +79,7 @@
 .auth-sub {
     color: var(--cx-text-2);
     margin-bottom: 2rem;
-    font-family: var(--cx-font-body);
+    font-family: var(--cx-font-ui);
     text-align: center;
     font-size: var(--cx-text-sm);
 }
@@ -91,7 +91,7 @@
     color: var(--cx-text-2);
     font-size: var(--cx-text-sm);
     margin-bottom: 6px;
-    font-family: var(--cx-font-body);
+    font-family: var(--cx-font-ui);
     font-weight: 500;
 }
 
@@ -103,7 +103,7 @@
     padding: 0.75rem 1rem;
     color: var(--cx-text);
     font-size: 1rem;
-    font-family: var(--cx-font-body);
+    font-family: var(--cx-font-ui);
     transition: border-color 0.3s var(--cx-ease), box-shadow 0.3s var(--cx-ease);
     box-sizing: border-box;
 }
@@ -127,7 +127,7 @@
     color: var(--cx-text-2);
     margin-top: 1.5rem;
     text-align: center;
-    font-family: var(--cx-font-body);
+    font-family: var(--cx-font-ui);
     font-size: var(--cx-text-sm);
 }
 
@@ -152,11 +152,11 @@
 .btn-primary {
     display: inline-block;
     width: 100%;
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     font-size: 0.85rem;
     font-weight: 700;
     letter-spacing: var(--cx-tracking-wide);
-    color: #fff;
+    color: var(--text-inverse);
     background: var(--cx-cyan);
     border: none;
     border-radius: var(--cx-radius-md);

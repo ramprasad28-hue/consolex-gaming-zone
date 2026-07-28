@@ -12,8 +12,8 @@
 
 /* ── Body ───────────────────────────────────────────────── */
 body {
-    font-family: var(--cx-font-body);
-    background: var(--cx-bg);
+    font-family: var(--cx-font-ui);
+    background: var(--cx-surface-page);
     color: var(--cx-text);
     overflow-x: hidden;
     transition: background var(--cx-theme-speed) ease,
@@ -76,7 +76,7 @@ html {
 
 /* ── Focus visible ──────────────────────────────────────── */
 :focus-visible {
-    outline: 2px solid var(--cx-cyan);
+    outline: 2px solid var(--cx-primary);
     outline-offset: 3px;
     border-radius: 4px;
 }
@@ -86,7 +86,7 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-    outline: 2px solid var(--cx-cyan);
+    outline: 2px solid var(--cx-primary);
     outline-offset: 2px;
 }
 
@@ -97,8 +97,8 @@ textarea:focus-visible {
     left: 16px;
     z-index: var(--cx-z-skip);
     padding: 12px 24px;
-    background: var(--cx-cyan);
-    color: #fff;
+    background: var(--cx-primary);
+    color: var(--text-inverse);
     font-weight: 700;
     border-radius: var(--cx-radius-sm);
     text-decoration: none;

@@ -38,9 +38,9 @@
     justify-content: center;
     gap: 8px;
     background: var(--cx-cyan);
-    color: #fff;
+    color: var(--text-inverse);
     font-weight: 700;
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     padding: 14px 32px;
     border-radius: var(--cx-radius-md);
     border: none;
@@ -65,7 +65,7 @@
     background: transparent;
     color: var(--cx-text);
     font-weight: 700;
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     padding: 13px 32px;
     border-radius: var(--cx-radius-md);
     border: 1px solid var(--cx-border-2);
@@ -87,9 +87,9 @@
     justify-content: center;
     gap: 8px;
     background: var(--cx-purple);
-    color: #ffffff;
+    color: var(--cx-text-inverse);
     font-weight: 700;
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     padding: 14px 32px;
     border-radius: var(--cx-radius-md);
     border: none;
@@ -129,7 +129,7 @@
     font-size: 12px;
     font-weight: 700;
     letter-spacing: var(--cx-tracking-wider);
-    font-family: var(--cx-font-body);
+    font-family: var(--cx-font-ui);
 }
 
 .neon-pill-purple {
@@ -141,7 +141,7 @@
     font-size: 12px;
     font-weight: 700;
     letter-spacing: var(--cx-tracking-wider);
-    font-family: var(--cx-font-body);
+    font-family: var(--cx-font-ui);
 }
 
 .neon-pill-orange {
@@ -153,7 +153,7 @@
     font-size: 12px;
     font-weight: 700;
     letter-spacing: var(--cx-tracking-wider);
-    font-family: var(--cx-font-body);
+    font-family: var(--cx-font-ui);
 }
 
 /* ── Badges ─────────────────────────────────────────────── */
@@ -196,14 +196,6 @@
     background: var(--cx-surface);
     color: var(--cx-text-2);
     border: 1px solid var(--cx-border);
-}
-
-/* ── Grid line background ───────────────────────────────── */
-.grid-line-bg {
-    background-image:
-        linear-gradient(var(--cx-grid-line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--cx-grid-line) 1px, transparent 1px);
-    background-size: 60px 60px;
 }
 
 /* ── Scroll animations ──────────────────────────────────── */
@@ -257,7 +249,7 @@
 
 @keyframes pulse {
     0%, 100% { opacity: 1; }
-    50%      { opacity: 0.4; }
+    50% { opacity: 0.4; }
 }
 
 /* ── Countdown block ────────────────────────────────────── */
@@ -273,7 +265,7 @@
 /* ── Step indicators ────────────────────────────────────── */
 .step-active {
     background: var(--cx-cyan);
-    color: #fff;
+    color: var(--text-inverse);
 }
 .step-complete {
     background: var(--cx-success-15);

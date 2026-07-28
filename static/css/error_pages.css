@@ -20,7 +20,7 @@
 }
 
 .error-code {
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     font-size: clamp(5rem, 15vw, 9rem);
     font-weight: 900;
     letter-spacing: var(--cx-tracking-tight);
@@ -66,7 +66,7 @@
 
 .error-msg {
     color: var(--cx-text-2);
-    font-family: var(--cx-font-body);
+    font-family: var(--cx-font-ui);
     font-size: var(--cx-text-lg);
     line-height: 1.7;
     margin-bottom: 2rem;
@@ -78,7 +78,7 @@
     gap: 0.5rem;
     padding: 0.85rem 2rem;
     border-radius: var(--cx-radius-md);
-    font-family: var(--cx-font-display);
+    font-family: var(--cx-font-ui);
     font-size: 0.85rem;
     font-weight: 700;
     letter-spacing: var(--cx-tracking-wide);
@@ -87,18 +87,18 @@
 }
 
 .error-404 .error-btn {
-    color: #fff;
+    color: var(--text-inverse);
     background: linear-gradient(135deg, var(--cx-cyan), var(--cx-purple));
 }
 
 .error-500 .error-btn {
-    color: #fff;
+    color: var(--text-inverse);
     background: linear-gradient(135deg, var(--cx-orange), #F3262D);
 }
 
 .error-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(0,112,210,0.2);
+    box-shadow: 0 8px 28px var(--cx-primary-20);
 }
 
 .error-btn svg {
@@ -109,7 +109,7 @@
 .error-hint {
     margin-top: 1.5rem;
     color: var(--cx-text-3);
-    font-family: var(--cx-font-body);
+    font-family: var(--cx-font-ui);
     font-size: var(--cx-text-sm);
 }
 

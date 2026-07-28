@@ -128,7 +128,7 @@
 .gallery-card:hover {
     transform: scale(1.05) translateY(-6px);
     border-color: var(--cx-cyan-30);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--cx-shadow-xl);
     z-index: 5;
 }
 
@@ -178,7 +178,7 @@
     font-size: 0.82rem;
     font-weight: 700;
     letter-spacing: 0.5px;
-    color: #fff;
+    color: var(--text-inverse);
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 

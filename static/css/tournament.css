@@ -59,10 +59,10 @@
     font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
 }
 .tourney-status-open {
-    background: rgba(0,230,118,0.15); border: 1px solid rgba(0,230,118,0.30); color: #00C853;
+    background: var(--cx-success-10); border: 1px solid var(--cx-success-border); color: var(--cx-success);
 }
 .tourney-status-upcoming {
-    background: rgba(255,198,46,0.15); border: 1px solid rgba(255,198,46,0.30); color: var(--cx-gold);
+    background: var(--cx-gold-8); border: 1px solid var(--cx-gold-20); color: var(--cx-gold);
 }
 
 .tourney-prize-box {
@@ -131,7 +131,7 @@
     cursor: pointer; transition: all 0.3s var(--ease); text-align: center;
 }
 .tourney-btn-primary {
-    background: var(--cx-blue); color: #fff;
+    background: var(--cx-blue); color: var(--text-inverse);
 }
 .tourney-btn-primary:hover { background: var(--cx-cyan-60); transform: translateY(-2px); }
 .tourney-btn-ghost {
@@ -186,9 +186,9 @@
     border: 1px solid var(--surface2);
     flex-shrink: 0;
 }
-.lb-rank-1 { background: rgba(255,198,46,0.15); color: var(--cx-gold); border-color: rgba(255,198,46,0.30); }
-.lb-rank-2 { background: var(--surface); color: var(--text2); border-color: var(--surface2); }
-.lb-rank-3 { background: rgba(255,106,0,0.12); color: var(--cx-orange); border-color: rgba(255,106,0,0.25); }
+.lb-rank-1 { background: var(--cx-gold-8); color: var(--cx-gold); border-color: var(--cx-gold-20); }
+.lb-rank-2 { background: var(--cx-surface); color: var(--text2); border-color: var(--surface2); }
+.lb-rank-3 { background: var(--cx-orange-8); color: var(--cx-orange); border-color: var(--cx-orange-20); }
 
 .lb-avatar {
     width: 36px; height: 36px; border-radius: 50%;

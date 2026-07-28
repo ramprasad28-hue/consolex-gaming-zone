@@ -84,7 +84,7 @@
 
 .pay-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0,112,210,0.2);
+    box-shadow: 0 8px 24px var(--cx-primary-20);
 }
 
 .pay-btn:disabled {
@@ -102,13 +102,13 @@
 .status-success {
     display: block;
     background: var(--cx-success);
-    color: #fff;
+    color: var(--text-inverse);
 }
 
 .status-error {
     display: block;
     background: var(--cx-danger);
-    color: #fff;
+    color: var(--text-inverse);
 }
 
 .loader {

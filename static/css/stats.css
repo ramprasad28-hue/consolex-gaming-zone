@@ -55,7 +55,7 @@
 }
 
 .stat-label {
-    font-family: var(--cx-font-body);
+    font-family: var(--cx-font-ui);
     font-size: 0.82rem;
     font-weight: 500;
     color: var(--cx-text-2);
