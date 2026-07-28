@@ -36,6 +36,9 @@ urlpatterns = [
 
     # Tournaments
     path("tournaments/", include("apps.tournaments.urls")),
+
+    # Staff Portal
+    path("staff/", include("apps.staff.urls")),
 ]
 
 if settings.DEBUG:

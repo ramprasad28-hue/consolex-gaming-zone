@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'apps.memberships',
     'apps.notifications',
     'apps.tournaments',
+    'apps.staff',
     'apps.cms',
 
     # API

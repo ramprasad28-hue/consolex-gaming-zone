@@ -1,0 +1,107 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}Game Management — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <h1 class="sp-header-title">Game Management</h1>
+    <p class="sp-header-sub">Manage game catalog and console availability</p>
+  </div>
+  <div class="sp-header-actions">
+    <a href="{% url 'admin:games_game_add' %}" class="cx-btn cx-btn--primary cx-btn--sm" target="_blank">+ Add Game</a>
+  </div>
+</div>
+
+<form method="GET" action="">
+<div class="sp-toolbar" role="search" aria-label="Filter games">
+  <div class="sp-search-wrap">
+    <svg class="sp-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="search" name="q" class="cx-input" placeholder="Search games…" value="{{ q }}" aria-label="Search games">
+  </div>
+  <div class="cx-field">
+    <select name="platform" class="cx-select" data-auto-submit aria-label="Filter by platform">
+      <option value="">All Platforms</option>
+      <option value="PS5" {% if platform == 'PS5' %}selected{% endif %}>PS5</option>
+      <option value="PS4" {% if platform == 'PS4' %}selected{% endif %}>PS4</option>
+      <option value="XBOX" {% if platform == 'XBOX' %}selected{% endif %}>Xbox</option>
+    </select>
+  </div>
+  <div class="cx-field">
+    <select name="active" class="cx-select" data-auto-submit aria-label="Filter by availability">
+      <option value="">All</option>
+      <option value="active" {% if active_filter == 'active' %}selected{% endif %}>Active</option>
+      <option value="archived" {% if active_filter == 'archived' %}selected{% endif %}>Archived</option>
+    </select>
+  </div>
+  <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Filter</button>
+  {% if q or platform or active_filter %}
+  <a href="{% url 'staff:staff_game_list' %}" class="cx-btn cx-btn--ghost cx-btn--sm">Clear</a>
+  {% endif %}
+</div>
+</form>
+
+<div class="sp-dash-grid">
+  <!-- Games -->
+  <div class="sp-widget">
+    <div class="sp-widget-header">
+      <h2 class="sp-widget-title">Games ({{ page_obj.paginator.count }})</h2>
+    </div>
+    <div class="sp-widget-body">
+      {% if page_obj %}
+      <div class="sp-table-wrap">
+        <table class="sp-table" aria-label="Games">
+          <thead>
+            <tr><th scope="col">Title</th><th scope="col">Category</th><th scope="col">Rating</th><th scope="col">Active</th><th scope="col">Actions</th></tr>
+          </thead>
+          <tbody>
+            {% for g in page_obj %}
+            <tr>
+              <td><strong>{{ g.title }}</strong></td>
+              <td><span class="cx-badge cx-badge--neutral">{{ g.get_category_display|default:"—" }}</span></td>
+              <td>{% if g.rating %}{{ g.rating }}/10{% else %}—{% endif %}</td>
+              <td>{% if g.is_active %}<span class="cx-badge cx-badge--success">Active</span>{% else %}<span class="cx-badge cx-badge--neutral">Archived</span>{% endif %}</td>
+              <td class="sp-cell-actions">
+                <a href="{% url 'admin:games_game_change' g.id %}" class="cx-btn cx-btn--ghost cx-btn--sm" target="_blank">Edit</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="cx-empty" role="status">
+        <div class="cx-empty-title">No games found</div>
+        <div class="cx-empty-desc">Add games to your catalog.</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Consoles -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Consoles ({{ consoles|length }})</h2></div>
+    <div class="sp-widget-body">
+      <div class="sp-table-wrap">
+        <table class="sp-table" aria-label="Consoles">
+          <thead>
+            <tr><th scope="col">Name</th><th scope="col">Type</th><th scope="col">Weekday</th><th scope="col">Weekend</th><th scope="col">Status</th></tr>
+          </thead>
+          <tbody>
+            {% for c in consoles %}
+            <tr>
+              <td><strong>{{ c.name }}</strong></td>
+              <td><span class="cx-badge cx-badge--neutral">{{ c.console_type }}</span></td>
+              <td>₹{{ c.hourly_rate_weekday|floatformat:0 }}/hr</td>
+              <td>₹{{ c.hourly_rate_weekend|floatformat:0 }}/hr</td>
+              <td>{% if c.is_active %}<span class="cx-badge cx-badge--success">Active</span>{% else %}<span class="cx-badge cx-badge--neutral">Inactive</span>{% endif %}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

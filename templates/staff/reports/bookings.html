@@ -1,0 +1,69 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}Bookings Report — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <div class="cx-breadcrumb" style="margin-bottom:var(--cx-space-2)">
+      <a href="{% url 'staff:staff_reports' %}" class="cx-breadcrumb-link">Reports</a>
+      <span class="cx-breadcrumb-sep">/</span>
+      <span class="cx-breadcrumb-current">Bookings</span>
+    </div>
+    <h1 class="sp-header-title">Bookings Report</h1>
+  </div>
+  <div class="sp-header-actions">
+    <button type="button" class="cx-btn cx-btn--outline cx-btn--sm" onclick="window.print()">Print</button>
+  </div>
+</div>
+
+<form method="GET" class="sp-toolbar">
+  <div class="cx-field">
+    <label class="cx-label">From</label>
+    <input type="date" name="from" class="cx-input" value="{{ date_from|date:'Y-m-d'|default:'' }}">
+  </div>
+  <div class="cx-field">
+    <label class="cx-label">To</label>
+    <input type="date" name="to" class="cx-input" value="{{ date_to|date:'Y-m-d'|default:'' }}">
+  </div>
+  <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm" style="margin-top:20px">Apply</button>
+</form>
+
+<div class="sp-stats-grid">
+  <div class="sp-stat-card"><div class="sp-stat-label">Total</div><div class="sp-stat-value">{{ report_data.total }}</div></div>
+  <div class="sp-stat-card"><div class="sp-stat-label">Confirmed</div><div class="sp-stat-value sp-stat-trend--up">{{ report_data.confirmed }}</div></div>
+  <div class="sp-stat-card"><div class="sp-stat-label">Pending</div><div class="sp-stat-value sp-stat-trend--down">{{ report_data.pending }}</div></div>
+  <div class="sp-stat-card"><div class="sp-stat-label">Completed</div><div class="sp-stat-value">{{ report_data.completed }}</div></div>
+  <div class="sp-stat-card"><div class="sp-stat-label">Cancelled</div><div class="sp-stat-value" style="color:var(--cx-danger)">{{ report_data.cancelled }}</div></div>
+</div>
+
+<div class="sp-widget">
+  <div class="sp-widget-header"><h2 class="sp-widget-title">Booking History</h2></div>
+  <div class="sp-widget-body">
+    {% if report_data.items %}
+    <div class="sp-table-wrap">
+      <table class="sp-table" aria-label="Bookings">
+        <thead>
+          <tr><th>#</th><th>Customer</th><th>Console</th><th>Date</th><th>Amount</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          {% for b in report_data.items %}
+          <tr>
+            <td><a href="{% url 'staff:staff_booking_detail' b.id %}">#{{ b.id }}</a></td>
+            <td>{{ b.user.full_display_name }}</td>
+            <td>{{ b.game_console.name|default:"—" }}</td>
+            <td>{{ b.booking_date|date:"d M Y" }}</td>
+            <td>₹{{ b.total_cost|floatformat:0 }}</td>
+            <td><span class="cx-badge cx-badge--{% if b.status == 'confirmed' %}success{% elif b.status == 'pending' %}warning{% elif b.status == 'cancelled' %}danger{% else %}primary{% endif %}">{{ b.get_status_display }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="cx-empty"><div class="cx-empty-desc">No booking data found.</div></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

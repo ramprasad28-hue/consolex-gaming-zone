@@ -1,0 +1,129 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}Bulk Communication — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <h1 class="sp-header-title">Bulk Communication</h1>
+    <p class="sp-header-sub">Send announcements and messages to your audience</p>
+  </div>
+  <div class="sp-header-actions">
+    <a href="{% url 'staff:staff_comm_history' %}" class="cx-btn cx-btn--ghost cx-btn--sm">Message History</a>
+  </div>
+</div>
+
+<div class="sp-dash-grid">
+  <!-- Compose -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Compose Message</h2></div>
+    <div class="sp-widget-body">
+      <div class="cx-field">
+        <label class="cx-label">Audience</label>
+        <div class="sp-comm-recipients">
+          <button type="button" class="sp-comm-chip is-selected" data-value="all">All Users ({{ users_count }})</button>
+          <button type="button" class="sp-comm-chip" data-value="active">Active Members</button>
+          <button type="button" class="sp-comm-chip" data-value="membership">With Membership</button>
+          <button type="button" class="sp-comm-chip" data-value="no-membership">No Membership</button>
+        </div>
+        <p class="cx-hint" id="audienceHint">Message will be sent to all registered users.</p>
+      </div>
+
+      <div class="cx-field">
+        <label class="cx-label">Message Template</label>
+        <select class="cx-select" aria-label="Message template">
+          <option value="">— Custom Message —</option>
+          <option value="promotion">🎉 Promotions & Offers</option>
+          <option value="tournament">🏆 Tournament Announcement</option>
+          <option value="membership">⭐ Membership Reminder</option>
+          <option value="booking">📅 Booking Reminder</option>
+        </select>
+      </div>
+
+      <div class="cx-field">
+        <label class="cx-label" for="commSubject">Subject</label>
+        <input type="text" id="commSubject" class="cx-input" placeholder="Message subject…" aria-label="Message subject">
+      </div>
+
+      <div class="cx-field">
+        <label class="cx-label" for="commMessage">Message</label>
+        <textarea id="commMessage" class="cx-textarea" rows="5" placeholder="Type your message here…" aria-label="Message content"></textarea>
+      </div>
+
+      <div class="sp-comm-preview" role="region" aria-label="Message preview">
+        <strong>Preview:</strong><br>
+        Hi {first_name},<br><br>
+        Your message will appear here.<br><br>
+        — {{ site.brand_name }} Team
+      </div>
+
+      <div style="display:flex;gap:var(--cx-space-3);align-items:center">
+        <button type="button" class="cx-btn cx-btn--primary cx-btn--md" onclick="window.cx.toast.info('Bulk messaging is a placeholder — backend not yet wired.')">
+          Send Message
+        </button>
+        <span class="cx-hint">Uses in-app notifications (email/SMS coming soon)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supported integrations -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Supported Integrations</h2></div>
+    <div class="sp-widget-body">
+      <div class="sp-data-list">
+        <div class="sp-data-row">
+          <span class="sp-data-label">In-App Notifications</span>
+          <span class="sp-data-value"><span class="cx-badge cx-badge--success">Active</span></span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">WhatsApp (Twilio)</span>
+          <span class="sp-data-value"><span class="cx-badge cx-badge--warning">Configured</span></span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Email</span>
+          <span class="sp-data-value"><span class="cx-badge cx-badge--neutral">Not configured</span></span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">SMS</span>
+          <span class="sp-data-value"><span class="cx-badge cx-badge--neutral">Not configured</span></span>
+        </div>
+      </div>
+
+      <div style="margin-top:var(--cx-space-4)">
+        <h3 style="font-size:var(--cx-text-sm);font-weight:600;color:var(--cx-text);margin-bottom:var(--cx-space-2)">Available Templates</h3>
+        <div class="sp-activity">
+          <div class="sp-activity-item">
+            <span class="sp-activity-dot is-success" aria-hidden="true"></span>
+            <div>
+              <div class="sp-activity-text">Promotions & Offers</div>
+              <div class="sp-activity-time">Announce discounts, special events</div>
+            </div>
+          </div>
+          <div class="sp-activity-item">
+            <span class="sp-activity-dot is-success" aria-hidden="true"></span>
+            <div>
+              <div class="sp-activity-text">Tournament Announcements</div>
+              <div class="sp-activity-time">New tournaments, registration reminders</div>
+            </div>
+          </div>
+          <div class="sp-activity-item">
+            <span class="sp-activity-dot is-success" aria-hidden="true"></span>
+            <div>
+              <div class="sp-activity-text">Membership Reminders</div>
+              <div class="sp-activity-time">Expiry warnings, upgrade offers</div>
+            </div>
+          </div>
+          <div class="sp-activity-item">
+            <span class="sp-activity-dot is-success" aria-hidden="true"></span>
+            <div>
+              <div class="sp-activity-text">Booking Reminders</div>
+              <div class="sp-activity-time">Upcoming session reminders</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

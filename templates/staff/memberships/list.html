@@ -1,0 +1,103 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}Membership Management — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <h1 class="sp-header-title">Membership Management</h1>
+    <p class="sp-header-sub">Manage plans, pricing and active subscriptions</p>
+  </div>
+  <div class="sp-header-actions">
+    <a href="{% url 'admin:memberships_membership_add' %}" class="cx-btn cx-btn--primary cx-btn--sm" target="_blank">+ Add Plan</a>
+  </div>
+</div>
+
+<div class="sp-dash-grid">
+  <!-- Stats -->
+  <div class="sp-stats-grid sp-dash-full" style="margin-bottom:0">
+    <div class="sp-stat-card">
+      <div class="sp-stat-label">Active Subscriptions</div>
+      <div class="sp-stat-value">{{ total_active }}</div>
+    </div>
+    <div class="sp-stat-card">
+      <div class="sp-stat-label">Expired</div>
+      <div class="sp-stat-value">{{ total_expired }}</div>
+    </div>
+    <div class="sp-stat-card">
+      <div class="sp-stat-label">Plans</div>
+      <div class="sp-stat-value">{{ memberships|length }}</div>
+    </div>
+    <div class="sp-stat-card">
+      <div class="sp-stat-label">Revenue</div>
+      <div class="sp-stat-value">—</div>
+    </div>
+  </div>
+
+  <!-- Plans -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Membership Plans</h2></div>
+    <div class="sp-widget-body">
+      <div class="sp-table-wrap">
+        <table class="sp-table" aria-label="Membership plans">
+          <thead>
+            <tr><th scope="col">Plan</th><th scope="col">Price</th><th scope="col">Duration</th><th scope="col">Hours</th><th scope="col">Discount</th><th scope="col">Popular</th><th scope="col">Active</th><th scope="col">Actions</th></tr>
+          </thead>
+          <tbody>
+            {% for m in memberships %}
+            <tr>
+              <td><strong>{{ m.name }}</strong></td>
+              <td>₹{{ m.price|floatformat:0 }}</td>
+              <td>{{ m.duration_days }} days</td>
+              <td>{{ m.total_hours }} hrs</td>
+              <td>{% if m.discount_percent %}{{ m.discount_percent }}%{% else %}—{% endif %}</td>
+              <td>{% if m.is_popular %}<span class="cx-badge cx-badge--primary">Popular</span>{% endif %}</td>
+              <td>{% if m.is_active %}<span class="cx-badge cx-badge--success">Active</span>{% else %}<span class="cx-badge cx-badge--neutral">Inactive</span>{% endif %}</td>
+              <td class="sp-cell-actions">
+                <a href="{% url 'admin:memberships_membership_change' m.id %}" class="cx-btn cx-btn--ghost cx-btn--sm" target="_blank">Edit</a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8" class="cx-empty-desc">No plans defined.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent subscriptions -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Recent Subscriptions</h2></div>
+    <div class="sp-widget-body">
+      <div class="sp-table-wrap">
+        <table class="sp-table" aria-label="Recent subscriptions">
+          <thead>
+            <tr><th scope="col">User</th><th scope="col">Plan</th><th scope="col">Started</th><th scope="col">Expires</th><th scope="col">Status</th><th scope="col">Auto</th></tr>
+          </thead>
+          <tbody>
+            {% for s in subscriptions %}
+            <tr>
+              <td>{{ s.user.full_display_name }}</td>
+              <td>{{ s.plan.name }}</td>
+              <td>{{ s.started_at|date:"d M Y" }}</td>
+              <td>{{ s.expires_at|date:"d M Y" }}</td>
+              <td>
+                {% if s.status == 'active' %}<span class="cx-badge cx-badge--success">Active</span>
+                {% elif s.status == 'expired' %}<span class="cx-badge cx-badge--warning">Expired</span>
+                {% elif s.status == 'cancelled' %}<span class="cx-badge cx-badge--danger">Cancelled</span>
+                {% else %}<span class="cx-badge cx-badge--neutral">{{ s.get_status_display }}</span>{% endif %}
+              </td>
+              <td>{% if s.auto_renew %}<span class="cx-badge cx-badge--primary">Yes</span>{% else %}No{% endif %}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="cx-empty-desc">No subscriptions yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}Settings — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <h1 class="sp-header-title">Settings</h1>
+    <p class="sp-header-sub">Manage your business profile and preferences</p>
+  </div>
+  <div class="sp-header-actions">
+    <a href="{% url 'admin:index' %}" class="cx-btn cx-btn--outline cx-btn--sm" target="_blank" rel="noopener">Django Admin</a>
+  </div>
+</div>
+
+<div class="sp-settings-section">
+  <h2 class="sp-settings-heading">Business Information</h2>
+  <p class="sp-settings-desc">Your business details shown across the site.</p>
+
+  <div class="cx-field">
+    <label class="cx-label">Brand Name</label>
+    <input type="text" class="cx-input" value="{{ site.brand_name }}" readonly>
+    <p class="cx-hint">Edit via <a href="{% url 'admin:cms_sitesettings_change' 1 %}" target="_blank">Django Admin → Site Settings</a></p>
+  </div>
+
+  <div class="cx-field">
+    <label class="cx-label">Tagline</label>
+    <input type="text" class="cx-input" value="{{ site.tagline }}" readonly>
+  </div>
+
+  <div class="cx-field">
+    <label class="cx-label">Phone</label>
+    <input type="text" class="cx-input" value="{{ site.phone }}" readonly>
+  </div>
+
+  <div class="cx-field">
+    <label class="cx-label">Address</label>
+    <textarea class="cx-textarea" rows="2" readonly>{{ site.address }}</textarea>
+  </div>
+
+  <div class="cx-field">
+    <label class="cx-label">Operating Hours</label>
+    <input type="text" class="cx-input" value="{{ site.operating_hours }}" readonly>
+  </div>
+
+  <div class="sp-data-list" style="margin-top:var(--cx-space-4)">
+    <div class="sp-data-row">
+      <span class="sp-data-label">WhatsApp</span>
+      <span class="sp-data-value">{{ site.whatsapp_number }}</span>
+    </div>
+    <div class="sp-data-row">
+      <span class="sp-data-label">Instagram</span>
+      <span class="sp-data-value">{{ site.instagram_handle }}</span>
+    </div>
+    <div class="sp-data-row">
+      <span class="sp-data-label">Google Rating</span>
+      <span class="sp-data-value">{{ site.google_rating }} ({{ site.google_review_count }} reviews)</span>
+    </div>
+  </div>
+</div>
+
+<div class="sp-settings-section">
+  <h2 class="sp-settings-heading">Theme Preference</h2>
+  <p class="sp-settings-desc">Toggle between light and dark mode (affects your browser session).</p>
+  <div style="display:flex;gap:var(--cx-space-3)">
+    <button type="button" class="cx-btn cx-btn--outline cx-btn--md" onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('theme','light')">☀️ Light Mode</button>
+    <button type="button" class="cx-btn cx-btn--outline cx-btn--md" onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('theme','dark')">🌙 Dark Mode</button>
+  </div>
+</div>
+
+<div class="sp-settings-section">
+  <h2 class="sp-settings-heading">Account</h2>
+  <p class="sp-settings-desc">Your staff account information.</p>
+  <div class="sp-data-list">
+    <div class="sp-data-row">
+      <span class="sp-data-label">Email</span>
+      <span class="sp-data-value">{{ request.user.email }}</span>
+    </div>
+    <div class="sp-data-row">
+      <span class="sp-data-label">Role</span>
+      <span class="sp-data-value">{% if request.user.is_superuser %}Owner{% else %}Staff{% endif %}</span>
+    </div>
+    <div class="sp-data-row">
+      <span class="sp-data-label">Joined</span>
+      <span class="sp-data-value">{{ request.user.date_joined|date:"d M Y" }}</span>
+    </div>
+  </div>
+  <div style="margin-top:var(--cx-space-4)">
+    <a href="{% url 'users:logout' %}" class="cx-btn cx-btn--outline cx-btn--sm">Logout</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}Customer Management — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <h1 class="sp-header-title">Customer Management</h1>
+    <p class="sp-header-sub">View and manage registered customers</p>
+  </div>
+  <div class="sp-header-actions">
+    {% if user.is_superuser %}
+    <a href="{% url 'staff:staff_import' %}" class="cx-btn cx-btn--outline cx-btn--sm">Import</a>
+    {% endif %}
+  </div>
+</div>
+
+<form method="GET" action="">
+<div class="sp-toolbar" role="search" aria-label="Filter customers">
+  <div class="sp-search-wrap">
+    <svg class="sp-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="search" name="q" class="cx-input" placeholder="Search by name, email, phone…" value="{{ q }}" aria-label="Search customers">
+  </div>
+
+  <div class="cx-field">
+    <select name="membership" class="cx-select" data-auto-submit aria-label="Filter by membership">
+      <option value="">All Customers</option>
+      <option value="yes" {% if membership_filter == 'yes' %}selected{% endif %}>With Membership</option>
+      <option value="none" {% if membership_filter == 'none' %}selected{% endif %}>No Membership</option>
+    </select>
+  </div>
+
+  <div class="cx-field">
+    <select name="sort" class="cx-select" data-auto-submit aria-label="Sort by">
+      <option value="-date_joined" {% if sort == '-date_joined' %}selected{% endif %}>Newest</option>
+      <option value="date_joined" {% if sort == 'date_joined' %}selected{% endif %}>Oldest</option>
+      <option value="-booking_count" {% if sort == '-booking_count' %}selected{% endif %}>Most Bookings</option>
+      <option value="booking_count" {% if sort == 'booking_count' %}selected{% endif %}>Least Bookings</option>
+      <option value="email" {% if sort == 'email' %}selected{% endif %}>Email A–Z</option>
+      <option value="-last_login" {% if sort == '-last_login' %}selected{% endif %}>Recently Active</option>
+    </select>
+  </div>
+
+  <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Filter</button>
+  {% if q or membership_filter %}
+  <a href="{% url 'staff:staff_customer_list' %}" class="cx-btn cx-btn--ghost cx-btn--sm">Clear</a>
+  {% endif %}
+</div>
+</form>
+
+<div class="sp-widget">
+  <div class="sp-widget-header">
+    <h2 class="sp-widget-title">{{ page_obj.paginator.count }} Customer{{ page_obj.paginator.count|pluralize }}</h2>
+  </div>
+  <div class="sp-widget-body">
+    {% if page_obj %}
+    <div class="sp-table-wrap">
+      <table class="sp-table" aria-label="Customers">
+        <thead>
+          <tr>
+            <th scope="col">Customer</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Membership</th>
+            <th scope="col">Bookings</th>
+            <th scope="col">Total Spent</th>
+            <th scope="col">Joined</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in page_obj %}
+          <tr>
+            <td>
+              <div class="sp-user-cell">
+                <span class="cx-avatar cx-avatar--xs">{{ u.full_display_name|first|upper }}</span>
+                <strong>{{ u.full_display_name }}</strong>
+              </div>
+            </td>
+            <td style="font-size:var(--cx-text-xs)">{{ u.email }}</td>
+            <td>{{ u.phone|default:"—" }}</td>
+            <td>{% if u.membership %}<span class="cx-badge cx-badge--primary">{{ u.membership.name }}</span>{% else %}<span class="cx-badge cx-badge--neutral">None</span>{% endif %}</td>
+            <td>{{ u.booking_count }}</td>
+            <td>{% if u.total_spent %}₹{{ u.total_spent|floatformat:0 }}{% else %}—{% endif %}</td>
+            <td style="font-size:var(--cx-text-xs)">{{ u.date_joined|date:"d M Y" }}</td>
+            <td>{% if u.is_active %}<span class="cx-badge cx-badge--success">Active</span>{% else %}<span class="cx-badge cx-badge--danger">Inactive</span>{% endif %}</td>
+            <td class="sp-cell-actions">
+              <a href="{% url 'staff:staff_customer_detail' u.id %}" class="cx-btn cx-btn--ghost cx-btn--sm">View</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="cx-pagination" style="margin-top:var(--cx-space-4)" aria-label="Customer pages">
+      {% if page_obj.has_previous %}
+        <a href="?page=1{% if q %}&q={{ q }}{% endif %}{% if membership_filter %}&membership={{ membership_filter }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="cx-page-btn">&laquo;</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if membership_filter %}&membership={{ membership_filter }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="cx-page-btn">&lsaquo;</a>
+      {% endif %}
+      {% for n in page_obj.paginator.page_range %}
+        {% if n >= page_obj.number|add:"-2" and n <= page_obj.number|add:"2" %}
+          <a href="?page={{ n }}{% if q %}&q={{ q }}{% endif %}{% if membership_filter %}&membership={{ membership_filter }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="cx-page-btn {% if n == page_obj.number %}cx-page-btn--active{% endif %}">{{ n }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if membership_filter %}&membership={{ membership_filter }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="cx-page-btn">&rsaquo;</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if q %}&q={{ q }}{% endif %}{% if membership_filter %}&membership={{ membership_filter }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="cx-page-btn">&raquo;</a>
+      {% endif %}
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="cx-empty" role="status">
+      <div class="cx-empty-title">No customers found</div>
+      <div class="cx-empty-desc">Try adjusting your search or filters.</div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

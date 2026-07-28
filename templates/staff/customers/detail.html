@@ -1,0 +1,128 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}{{ customer.full_display_name }} — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <div class="cx-breadcrumb" style="margin-bottom:var(--cx-space-2)">
+      <a href="{% url 'staff:staff_dashboard' %}" class="cx-breadcrumb-link">Dashboard</a>
+      <span class="cx-breadcrumb-sep">/</span>
+      <a href="{% url 'staff:staff_customer_list' %}" class="cx-breadcrumb-link">Customers</a>
+      <span class="cx-breadcrumb-sep">/</span>
+      <span class="cx-breadcrumb-current">{{ customer.full_display_name }}</span>
+    </div>
+    <h1 class="sp-header-title">{{ customer.full_display_name }}</h1>
+    <p class="sp-header-sub">{{ customer.email }} · Joined {{ customer.date_joined|date:"M Y" }}</p>
+  </div>
+  <div class="sp-header-actions">
+    <a href="{% url 'admin:users_user_change' customer.id %}" class="cx-btn cx-btn--outline cx-btn--sm" target="_blank" rel="noopener">Edit in Admin</a>
+  </div>
+</div>
+
+<div class="sp-dash-grid">
+  <!-- Profile -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Profile</h2></div>
+    <div class="sp-widget-body">
+      <div style="text-align:center;margin-bottom:var(--cx-space-4)">
+        <span class="cx-avatar cx-avatar--xl" style="margin:0 auto">{{ customer.full_display_name|first|upper }}</span>
+      </div>
+      <div class="sp-data-list">
+        <div class="sp-data-row"><span class="sp-data-label">Name</span><span class="sp-data-value">{{ customer.get_full_name|default:"—" }}</span></div>
+        <div class="sp-data-row"><span class="sp-data-label">Email</span><span class="sp-data-value">{{ customer.email }}</span></div>
+        <div class="sp-data-row"><span class="sp-data-label">Phone</span><span class="sp-data-value">{{ customer.phone|default:"—" }}</span></div>
+        <div class="sp-data-row"><span class="sp-data-label">Membership</span><span class="sp-data-value">{% if customer.membership %}{{ customer.membership.name }}{% else %}None{% endif %}</span></div>
+        <div class="sp-data-row"><span class="sp-data-label">Loyalty Level</span><span class="sp-data-value">{% if customer.loyalty_profile %}{{ customer.loyalty_profile.get_current_level_display }} ({{ customer.loyalty_profile.points }} pts){% else %}—{% endif %}</span></div>
+        <div class="sp-data-row"><span class="sp-data-label">Joined</span><span class="sp-data-value">{{ customer.date_joined|date:"d M Y" }}</span></div>
+        <div class="sp-data-row"><span class="sp-data-label">Last Login</span><span class="sp-data-value">{{ customer.last_login|date:"d M Y h:i A"|default:"—" }}</span></div>
+        <div class="sp-data-row"><span class="sp-data-label">Verified</span><span class="sp-data-value">{% if customer.is_verified %}<span class="cx-badge cx-badge--success">Yes</span>{% else %}<span class="cx-badge cx-badge--neutral">No</span>{% endif %}</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subscriptions -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Membership Subscriptions</h2></div>
+    <div class="sp-widget-body">
+      {% if subscriptions %}
+        <div class="sp-activity">
+        {% for s in subscriptions %}
+          <div class="sp-activity-item">
+            <span class="sp-activity-dot {% if s.status == 'active' %}is-success{% elif s.status == 'expired' %}is-warning{% else %}is-danger{% endif %}" aria-hidden="true"></span>
+            <div>
+              <div class="sp-activity-text">{{ s.plan.name }} · <strong>₹{{ s.plan.price|floatformat:0 }}</strong></div>
+              <div class="sp-activity-time">{{ s.get_status_display }} · Started {{ s.started_at|date:"d M Y" }} · {% if s.expires_at %}Expires {{ s.expires_at|date:"d M Y" }}{% endif %}</div>
+            </div>
+          </div>
+        {% endfor %}
+        </div>
+      {% else %}
+        <p class="cx-empty-desc">No subscriptions.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Booking History -->
+  <div class="sp-widget">
+    <div class="sp-widget-header">
+      <h2 class="sp-widget-title">Recent Bookings</h2>
+    </div>
+    <div class="sp-widget-body">
+      {% if bookings %}
+        <div class="sp-table-wrap">
+          <table class="sp-table" aria-label="Booking history">
+            <thead>
+              <tr><th>#</th><th>Console</th><th>Date</th><th>Time</th><th>Amount</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              {% for b in bookings %}
+              <tr>
+                <td><a href="{% url 'staff:staff_booking_detail' b.id %}">#{{ b.id }}</a></td>
+                <td>{{ b.game_console.name|default:"—" }}</td>
+                <td>{{ b.booking_date|date:"d M Y" }}</td>
+                <td>{{ b.start_time|time:"h:i A" }}</td>
+                <td>₹{{ b.total_cost|floatformat:0 }}</td>
+                <td><span class="cx-badge cx-badge--{% if b.status == 'confirmed' %}success{% elif b.status == 'pending' %}warning{% elif b.status == 'cancelled' %}danger{% else %}primary{% endif %}">{{ b.get_status_display }}</span></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="cx-empty-desc">No bookings yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Payment History -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Payment History</h2></div>
+    <div class="sp-widget-body">
+      {% if payments %}
+        <div class="sp-table-wrap">
+          <table class="sp-table" aria-label="Payment history">
+            <thead>
+              <tr><th>#</th><th>Booking</th><th>Amount</th><th>Status</th><th>Date</th></tr>
+            </thead>
+            <tbody>
+              {% for p in payments %}
+              <tr>
+                <td>{{ p.id }}</td>
+                <td><a href="{% url 'staff:staff_booking_detail' p.booking.id %}">#{{ p.booking.id }}</a></td>
+                <td>₹{{ p.amount|floatformat:2 }}</td>
+                <td><span class="cx-badge cx-badge--{% if p.status == 'captured' %}success{% elif p.status == 'demo' %}primary{% elif p.status == 'failed' %}danger{% else %}warning{% endif %}">{{ p.get_status_display }}</span></td>
+                <td style="font-size:var(--cx-text-xs)">{{ p.created_at|date:"d M Y" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="cx-empty-desc">No payments yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}Import Customers — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <h1 class="sp-header-title">Import Customers</h1>
+    <p class="sp-header-sub">Bulk import customers via CSV or Excel file</p>
+  </div>
+</div>
+
+<!-- Step indicator -->
+<div class="sp-import-steps" role="list" aria-label="Import steps">
+  <div class="sp-import-step is-active" role="listitem">Upload File</div>
+  <div class="sp-import-step" role="listitem">Validate</div>
+  <div class="sp-import-step" role="listitem">Preview</div>
+  <div class="sp-import-step" role="listitem">Confirm</div>
+  <div class="sp-import-step" role="listitem">Complete</div>
+</div>
+
+<!-- Step 1: Upload -->
+<div id="spStepUpload" class="sp-widget">
+  <div class="sp-widget-header"><h2 class="sp-widget-title">Step 1: Upload File</h2></div>
+  <div class="sp-widget-body">
+    <div id="spDropzone" class="sp-import-dropzone" role="button" tabindex="0" aria-label="Click or drag to upload a CSV or Excel file">
+      <svg class="sp-import-dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      <div class="sp-import-dropzone-text">Choose a file or drag it here</div>
+      <div class="sp-import-dropzone-hint">Supports CSV and XLSX files</div>
+      <input type="file" id="spFileInput" accept=".csv,.xlsx,.xls" style="display:none" aria-hidden="true">
+    </div>
+
+    <div style="margin-top:var(--cx-space-4);text-align:center">
+      <button type="button" class="cx-btn cx-btn--primary cx-btn--md" onclick="window.cx.toast.info('Import processing is a placeholder — backend not yet wired.')">Upload & Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- Step 2–5 Placeholder -->
+<div class="sp-widget" style="opacity:0.6">
+  <div class="sp-widget-header"><h2 class="sp-widget-title">Import Summary (Preview)</h2></div>
+  <div class="sp-widget-body">
+    <div class="sp-import-summary">
+      <div class="sp-import-stat">
+        <div class="sp-import-stat-value">—</div>
+        <div class="sp-import-stat-label">Total Records</div>
+      </div>
+      <div class="sp-import-stat">
+        <div class="sp-import-stat-value is-success">—</div>
+        <div class="sp-import-stat-label">Successful</div>
+      </div>
+      <div class="sp-import-stat">
+        <div class="sp-import-stat-value is-danger">—</div>
+        <div class="sp-import-stat-label">Failed</div>
+      </div>
+      <div class="sp-import-stat">
+        <div class="sp-import-stat-value is-warning">—</div>
+        <div class="sp-import-stat-label">Duplicates</div>
+      </div>
+    </div>
+    <div class="cx-empty" role="status">
+      <div class="cx-empty-desc">Upload a file to see the preview.</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

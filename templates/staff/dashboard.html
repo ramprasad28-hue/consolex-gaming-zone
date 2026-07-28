@@ -1,0 +1,206 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}Staff Dashboard — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <h1 class="sp-header-title">Staff Dashboard</h1>
+    <p class="sp-header-sub">{{ user_role }} · {{ site.brand_name }} Management Portal</p>
+  </div>
+  <div class="sp-header-actions">
+    <a href="{% url 'staff:staff_booking_list' %}" class="cx-btn cx-btn--primary cx-btn--sm">Manage Bookings</a>
+    <a href="{% url 'staff:staff_analytics' %}" class="cx-btn cx-btn--outline cx-btn--sm">View Analytics</a>
+  </div>
+</div>
+
+<!-- Stats Grid -->
+<div class="sp-stats-grid" role="list" aria-label="Key statistics">
+  <div class="sp-stat-card" role="listitem">
+    <div class="sp-stat-label">Today's Bookings</div>
+    <div class="sp-stat-value">{{ todays_bookings_count }}</div>
+    <div class="sp-stat-trend sp-stat-trend--up">
+      {% if booking_stats.confirmed > 0 %}{{ booking_stats.confirmed }} confirmed{% endif %}
+    </div>
+  </div>
+  <div class="sp-stat-card" role="listitem">
+    <div class="sp-stat-label">Active Customers</div>
+    <div class="sp-stat-value">{{ active_customers_count }}</div>
+    <div class="sp-stat-trend">of {{ total_users }} total users</div>
+  </div>
+  <div class="sp-stat-card" role="listitem">
+    <div class="sp-stat-label">Today's Revenue</div>
+    <div class="sp-stat-value">₹{{ today_revenue|floatformat:0 }}</div>
+    <div class="sp-stat-trend sp-stat-trend--up">₹{{ week_revenue|floatformat:0 }} this week</div>
+  </div>
+  <div class="sp-stat-card" role="listitem">
+    <div class="sp-stat-label">Active Memberships</div>
+    <div class="sp-stat-value">{{ active_subscriptions }}</div>
+    <div class="sp-stat-trend">{{ membership_plans_count }} plans available</div>
+  </div>
+  <div class="sp-stat-card" role="listitem">
+    <div class="sp-stat-label">Pending Tasks</div>
+    <div class="sp-stat-value">{{ pending_bookings|add:pending_payments }}</div>
+    <div class="sp-stat-trend sp-stat-trend--down">{{ pending_bookings }} bookings · {{ pending_payments }} payments</div>
+  </div>
+  <div class="sp-stat-card" role="listitem">
+    <div class="sp-stat-label">Tournaments</div>
+    <div class="sp-stat-value">{{ upcoming_tournaments }}</div>
+    <div class="sp-stat-trend">{{ total_tournaments }} total · {{ upcoming_tournaments }} upcoming</div>
+  </div>
+  <div class="sp-stat-card" role="listitem">
+    <div class="sp-stat-label">Console Utilization</div>
+    <div class="sp-stat-value">{{ consoles_used_today }}/{{ total_consoles }}</div>
+    <div class="sp-stat-trend">used today</div>
+  </div>
+  <div class="sp-stat-card" role="listitem">
+    <div class="sp-stat-label">Peak Booking Hour</div>
+    <div class="sp-stat-value">{{ peak_hour|default:"—" }}</div>
+    <div class="sp-stat-trend">{{ todays_bookings_count }} bookings today</div>
+  </div>
+</div>
+
+<!-- Main dashboard grid -->
+<div class="sp-dash-grid">
+  <!-- Quick Actions -->
+  <div class="sp-widget sp-dash-full">
+    <div class="sp-widget-header">
+      <h2 class="sp-widget-title">Quick Actions</h2>
+    </div>
+    <div class="sp-widget-body">
+      <div class="sp-quick-actions">
+        <a href="{% url 'bookings:booking_form' %}" class="sp-qa-card">
+          <span class="sp-qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+          <span class="sp-qa-label">New Booking</span>
+        </a>
+        {% if user.is_superuser %}
+        <a href="{% url 'staff:staff_import' %}" class="sp-qa-card">
+          <span class="sp-qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+          <span class="sp-qa-label">Import Customers</span>
+        </a>
+        <a href="{% url 'staff:staff_tournament_list' %}" class="sp-qa-card">
+          <span class="sp-qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+          <span class="sp-qa-label">Create Tournament</span>
+        </a>
+        {% endif %}
+        <a href="{% url 'staff:staff_game_list' %}" class="sp-qa-card">
+          <span class="sp-qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/></svg></span>
+          <span class="sp-qa-label">Manage Games</span>
+        </a>
+        <a href="{% url 'admin:index' %}" class="sp-qa-card" target="_blank" rel="noopener">
+          <span class="sp-qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06"/></svg></span>
+          <span class="sp-qa-label">Django Admin</span>
+        </a>
+        {% if user.is_superuser %}
+        <a href="{% url 'staff:staff_communication' %}" class="sp-qa-card">
+          <span class="sp-qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></span>
+          <span class="sp-qa-label">Send Announcement</span>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Today's Bookings -->
+  <div class="sp-widget">
+    <div class="sp-widget-header">
+      <h2 class="sp-widget-title">Today's Bookings</h2>
+      <a href="{% url 'staff:staff_booking_list' %}" class="cx-btn cx-btn--ghost cx-btn--sm">View All</a>
+    </div>
+    <div class="sp-widget-body">
+      {% if todays_bookings %}
+        {% for b in todays_bookings %}
+        <div class="sp-activity-item">
+          <span class="sp-activity-dot {% if b.status == 'confirmed' %}is-success{% elif b.status == 'pending' %}is-warning{% elif b.status == 'cancelled' %}is-danger{% endif %}" aria-hidden="true"></span>
+          <div>
+            <div class="sp-activity-text">
+              <strong>{{ b.user.full_display_name }}</strong>
+              · {{ b.game_console.name|default:"—" }}
+              · {{ b.start_time|time:"h:i A" }}–{{ b.end_time|time:"h:i A" }}
+            </div>
+            <div class="sp-activity-time">
+              <span class="cx-badge cx-badge--{% if b.status == 'confirmed' %}success{% elif b.status == 'pending' %}warning{% elif b.status == 'cancelled' %}danger{% else %}neutral{% endif %}">{{ b.get_status_display }}</span>
+              · {{ b.number_of_players }} player{{ b.number_of_players|pluralize }}
+              · ₹{{ b.total_cost }}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="cx-empty" role="status">
+          <div class="cx-empty-title">No bookings today</div>
+          <div class="cx-empty-desc">Today's schedule is clear.</div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Expiring & Pending -->
+  <div class="sp-widget">
+    <div class="sp-widget-header">
+      <h2 class="sp-widget-title">Pending Tasks</h2>
+    </div>
+    <div class="sp-widget-body">
+      <div class="sp-data-list" role="list" aria-label="Pending tasks">
+        <div class="sp-data-row" role="listitem">
+          <span class="sp-data-label">Pending Bookings</span>
+          <span class="sp-data-value"><a href="{% url 'staff:staff_booking_list' %}?status=pending" class="cx-badge cx-badge--warning">{{ pending_bookings }}</a></span>
+        </div>
+        <div class="sp-data-row" role="listitem">
+          <span class="sp-data-label">Pending Payments</span>
+          <span class="sp-data-value"><a href="{% url 'admin:index' %}" class="cx-badge cx-badge--danger">{{ pending_payments }}</a></span>
+        </div>
+        <div class="sp-data-row" role="listitem">
+          <span class="sp-data-label">Expiring Subscriptions</span>
+          <span class="sp-data-value"><span class="cx-badge cx-badge--warning">{{ expiring_subscriptions }}</span></span>
+        </div>
+        <div class="sp-data-row" role="listitem">
+          <span class="sp-data-label">Month Revenue</span>
+          <span class="sp-data-value">₹{{ month_revenue|floatformat:0 }}</span>
+        </div>
+        <div class="sp-data-row" role="listitem">
+          <span class="sp-data-label">Total Revenue</span>
+          <span class="sp-data-value">₹{{ total_revenue|floatformat:0 }}</span>
+        </div>
+        <div class="sp-data-row" role="listitem">
+          <span class="sp-data-label">Total Users</span>
+          <span class="sp-data-value">{{ total_users }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="sp-widget sp-dash-full">
+    <div class="sp-widget-header">
+      <h2 class="sp-widget-title">Recent Activity</h2>
+    </div>
+    <div class="sp-widget-body">
+      {% if recent_activity %}
+        <div class="sp-activity">
+          {% for b in recent_activity %}
+          <div class="sp-activity-item">
+            <span class="sp-activity-dot {% if b.status == 'confirmed' %}is-success{% elif b.status == 'cancelled' %}is-danger{% elif b.status == 'completed' %}is-success{% else %}is-warning{% endif %}" aria-hidden="true"></span>
+            <div>
+              <div class="sp-activity-text">
+                <strong>{{ b.user.full_display_name }}</strong>
+                {{ b.get_status_display|lower }} booking
+                {% if b.game_console %}on {{ b.game_console.name }}{% endif %}
+                for {{ b.booking_date|date:"d M" }}
+              </div>
+              <div class="sp-activity-time">{{ b.created_at|timesince }} ago</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="cx-empty-desc">No recent activity.</p>
+      {% endif %}
+    </div>
+    <div class="sp-widget-footer">
+      <a href="{% url 'staff:staff_booking_list' %}" class="cx-btn cx-btn--ghost cx-btn--sm">View all bookings</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

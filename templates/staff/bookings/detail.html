@@ -1,0 +1,186 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}Booking #{{ booking.id }} — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <div class="cx-breadcrumb" style="margin-bottom:var(--cx-space-2)">
+      <a href="{% url 'staff:staff_dashboard' %}" class="cx-breadcrumb-link">Dashboard</a>
+      <span class="cx-breadcrumb-sep">/</span>
+      <a href="{% url 'staff:staff_booking_list' %}" class="cx-breadcrumb-link">Bookings</a>
+      <span class="cx-breadcrumb-sep">/</span>
+      <span class="cx-breadcrumb-current">Booking #{{ booking.id }}</span>
+    </div>
+    <h1 class="sp-header-title">Booking #{{ booking.id }}</h1>
+    <p class="sp-header-sub">
+      {% if booking.status == 'confirmed' %}<span class="cx-badge cx-badge--success">Confirmed</span>
+      {% elif booking.status == 'pending' %}<span class="cx-badge cx-badge--warning">Pending</span>
+      {% elif booking.status == 'cancelled' %}<span class="cx-badge cx-badge--danger">Cancelled</span>
+      {% elif booking.status == 'completed' %}<span class="cx-badge cx-badge--primary">Completed</span>{% endif %}
+    </p>
+  </div>
+  <div class="sp-header-actions">
+    {% if booking.status == 'confirmed' or booking.status == 'pending' %}
+    <a href="{% url 'bookings:booking_detail' booking.id %}" class="cx-btn cx-btn--outline cx-btn--sm">Edit</a>
+    {% endif %}
+    <button type="button" class="cx-btn cx-btn--outline cx-btn--sm" onclick="window.print()">Print</button>
+  </div>
+</div>
+
+<div class="sp-dash-grid">
+  <!-- Customer Info -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Customer</h2></div>
+    <div class="sp-widget-body">
+      <div class="sp-data-list">
+        <div class="sp-data-row">
+          <span class="sp-data-label">Name</span>
+          <span class="sp-data-value">{{ booking.user.full_display_name }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Email</span>
+          <span class="sp-data-value">{{ booking.user.email }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Phone</span>
+          <span class="sp-data-value">{{ booking.user.phone|default:"—" }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Member Since</span>
+          <span class="sp-data-value">{{ booking.user.created_at|date:"M Y" }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking Details -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Booking Details</h2></div>
+    <div class="sp-widget-body">
+      <div class="sp-data-list">
+        <div class="sp-data-row">
+          <span class="sp-data-label">Console</span>
+          <span class="sp-data-value">{{ booking.game_console.name|default:"—" }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Date</span>
+          <span class="sp-data-value">{{ booking.booking_date|date:"l, d M Y" }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Time</span>
+          <span class="sp-data-value">{{ booking.start_time|time:"h:i A" }} – {{ booking.end_time|time:"h:i A" }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Duration</span>
+          <span class="sp-data-value">{{ booking.duration_hours }} hr{{ booking.duration_hours|pluralize }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Players</span>
+          <span class="sp-data-value">{{ booking.number_of_players }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Total Cost</span>
+          <span class="sp-data-value">₹{{ booking.total_cost|floatformat:2 }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Advance (30%)</span>
+          <span class="sp-data-value">₹{{ booking.advance_amount|floatformat:2 }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Balance</span>
+          <span class="sp-data-value">₹{{ booking.balance_amount|floatformat:2 }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Status</span>
+          <span class="sp-data-value">{{ booking.get_status_display }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Info -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Payment</h2></div>
+    <div class="sp-widget-body">
+      {% if booking.payment %}
+      <div class="sp-data-list">
+        <div class="sp-data-row">
+          <span class="sp-data-label">Payment ID</span>
+          <span class="sp-data-value">#{{ booking.payment.id }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Method</span>
+          <span class="sp-data-value">Razorpay</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Status</span>
+          <span class="sp-data-value">{{ booking.payment.get_status_display }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Amount</span>
+          <span class="sp-data-value">₹{{ booking.payment.amount|floatformat:2 }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Razorpay Order</span>
+          <span class="sp-data-value" style="font-size:var(--cx-text-xs);font-family:var(--cx-font-mono)">{{ booking.payment.razorpay_order_id|default:"—"|truncatechars:24 }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Created</span>
+          <span class="sp-data-value">{{ booking.payment.created_at|date:"d M Y h:i A" }}</span>
+        </div>
+      </div>
+      {% else %}
+      <div class="cx-empty">
+        <div class="cx-empty-title">No payment recorded</div>
+        <div class="cx-empty-desc">This booking has no associated payment.</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Timeline</h2></div>
+    <div class="sp-widget-body">
+      <div class="sp-activity">
+        <div class="sp-activity-item">
+          <span class="sp-activity-dot is-success" aria-hidden="true"></span>
+          <div>
+            <div class="sp-activity-text">Booking created</div>
+            <div class="sp-activity-time">{{ booking.created_at|date:"d M Y h:i A" }}</div>
+          </div>
+        </div>
+        {% if booking.payment and booking.payment.status == 'captured' %}
+        <div class="sp-activity-item">
+          <span class="sp-activity-dot is-success" aria-hidden="true"></span>
+          <div>
+            <div class="sp-activity-text">Payment captured</div>
+            <div class="sp-activity-time">{{ booking.payment.updated_at|date:"d M Y h:i A" }}</div>
+          </div>
+        </div>
+        {% endif %}
+        {% if booking.status == 'cancelled' %}
+        <div class="sp-activity-item">
+          <span class="sp-activity-dot is-danger" aria-hidden="true"></span>
+          <div>
+            <div class="sp-activity-text">Booking cancelled</div>
+            <div class="sp-activity-time">{{ booking.updated_at|date:"d M Y h:i A" }}</div>
+          </div>
+        </div>
+        {% endif %}
+        {% if booking.status == 'completed' %}
+        <div class="sp-activity-item">
+          <span class="sp-activity-dot is-success" aria-hidden="true"></span>
+          <div>
+            <div class="sp-activity-text">Booking completed</div>
+            <div class="sp-activity-time">{{ booking.updated_at|date:"d M Y h:i A" }}</div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

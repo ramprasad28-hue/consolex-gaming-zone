@@ -1,0 +1,147 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}Booking Management — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <h1 class="sp-header-title">Booking Management</h1>
+    <p class="sp-header-sub">Search, filter and manage all bookings</p>
+  </div>
+  <div class="sp-header-actions">
+    <a href="{% url 'bookings:booking_form' %}" class="cx-btn cx-btn--primary cx-btn--sm">+ New Booking</a>
+    <button type="button" class="cx-btn cx-btn--outline cx-btn--sm" onclick="window.print()">Print</button>
+  </div>
+</div>
+
+<!-- Filters -->
+<form method="GET" action="">
+<div class="sp-toolbar" role="search" aria-label="Filter bookings">
+  <div class="sp-search-wrap">
+    <svg class="sp-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="search" name="q" class="cx-input" placeholder="Search by email, ID, console…" value="{{ q }}" aria-label="Search bookings">
+  </div>
+
+  <div class="cx-field">
+    <select name="status" class="cx-select" data-auto-submit aria-label="Filter by status">
+      <option value="">All Status</option>
+      {% for val, label in status_choices %}
+      <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="cx-field">
+    <select name="sort" class="cx-select" data-auto-submit aria-label="Sort by">
+      <option value="-booking_date" {% if sort == '-booking_date' %}selected{% endif %}>Newest</option>
+      <option value="booking_date" {% if sort == 'booking_date' %}selected{% endif %}>Oldest</option>
+      <option value="-total_cost" {% if sort == '-total_cost' %}selected{% endif %}>Highest Price</option>
+      <option value="total_cost" {% if sort == 'total_cost' %}selected{% endif %}>Lowest Price</option>
+      <option value="status" {% if sort == 'status' %}selected{% endif %}>Status A–Z</option>
+      <option value="-created_at" {% if sort == '-created_at' %}selected{% endif %}>Recently Created</option>
+    </select>
+  </div>
+
+  <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Filter</button>
+  {% if q or status_filter %}
+  <a href="{% url 'staff:staff_booking_list' %}" class="cx-btn cx-btn--ghost cx-btn--sm">Clear</a>
+  {% endif %}
+</div>
+</form>
+
+<!-- Bookings table -->
+<div class="sp-widget">
+  <div class="sp-widget-header">
+    <h2 class="sp-widget-title">{{ page_obj.paginator.count }} Booking{{ page_obj.paginator.count|pluralize }}</h2>
+  </div>
+  <div class="sp-widget-body">
+    {% if page_obj %}
+    <div class="sp-table-wrap">
+      <table class="sp-table" aria-label="Bookings">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Customer</th>
+            <th scope="col">Console</th>
+            <th scope="col">Date</th>
+            <th scope="col">Time</th>
+            <th scope="col">Players</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Payment</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in page_obj %}
+          <tr class="{% if b.status == 'cancelled' %}sp-row-danger{% elif b.status == 'confirmed' %}sp-row-success{% elif b.status == 'pending' %}sp-row-warning{% elif b.status == 'completed' %}sp-row-info{% endif %}">
+            <td><strong>#{{ b.id }}</strong></td>
+            <td>
+              <div class="sp-user-cell">
+                <span class="cx-avatar cx-avatar--xs">{{ b.user.full_display_name|first|upper }}</span>
+                <div>
+                  <div>{{ b.user.full_display_name }}</div>
+                  <div class="sp-activity-time">{{ b.user.email }}</div>
+                </div>
+              </div>
+            </td>
+            <td>{{ b.game_console.name|default:"—" }}</td>
+            <td>{{ b.booking_date|date:"d M Y" }}</td>
+            <td>{{ b.start_time|time:"h:i A" }}–{{ b.end_time|time:"h:i A" }}</td>
+            <td>{{ b.number_of_players }}</td>
+            <td>₹{{ b.total_cost|floatformat:0 }}</td>
+            <td>
+              {% if b.payment %}
+                {% if b.payment.status == 'captured' %}<span class="cx-badge cx-badge--success">Paid</span>
+                {% elif b.payment.status == 'demo' %}<span class="cx-badge cx-badge--primary">Demo</span>
+                {% elif b.payment.status == 'failed' %}<span class="cx-badge cx-badge--danger">Failed</span>
+                {% elif b.payment.status == 'refunded' %}<span class="cx-badge cx-badge--warning">Refunded</span>
+                {% else %}<span class="cx-badge cx-badge--warning">Pending</span>{% endif %}
+              {% else %}<span class="cx-badge cx-badge--neutral">Unpaid</span>{% endif %}
+            </td>
+            <td>
+              {% if b.status == 'confirmed' %}<span class="cx-badge cx-badge--success">Confirmed</span>
+              {% elif b.status == 'pending' %}<span class="cx-badge cx-badge--warning">Pending</span>
+              {% elif b.status == 'cancelled' %}<span class="cx-badge cx-badge--danger">Cancelled</span>
+              {% elif b.status == 'completed' %}<span class="cx-badge cx-badge--primary">Completed</span>{% endif %}
+            </td>
+            <td class="sp-cell-actions">
+              <a href="{% url 'staff:staff_booking_detail' b.id %}" class="cx-btn cx-btn--ghost cx-btn--sm" aria-label="View booking #{{ b.id }}">View</a>
+              <a href="{% url 'bookings:booking_detail' b.id %}" class="cx-btn cx-btn--ghost cx-btn--sm" aria-label="Edit booking #{{ b.id }}">Edit</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="cx-pagination" aria-label="Booking pages" style="margin-top:var(--cx-space-4)">
+      {% if page_obj.has_previous %}
+        <a href="?page=1{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="cx-page-btn" aria-label="First">&laquo;</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="cx-page-btn" aria-label="Previous">&lsaquo;</a>
+      {% endif %}
+      {% for n in page_obj.paginator.page_range %}
+        {% if n >= page_obj.number|add:"-2" and n <= page_obj.number|add:"2" %}
+          <a href="?page={{ n }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="cx-page-btn {% if n == page_obj.number %}cx-page-btn--active{% endif %}">{{ n }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="cx-page-btn" aria-label="Next">&rsaquo;</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="cx-page-btn" aria-label="Last">&raquo;</a>
+      {% endif %}
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="cx-empty" role="status">
+      <div class="cx-empty-title">No bookings found</div>
+      <div class="cx-empty-desc">Try adjusting your search or filters.</div>
+      <a href="{% url 'bookings:booking_form' %}" class="cx-btn cx-btn--primary cx-btn--md">New Booking</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

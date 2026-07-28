@@ -1,0 +1,67 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}Memberships Report — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <div class="cx-breadcrumb" style="margin-bottom:var(--cx-space-2)">
+      <a href="{% url 'staff:staff_reports' %}" class="cx-breadcrumb-link">Reports</a>
+      <span class="cx-breadcrumb-sep">/</span>
+      <span class="cx-breadcrumb-current">Memberships</span>
+    </div>
+    <h1 class="sp-header-title">Memberships Report</h1>
+  </div>
+  <div class="sp-header-actions">
+    <button type="button" class="cx-btn cx-btn--outline cx-btn--sm" onclick="window.print()">Print</button>
+  </div>
+</div>
+
+<form method="GET" class="sp-toolbar">
+  <div class="cx-field">
+    <label class="cx-label">From</label>
+    <input type="date" name="from" class="cx-input" value="{{ date_from|date:'Y-m-d'|default:'' }}">
+  </div>
+  <div class="cx-field">
+    <label class="cx-label">To</label>
+    <input type="date" name="to" class="cx-input" value="{{ date_to|date:'Y-m-d'|default:'' }}">
+  </div>
+  <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm" style="margin-top:20px">Apply</button>
+</form>
+
+<div class="sp-stats-grid">
+  <div class="sp-stat-card"><div class="sp-stat-label">Total Subscriptions</div><div class="sp-stat-value">{{ report_data.total }}</div></div>
+  <div class="sp-stat-card"><div class="sp-stat-label">Active</div><div class="sp-stat-value sp-stat-trend--up">{{ report_data.active }}</div></div>
+  <div class="sp-stat-card"><div class="sp-stat-label">Expired</div><div class="sp-stat-value">{{ report_data.expired }}</div></div>
+  <div class="sp-stat-card"><div class="sp-stat-label">Cancelled</div><div class="sp-stat-value" style="color:var(--cx-danger)">{{ report_data.cancelled }}</div></div>
+</div>
+
+<div class="sp-widget">
+  <div class="sp-widget-header"><h2 class="sp-widget-title">Subscription History</h2></div>
+  <div class="sp-widget-body">
+    {% if report_data.items %}
+    <div class="sp-table-wrap">
+      <table class="sp-table" aria-label="Subscriptions">
+        <thead>
+          <tr><th>User</th><th>Plan</th><th>Started</th><th>Expires</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          {% for s in report_data.items %}
+          <tr>
+            <td>{{ s.user.full_display_name }}</td>
+            <td>{{ s.plan.name }}</td>
+            <td>{{ s.started_at|date:"d M Y" }}</td>
+            <td>{{ s.expires_at|date:"d M Y" }}</td>
+            <td><span class="cx-badge cx-badge--{% if s.status == 'active' %}success{% elif s.status == 'expired' %}warning{% elif s.status == 'cancelled' %}danger{% else %}neutral{% endif %}">{{ s.get_status_display }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="cx-empty"><div class="cx-empty-desc">No subscription data found.</div></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

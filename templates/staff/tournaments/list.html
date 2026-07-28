@@ -1,0 +1,107 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}Tournament Management — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <h1 class="sp-header-title">Tournament Management</h1>
+    <p class="sp-header-sub">Create, publish and manage tournaments</p>
+  </div>
+  <div class="sp-header-actions">
+    <a href="{% url 'admin:tournaments_tournament_add' %}" class="cx-btn cx-btn--primary cx-btn--sm" target="_blank">+ Create Tournament</a>
+  </div>
+</div>
+
+<form method="GET" action="">
+<div class="sp-toolbar" role="search" aria-label="Filter tournaments">
+  <div class="sp-search-wrap">
+    <svg class="sp-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="search" name="q" class="cx-input" placeholder="Search tournaments…" value="{{ q }}" aria-label="Search tournaments">
+  </div>
+  <div class="cx-field">
+    <select name="status" class="cx-select" data-auto-submit aria-label="Filter by status">
+      <option value="">All Status</option>
+      {% for val, label in status_choices %}
+      <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="cx-field">
+    <select name="sort" class="cx-select" data-auto-submit aria-label="Sort by">
+      <option value="-date" {% if sort == '-date' %}selected{% endif %}>Newest</option>
+      <option value="date" {% if sort == 'date' %}selected{% endif %}>Oldest</option>
+      <option value="-prize_pool" {% if sort == '-prize_pool' %}selected{% endif %}>Highest Prize</option>
+      <option value="prize_pool" {% if sort == 'prize_pool' %}selected{% endif %}>Lowest Prize</option>
+    </select>
+  </div>
+  <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Filter</button>
+  {% if q or status_filter %}
+  <a href="{% url 'staff:staff_tournament_list' %}" class="cx-btn cx-btn--ghost cx-btn--sm">Clear</a>
+  {% endif %}
+</div>
+</form>
+
+<div class="sp-widget">
+  <div class="sp-widget-header"><h2 class="sp-widget-title">{{ page_obj.paginator.count }} Tournament{{ page_obj.paginator.count|pluralize }}</h2></div>
+  <div class="sp-widget-body">
+    {% if page_obj %}
+    <div class="sp-table-wrap">
+      <table class="sp-table" aria-label="Tournaments">
+        <thead>
+          <tr><th scope="col">Title</th><th scope="col">Game</th><th scope="col">Date</th><th scope="col">Prize Pool</th><th scope="col">Slots</th><th scope="col">Registered</th><th scope="col">Status</th><th scope="col">Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for t in page_obj %}
+          <tr>
+            <td><strong>{{ t.title }}</strong></td>
+            <td>{{ t.game }}</td>
+            <td>{{ t.date|date:"d M Y h:i A" }}</td>
+            <td><strong>₹{{ t.prize_pool|floatformat:0 }}</strong></td>
+            <td>{{ t.total_slots }}</td>
+            <td>{{ t.registered_slots }}</td>
+            <td>
+              {% if t.status == 'registrations_open' %}<span class="cx-badge cx-badge--success">Open</span>
+              {% elif t.status == 'upcoming' %}<span class="cx-badge cx-badge--primary">Upcoming</span>
+              {% elif t.status == 'in_progress' %}<span class="cx-badge cx-badge--warning">Live</span>
+              {% elif t.status == 'completed' %}<span class="cx-badge cx-badge--neutral">Done</span>
+              {% elif t.status == 'full' %}<span class="cx-badge cx-badge--warning">Full</span>
+              {% elif t.status == 'cancelled' %}<span class="cx-badge cx-badge--danger">Cancelled</span>{% endif %}
+            </td>
+            <td class="sp-cell-actions">
+              <a href="{% url 'admin:tournaments_tournament_change' t.id %}" class="cx-btn cx-btn--ghost cx-btn--sm" target="_blank">Edit</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="cx-pagination" style="margin-top:var(--cx-space-4)" aria-label="Tournament pages">
+      {% if page_obj.has_previous %}
+        <a href="?page=1{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="cx-page-btn">&laquo;</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="cx-page-btn">&lsaquo;</a>
+      {% endif %}
+      {% for n in page_obj.paginator.page_range %}
+        {% if n >= page_obj.number|add:"-2" and n <= page_obj.number|add:"2" %}
+          <a href="?page={{ n }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="cx-page-btn {% if n == page_obj.number %}cx-page-btn--active{% endif %}">{{ n }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="cx-page-btn">&rsaquo;</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="cx-page-btn">&raquo;</a>
+      {% endif %}
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="cx-empty" role="status">
+      <div class="cx-empty-title">No tournaments found</div>
+      <div class="cx-empty-desc">Create your first tournament.</div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

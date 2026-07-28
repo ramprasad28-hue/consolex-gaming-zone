@@ -1,0 +1,162 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}Analytics — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <h1 class="sp-header-title">Analytics Dashboard</h1>
+    <p class="sp-header-sub">Data-driven insights from your business</p>
+  </div>
+  <div class="sp-header-actions">
+    <a href="{% url 'staff:staff_reports' %}" class="cx-btn cx-btn--outline cx-btn--sm">Full Reports</a>
+  </div>
+</div>
+
+<div class="sp-chart-grid">
+  <!-- Daily Bookings -->
+  <div class="sp-chart-box sp-chart-box-full">
+    <div class="sp-chart-title">Daily Bookings (This Month)</div>
+    <div class="sp-bar-chart" role="img" aria-label="Bar chart of daily bookings this month">
+      {% for item in daily_bookings %}
+      <div class="sp-bar" style="height:{% widthratio item.count|default:0 1 6 %}px;min-height:4px" title="{{ item.date|date:'d M' }}: {{ item.count }} booking{{ item.count|pluralize }}">
+        <span class="sp-bar-value">{{ item.count }}</span>
+        <span class="sp-bar-label">{{ item.date|date:"d" }}</span>
+      </div>
+      {% empty %}
+      <div class="cx-empty" style="width:100%"><div class="cx-empty-desc">No data yet</div></div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Daily Revenue -->
+  <div class="sp-chart-box sp-chart-box-full">
+    <div class="sp-chart-title">Daily Revenue (This Month)</div>
+    <div class="sp-bar-chart" role="img" aria-label="Bar chart of daily revenue this month">
+      {% for item in daily_revenue %}
+      <div class="sp-bar" style="height:{% widthratio item.amount|default:0 100 1 %}px;min-height:4px;background:var(--cx-success)" title="{{ item.date|date:'d M' }}: ₹{{ item.amount }}">
+        <span class="sp-bar-value">₹{{ item.amount|floatformat:0 }}</span>
+        <span class="sp-bar-label">{{ item.date|date:"d" }}</span>
+      </div>
+      {% empty %}
+      <div class="cx-empty" style="width:100%"><div class="cx-empty-desc">No data yet</div></div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Popular Consoles -->
+  <div class="sp-chart-box">
+    <div class="sp-chart-title">Popular Consoles</div>
+    <div class="sp-data-list">
+      {% for c in popular_consoles %}
+      <div class="sp-data-row">
+        <span class="sp-data-label">{{ c.game_console__name }}</span>
+        <span class="sp-data-value">{{ c.count }} booking{{ c.count|pluralize }}</span>
+      </div>
+      {% empty %}
+      <p class="cx-empty-desc">No data</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Booking Status Breakdown -->
+  <div class="sp-chart-box">
+    <div class="sp-chart-title">Bookings by Status</div>
+    <div class="sp-data-list">
+      <div class="sp-data-row">
+        <span class="sp-data-label"><span class="cx-badge cx-badge--success">●</span> Confirmed</span>
+        <span class="sp-data-value">{{ status_data.confirmed }}</span>
+      </div>
+      <div class="sp-data-row">
+        <span class="sp-data-label"><span class="cx-badge cx-badge--warning">●</span> Pending</span>
+        <span class="sp-data-value">{{ status_data.pending }}</span>
+      </div>
+      <div class="sp-data-row">
+        <span class="sp-data-label"><span class="cx-badge cx-badge--primary">●</span> Completed</span>
+        <span class="sp-data-value">{{ status_data.completed }}</span>
+      </div>
+      <div class="sp-data-row">
+        <span class="sp-data-label"><span class="cx-badge cx-badge--danger">●</span> Cancelled</span>
+        <span class="sp-data-value">{{ status_data.cancelled }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Membership Growth -->
+  <div class="sp-chart-box">
+    <div class="sp-chart-title">Membership Distribution</div>
+    <div class="sp-data-list">
+      {% for m in membership_growth %}
+      <div class="sp-data-row">
+        <span class="sp-data-label">{{ m.plan__name }}</span>
+        <span class="sp-data-value">{{ m.count }} user{{ m.count|pluralize }}</span>
+      </div>
+      {% empty %}
+      <p class="cx-empty-desc">No memberships yet</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Customer Retention -->
+  <div class="sp-chart-box">
+    <div class="sp-chart-title">Customer Retention</div>
+    <div class="sp-data-list">
+      <div class="sp-data-row">
+        <span class="sp-data-label">Total Customers</span>
+        <span class="sp-data-value">{{ all_customers }}</span>
+      </div>
+      <div class="sp-data-row">
+        <span class="sp-data-label">Returning (2+ bookings)</span>
+        <span class="sp-data-value">{{ returning_customers }}</span>
+      </div>
+      <div class="sp-data-row">
+        <span class="sp-data-label">Retention Rate</span>
+        <span class="sp-data-value">
+          {% if all_customers > 0 %}
+            {{ returning_customers|floatformat:0 }}%
+          {% else %}—{% endif %}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tournament Stats -->
+  <div class="sp-chart-box">
+    <div class="sp-chart-title">Tournament Overview</div>
+    <div class="sp-data-list">
+      <div class="sp-data-row">
+        <span class="sp-data-label">Total Slots</span>
+        <span class="sp-data-value">{{ tournament_stats.total_slots|default:"0" }}</span>
+      </div>
+      <div class="sp-data-row">
+        <span class="sp-data-label">Registered</span>
+        <span class="sp-data-value">{{ tournament_stats.registered|default:"0" }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Trends -->
+  <div class="sp-chart-box sp-chart-box-full">
+    <div class="sp-chart-title">Periodic Revenue & Bookings</div>
+    <div class="sp-table-wrap">
+      <table class="sp-table" aria-label="Periodic trends">
+        <thead>
+          <tr><th scope="col">Period</th><th scope="col">Revenue</th><th scope="col">Bookings</th></tr>
+        </thead>
+        <tbody>
+          {% for w in weekly_trends %}
+          <tr>
+            <td>{{ w.start|date:"d M" }} – {{ w.end|date:"d M" }}</td>
+            <td><strong>₹{{ w.revenue|floatformat:0 }}</strong></td>
+            <td>{{ w.bookings }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" class="cx-empty-desc">No data</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
