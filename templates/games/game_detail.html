@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ game.title }} — {{ site.brand_name }}{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/games_page.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="gd-section">
+  <div class="gd-container">
+
+    <nav class="gd-breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'games:game_list' %}" class="gd-breadcrumb-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        All Games
+      </a>
+      <span class="gd-breadcrumb-sep" aria-hidden="true">/</span>
+      <span class="gd-breadcrumb-current" aria-current="page">{{ game.title }}</span>
+    </nav>
+
+    <div class="gd-hero">
+      <div class="gd-hero-cover">
+        {% if game.image_src %}
+          <img src="{{ game.image_src }}" alt="{{ game.title }}">
+        {% else %}
+          <img src="{{ MEDIA_URL }}games/cod.jpg" alt="{{ game.title }}">
+        {% endif %}
+        {% if game.badge_label %}
+          <span class="gl-card-badge gl-card-badge--{{ game.badge }}">{{ game.badge_label }}</span>
+        {% endif %}
+      </div>
+
+      <div class="gd-hero-info">
+        <div class="gd-hero-badges">
+          <span class="cx-badge cx-badge--primary">{{ game.get_category_display }}</span>
+          {% if game.rating > 0 %}
+            <span class="cx-badge cx-badge--warning">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              {{ game.rating }}/10
+            </span>
+          {% endif %}
+        </div>
+
+        <h1 class="gd-hero-title">{{ game.title }}</h1>
+
+        <div class="gd-hero-meta">
+          <div class="gd-meta-item">
+            <span class="gd-meta-label">Category</span>
+            <span class="gd-meta-value">{{ game.get_category_display }}</span>
+          </div>
+          <div class="gd-meta-item">
+            <span class="gd-meta-label">Rating</span>
+            <span class="gd-meta-value">{% if game.rating > 0 %}{{ game.rating }}/10{% else %}—{% endif %}</span>
+          </div>
+          <div class="gd-meta-item">
+            <span class="gd-meta-label">Status</span>
+            <span class="gd-meta-value gd-meta-value--success">Available</span>
+          </div>
+        </div>
+
+        <div class="gd-hero-actions">
+          <a href="{% url 'bookings:booking_form' %}" class="cx-btn cx-btn--primary cx-btn--lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Book to Play
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="gd-details">
+      <div class="gd-detail-card">
+        <h2 class="gd-detail-title">About this Game</h2>
+        <p class="gd-detail-text">Experience {{ game.title }} at {{ site.brand_name }}. Available on our premium gaming consoles with high-speed performance and immersive gameplay.</p>
+      </div>
+
+      <div class="gd-detail-card">
+        <h2 class="gd-detail-title">Game Info</h2>
+        <div class="gd-info-grid">
+          <div class="gd-info-item">
+            <span class="gd-info-label">Category</span>
+            <span class="gd-info-value">{{ game.get_category_display }}</span>
+          </div>
+          <div class="gd-info-item">
+            <span class="gd-info-label">Rating</span>
+            <span class="gd-info-value">{% if game.rating > 0 %}{{ game.rating }}/10{% else %}Not rated{% endif %}</span>
+          </div>
+          <div class="gd-info-item">
+            <span class="gd-info-label">Status</span>
+            <span class="gd-info-value gd-info-value--success">Available to Play</span>
+          </div>
+          {% if game.badge_label %}
+          <div class="gd-info-item">
+            <span class="gd-info-label">Featured</span>
+            <span class="gd-info-value">{{ game.badge_label }}</span>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {% if similar_games %}
+    <div class="gd-similar">
+      <h2 class="gd-similar-title">Similar Games</h2>
+      <div class="gl-grid">
+        {% for g in similar_games %}
+          <a href="{% url 'games:game_detail' g.pk %}" class="gl-card" aria-label="{{ g.title }}">
+            <div class="gl-card-cover">
+              {% if g.image_src %}
+                <img src="{{ g.image_src }}" alt="{{ g.title }}" loading="lazy">
+              {% else %}
+                <img src="{{ MEDIA_URL }}games/cod.jpg" alt="{{ g.title }}" loading="lazy">
+              {% endif %}
+              <div class="gl-card-scrim"></div>
+              {% if g.badge_label %}
+                <span class="gl-card-badge gl-card-badge--{{ g.badge }}">{{ g.badge_label }}</span>
+              {% endif %}
+            </div>
+            <div class="gl-card-body">
+              <h3 class="gl-card-title">{{ g.title }}</h3>
+              <div class="gl-card-meta">
+                <span class="gl-card-category">{{ g.get_category_display }}</span>
+                {% if g.rating > 0 %}
+                  <span class="gl-card-rating">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    {{ g.rating }}
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="gd-cta">
+      <div class="gd-cta-card">
+        <h2 class="gd-cta-title">Ready to Play {{ game.title }}?</h2>
+        <p class="gd-cta-text">Book a session now and experience premium gaming at {{ site.brand_name }}.</p>
+        <a href="{% url 'bookings:booking_form' %}" class="cx-btn cx-btn--primary cx-btn--lg">Book Now</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

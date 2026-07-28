@@ -793,6 +793,145 @@
 
 
 /* ============================================================
+   MEMBERSHIP CARD
+   ============================================================ */
+.dx-membership-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cx-space-4);
+}
+
+.dx-mem-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--cx-space-2);
+    font-size: var(--cx-text-base);
+    font-weight: 700;
+    color: var(--cx-primary);
+    padding: var(--cx-space-2) var(--cx-space-4);
+    background: var(--cx-primary-subtle);
+    border: 1px solid var(--cx-primary-border);
+    border-radius: var(--cx-radius-sm);
+    align-self: flex-start;
+}
+
+.dx-mem-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cx-space-2);
+}
+
+.dx-mem-benefit {
+    display: flex;
+    align-items: center;
+    gap: var(--cx-space-2);
+    font-size: var(--cx-text-sm);
+    color: var(--cx-text-2);
+}
+
+.dx-mem-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--cx-radius-full);
+    flex-shrink: 0;
+}
+
+.dx-mem-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cx-space-2);
+    margin-top: var(--cx-space-2);
+}
+
+.dx-mem-actions .cx-btn { justify-content: center; }
+
+
+/* ============================================================
+   COMMUNITY
+   ============================================================ */
+.dx-community-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--cx-space-3);
+    margin-bottom: var(--cx-space-4);
+}
+
+.dx-comm-stat {
+    text-align: center;
+    padding: var(--cx-space-3);
+    background: var(--cx-surface-muted);
+    border-radius: var(--cx-radius-md);
+}
+
+.dx-comm-stat-value {
+    font-size: var(--cx-text-lg);
+    font-weight: 700;
+    color: var(--cx-text);
+    line-height: 1.2;
+}
+
+.dx-comm-stat-label {
+    font-size: var(--cx-text-xs);
+    color: var(--cx-text-3);
+    margin-top: 2px;
+}
+
+.dx-leaderboard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cx-space-2);
+}
+
+.dx-lb-row {
+    display: flex;
+    align-items: center;
+    gap: var(--cx-space-3);
+    padding: var(--cx-space-2) var(--cx-space-3);
+    border-radius: var(--cx-radius-sm);
+    background: var(--cx-surface-muted);
+    font-size: var(--cx-text-sm);
+}
+
+.dx-lb-rank {
+    width: 22px;
+    height: 22px;
+    border-radius: var(--cx-radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cx-border);
+    color: var(--cx-text-3);
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.dx-lb-row.is-top .dx-lb-rank { background: var(--cx-gold); color: #000; }
+
+.dx-lb-name {
+    flex: 1;
+    font-weight: 600;
+    color: var(--cx-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dx-lb-score {
+    font-size: var(--cx-text-xs);
+    color: var(--cx-text-3);
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.dx-community-cta {
+    margin-top: var(--cx-space-3);
+    width: 100%;
+    justify-content: center;
+}
+
+
+/* ============================================================
    TIMELINE (Recent Activity)
    ============================================================ */
 .dx-timeline {

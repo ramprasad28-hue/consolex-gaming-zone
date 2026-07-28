@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Games Library — {{ site.brand_name }}{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/games_page.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="gl-section">
+  <div class="gl-container">
+
+    <header class="gl-header">
+      <span class="cx-badge cx-badge--primary">Library</span>
+      <h1 class="gl-title">Games Library</h1>
+      <p class="gl-sub">Explore our collection of premium titles across PlayStation and Xbox.</p>
+    </header>
+
+    <form class="gl-toolbar" method="get" action="{% url 'games:game_list' %}" role="search" aria-label="Search games">
+      <div class="gl-search-wrap">
+        <svg class="gl-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" name="q" value="{{ query }}" placeholder="Search games..." class="gl-search-input" aria-label="Search games">
+      </div>
+
+      <div class="gl-filters">
+        <div class="gl-filter-group">
+          <label for="gl-category" class="gl-filter-label">Category</label>
+          <select name="category" id="gl-category" class="gl-select">
+            <option value="">All Categories</option>
+            {% for val, label in categories %}
+              <option value="{{ val }}" {% if category == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="gl-filter-group">
+          <label for="gl-badge" class="gl-filter-label">Filter</label>
+          <select name="badge" id="gl-badge" class="gl-select">
+            <option value="">All</option>
+            <option value="popular" {% if badge == "popular" %}selected{% endif %}>Popular</option>
+            <option value="new" {% if badge == "new" %}selected{% endif %}>New</option>
+            <option value="top_rated" {% if badge == "top_rated" %}selected{% endif %}>Top Rated</option>
+            <option value="coop" {% if badge == "coop" %}selected{% endif %}>Co-op</option>
+          </select>
+        </div>
+
+        <div class="gl-filter-group">
+          <label for="gl-sort" class="gl-filter-label">Sort</label>
+          <select name="sort" id="gl-sort" class="gl-select">
+            <option value="popular" {% if sort == "popular" %}selected{% endif %}>Popular</option>
+            <option value="newest" {% if sort == "newest" %}selected{% endif %}>Newest</option>
+            <option value="rating" {% if sort == "rating" %}selected{% endif %}>Top Rated</option>
+            <option value="title" {% if sort == "title" %}selected{% endif %}>A–Z</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm gl-search-btn">Search</button>
+
+      {% if query or category or badge %}
+        <a href="{% url 'games:game_list' %}" class="cx-btn cx-btn--outline cx-btn--sm gl-reset-btn">Reset</a>
+      {% endif %}
+    </form>
+
+    {% if query or category or badge %}
+      <p class="gl-result-count" aria-live="polite">{{ total_count }} game{{ total_count|pluralize }} found</p>
+    {% endif %}
+
+    {% if page_obj %}
+      <div class="gl-grid" role="list">
+        {% for g in page_obj %}
+          <a href="{% url 'games:game_detail' g.pk %}" class="gl-card" role="listitem" aria-label="{{ g.title }}">
+            <div class="gl-card-cover">
+              {% if g.image_src %}
+                <img src="{{ g.image_src }}" alt="{{ g.title }}" loading="lazy">
+              {% else %}
+                <img src="{{ MEDIA_URL }}games/cod.jpg" alt="{{ g.title }}" loading="lazy">
+              {% endif %}
+              <div class="gl-card-scrim"></div>
+              {% if g.badge_label %}
+                <span class="gl-card-badge gl-card-badge--{{ g.badge }}">{{ g.badge_label }}</span>
+              {% endif %}
+            </div>
+            <div class="gl-card-body">
+              <h3 class="gl-card-title">{{ g.title }}</h3>
+              <div class="gl-card-meta">
+                <span class="gl-card-category">{{ g.get_category_display }}</span>
+                {% if g.rating > 0 %}
+                  <span class="gl-card-rating">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    {{ g.rating }}
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+
+      {% if page_obj.has_other_pages %}
+        <nav class="gl-pagination" aria-label="Games pagination">
+          {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if category %}&category={{ category }}{% endif %}{% if badge %}&badge={{ badge }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="gl-page-link" aria-label="Previous page">← Prev</a>
+          {% endif %}
+          <span class="gl-page-current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if category %}&category={{ category }}{% endif %}{% if badge %}&badge={{ badge }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="gl-page-link" aria-label="Next page">Next →</a>
+          {% endif %}
+        </nav>
+      {% endif %}
+
+    {% else %}
+      <div class="gl-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+        <h3 class="gl-empty-title">No games found</h3>
+        <p class="gl-empty-text">Try adjusting your search or filters.</p>
+        <a href="{% url 'games:game_list' %}" class="cx-btn cx-btn--primary cx-btn--sm">Clear Filters</a>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+{% endblock %}

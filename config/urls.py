@@ -30,6 +30,12 @@ urlpatterns = [
 
     # Memberships
     path("memberships/", include("apps.memberships.urls")),
+
+    # Games
+    path("games/", include("apps.games.urls")),
+
+    # Tournaments
+    path("tournaments/", include("apps.tournaments.urls")),
 ]
 
 if settings.DEBUG:

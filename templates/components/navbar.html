@@ -13,6 +13,8 @@
         <!-- Desktop Links -->
         <ul class="nav-links" id="navLinks" role="list">
             <li><a href="/" class="nl {% if request.path == '/' %}active{% endif %}">Home</a></li>
+            <li><a href="{% url 'games:game_list' %}" class="nl {% if request.path == '/games/' %}active{% endif %}">Games</a></li>
+            <li><a href="{% url 'tournaments:tournament_list' %}" class="nl {% if request.path == '/tournaments/' %}active{% endif %}">Tournaments</a></li>
             <li><a href="{% url 'bookings:booking_form' %}" class="nl {% if request.path == '/book/' %}active{% endif %}">Booking</a></li>
             <li><a href="{% url 'memberships:plan_list' %}" class="nl {% if request.path == '/memberships/' %}active{% endif %}">Membership</a></li>
         </ul>
@@ -60,6 +62,8 @@
     <div class="mob-drawer" id="mobDrawer" aria-hidden="true" aria-label="Mobile menu">
         <ul class="mob-links">
             <li><a href="/" class="mob-link">Home</a></li>
+            <li><a href="{% url 'games:game_list' %}" class="mob-link">Games</a></li>
+            <li><a href="{% url 'tournaments:tournament_list' %}" class="mob-link">Tournaments</a></li>
             <li><a href="{% url 'bookings:booking_form' %}" class="mob-link">Booking</a></li>
             <li><a href="{% url 'memberships:plan_list' %}" class="mob-link">Membership</a></li>
         </ul>

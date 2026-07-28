@@ -194,11 +194,17 @@
         </div>
         <div class="dx-qa-label">Membership</div>
       </a>
-      <a href="{% url 'home' %}#games" class="dx-qa-card dx-animate dx-d3">
+      <a href="{% url 'games:game_list' %}" class="dx-qa-card dx-animate dx-d3">
         <div class="dx-qa-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
         </div>
-        <div class="dx-qa-label">Browse Games</div>
+        <div class="dx-qa-label">Games Library</div>
+      </a>
+      <a href="{% url 'tournaments:tournament_list' %}" class="dx-qa-card dx-animate dx-d4">
+        <div class="dx-qa-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="dx-qa-label">Tournaments</div>
       </a>
       <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hi%20{{ site.brand_name }}!%20I%20need%20help%20with%20my%20booking."
          target="_blank" rel="noopener noreferrer" class="dx-qa-card dx-animate dx-d4">
@@ -369,8 +375,84 @@
           </button>
         </div>
 
+        <!-- Membership card -->
+        <div class="dx-card dx-animate dx-d2" aria-label="Membership">
+          <h2 class="dx-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+            Membership
+          </h2>
+          <div class="dx-membership-card">
+            <div class="dx-mem-badge">{{ request.user.membership.name|default:"Free Player" }}</div>
+            <div class="dx-mem-benefits">
+              {% if request.user.membership %}
+              <div class="dx-mem-benefit">
+                <span class="dx-mem-dot" style="background:var(--cx-primary);"></span>
+                Premium gaming access
+              </div>
+              <div class="dx-mem-benefit">
+                <span class="dx-mem-dot" style="background:var(--cx-success);"></span>
+                Full game library access
+              </div>
+              {% else %}
+              <div class="dx-mem-benefit">
+                <span class="dx-mem-dot" style="background:var(--cx-text-3);"></span>
+                Pay-per-hour gaming
+              </div>
+              {% endif %}
+            </div>
+            <div class="dx-mem-actions">
+              {% if request.user.membership %}
+                <a href="{% url 'memberships:plan_list' %}" class="cx-btn cx-btn--outline cx-btn--sm" style="width:100%;justify-content:center;">Upgrade Plan</a>
+              {% else %}
+                <a href="{% url 'memberships:plan_list' %}" class="cx-btn cx-btn--primary cx-btn--sm" style="width:100%;justify-content:center;">View Plans</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Community -->
+        <div class="dx-card dx-animate dx-d3" aria-label="Community">
+          <h2 class="dx-card-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Community
+          </h2>
+
+          <div class="dx-community-grid">
+            <div class="dx-comm-stat">
+              <div class="dx-comm-stat-value">{{ total_bookings|add:completed_bookings }}</div>
+              <div class="dx-comm-stat-label">Sessions Played</div>
+            </div>
+            <div class="dx-comm-stat">
+              <div class="dx-comm-stat-value">{{ games_played }}</div>
+              <div class="dx-comm-stat-label">Games Explored</div>
+            </div>
+          </div>
+
+          <div class="dx-leaderboard" role="list" aria-label="Leaderboard">
+            <div class="dx-lb-row is-top" role="listitem">
+              <span class="dx-lb-rank">1</span>
+              <span class="dx-lb-name">{{ user_display }}</span>
+              <span class="dx-lb-score">{{ total_bookings }} sessions</span>
+            </div>
+            <div class="dx-lb-row" role="listitem">
+              <span class="dx-lb-rank">2</span>
+              <span class="dx-lb-name">ProGamer_X</span>
+              <span class="dx-lb-score">12 sessions</span>
+            </div>
+            <div class="dx-lb-row" role="listitem">
+              <span class="dx-lb-rank">3</span>
+              <span class="dx-lb-name">PixelWarrior</span>
+              <span class="dx-lb-score">9 sessions</span>
+            </div>
+          </div>
+
+          <p style="font-size:var(--cx-text-xs);color:var(--cx-text-3);margin:var(--cx-space-2) 0 0;">
+            Compete in <a href="{% url 'tournaments:tournament_list' %}" style="color:var(--cx-primary);">tournaments</a> to climb the ranks.
+          </p>
+        </div>
+
         <!-- Gaming progress -->
-        <div class="dx-card dx-animate dx-d2" aria-label="Gaming progress">
+        <div class="dx-card dx-animate dx-d4" aria-label="Gaming progress">
           <h2 class="dx-card-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
             Gaming Progress
