@@ -1,12 +1,6 @@
 {% load static %}
 
-<!-- ═══════════════════════════════════════════════════════
-     PHASE 4.6 — INSTAGRAM CTA + GOOGLE REVIEW CTA
-     File: templates/components/social_cta.html
-     Replace handles and links with real ones
-═══════════════════════════════════════════════════════ -->
-
-<!-- ── INSTAGRAM CTA ───────────────────────────────────── -->
+<!-- phase: social cta ──────────────────────────────── -->
 <section class="instagram-cta" id="instagram">
   <div class="instagram-cta-inner">
 
@@ -46,25 +40,25 @@
       <div class="insta-grid">
         <div class="insta-tile tile-glow-cyan">
           <div class="insta-tile-inner">
-            <span class="tile-icon">🎮</span>
+            <span class="tile-icon"><img src="{% static 'images/icons/gamepad.png' %}" alt="" width="24" height="24" loading="lazy" style="filter:brightness(0) invert(1)"></span>
             <span class="tile-label">Live Sessions</span>
           </div>
         </div>
         <div class="insta-tile tile-glow-purple">
           <div class="insta-tile-inner">
-            <span class="tile-icon">🏆</span>
+            <span class="tile-icon"><img src="{% static 'images/icons/trophy.png' %}" alt="" width="24" height="24" loading="lazy"></span>
             <span class="tile-label">Tournaments</span>
           </div>
         </div>
         <div class="insta-tile tile-glow-orange">
           <div class="insta-tile-inner">
-            <span class="tile-icon">🎉</span>
+            <span class="tile-icon"><img src="{% static 'images/icons/gold-star.png' %}" alt="" width="24" height="24" loading="lazy"></span>
             <span class="tile-label">Events</span>
           </div>
         </div>
         <div class="insta-tile tile-glow-cyan">
           <div class="insta-tile-inner">
-            <span class="tile-icon">💸</span>
+            <span class="tile-icon"><img src="{% static 'images/icons/coin.png' %}" alt="" width="24" height="24" loading="lazy"></span>
             <span class="tile-label">Exclusive Deals</span>
           </div>
         </div>
@@ -92,7 +86,7 @@
       <div class="google-rating-block">
         <span class="google-score">{{ site.google_rating }}</span>
         <div class="google-stars-row">
-          <span class="gstar">★</span><span class="gstar">★</span><span class="gstar">★</span><span class="gstar">★</span><span class="gstar half">★</span>
+          <span class="gstar"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span><span class="gstar"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span><span class="gstar"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span><span class="gstar"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span><span class="gstar half"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
         </div>
         <span class="google-count">Based on {{ site.google_review_count }} reviews</span>
       </div>

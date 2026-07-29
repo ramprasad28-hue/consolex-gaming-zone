@@ -1,3 +1,4 @@
+{% load static %}
 <section class="mem-section" id="membership">
 
     <!-- Background -->
@@ -52,7 +53,7 @@
 
                 <div class="mc-header">
                     <div class="mc-tier-row">
-                        <span class="mc-tier-icon">🎮</span>
+                        <span class="mc-tier-icon"><img src="{% static 'images/icons/gamepad.png' %}" alt="" width="20" height="20" loading="lazy"></span>
                         <span class="mc-tier-name">{{ plan.name }}</span>
                     </div>
                     <p class="mc-tier-desc">{{ plan.description|default:"A membership plan." }}</p>

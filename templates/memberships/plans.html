@@ -8,7 +8,7 @@
 
 {% block content %}
 
-<!-- ═══════════ HERO ═══════════ -->
+<!-- hero -->
 <section class="mem-section" id="membership">
     <div class="ms-bg">
         <div class="ms-grid"></div>
@@ -31,7 +31,7 @@
             </p>
         </div>
 
-        <!-- ═══════════ PLAN CARDS ═══════════ -->
+        <!-- plan cards -->
         <div class="mem-grid">
             {% for plan in plans %}
             <div class="mem-card {% cycle 'mc-basic' 'mc-standard' 'mc-pro' %}{% if plan.is_popular %} mc-featured{% endif %}">
@@ -55,7 +55,7 @@
 
                 <div class="mc-header">
                     <div class="mc-tier-row">
-                        <span class="mc-tier-icon">🎮</span>
+                        <span class="mc-tier-icon"><img src="{% static 'images/icons/gamepad.png' %}" alt="" width="20" height="20" loading="lazy"></span>
                         <span class="mc-tier-name">{{ plan.name }}</span>
                     </div>
                     <p class="mc-tier-desc">{{ plan.description|default:"A membership plan." }}</p>
@@ -133,7 +133,7 @@
     </div>
 </section>
 
-<!-- ═══════════ COMPARISON TABLE ═══════════ -->
+<!-- comparison table -->
 <section class="mem-section mem-compare-section">
     <div class="mem-container">
         <div class="ms-head">
@@ -173,7 +173,7 @@
                     </tr>
                     <tr>
                         <td>Priority Booking</td>
-                        {% for plan in plans %}<td>{% if plan.priority_booking %}✅{% else %}—{% endif %}</td>{% endfor %}
+                        {% for plan in plans %}<td>{% if plan.priority_booking %}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-label="Yes"><polyline points="20 6 9 17 4 12"/></svg>{% else %}—{% endif %}</td>{% endfor %}
                     </tr>
                     <tr>
                         <td>Validity</td>
@@ -185,7 +185,7 @@
     </div>
 </section>
 
-<!-- ═══════════ GAMING HOUR CALCULATOR ═══════════ -->
+<!-- gaming hour calculator -->
 <section class="mem-section mem-calc-section">
     <div class="mem-container">
         <div class="ms-head">
@@ -226,7 +226,7 @@
     </div>
 </section>
 
-<!-- ═══════════ SAVINGS COMPARISON ═══════════ -->
+<!-- savings comparison -->
 <section class="mem-section mem-savings-section">
     <div class="mem-container">
         <div class="ms-head">
@@ -255,7 +255,7 @@
     </div>
 </section>
 
-<!-- ═══════════ PLAN RULES ═══════════ -->
+<!-- plan rules -->
 <section class="mem-section mem-rules-section">
     <div class="mem-container">
         <div class="ms-head">
@@ -272,7 +272,7 @@
     </div>
 </section>
 
-<!-- ═══════════ FAQ ═══════════ -->
+<!-- faq -->
 <section class="mem-section mem-faq-section">
     <div class="mem-container">
         <div class="ms-head">
@@ -299,7 +299,7 @@
     </div>
 </section>
 
-<!-- ═══════════ CTA ═══════════ -->
+<!-- cta -->
 <section class="mem-section mem-cta-section">
     <div class="mem-container mem-cta">
         <h2 class="ms-title">Ready to <span class="ms-neon">Play Beyond?</span></h2>

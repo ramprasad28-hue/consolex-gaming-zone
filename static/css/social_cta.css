@@ -172,8 +172,10 @@
 }
 
 .google-stars-row { display: flex; gap: var(--cx-space-1); }
+.gstar { display: inline-flex; align-items: center; justify-content: center; color: #FBBC05; }
 
-.gstar { font-size: 1.5rem; color: #FBBC05; line-height: 1; }
+.gstar svg { width: 1.5rem; height: 1.5rem; }
+
 .gstar.half { opacity: 0.5; }
 
 .google-count {

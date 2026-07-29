@@ -56,7 +56,7 @@
     </div>
 
     <div class="demo-notice">
-      🧪 This is a <strong>demo payment simulation</strong>.
+      <img src="{% static 'images/icons/flask.png' %}" alt="" width="18" height="18" loading="lazy" style="vertical-align:middle;margin-right:6px"> This is a <strong>demo payment simulation</strong>.
       No real money is charged. Booking will be marked as confirmed.
     </div>
 
@@ -64,11 +64,11 @@
     <form method="POST">
       {% csrf_token %}
       <button type="submit" name="action" value="approve" class="btn-pay">
-        ✅ Simulate Successful Payment — ₹{{ advance_rupees }}
+        <img src="{% static 'images/icons/checkmark.png' %}" alt="" width="18" height="18" loading="lazy" style="vertical-align:middle;margin-right:6px"> Simulate Successful Payment — ₹{{ advance_rupees }}
       </button>
       <button type="submit" name="action" value="fail"
               class="btn-pay btn-pay--fail" style="margin-top:0.75rem;">
-        ❌ Simulate Failed Payment
+        <img src="{% static 'images/icons/cross.png' %}" alt="" width="18" height="18" loading="lazy" style="vertical-align:middle;margin-right:6px"> Simulate Failed Payment
       </button>
     </form>
 

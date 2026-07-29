@@ -64,8 +64,8 @@
   <h2 class="sp-settings-heading">Theme Preference</h2>
   <p class="sp-settings-desc">Toggle between light and dark mode (affects your browser session).</p>
   <div style="display:flex;gap:var(--cx-space-3)">
-    <button type="button" class="cx-btn cx-btn--outline cx-btn--md" onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('theme','light')">☀️ Light Mode</button>
-    <button type="button" class="cx-btn cx-btn--outline cx-btn--md" onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('theme','dark')">🌙 Dark Mode</button>
+    <button type="button" class="cx-btn cx-btn--outline cx-btn--md" onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('theme','light')"><img src="{% static 'images/icons/sun.png' %}" alt="" width="16" height="16" loading="lazy"> Light Mode</button>
+    <button type="button" class="cx-btn cx-btn--outline cx-btn--md" onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('theme','dark')"><img src="{% static 'images/icons/moon.png' %}" alt="" width="16" height="16" loading="lazy"> Dark Mode</button>
   </div>
 </div>
 

@@ -17,7 +17,7 @@
     {% with user_display=request.user.first_name|default:request.user.email %}
     {% with user_initial=user_display|slice:":1"|upper %}
 
-    <!-- ══════════ TOP TOOLBAR ══════════ -->
+    <!-- ── TOP TOOLBAR ── -->
     <div class="dx-topbar dx-animate" role="toolbar" aria-label="Dashboard toolbar">
       <div class="dx-topbar-left">
         <div class="dx-avatar" aria-hidden="true">{{ user_initial }}</div>
@@ -81,7 +81,7 @@
       </div>
     </div>
 
-    <!-- ══════════ HERO CARD ══════════ -->
+    <!-- ── HERO CARD ── -->
     <div class="dx-hero dx-animate dx-d1">
       <div class="dx-hero-content">
         <h1 class="dx-hero-title">Welcome back, {{ user_display }}</h1>
@@ -114,7 +114,7 @@
       {% endif %}
     </div>
 
-    <!-- ══════════ STATS GRID ══════════ -->
+    <!-- ── STATS GRID ── -->
     <div class="dx-stats-grid" role="list" aria-label="Booking statistics">
       <div class="dx-stat-card dx-animate dx-d1" role="listitem">
         <div class="dx-stat-icon dx-stat-icon--primary" aria-hidden="true">
@@ -181,7 +181,7 @@
       </div>
     </div>
 
-    <!-- ══════════ QUICK ACTIONS ══════════ -->
+    <!-- ── QUICK ACTIONS ── -->
     <nav class="dx-quick-actions" aria-label="Quick actions">
       <a href="{% url 'bookings:booking_form' %}" class="dx-qa-card dx-animate dx-d1">
         <div class="dx-qa-icon" aria-hidden="true">
@@ -224,7 +224,7 @@
       </button>
     </nav>
 
-    <!-- ══════════ MAIN GRID ══════════ -->
+    <!-- ── MAIN GRID ── -->
     <div class="dx-main-grid">
 
       <!-- LEFT: Booking history -->
@@ -507,9 +507,9 @@
               {% for item in activity %}
                 <li class="dx-timeline-item" role="listitem">
                   <span class="dx-timeline-icon" aria-hidden="true">
-                    {% if 'booking' in item.icon|lower or '🎮' in item.icon %}
+                    {% if 'booking' in item.icon|lower or 'gamepad' in item.icon|lower %}
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
-                    {% elif 'payment' in item.icon|lower or '💰' in item.icon or '₹' in item.icon %}
+                    {% elif 'payment' in item.icon|lower or 'money' in item.icon|lower or '₹' in item.icon %}
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                     {% else %}
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>

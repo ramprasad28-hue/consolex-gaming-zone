@@ -13,27 +13,27 @@
 
 <div class="sp-stats-grid" style="grid-template-columns: repeat(3, 1fr)">
   <a href="{% url 'staff:staff_report_detail' 'revenue' %}" class="sp-stat-card" style="text-decoration:none;cursor:pointer">
-    <div class="sp-stat-label">💰 Revenue Report</div>
+    <div class="sp-stat-label"><img src="{% static 'images/icons/coin.png' %}" alt="" width="16" height="16" loading="lazy"> Revenue Report</div>
     <div class="sp-stat-value sp-stat-value--sm">View revenue data</div>
   </a>
   <a href="{% url 'staff:staff_report_detail' 'bookings' %}" class="sp-stat-card" style="text-decoration:none;cursor:pointer">
-    <div class="sp-stat-label">📅 Bookings Report</div>
+    <div class="sp-stat-label"><img src="{% static 'images/icons/calendar.png' %}" alt="" width="16" height="16" loading="lazy"> Bookings Report</div>
     <div class="sp-stat-value sp-stat-value--sm">Booking analytics</div>
   </a>
   <a href="{% url 'staff:staff_report_detail' 'customers' %}" class="sp-stat-card" style="text-decoration:none;cursor:pointer">
-    <div class="sp-stat-label">👥 Customers Report</div>
+    <div class="sp-stat-label"><img src="{% static 'images/icons/users.png' %}" alt="" width="16" height="16" loading="lazy"> Customers Report</div>
     <div class="sp-stat-value sp-stat-value--sm">Customer analytics</div>
   </a>
   <a href="{% url 'staff:staff_report_detail' 'memberships' %}" class="sp-stat-card" style="text-decoration:none;cursor:pointer">
-    <div class="sp-stat-label">⭐ Memberships Report</div>
+    <div class="sp-stat-label"><img src="{% static 'images/icons/gold-star.png' %}" alt="" width="16" height="16" loading="lazy"> Memberships Report</div>
     <div class="sp-stat-value sp-stat-value--sm">Subscription analytics</div>
   </a>
   <a href="{% url 'staff:staff_report_detail' 'tournaments' %}" class="sp-stat-card" style="text-decoration:none;cursor:pointer">
-    <div class="sp-stat-label">🏆 Tournaments Report</div>
+    <div class="sp-stat-label"><img src="{% static 'images/icons/trophy.png' %}" alt="" width="16" height="16" loading="lazy"> Tournaments Report</div>
     <div class="sp-stat-value sp-stat-value--sm">Tournament analytics</div>
   </a>
   <a href="{% url 'staff:staff_analytics' %}" class="sp-stat-card" style="text-decoration:none;cursor:pointer">
-    <div class="sp-stat-label">📊 Full Analytics</div>
+    <div class="sp-stat-label"><img src="{% static 'images/icons/chart.png' %}" alt="" width="16" height="16" loading="lazy"> Full Analytics</div>
     <div class="sp-stat-value sp-stat-value--sm">Complete analytics dashboard</div>
   </a>
 </div>
