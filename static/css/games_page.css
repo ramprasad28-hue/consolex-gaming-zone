@@ -75,8 +75,14 @@
                 box-shadow var(--cx-duration-fast) var(--cx-ease);
 }
 
-.gl-search-input:focus {
+.gl-search-input:focus:not(:focus-visible) {
     outline: none;
+    border-color: var(--cx-primary);
+    box-shadow: 0 0 0 3px var(--cx-primary-subtle);
+}
+.gl-search-input:focus-visible {
+    outline: 2px solid var(--cx-primary);
+    outline-offset: 2px;
     border-color: var(--cx-primary);
     box-shadow: 0 0 0 3px var(--cx-primary-subtle);
 }

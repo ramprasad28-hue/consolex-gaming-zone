@@ -23,9 +23,9 @@
     <div class="gd-hero">
       <div class="gd-hero-cover">
         {% if game.image_src %}
-          <img src="{{ game.image_src }}" alt="{{ game.title }}">
+          <img src="{{ game.image_src }}" alt="{{ game.title }}" loading="lazy">
         {% else %}
-          <img src="{{ MEDIA_URL }}games/cod.jpg" alt="{{ game.title }}">
+          <img src="{{ MEDIA_URL }}games/cod.jpg" alt="{{ game.title }}" loading="lazy">
         {% endif %}
         {% if game.badge_label %}
           <span class="gl-card-badge gl-card-badge--{{ game.badge }}">{{ game.badge_label }}</span>

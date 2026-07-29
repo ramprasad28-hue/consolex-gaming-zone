@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /users/login/
+Disallow: /users/register/
+Disallow: /users/password-reset/
+Disallow: /staff/
+
+Sitemap: https://consolex.in/static/sitemap.xml

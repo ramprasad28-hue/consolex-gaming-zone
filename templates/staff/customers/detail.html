@@ -74,7 +74,7 @@
         <div class="sp-table-wrap">
           <table class="sp-table" aria-label="Booking history">
             <thead>
-              <tr><th>#</th><th>Console</th><th>Date</th><th>Time</th><th>Amount</th><th>Status</th></tr>
+              <tr><th scope="col">#</th><th scope="col">Console</th><th scope="col">Date</th><th scope="col">Time</th><th scope="col">Amount</th><th scope="col">Status</th></tr>
             </thead>
             <tbody>
               {% for b in bookings %}
@@ -104,7 +104,7 @@
         <div class="sp-table-wrap">
           <table class="sp-table" aria-label="Payment history">
             <thead>
-              <tr><th>#</th><th>Booking</th><th>Amount</th><th>Status</th><th>Date</th></tr>
+              <tr><th scope="col">#</th><th scope="col">Booking</th><th scope="col">Amount</th><th scope="col">Status</th><th scope="col">Date</th></tr>
             </thead>
             <tbody>
               {% for p in payments %}

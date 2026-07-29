@@ -144,9 +144,9 @@
             <table class="mem-compare-table">
                 <thead>
                     <tr>
-                        <th>Feature</th>
+                        <th scope="col">Feature</th>
                         {% for plan in plans %}
-                        <th class="{% if plan.is_popular %}is-popular{% endif %}">{{ plan.name }}</th>
+                        <th scope="col" class="{% if plan.is_popular %}is-popular{% endif %}">{{ plan.name }}</th>
                         {% endfor %}
                     </tr>
                 </thead>

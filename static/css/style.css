@@ -109,7 +109,7 @@
     min-height: 44px;
 }
 
-.auth-form input:focus {
+.auth-form input:focus:not(:focus-visible) {
     border-color: var(--cx-primary);
     box-shadow: 0 0 0 3px var(--cx-primary-subtle);
     outline: none;
