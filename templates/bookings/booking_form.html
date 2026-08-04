@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'layouts/layout_booking.html' %}
 {% load static %}
 
 {% block title %}Book a Slot — {{ site.brand_name }}{% endblock %}
@@ -15,6 +15,9 @@
       <h1 class="wiz-title">{{ cb.booking_form_title|default:"Book Your Slot" }}</h1>
       <p class="wiz-sub">{{ cb.booking_form_subtitle|default:"Select your console, choose a time, and confirm your booking." }}</p>
     </div>
+
+    <div class="wiz-grid">
+    <div class="wiz-main">
 
     {% if messages %}
       {% for msg in messages %}
@@ -397,6 +400,36 @@
       </div>
 
     </form>
+
+    </div><!-- /wiz-main -->
+
+    <!-- Sticky live summary rail -->
+    <aside class="wiz-rail" aria-label="Booking summary">
+      <div class="wiz-rail-card">
+        <div class="wiz-rail-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Booking Summary
+        </div>
+
+        <div class="wiz-rail-rows">
+          <div class="wiz-rail-row"><span>Console</span><strong id="railConsole">—</strong></div>
+          <div class="wiz-rail-row"><span>Date</span><strong id="railDate">—</strong></div>
+          <div class="wiz-rail-row"><span>Time</span><strong id="railTime">—</strong></div>
+          <div class="wiz-rail-row"><span>Players</span><strong id="railPlayers">—</strong></div>
+          <div class="wiz-rail-row"><span>Duration</span><strong id="railDuration">—</strong></div>
+        </div>
+
+        <hr class="cx-divider">
+
+        <div class="wiz-rail-row wiz-rail-total"><span>Subtotal</span><strong id="railSubtotal">—</strong></div>
+        <div class="wiz-rail-row"><span>Advance (30%)</span><strong id="railAdvance">—</strong></div>
+        <div class="wiz-rail-row"><span>Balance at venue</span><strong id="railBalance">—</strong></div>
+
+        <p class="wiz-rail-note">Advance is 30% of the total. The balance is paid at the venue.</p>
+      </div>
+    </aside>
+
+    </div><!-- /wiz-grid -->
 
   </div>
 </section>

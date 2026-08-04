@@ -16,18 +16,36 @@
     <h1 class="sp-header-title">Booking #{{ booking.id }}</h1>
     <p class="sp-header-sub">
       {% if booking.status == 'confirmed' %}<span class="cx-badge cx-badge--success">Confirmed</span>
+      {% elif booking.status == 'checked_in' %}<span class="cx-badge cx-badge--primary">● Live — Checked In</span>
       {% elif booking.status == 'pending' %}<span class="cx-badge cx-badge--warning">Pending</span>
       {% elif booking.status == 'cancelled' %}<span class="cx-badge cx-badge--danger">Cancelled</span>
-      {% elif booking.status == 'completed' %}<span class="cx-badge cx-badge--primary">Completed</span>{% endif %}
+      {% elif booking.status == 'completed' %}<span class="cx-badge cx-badge--neutral">Completed</span>{% endif %}
     </p>
   </div>
   <div class="sp-header-actions">
-    {% if booking.status == 'confirmed' or booking.status == 'pending' %}
-    <a href="{% url 'bookings:booking_detail' booking.id %}" class="cx-btn cx-btn--outline cx-btn--sm">Edit</a>
+    {% if booking.status == 'confirmed' %}
+    <form method="POST" action="{% url 'staff:staff_booking_checkin' booking.id %}">
+      {% csrf_token %}
+      <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Check In</button>
+    </form>
+    {% elif booking.status == 'checked_in' %}
+    <form method="POST" action="{% url 'staff:staff_booking_checkout' booking.id %}">
+      {% csrf_token %}
+      <button type="submit" class="cx-btn cx-btn--success cx-btn--sm">Check Out</button>
+    </form>
     {% endif %}
+    <a href="{% url 'bookings:booking_detail' booking.id %}" class="cx-btn cx-btn--outline cx-btn--sm">View</a>
     <button type="button" class="cx-btn cx-btn--outline cx-btn--sm" onclick="window.print()">Print</button>
   </div>
 </div>
+
+{% if messages %}
+  <div class="cx-flash-stack">
+    {% for message in messages %}
+      <div class="cx-flash" role="status">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
 
 <div class="sp-dash-grid">
   <!-- Customer Info -->
@@ -96,6 +114,20 @@
           <span class="sp-data-label">Status</span>
           <span class="sp-data-value">{{ booking.get_status_display }}</span>
         </div>
+        {% if booking.checked_in_at %}
+        <div class="sp-data-row">
+          <span class="sp-data-label">Checked In</span>
+          <span class="sp-data-value">{{ booking.checked_in_at|date:"h:i A" }}</span>
+        </div>
+        {% endif %}
+        {% if booking.status == 'checked_in' %}
+        <div class="sp-data-row">
+          <span class="sp-data-label">Time Remaining</span>
+          <span class="sp-data-value" data-session-countdown="{{ booking.checked_in_at|date:'U' }}" data-session-end="{{ booking.booking_date|date:'Y-m-d' }} {{ booking.end_time|time:'H:i' }}">
+            {{ booking.session_remaining_minutes }} min
+          </span>
+        </div>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -158,6 +190,15 @@
           <div>
             <div class="sp-activity-text">Payment captured</div>
             <div class="sp-activity-time">{{ booking.payment.updated_at|date:"d M Y h:i A" }}</div>
+          </div>
+        </div>
+        {% endif %}
+        {% if booking.checked_in_at %}
+        <div class="sp-activity-item">
+          <span class="sp-activity-dot is-success" aria-hidden="true"></span>
+          <div>
+            <div class="sp-activity-text">Checked in — session started</div>
+            <div class="sp-activity-time">{{ booking.checked_in_at|date:"d M Y h:i A" }}</div>
           </div>
         </div>
         {% endif %}

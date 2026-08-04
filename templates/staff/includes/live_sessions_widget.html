@@ -1,0 +1,41 @@
+{% comment %}
+Ch12 Live Sessions widget — rendered server-side, refreshed by staff.js
+via the 30s poll against staff:staff_live_sessions_data.
+{% endcomment %}
+<div class="sp-widget" data-live-sessions-widget>
+  <div class="sp-widget-header">
+    <h2 class="sp-widget-title">
+      <span class="sp-live-dot" aria-hidden="true"></span>
+      Live Sessions
+      <span class="cx-badge cx-badge--primary" data-live-count>{{ live_sessions_count|default:0 }}</span>
+    </h2>
+    <a href="{% url 'staff:staff_live_sessions' %}" class="cx-btn cx-btn--ghost cx-btn--sm">Console</a>
+  </div>
+  <div class="sp-widget-body" data-live-sessions-body>
+    {% if live_sessions %}
+      <div class="sp-activity" data-live-sessions-list>
+        {% for s in live_sessions %}
+        <div class="sp-activity-item" data-live-session-id="{{ s.id }}">
+          <span class="sp-activity-dot is-success is-pulse" aria-hidden="true"></span>
+          <div>
+            <div class="sp-activity-text">
+              <strong>{{ s.user.full_display_name }}</strong>
+              · {{ s.game_console.name|default:"—" }}
+              · {{ s.start_time|time:"h:i A" }}–{{ s.end_time|time:"h:i A" }}
+            </div>
+            <div class="sp-activity-time">
+              <span data-live-remaining data-session-end="{{ s.booking_date|date:'Y-m-d' }} {{ s.end_time|time:'H:i' }}">{{ s.session_remaining_minutes }} min left</span>
+            </div>
+          </div>
+          <a href="{% url 'staff:staff_booking_detail' s.id %}" class="cx-btn cx-btn--ghost cx-btn--sm">Open</a>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="cx-empty" role="status">
+        <div class="cx-empty-title">No live sessions</div>
+        <div class="cx-empty-desc">Checked-in players will appear here.</div>
+      </div>
+    {% endif %}
+  </div>
+</div>

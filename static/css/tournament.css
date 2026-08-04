@@ -34,14 +34,14 @@
                 transform var(--cx-duration-normal) var(--cx-ease),
                 background var(--cx-theme-speed) ease;
 }
-.tourney-card:hover { border-color: var(--cx-orange-border); transform: translateY(-4px); }
+.tourney-card:hover { border-color: var(--cx-info-border); transform: translateY(-4px); }
 
 .tourney-card-img {
     position: relative; height: 180px; overflow: hidden;
 }
 .tourney-card-img img {
     width: 100%; height: 100%; object-fit: cover;
-    transition: transform 0.5s;
+    transition: transform var(--cx-duration-base) var(--cx-ease);
 }
 .tourney-card:hover .tourney-card-img img { transform: scale(1.05); }
 .tourney-card-img-scrim {
@@ -58,7 +58,7 @@
     background: var(--cx-success-10); border: 1px solid var(--cx-success-border); color: var(--cx-success);
 }
 .tourney-status-upcoming {
-    background: var(--cx-gold-8); border: 1px solid var(--cx-gold-20); color: var(--cx-gold);
+    background: var(--cx-warning-10); border: 1px solid var(--cx-warning-20); color: var(--cx-warning);
 }
 
 .tourney-prize-box {
@@ -68,7 +68,7 @@
 }
 .tourney-prize-label { font-size: var(--cx-text-xs); color: var(--cx-text-3); display: block; }
 .tourney-prize-val {
-    font-family: var(--cx-font-accent); font-weight: 900; font-size: 1.2rem; color: var(--cx-gold);
+    font-family: var(--cx-font-accent); font-weight: 900; font-size: 1.2rem; color: var(--cx-warning);
 }
 
 .tourney-card-body {
@@ -95,8 +95,8 @@
 }
 .tourney-slots-fill {
     height: 100%; border-radius: var(--cx-radius-pill);
-    background: linear-gradient(to right, var(--cx-primary), var(--cx-purple));
-    transition: width 0.5s;
+    background: linear-gradient(to right, var(--cx-primary), var(--cx-info));
+    transition: width var(--cx-duration-base) var(--cx-ease);
 }
 
 .tourney-countdown { display: flex; gap: var(--cx-space-2); }
@@ -114,7 +114,7 @@
     color: var(--cx-text-3); margin-top: 2px;
 }
 .tourney-cd-expired {
-    font-size: var(--cx-text-sm); color: var(--cx-orange); font-weight: 700;
+    font-size: var(--cx-text-sm); color: var(--cx-danger); font-weight: 700;
 }
 
 @media (max-width: 992px) {

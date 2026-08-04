@@ -73,7 +73,7 @@
 
 .faq-answer {
     max-height: 0; overflow: hidden;
-    transition: max-height 0.35s ease, padding 0.35s ease;
+    transition: max-height var(--cx-duration-slow) var(--cx-ease), padding var(--cx-duration-slow) var(--cx-ease);
     padding: 0 var(--cx-space-6);
 }
 .faq-item.faq-open .faq-answer {

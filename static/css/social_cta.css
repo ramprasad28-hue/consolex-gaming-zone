@@ -96,8 +96,8 @@
 
 .insta-tile:hover { transform: translateY(-4px); }
 .insta-tile.tile-glow-cyan:hover   { border-color: var(--cx-primary); }
-.insta-tile.tile-glow-purple:hover { border-color: var(--cx-purple); }
-.insta-tile.tile-glow-orange:hover { border-color: var(--cx-orange); }
+.insta-tile.tile-glow-info:hover    { border-color: var(--cx-info); }
+.insta-tile.tile-glow-success:hover { border-color: var(--cx-success); }
 
 .insta-tile-inner {
     display: flex;

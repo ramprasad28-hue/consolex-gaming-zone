@@ -117,3 +117,103 @@ class UserModelTests(TestCase):
         User.objects.create_user(email="v@test.com", password="x", is_verified=True)
         User.objects.create_user(email="nv@test.com", password="x", is_verified=False)
         self.assertEqual(User.objects.verified().count(), 1)
+
+
+class UserPortalTests(TestCase):
+    """Ch11 player portal sub-pages (profile, settings, notifications, bookings)."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="portal@test.com", password="Str0ng!Pass",
+            first_name="Portal", last_name="User",
+        )
+        self.client.login(email="portal@test.com", password="Str0ng!Pass")
+
+    def test_portal_requires_login(self):
+        self.client.logout()
+        for url_name in ["users:profile", "users:settings", "users:notifications", "users:bookings"]:
+            resp = self.client.get(reverse(url_name))
+            self.assertEqual(resp.status_code, 302, url_name)
+            self.assertIn("/login", resp.url)
+
+    def test_profile_get_renders(self):
+        resp = self.client.get(reverse("users:profile"))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_profile_post_updates_name_and_phone(self):
+        resp = self.client.post(reverse("users:profile"), {
+            "first_name": "Updated",
+            "last_name": "Name",
+            "phone": "+91 98765 43210",
+        })
+        self.assertEqual(resp.status_code, 302)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.first_name, "Updated")
+        self.assertEqual(self.user.phone, "+91 98765 43210")
+
+    def test_profile_post_rejects_bad_phone(self):
+        resp = self.client.post(reverse("users:profile"), {
+            "first_name": "Bad",
+            "last_name": "Phone",
+            "phone": "abc",
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.phone, None)
+
+    def test_settings_password_change(self):
+        resp = self.client.post(reverse("users:settings"), {
+            "old_password": "Str0ng!Pass",
+            "new_password1": "NewStr0ng!Pass2",
+            "new_password2": "NewStr0ng!Pass2",
+        })
+        self.assertEqual(resp.status_code, 302)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password("NewStr0ng!Pass2"))
+
+    def test_settings_password_mismatch_rejected(self):
+        resp = self.client.post(reverse("users:settings"), {
+            "old_password": "Str0ng!Pass",
+            "new_password1": "NewStr0ng!Pass2",
+            "new_password2": "Different!Pass",
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password("Str0ng!Pass"))
+
+    def test_notifications_list_and_mark_read(self):
+        from apps.notifications.models import Notification
+        Notification.objects.create(user=self.user, message="Welcome to ConsoleX")
+        resp = self.client.get(reverse("users:notifications"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Welcome to ConsoleX")
+
+        notif = Notification.objects.get(user=self.user)
+        resp = self.client.post(reverse("users:notification_read", args=[notif.id]))
+        self.assertEqual(resp.status_code, 302)
+        notif.refresh_from_db()
+        self.assertTrue(notif.is_read)
+
+    def test_notifications_mark_all_read(self):
+        from apps.notifications.models import Notification
+        Notification.objects.create(user=self.user, message="A")
+        Notification.objects.create(user=self.user, message="B")
+        self.client.post(reverse("users:notifications_read_all"))
+        self.assertEqual(Notification.objects.unread(self.user).count(), 0)
+
+    def test_bookings_page_renders(self):
+        resp = self.client.get(reverse("users:bookings"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "My bookings")
+
+    def test_leaderboard_returns_real_data(self):
+        from apps.bookings.models import Booking
+        other = User.objects.create_user(email="other@test.com", password="x")
+        Booking.objects.create(
+            user=self.user, booking_date="2026-08-10", start_time="12:00", end_time="13:00",
+            status="confirmed",
+        )
+        leaderboard = UserService.get_leaderboard()
+        names = [entry.full_display_name for entry in leaderboard]
+        self.assertIn(self.user.full_display_name, names)
+        self.assertNotIn("ProGamer_X", names)

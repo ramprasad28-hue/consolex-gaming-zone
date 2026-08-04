@@ -1,0 +1,186 @@
+/* ============================================================
+   CONSOLEX — booking_preview.css  (V4 · "How It Works")
+   ============================================================ */
+
+.bp-section {
+    padding: var(--cx-space-16) 0;
+    background: var(--cx-surface-bg);
+    position: relative;
+    overflow: hidden;
+}
+
+.bp-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 var(--cx-space-4);
+    position: relative;
+    z-index: 1;
+}
+
+.bp-head {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto var(--cx-space-10);
+}
+
+.bp-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--cx-space-2);
+    font-family: var(--cx-font-sans);
+    font-size: var(--cx-text-xs);
+    font-weight: 700;
+    letter-spacing: var(--cx-tracking-wide);
+    text-transform: uppercase;
+    color: var(--cx-primary);
+    background: var(--cx-primary-subtle);
+    border: 1px solid var(--cx-primary-border);
+    border-radius: 100px;
+    padding: var(--cx-space-1) var(--cx-space-3);
+    margin-bottom: var(--cx-space-4);
+}
+
+.bp-title {
+    font-family: var(--cx-type-heading-xl-family);
+    font-size: clamp(var(--cx-type-heading-lg-size), 4vw, var(--cx-type-heading-xl-size));
+    line-height: var(--cx-type-heading-xl-line);
+    font-weight: var(--cx-type-heading-xl-weight);
+    letter-spacing: var(--cx-type-heading-xl-tracking);
+    color: var(--cx-text);
+    margin: 0 0 var(--cx-space-3);
+}
+
+.bp-neon {
+    color: var(--cx-primary);
+}
+
+.bp-sub {
+    color: var(--cx-text-2);
+    font-family: var(--cx-font-sans);
+    font-size: var(--cx-text-base);
+    line-height: var(--cx-leading-relaxed);
+    margin: 0;
+}
+
+.bp-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--cx-space-4);
+    margin-bottom: var(--cx-space-10);
+}
+
+.bp-step {
+    position: relative;
+    text-align: center;
+    padding: var(--cx-space-5) var(--cx-space-4);
+    background: var(--cx-surface-card);
+    border: 1px solid var(--cx-border);
+    border-radius: var(--cx-radius-lg);
+    transition: transform var(--cx-duration-fast) var(--cx-ease-out),
+                border-color var(--cx-duration-fast) var(--cx-ease-out),
+                box-shadow var(--cx-duration-fast) var(--cx-ease-out);
+}
+
+.bp-step:hover {
+    transform: translateY(-3px);
+    border-color: var(--cx-primary-border);
+    box-shadow: var(--cx-shadow-sm);
+}
+
+.bp-step-num {
+    position: absolute;
+    top: calc(var(--cx-space-2) * -1);
+    left: var(--cx-space-3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--cx-primary);
+    color: var(--cx-text-inverse);
+    font-family: var(--cx-font-sans);
+    font-size: var(--cx-text-xs);
+    font-weight: 700;
+}
+
+.bp-step-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--cx-radius-md);
+    background: var(--cx-primary-subtle);
+    border: 1px solid var(--cx-primary-border);
+    color: var(--cx-primary);
+    margin: 0 auto var(--cx-space-3);
+}
+
+.bp-step-title {
+    font-family: var(--cx-type-label-family);
+    font-size: var(--cx-type-label-size);
+    font-weight: 700;
+    color: var(--cx-text);
+    margin: 0 0 var(--cx-space-2);
+}
+
+.bp-step-desc {
+    color: var(--cx-text-2);
+    font-family: var(--cx-font-sans);
+    font-size: var(--cx-text-sm);
+    line-height: var(--cx-leading-relaxed);
+    margin: 0;
+}
+
+.bp-cta {
+    text-align: center;
+}
+
+.bp-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--cx-space-2);
+    padding: var(--cx-space-3) var(--cx-space-7);
+    border-radius: var(--cx-radius-md);
+    background: var(--cx-primary);
+    color: var(--cx-text-inverse);
+    font-family: var(--cx-font-sans);
+    font-size: var(--cx-text-sm);
+    font-weight: 700;
+    letter-spacing: var(--cx-tracking-wide);
+    transition: background var(--cx-duration-fast) var(--cx-ease-out),
+                transform var(--cx-duration-fast) var(--cx-ease-out);
+}
+
+.bp-cta-btn:hover {
+    background: var(--cx-primary-hover);
+    transform: translateY(-1px);
+}
+
+.bp-cta-btn svg {
+    width: 15px;
+    height: 15px;
+}
+
+@media (max-width: 900px) {
+    .bp-steps {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 520px) {
+    .bp-steps {
+        grid-template-columns: 1fr;
+    }
+    .bp-step {
+        text-align: left;
+    }
+    .bp-step-icon {
+        margin: 0 0 var(--cx-space-3);
+    }
+    .bp-step-num {
+        left: auto;
+        right: var(--cx-space-3);
+    }
+}

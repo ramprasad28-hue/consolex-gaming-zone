@@ -1,0 +1,41 @@
+{% extends "users/portal_base.html" %}
+
+{% block portal_title %}Settings{% endblock %}
+
+{% block portal_content %}
+<div class="dx-card dx-form-card">
+  <h2 class="dx-card-title">Change password</h2>
+  <p class="dx-form-help">Keep your account secure.</p>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="cx-alert cx-alert--{% if message.tags == 'error' %}danger{% elif message.tags == 'success' %}success{% else %}info{% endif %}" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="POST" action="{% url 'users:settings' %}" novalidate>
+    {% csrf_token %}
+    <div class="dx-form-group">
+      <label class="dx-form-label" for="id_old_password">Current password</label>
+      <input class="dx-form-input" type="password" id="id_old_password" name="old_password"
+             required autocomplete="current-password">
+    </div>
+    <div class="dx-form-group">
+      <label class="dx-form-label" for="id_new_password1">New password</label>
+      <input class="dx-form-input" type="password" id="id_new_password1" name="new_password1"
+             required autocomplete="new-password">
+      <span class="dx-form-help">At least 8 characters, not entirely numeric, not a common password.</span>
+    </div>
+    <div class="dx-form-group">
+      <label class="dx-form-label" for="id_new_password2">Confirm new password</label>
+      <input class="dx-form-input" type="password" id="id_new_password2" name="new_password2"
+             required autocomplete="new-password">
+    </div>
+    <div class="dx-form-actions">
+      <button type="submit" class="cx-btn cx-btn--primary cx-btn--md">Update password</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

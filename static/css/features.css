@@ -86,7 +86,7 @@
     height: 100%;
     object-fit: cover;
     opacity: 0.12;
-    transition: opacity 0.5s;
+    transition: opacity var(--cx-duration-base) var(--cx-ease);
 }
 .features-card:hover .fcard-bg-img img {
     opacity: 0.2;
@@ -123,25 +123,15 @@
     background: var(--cx-primary-subtle);
     border-color: var(--cx-primary-border);
 }
-.fcard-icon-purple {
-    color: var(--cx-purple);
-    background: var(--cx-purple-10);
-    border-color: var(--cx-purple-20);
-}
-.fcard-icon-orange {
-    color: var(--cx-orange);
-    background: var(--cx-orange-10);
-    border-color: var(--cx-orange-20);
-}
 .fcard-icon-green {
     color: var(--cx-success);
     background: var(--cx-success-10);
     border-color: var(--cx-success-40);
 }
 .fcard-icon-yellow {
-    color: var(--cx-gold);
-    background: var(--cx-gold-10);
-    border-color: var(--cx-gold-40);
+    color: var(--cx-warning);
+    background: var(--cx-warning-10);
+    border-color: var(--cx-warning-20);
 }
 
 .fcard-title {
@@ -170,8 +160,6 @@
     font-size: 1.5rem;
 }
 .fcard-stat-cyan { color: var(--cx-primary); }
-.fcard-stat-purple { color: var(--cx-purple); }
-.fcard-stat-orange { color: var(--cx-orange); }
 .fcard-stat-label {
     font-size: var(--cx-text-xs);
     color: var(--cx-text-3);
@@ -187,7 +175,7 @@
 .stagger-child {
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    transition: opacity var(--cx-duration-base) var(--cx-ease), transform var(--cx-duration-base) var(--cx-ease);
 }
 .stagger-child.is-visible {
     opacity: 1;

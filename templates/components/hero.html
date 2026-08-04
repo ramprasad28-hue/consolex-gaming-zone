@@ -1,13 +1,17 @@
 {% load static %}
 <section class="hero" id="hero">
     <div class="hero-bg">
-        <img src="media/cxdesign/first.jpeg" alt="Gaming lounge with PS5 setup" class="hero-bg-img">
+        <img src="media/cxdesign/first.jpeg"
+             srcset="media/cxdesign/hero-bg-800.jpg 800w, media/cxdesign/hero-bg-1600.jpg 1600w, media/cxdesign/first.jpeg 3000w"
+             sizes="100vw"
+             width="3000" height="4000"
+             alt="Gaming lounge with PS5 setup" class="hero-bg-img" fetchpriority="high" decoding="async">
         <div class="hero-scrim"></div>
     </div>
 
     <div class="hero-wrap">
-        <div class="hero-content" id="heroTextContent">
-            <div class="hero-badges" data-stagger>
+        <div class="hero-content cx-stagger" id="heroTextContent">
+            <div class="hero-badges">
                 <span class="cx-badge cx-badge--success">
                     <span class="hero-dot"></span>
                     {{ cb.hero_pill_1 }}
@@ -15,14 +19,14 @@
                 <span class="cx-badge cx-badge--primary">{{ cb.hero_pill_2 }}</span>
             </div>
 
-            <h1 class="hero-title" data-stagger>
+            <h1 class="hero-title">
                 <span class="hero-line-1">{{ cb.hero_headline_1 }}</span>
                 <span class="hero-line-2">{{ cb.hero_headline_2 }}</span>
             </h1>
 
-            <p class="hero-subtitle" data-stagger>{{ cb.hero_subtitle }}</p>
+            <p class="hero-subtitle">{{ cb.hero_subtitle }}</p>
 
-            <div class="hero-ctas" data-stagger>
+            <div class="hero-ctas">
                 <a href="{% url 'bookings:booking_form' %}" class="cx-btn cx-btn--primary cx-btn--lg">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                     {{ cb.hero_cta_primary }}
@@ -33,7 +37,7 @@
                 </a>
             </div>
 
-            <div class="hero-stats" data-stagger>
+            <div class="hero-stats">
                 <div class="hero-stat">
                     <span class="hero-stat-value">{{ cb.hero_stat_1_value }}</span>
                     <span class="hero-stat-label">{{ cb.hero_stat_1_label }}</span>
@@ -60,19 +64,12 @@
     var textContent = document.getElementById('heroTextContent');
     if (!textContent) return;
     var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var staggerEls = textContent.querySelectorAll('[data-stagger]');
     if (prefersReducedMotion) {
-        staggerEls.forEach(function (el) { el.style.opacity = '1'; el.style.transform = 'none'; });
-    } else {
-        staggerEls.forEach(function (el, i) {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(24px)';
-            el.style.transition = 'opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94)';
-            setTimeout(function () {
-                el.style.opacity = '1';
-                el.style.transform = 'translateY(0)';
-            }, 150 + i * 120);
-        });
+        textContent.classList.add('is-visible');
+        return;
     }
+    requestAnimationFrame(function () {
+        textContent.classList.add('is-visible');
+    });
 }());
 </script>

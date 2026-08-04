@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import render
 
-from apps.core.views import home
+from apps.core.views import home, robots_txt, sitemap_xml
 
 admin.site.site_header = "CONSOLEX Admin"
 admin.site.site_title = "CONSOLEX"
@@ -25,6 +25,10 @@ def handler500(request):
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+
+    # SEO / crawl control
+    path("robots.txt", robots_txt, name="robots_txt"),
+    path("sitemap.xml", sitemap_xml, name="sitemap_xml"),
 
     # API
     path("api/", include("apps.api.urls")),

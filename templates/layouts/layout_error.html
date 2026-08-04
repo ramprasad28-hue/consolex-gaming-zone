@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+{% block body_class %}layout-error{% endblock %}
+{% block announcement %}{% endblock %}
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block whatsapp %}{% endblock %}
+
+{% block content %}
+<div class="error-shell">
+    <div class="error-brand" aria-hidden="true">
+        <img src="/media/logo/favicon.png" alt="{{ site.brand_name }}" width="40" height="40">
+    </div>
+    {% block error_content %}{% endblock %}
+</div>
+{% endblock %}

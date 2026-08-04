@@ -1,0 +1,75 @@
+{% extends "users/portal_base.html" %}
+
+{% block portal_title %}My Bookings{% endblock %}
+
+{% block portal_content %}
+<div class="dx-card">
+  <h2 class="dx-card-title">My bookings</h2>
+  <p class="dx-form-help">View upcoming and past session bookings.</p>
+
+  {% if page_obj.object_list %}
+    <div class="dx-table-wrap">
+      <table class="dx-table">
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Time</th>
+            <th scope="col">Game / Area</th>
+            <th scope="col">Status</th>
+            <th scope="col">Ref</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for booking in page_obj %}
+            <tr>
+              <td>{{ booking.booking_date|date:"d M Y" }}</td>
+              <td class="dx-td-time">{{ booking.start_time }} – {{ booking.end_time }}</td>
+              <td>
+                {{ booking.area_name }}
+                {% if booking.game %}<span class="dx-td-muted"> · {{ booking.game.name }}</span>{% endif %}
+              </td>
+              <td>
+                {% if booking.status == "confirmed" %}
+                  <span class="dx-badge dx-badge--confirmed">Confirmed</span>
+                {% elif booking.status == "pending" %}
+                  <span class="dx-badge dx-badge--pending">Pending</span>
+                {% elif booking.status == "checked_in" %}
+                  <span class="dx-badge dx-badge--info">Checked in</span>
+                {% elif booking.status == "completed" %}
+                  <span class="dx-badge dx-badge--completed">Completed</span>
+                {% elif booking.status == "cancelled" %}
+                  <span class="dx-badge dx-badge--cancelled">Cancelled</span>
+                {% else %}
+                  <span class="dx-badge">{{ booking.status }}</span>
+                {% endif %}
+              </td>
+              <td class="dx-td-id">
+                {% if booking.booking_id %}<span class="dx-td-muted">{{ booking.booking_id|truncatechars:12 }}</span>{% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if page_obj.has_other_pages %}
+      <nav class="dx-pagination" aria-label="Bookings pages">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}" class="dx-page-link" aria-label="Previous page">&lsaquo;</a>
+        {% endif %}
+        <span class="dx-page-current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}" class="dx-page-link" aria-label="Next page">&rsaquo;</a>
+        {% endif %}
+      </nav>
+    {% endif %}
+  {% else %}
+    <div class="dx-empty">
+      <p class="dx-empty-text">You don't have any bookings yet.</p>
+      <div class="dx-empty-action">
+        <a href="{% url 'bookings:booking_form' %}" class="cx-btn cx-btn--primary cx-btn--md">Book a slot</a>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

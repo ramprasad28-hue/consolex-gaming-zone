@@ -1744,6 +1744,112 @@
 
 
 /* ============================================================
+   PROGRESS STEPPER  (V4 — Ch5)
+   ============================================================ */
+
+.cx-stepper {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--cx-space-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.cx-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.cx-step-track {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+.cx-step-rail {
+    flex: 1;
+    height: 2px;
+    background: var(--cx-border);
+    border-radius: 1px;
+    transition: background var(--cx-duration-fast) var(--cx-ease-out);
+}
+
+.cx-step:first-of-type .cx-step-rail:first-of-type {
+    visibility: hidden;
+}
+
+.cx-step-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 2px solid var(--cx-border);
+    background: var(--cx-surface-card);
+    color: var(--cx-text-3);
+    font-family: var(--cx-font-sans);
+    font-size: var(--cx-text-xs);
+    font-weight: 700;
+    transition: border-color var(--cx-duration-fast) var(--cx-ease-out),
+                background var(--cx-duration-fast) var(--cx-ease-out),
+                color var(--cx-duration-fast) var(--cx-ease-out);
+}
+
+.cx-step-label {
+    margin-top: var(--cx-space-2);
+    font-family: var(--cx-font-sans);
+    font-size: var(--cx-text-xs);
+    font-weight: 600;
+    color: var(--cx-text-3);
+    text-align: center;
+    transition: color var(--cx-duration-fast) var(--cx-ease-out);
+}
+
+/* States */
+.cx-step.is-active .cx-step-dot {
+    border-color: var(--cx-primary);
+    background: var(--cx-primary-subtle);
+    color: var(--cx-primary);
+}
+
+.cx-step.is-active .cx-step-label {
+    color: var(--cx-text);
+}
+
+.cx-step.is-done .cx-step-dot {
+    border-color: var(--cx-primary);
+    background: var(--cx-primary);
+    color: var(--cx-text-inverse);
+}
+
+.cx-step.is-done .cx-step-rail {
+    background: var(--cx-primary);
+}
+
+.cx-step.is-done .cx-step-label {
+    color: var(--cx-text-2);
+}
+
+/* Horizontal scroll fallback on small screens */
+@media (max-width: 640px) {
+    .cx-stepper {
+        overflow-x: auto;
+        padding-bottom: var(--cx-space-2);
+    }
+    .cx-step {
+        min-width: 88px;
+    }
+}
+
+
+/* ============================================================
    REDUCED MOTION
    ============================================================ */
 
@@ -1760,7 +1866,10 @@
     .cx-accordion-chevron,
     .cx-tooltip,
     .cx-popover,
-    .cx-spinner {
+    .cx-spinner,
+    .cx-step-dot,
+    .cx-step-rail,
+    .cx-step-label {
         transition-duration: 0.01ms !important;
         animation-duration: 0.01ms !important;
     }

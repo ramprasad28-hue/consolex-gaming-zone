@@ -1,5 +1,51 @@
 # Changelog
 
+## [4.0.0] — 2026-08-04
+
+### Added
+
+#### Ch15 — Performance & Housekeeping
+- **CMS context caching** (`apps/cms/cache.py`): the site-wide context processor now caches the fully-evaluated context dict under `cms_site_context` (TTL 300s), turning 8+ DB lookups per page render into a single cache read
+- **Cache invalidation signals** (`apps/cms/signals.py`): wired to every CMS model's save/delete via `CmsConfig.ready()`, so admin edits show up immediately
+- **Cache tests**: hit-rate (0 queries on 2nd call), save invalidation, delete invalidation (3 tests in `apps/cms/tests.py`)
+- **Requirements restructure**: moved `apps/requirements/{base,production}.txt` → root `requirements/`, updated `.github/workflows/ci.yml` install paths
+
+#### Ch13 — Owner Executive Dashboard
+- `StaffDashboardService.get_executive_data()`: total/month revenue, MRR, ARPU, active customers, retention, console utilization, live-now count, 12-month revenue trend, top consoles, top customers, booking status breakdown
+- `owner_required` decorator, `staff/executive/` route, superuser-only sidebar link
+- `templates/staff/executive/dashboard.html` KPI cards + chart primitives
+- Executive dashboard tests (owner access, staff forbidden, context keys, zero-safe retention)
+
+#### Ch12 — Staff Live Sessions
+- `Booking.checked_in_at` (+ `("checked_in", "Checked In")` status) and migration `0004_booking_checked_in_at_alter_booking_status`
+- `Booking.live()` queryset + `session_remaining_minutes` property (midnight-crossing safe)
+- `BookingService.check_in()` / `check_out()` / `get()`
+- Staff `live_sessions` page + `live_sessions_data` JSON poll endpoint; dashboard live-sessions widget
+- `static/js/staff.js` 30s polling with `data-live-*` attributes; live-dot/pulse/badge styling in `static/css/staff.css`
+- 8 live-session tests in `apps/staff/tests.py`
+
+#### Ch11 — Customer Portal
+- Full customer portal in `apps/users`: profile, settings, notifications, and bookings pages with routes + templates (`users/portal_*`, `users/profile.html`, `users/settings.html`, `users/notifications.html`, `users/bookings.html`)
+- Desktop rail + mobile bottom-bar navigation with active-state detection
+- Dashboard integrated with the portal grid; real leaderboard rendered
+- 12 portal tests in `apps/users/tests.py`
+
+#### Ch10 — V4 Design Refresh
+- V4 design system applied across all pages (tokens, typography, components, layouts, motion)
+- New `static/css/layouts.css`, `motion.css`, `booking_preview.css`, `why_choose_us.css`; updated `booking.js` flow
+- New `templates/layouts/` directory and reworked base/component templates
+
+### Changed
+
+- **Context processor**: `site_context` now delegates to `get_site_context_data()` (cached) instead of hitting the DB on every request
+- **Repository layout**: requirements moved to root `requirements/` (`base.txt` + `production.txt`); root `requirements.txt` retained as a flattened dev reference
+- **Tests**: suite grew to 253 tests (users 26, staff 20, bookings 22, cms 29, plus API/core/games/payments/etc.)
+
+### Fixed
+
+- Missing `from django.utils import timezone` import in `apps/bookings/models.py`
+- Executive revenue trend now uses manual date arithmetic (`timedelta` has no `months=`)
+
 ## [3.0.0] — 2026-07-29
 
 ### Added

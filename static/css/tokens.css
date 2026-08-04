@@ -1,23 +1,328 @@
 /* ============================================================
-   CONSOLEX — tokens.css  (V3 Design System)
-   Single source of truth for all design tokens.
-   LIGHT theme is default. Dark theme via [data-theme="dark"].
+   CONSOLEX V4 — tokens.css  (Design Token System · v4.0)
+   ------------------------------------------------------------------
+   SINGLE SOURCE OF TRUTH. No component may bypass these tokens.
+
+   RULES
+   - Never hardcode color / spacing / radius / type / shadow /
+     opacity / transition / breakpoint values inside components.
+   - Before adding a token ask: (1) does it already exist?
+     (2) can an existing token be reused? (3) new spacing scale?
+     (4) new color? (5) violates Chapter 2? (6) violates Chapter 5?
+     If YES -> STOP. No new token without approval.
+   - Spacing: 8px system ONLY  (4/8/12/16/24/32/40/48/64/80/96).
+   - Type: Inter for everything; Orbitron ONLY logo / hero heading /
+     tournament banner.
+   - Motion: 150–300ms; fade/slide/scale/counter only. No bounce,
+     flash, parallax, float. Max 300ms unless intentionally documented.
+   - Shadows: soft, never glow / neon / RGB.
+   - Dark mode reuses the SAME tokens — only values change.
    ============================================================ */
 
+/* ============================================================
+   1 · FONTS
+   ============================================================ */
 :root {
+    --cx-font-sans:         'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --cx-font-display:      'Orbitron', 'Inter', system-ui, sans-serif; /* restricted use: logo / hero / tournament banner */
+    --cx-font-mono:         'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
 
-    /* ═══ Brand ══════════════════════════════════════════════ */
-    --cx-primary:           #0070D2;
-    --cx-primary-hover:     #005BB5;
+    /* ==========================================================
+       2 · TYPOGRAPHY (semantic slots)
+       Each slot defines family / weight / size / line-height / tracking.
+       ========================================================== */
+    --cx-type-display-xl-size:      64px;   --cx-type-display-xl-line:     1.05;  --cx-type-display-xl-weight: 700;  --cx-type-display-xl-tracking: -0.03em; --cx-type-display-xl-family: var(--cx-font-display);
+    --cx-type-display-lg-size:      56px;   --cx-type-display-lg-line:     1.05;  --cx-type-display-lg-weight: 700;  --cx-type-display-lg-tracking: -0.02em; --cx-type-display-lg-family: var(--cx-font-display);
+    --cx-type-display-md-size:      48px;   --cx-type-display-md-line:     1.1;   --cx-type-display-md-weight: 700;  --cx-type-display-md-tracking: -0.02em; --cx-type-display-md-family: var(--cx-font-display);
+
+    --cx-type-heading-xl-size:      40px;   --cx-type-heading-xl-line:     1.1;   --cx-type-heading-xl-weight: 700;  --cx-type-heading-xl-tracking: -0.02em; --cx-type-heading-xl-family: var(--cx-font-sans);
+    --cx-type-heading-lg-size:      32px;   --cx-type-heading-lg-line:     1.15;  --cx-type-heading-lg-weight: 700;  --cx-type-heading-lg-tracking: -0.01em; --cx-type-heading-lg-family: var(--cx-font-sans);
+    --cx-type-heading-md-size:      24px;   --cx-type-heading-md-line:     1.25;  --cx-type-heading-md-weight: 600;  --cx-type-heading-md-tracking: -0.01em; --cx-type-heading-md-family: var(--cx-font-sans);
+    --cx-type-heading-sm-size:      20px;   --cx-type-heading-sm-line:     1.3;   --cx-type-heading-sm-weight: 600;  --cx-type-heading-sm-tracking: 0;      --cx-type-heading-sm-family: var(--cx-font-sans);
+
+    --cx-type-body-lg-size:         18px;   --cx-type-body-lg-line:        1.6;   --cx-type-body-lg-weight: 400;     --cx-type-body-lg-tracking: 0;        --cx-type-body-lg-family: var(--cx-font-sans);
+    --cx-type-body-md-size:         16px;   --cx-type-body-md-line:        1.5;   --cx-type-body-md-weight: 400;     --cx-type-body-md-tracking: 0;        --cx-type-body-md-family: var(--cx-font-sans);
+    --cx-type-body-sm-size:         14px;   --cx-type-body-sm-line:        1.5;   --cx-type-body-sm-weight: 400;     --cx-type-body-sm-tracking: 0;        --cx-type-body-sm-family: var(--cx-font-sans);
+
+    --cx-type-caption-size:         12px;   --cx-type-caption-line:        1.4;   --cx-type-caption-weight: 400;     --cx-type-caption-tracking: 0.01em;   --cx-type-caption-family: var(--cx-font-sans);
+    --cx-type-label-size:           14px;   --cx-type-label-line:          1.3;   --cx-type-label-weight: 600;       --cx-type-label-tracking: 0.06em;     --cx-type-label-family: var(--cx-font-sans);
+    --cx-type-code-size:            14px;   --cx-type-code-line:           1.5;   --cx-type-code-weight: 400;        --cx-type-code-tracking: 0;           --cx-type-code-family: var(--cx-font-mono);
+
+    /* ==========================================================
+       3 · SPACING  (8px system: 4/8/12/16/24/32/40/48/64/80/96)
+       ========================================================== */
+    --cx-space-0:           0;
+    --cx-space-xs:          4px;
+    --cx-space-sm:          8px;
+    --cx-space-md:          12px;
+    --cx-space-lg:          16px;
+    --cx-space-xl:          24px;
+    --cx-space-2xl:         32px;
+    --cx-space-3xl:         40px;
+    --cx-space-4xl:         48px;
+    --cx-space-5xl:         64px;
+    --cx-space-6xl:         80px;
+    --cx-space-7xl:         96px;
+
+    /* ==========================================================
+       4 · COLOR — LIGHT THEME (semantic)
+       Approved palette: #006FEE · #16A34A · #F59E0B · #DC2626 ·
+       #0EA5E9 · bg #F8FAFC · surface #FFFFFF · text #111827 ·
+       secondary #6B7280 · border #E5E7EB · muted #9CA3AF
+       ========================================================== */
+
+    /* — Brand — */
+    --cx-primary:           #006FEE;
+    --cx-primary-hover:     #005CC8;
+    --cx-primary-active:    #0048A3;
+    --cx-primary-soft:      rgba(0, 111, 238, 0.08);
+    --cx-primary-soft-2:    rgba(0, 111, 238, 0.12);
+    --cx-primary-border:    rgba(0, 111, 238, 0.20);
+
+    /* — Surface — */
+    --cx-surface-bg:        #F8FAFC;      /* page background */
+    --cx-surface-card:      #FFFFFF;      /* cards, panels, elevated */
+    --cx-surface-elevated:  #FFFFFF;      /* popovers, dropdowns, modals */
+    --cx-surface-sidebar:   #FFFFFF;      /* dashboard / admin sidebar */
+    --cx-surface-input:     #FFFFFF;
+    --cx-surface-hover:     #F8FAFC;
+    --cx-surface-subtle:    #F1F5F9;
+
+    /* — Border — */
+    --cx-border:            #E5E7EB;
+    --cx-border-strong:     #D1D5DB;
+    --cx-border-subtle:     #F1F5F9;
+
+    /* — Text — */
+    --cx-text:              #111827;
+    --cx-text-secondary:    #6B7280;
+    --cx-text-muted:        #9CA3AF;
+    --cx-text-inverse:      #FFFFFF;
+
+    /* — Semantic — */
+    --cx-success:           #16A34A;
+    --cx-success-hover:     #15803D;
+    --cx-success-active:    #166534;
+    --cx-success-soft:      rgba(22, 163, 74, 0.10);
+    --cx-success-border:    rgba(22, 163, 74, 0.25);
+
+    --cx-warning:           #F59E0B;
+    --cx-warning-hover:     #D97706;
+    --cx-warning-active:    #B45309;
+    --cx-warning-soft:      rgba(245, 158, 11, 0.12);
+    --cx-warning-border:    rgba(245, 158, 11, 0.30);
+
+    --cx-danger:            #DC2626;
+    --cx-danger-hover:      #B91C1C;
+    --cx-danger-active:     #991B1B;
+    --cx-danger-soft:       rgba(220, 38, 38, 0.08);
+    --cx-danger-border:     rgba(220, 38, 38, 0.25);
+
+    --cx-info:              #0EA5E9;
+    --cx-info-hover:        #0284C7;
+    --cx-info-active:       #0369A1;
+    --cx-info-soft:         rgba(14, 165, 233, 0.10);
+    --cx-info-border:       rgba(14, 165, 233, 0.25);
+
+    /* — Interactive — */
+    --cx-link:              var(--cx-primary);
+    --cx-link-hover:        var(--cx-primary-hover);
+    --cx-link-visited:      #475569;      /* purple removed from V4 brand */
+    --cx-focus-ring:        #006FEE;
+    --cx-focus-ring-subtle: rgba(0, 111, 238, 0.35);
+    --cx-focus-ring-width:  2px;
+    --cx-focus-ring-offset: 2px;
+    --cx-disabled:          #9CA3AF;
+    --cx-disabled-bg:       #E5E7EB;
+    --cx-disabled-border:   #D1D5DB;
+    --cx-selection:         rgba(0, 111, 238, 0.12);
+    --cx-overlay:           rgba(15, 23, 42, 0.60);
+
+    /* ==========================================================
+       5 · RADIUS  (approved: 8/12/16/24/9999)
+       ========================================================== */
+    --cx-radius-sm:         8px;
+    --cx-radius-md:         12px;
+    --cx-radius-lg:         16px;
+    --cx-radius-xl:         24px;
+    --cx-radius-pill:       9999px;
+    --cx-radius-full:       50%;
+
+    /* ==========================================================
+       6 · BORDER  (widths · styles · composed)
+       ========================================================== */
+    --cx-border-width-thin:   1px;
+    --cx-border-width:        1px;   /* regular */
+    --cx-border-width-strong: 2px;
+    --cx-border-dashed:       1px dashed var(--cx-border-strong);
+    --cx-divider:             1px solid var(--cx-border-subtle);
+    --cx-border-strong-solid: 1px solid var(--cx-border-strong);
+    --cx-focus-border:        2px solid var(--cx-focus-ring);
+
+    /* ==========================================================
+       7 · OPACITY
+       ========================================================== */
+    --cx-opacity-disabled:  0.50;
+    --cx-opacity-overlay:   0.60;
+    --cx-opacity-muted:     0.60;
+    --cx-opacity-hover:     0.90;
+    --cx-opacity-pressed:   0.75;
+    --cx-opacity-backdrop:  0.50;
+
+    /* ==========================================================
+       8 · ELEVATION  (soft shadows only — no glow / neon / RGB)
+       ========================================================== */
+    --cx-shadow-1:          0 1px 2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.06);
+    --cx-shadow-2:          0 2px 4px rgba(15, 23, 42, 0.05), 0 4px 8px rgba(15, 23, 42, 0.06);
+    --cx-shadow-3:          0 8px 16px rgba(15, 23, 42, 0.08), 0 12px 24px rgba(15, 23, 42, 0.06);
+    --cx-shadow-4:          0 16px 32px rgba(15, 23, 42, 0.10), 0 24px 48px rgba(15, 23, 42, 0.08);
+    --cx-shadow-hover:      0 8px 20px rgba(15, 23, 42, 0.10);
+    --cx-shadow-dropdown:   0 8px 24px rgba(15, 23, 42, 0.12);
+    --cx-shadow-modal:      0 24px 48px rgba(15, 23, 42, 0.16);
+
+    /* ==========================================================
+       9 · ICON SIZES  (one scale for all icons)
+       ========================================================== */
+    --cx-icon-default:      20px;
+    --cx-icon-sm:           16px;
+    --cx-icon-md:           20px;
+    --cx-icon-lg:           24px;
+    --cx-icon-xl:           32px;
+    --cx-icon-interactive:  20px;
+    --cx-icon-nav:          24px;
+    --cx-icon-notification: 18px;
+    --cx-icon-status:       16px;
+
+    /* ==========================================================
+       10 · SIZES  (control heights / widths — no arbitrary values)
+       ========================================================== */
+    /* Buttons */
+    --cx-btn-h-sm:          32px;
+    --cx-btn-h-md:          40px;
+    --cx-btn-h-lg:          48px;
+    /* Inputs / form controls */
+    --cx-input-h-sm:        32px;
+    --cx-input-h-md:        40px;
+    --cx-input-h-lg:        48px;
+    --cx-form-control-h:    40px;
+    /* Avatars */
+    --cx-avatar-xs:         24px;
+    --cx-avatar-sm:         32px;
+    --cx-avatar-md:         40px;
+    --cx-avatar-lg:         48px;
+    --cx-avatar-xl:         64px;
+    /* Structural */
+    --cx-sidebar-w:         240px;
+    --cx-navbar-h:          72px;
+    --cx-drawer-w:          360px;
+    --cx-modal-w-sm:        420px;
+    --cx-modal-w-md:        560px;
+    --cx-modal-w-lg:        720px;
+    --cx-table-row-h:       48px;
+    --cx-card-padding:      var(--cx-space-xl);
+
+    /* ==========================================================
+       11 · ANIMATION  (durations ≤300ms unless documented · curves)
+       ========================================================== */
+    --cx-duration-very-fast: 150ms;
+    --cx-duration-fast:      200ms;
+    --cx-duration-base:      250ms;
+    --cx-duration-normal:    250ms;
+    --cx-duration-slow:      300ms;
+    --cx-duration-extra-slow: 400ms; /* INTENTIONAL — exceeds cap; page-level only, documented */
+
+    /* Legacy motion aliases (kept for V3 sheet parity) */
+    --cx-ease:              var(--cx-ease-standard);
+    --cx-duration-slower:   400ms; /* INTENTIONAL — documented only */
+    --cx-theme-speed:       300ms;
+    --cx-ease-bounce:       cubic-bezier(0.34, 1.56, 0.64, 1); /* DEPRECATED — violates Chapter 2; do not use */
+
+    --cx-ease-standard:     cubic-bezier(0.4, 0, 0.2, 1);
+    --cx-ease-out:          cubic-bezier(0, 0, 0.2, 1);
+    --cx-ease-in:           cubic-bezier(0.4, 0, 1, 1);
+    /* Spring curve deliberately NOT provided — Chapter 2 bans bounce/spring. */
+
+    /* ==========================================================
+       12 · MOTION  (recipes + transforms)
+       ========================================================== */
+    --cx-scale-hover:       1.02;
+    --cx-lift-card:         translateY(-2px);
+    --cx-transition-fade:   opacity var(--cx-duration-fast) var(--cx-ease-out);
+    --cx-transition-slide:  transform var(--cx-duration-normal) var(--cx-ease-out);
+    --cx-transition-page:   opacity var(--cx-duration-normal) var(--cx-ease-out), transform var(--cx-duration-normal) var(--cx-ease-out);
+    --cx-transition-modal:  opacity var(--cx-duration-fast) var(--cx-ease-out), transform var(--cx-duration-fast) var(--cx-ease-out);
+    --cx-transition-drawer: transform var(--cx-duration-normal) var(--cx-ease-out);
+    --cx-transition-toast:  opacity var(--cx-duration-normal) var(--cx-ease-out), transform var(--cx-duration-normal) var(--cx-ease-out);
+
+    /* ==========================================================
+       13 · Z-INDEX  (documented stack — never random values)
+       ========================================================== */
+    --cx-z-base:            1;
+    --cx-z-dropdown:        100;
+    --cx-z-sticky:          200;
+    --cx-z-tooltip:         300;
+    --cx-z-modal:           400;
+    --cx-z-toast:           500;
+    --cx-z-whatsapp:        8000;   /* legacy floating-action layer */
+    --cx-z-drawer:          8999;   /* drawer + backdrop */
+    --cx-z-navbar:          9000;
+    --cx-z-skip:            99999;
+
+    /* ==========================================================
+       14 · BREAKPOINTS
+       (CSS custom properties cannot be used inside @media — see
+        media-query legend below. These tokens serve docs + JS + grid.)
+       ========================================================== */
+    --cx-bp-xs:             320px;
+    --cx-bp-sm:             375px;
+    --cx-bp-md:             768px;
+    --cx-bp-lg:             1024px;
+    --cx-bp-xl:             1440px;
+    --cx-bp-2xl:            1920px;
+
+    /* MEDIA-QUERY LEGEND  (use these exact queries)
+       mobile small  @media (min-width: 320px)  → 4 cols
+       mobile        @media (min-width: 375px)  → 4 cols
+       tablet        @media (min-width: 768px)  → 8 cols
+       laptop        @media (min-width: 1024px) → 12 cols
+       desktop       @media (min-width: 1440px) → 12 cols
+       large desktop @media (min-width: 1920px) → 12 cols
+    */
+
+    /* ==========================================================
+       15 · GRID & LAYOUT
+       Containers: small=forms/auth/settings · medium=profile/
+       booking/dashboard-detail · large=homepage/admin/analytics/
+       games/tournaments. Max content width 1440px.
+       ========================================================== */
+    --cx-grid-cols-mobile:  4;
+    --cx-grid-cols-tablet:  8;
+    --cx-grid-cols-desktop: 12;
+    --cx-gutter:            24px;
+    --cx-gutter-mobile:     16px;
+    --cx-max-width:         1440px;
+    --cx-container-auth:    560px;
+    --cx-container-content: 960px;
+    --cx-container-wide:    1440px;
+    --cx-section-width:     1280px;
+
+    /* ==========================================================
+       16 · LEGACY ALIASES — V3 COMPATIBILITY
+       Preserved so the existing 30 V3 stylesheets keep resolving.
+       Future components MUST use the V4 tokens above, never these.
+       Mapped to V4 values where semantics match; original values
+       kept where remapping would silently change old layouts.
+       ========================================================== */
+
+    /* Primary ramp */
     --cx-primary-light:     #EFF6FF;
-    --cx-primary-subtle:    rgba(0, 112, 210, 0.08);
-    --cx-primary-border:    rgba(0, 112, 210, 0.15);
-    --cx-primary-20:        rgba(0, 112, 210, 0.20);
-    --cx-primary-25:        rgba(0, 112, 210, 0.25);
-    --cx-primary-30:        rgba(0, 112, 210, 0.30);
-    --cx-primary-35:        rgba(0, 112, 210, 0.35);
+    --cx-primary-subtle:    var(--cx-primary-soft);
+    --cx-primary-20:        rgba(0, 111, 238, 0.20);
+    --cx-primary-25:        rgba(0, 111, 238, 0.25);
+    --cx-primary-30:        rgba(0, 111, 238, 0.30);
+    --cx-primary-35:        rgba(0, 111, 238, 0.35);
 
-    /* ═══ Neutral ════════════════════════════════════════════ */
+    /* Neutral scale (unchanged legacy) */
     --cx-gray-25:           #FCFCFD;
     --cx-gray-50:           #F8FAFC;
     --cx-gray-100:          #F1F5F9;
@@ -30,31 +335,25 @@
     --cx-gray-800:          #1E293B;
     --cx-gray-900:          #0F172A;
 
-    /* ═══ Semantic ═══════════════════════════════════════════ */
-    --cx-success:           #047857;
-    --cx-success-light:     rgba(5, 150, 105, 0.08);
-    --cx-success-10:        rgba(5, 150, 105, 0.10);
-    --cx-success-15:        rgba(5, 150, 105, 0.15);
-    --cx-success-20:        rgba(5, 150, 105, 0.20);
-    --cx-success-40:        rgba(5, 150, 105, 0.40);
-    --cx-success-border:    rgba(5, 150, 105, 0.15);
+    /* Semantic alpha ramps (legacy) */
+    --cx-success-light:     var(--cx-success-soft);
+    --cx-success-10:        rgba(22, 163, 74, 0.10);
+    --cx-success-15:        rgba(22, 163, 74, 0.15);
+    --cx-success-20:        rgba(22, 163, 74, 0.20);
+    --cx-success-40:        rgba(22, 163, 74, 0.40);
 
-    --cx-warning:           #B45309;
-    --cx-warning-light:     rgba(217, 119, 6, 0.08);
-    --cx-warning-10:        rgba(217, 119, 6, 0.10);
-    --cx-warning-20:        rgba(217, 119, 6, 0.20);
-    --cx-warning-40:        rgba(217, 119, 6, 0.40);
-    --cx-warning-border:    rgba(217, 119, 6, 0.15);
+    --cx-warning-light:     var(--cx-warning-soft);
+    --cx-warning-10:        rgba(245, 158, 11, 0.10);
+    --cx-warning-20:        rgba(245, 158, 11, 0.20);
+    --cx-warning-40:        rgba(245, 158, 11, 0.40);
 
-    --cx-danger:            #DC2626;
-    --cx-danger-light:      rgba(220, 38, 38, 0.08);
-    --cx-danger-8:          rgba(220, 38, 38, 0.08);
+    --cx-danger-light:      var(--cx-danger-soft);
+    --cx-danger-8:          var(--cx-danger-soft);
     --cx-danger-10:         rgba(220, 38, 38, 0.10);
     --cx-danger-20:         rgba(220, 38, 38, 0.20);
     --cx-danger-25:         rgba(220, 38, 38, 0.25);
-    --cx-danger-border:     rgba(220, 38, 38, 0.15);
 
-    /* ═══ Category ═══════════════════════════════════════════ */
+    /* Legacy category ramps — BANNED in V4 new code; kept for old files */
     --cx-purple:            #7C3AED;
     --cx-purple-light:      rgba(124, 58, 237, 0.08);
     --cx-purple-5:          rgba(124, 58, 237, 0.05);
@@ -92,13 +391,8 @@
     --cx-whatsapp-bg-40:    rgba(37, 211, 102, 0.40);
     --cx-whatsapp-bg-45:    rgba(37, 211, 102, 0.45);
 
-    /* ═══ Surface ════════════════════════════════════════════ */
-    --cx-surface-page:      #F8FAFC;
-    --cx-surface-card:      #FFFFFF;
-    --cx-surface-elevated:  #FFFFFF;
-    --cx-surface-subtle:    #F1F5F9;
-    --cx-surface-hover:     #F8FAFC;
-    --cx-surface-input:     #FFFFFF;
+    /* Legacy surface (translucent tint semantics — do not remap) */
+    --cx-surface-page:      var(--cx-surface-bg);
     --cx-surface:           rgba(0, 0, 0, 0.03);
     --cx-surface-2:         rgba(0, 0, 0, 0.06);
     --cx-nav-bg:            rgba(255, 255, 255, 0.95);
@@ -106,32 +400,26 @@
     --cx-drawer-bg:         rgba(255, 255, 255, 0.98);
     --cx-footer-bg:         #F1F5F9;
 
-    /* ═══ Text ═══════════════════════════════════════════════ */
-    --cx-text:              #0F172A;
-    --cx-text-2:            #475569;
-    --cx-text-3:            #64748B;
-    --cx-text-inverse:      #FFFFFF;
+    /* Legacy text / border names */
+    --cx-text-2:            var(--cx-text-secondary);
+    --cx-text-3:            var(--cx-text-muted);
+    --cx-border-2:          var(--cx-border-strong);
 
-    /* ═══ Border ═════════════════════════════════════════════ */
-    --cx-border:            #E2E8F0;
-    --cx-border-2:          #CBD5E1;
+    /* Legacy elevation */
+    --cx-shadow-sm:         var(--cx-shadow-1);
+    --cx-shadow-md:         var(--cx-shadow-2);
+    --cx-shadow-lg:         var(--cx-shadow-3);
+    --cx-shadow-xl:         var(--cx-shadow-4);
 
-    /* ═══ Shadow (Light) ═════════════════════════════════════ */
-    --cx-shadow-sm:         0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-    --cx-shadow-md:         0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
-    --cx-shadow-lg:         0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
-    --cx-shadow-xl:         0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    /* Scrollbar */
+    --cx-scrollbar-thumb:   rgba(0, 111, 238, 0.20);
+    --cx-scrollbar-hover:   rgba(0, 111, 238, 0.35);
 
-    /* ═══ Scrollbar (Light) ══════════════════════════════════ */
-    --cx-scrollbar-thumb:   rgba(0, 112, 210, 0.20);
-    --cx-scrollbar-hover:   rgba(0, 112, 210, 0.35);
+    /* Legacy fonts */
+    --cx-font-ui:           var(--cx-font-sans);
+    --cx-font-accent:       var(--cx-font-display);
 
-    /* ═══ Typography ═════════════════════════════════════════ */
-    --cx-font-ui:           'Inter', system-ui, -apple-system, sans-serif;
-    --cx-font-accent:       'Orbitron', system-ui, sans-serif;
-    --cx-font-mono:         'JetBrains Mono', ui-monospace, monospace;
-
-    /* Type scale */
+    /* Legacy type scale (unchanged) */
     --cx-text-xs:           0.75rem;
     --cx-text-sm:           0.875rem;
     --cx-text-base:         1rem;
@@ -143,27 +431,24 @@
     --cx-text-5xl:          3rem;
     --cx-text-6xl:          3.75rem;
 
-    /* Line heights */
     --cx-leading-none:      1;
     --cx-leading-tight:     1.1;
     --cx-leading-snug:      1.25;
     --cx-leading-normal:    1.5;
     --cx-leading-relaxed:   1.625;
 
-    /* Letter spacing */
     --cx-tracking-tighter:  -0.04em;
     --cx-tracking-tight:    -0.02em;
     --cx-tracking-normal:   0;
     --cx-tracking-wide:     0.05em;
     --cx-tracking-wider:    0.1em;
 
-    /* ═══ Spacing (4px base scale) ═══════════════════════════ */
-    --cx-space-0:           0;
+    /* Legacy spacing (4px-derived numeric scale — kept, do not remap) */
     --cx-space-1:           0.25rem;
     --cx-space-2:           0.5rem;
     --cx-space-3:           0.75rem;
     --cx-space-4:           1rem;
-    --cx-space-5:           1.25rem;
+    --cx-space-5:           1.25rem;   /* 20px — DEPRECATED, not in V4 scale */
     --cx-space-6:           1.5rem;
     --cx-space-8:           2rem;
     --cx-space-10:          2.5rem;
@@ -173,28 +458,7 @@
     --cx-space-24:          6rem;
     --cx-space-32:          8rem;
 
-    /* ═══ Border radius ══════════════════════════════════════ */
-    --cx-radius-sm:         8px;
-    --cx-radius-md:         12px;
-    --cx-radius-lg:         16px;
-    --cx-radius-xl:         24px;
-    --cx-radius-pill:       100px;
-    --cx-radius-full:       50%;
-
-    /* ═══ Z-index layers ═════════════════════════════════════ */
-    --cx-z-base:            1;
-    --cx-z-dropdown:        100;
-    --cx-z-sticky:          200;
-    --cx-z-overlay:         300;
-    --cx-z-modal:           400;
-    --cx-z-toast:           500;
-    --cx-z-whatsapp:        8000;
-    --cx-z-drawer:          8999;
-    --cx-z-backdrop:        8999;
-    --cx-z-navbar:          9000;
-    --cx-z-skip:            99999;
-
-    /* ═══ Layout ═════════════════════════════════════════════ */
+    /* Legacy containers (original widths — kept for old files) */
     --cx-container-sm:      640px;
     --cx-container-md:      768px;
     --cx-container-lg:      1024px;
@@ -202,44 +466,42 @@
     --cx-container-2xl:     1280px;
     --cx-nav-h:             72px;
 
-    /* ═══ Transitions ════════════════════════════════════════ */
-    --cx-ease:              cubic-bezier(0.4, 0, 0.2, 1);
-    --cx-ease-out:          cubic-bezier(0, 0, 0.2, 1);
-    --cx-ease-in:           cubic-bezier(0.4, 0, 1, 1);
-    --cx-ease-bounce:       cubic-bezier(0.34, 1.56, 0.64, 1);
-    --cx-duration-fast:     0.15s;
-    --cx-duration-base:     0.25s;
-    --cx-duration-slow:     0.35s;
-    --cx-duration-slower:   0.5s;
-    --cx-theme-speed:       0.35s;
+    /* Legacy motion */
+    --cx-ease:              var(--cx-ease-standard);
+    --cx-duration-fast:     150ms;
+    --cx-duration-base:     250ms;
+    --cx-duration-slow:     300ms;
+    --cx-duration-slower:   400ms;     /* INTENTIONAL — documented only */
+    --cx-theme-speed:       300ms;
+    --cx-ease-bounce:       cubic-bezier(0.34, 1.56, 0.64, 1); /* DEPRECATED — violates Chapter 2; do not use */
 
-    /* ═══ Legacy aliases (backward compatibility) ════════════ */
-    /* --cx-cyan is the old primary name, aliased to --cx-primary */
+    /* Legacy z-index */
+    --cx-z-overlay:         var(--cx-z-modal);
+    --cx-z-backdrop:        var(--cx-z-drawer);
+
+    /* Legacy primary aliases */
     --cx-cyan:              var(--cx-primary);
-    --cx-cyan-5:            var(--cx-primary-subtle);
-    --cx-cyan-8:            var(--cx-primary-subtle);
-    --cx-cyan-10:           rgba(0, 112, 210, 0.10);
+    --cx-cyan-5:            var(--cx-primary-soft);
+    --cx-cyan-8:            var(--cx-primary-soft);
+    --cx-cyan-10:           rgba(0, 111, 238, 0.10);
     --cx-cyan-15:           var(--cx-primary-border);
     --cx-cyan-20:           var(--cx-primary-20);
     --cx-cyan-25:           var(--cx-primary-25);
     --cx-cyan-30:           var(--cx-primary-30);
     --cx-cyan-35:           var(--cx-primary-35);
-    --cx-cyan-40:           rgba(0, 112, 210, 0.40);
-    --cx-cyan-50:           rgba(0, 112, 210, 0.50);
-
-    /* --cx-blue is the missing token referenced by 75+ files */
+    --cx-cyan-40:           rgba(0, 111, 238, 0.40);
+    --cx-cyan-50:           rgba(0, 111, 238, 0.50);
     --cx-blue:              var(--cx-primary);
-    --cx-blue-8:            var(--cx-primary-subtle);
+    --cx-blue-8:            var(--cx-primary-soft);
     --cx-blue-15:           var(--cx-primary-border);
     --cx-blue-20:           var(--cx-primary-20);
-
     --cx-navy:              var(--cx-primary);
     --cx-navy-2:            var(--cx-primary-hover);
 
-    /* Short aliases used by many component files */
-    --bg:                   var(--cx-surface-page);
+    /* Legacy short aliases */
+    --bg:                   var(--cx-surface-bg);
     --bg2:                  var(--cx-surface-subtle);
-    --cx-bg:                var(--cx-surface-page);
+    --cx-bg:                var(--cx-surface-bg);
     --cx-bg-2:              var(--cx-surface-subtle);
     --glass:                var(--cx-surface-card);
     --surface:              var(--cx-surface);
@@ -253,13 +515,13 @@
     --border:               var(--cx-border);
     --border2:              var(--cx-border-2);
     --cyan:                 var(--cx-primary);
-    --cyan-dim:             var(--cx-primary-subtle);
-    --cyan-glow:            var(--cx-primary-35);
+    --cyan-dim:             var(--cx-primary-soft);
+    --cyan-glow:            var(--cx-primary-35);  /* DEPRECATED — glow banned in V4 */
     --purple:               var(--cx-purple);
     --purple-dim:           var(--cx-purple-10);
     --orange:               var(--cx-orange);
     --success:              var(--cx-success);
-    --warning:              var(--cx-gold);
+    --warning:              var(--cx-warning);
     --danger:               var(--cx-danger);
     --text:                 var(--cx-text);
     --text2:                var(--cx-text-2);
@@ -270,29 +532,104 @@
     --shadow-lg:            var(--cx-shadow-lg);
     --scrollbar-thumb:      var(--cx-scrollbar-thumb);
     --scrollbar-hover:      var(--cx-scrollbar-hover);
-    --font-head:            var(--cx-font-ui);
-    --font-body:            var(--cx-font-ui);
+    --font-head:            var(--cx-font-sans);
+    --font-body:            var(--cx-font-sans);
     --nav-h:                var(--cx-nav-h);
     --radius:               var(--cx-radius-lg);
     --ease:                 var(--cx-ease);
     --theme-speed:          var(--cx-theme-speed);
 }
 
-/* ═══ Dark theme overrides ═══════════════════════════════════ */
+/* ============================================================
+   17 · DARK THEME  — [data-theme="dark"]
+   Same semantic tokens. Only values change. No second language.
+   Approved: bg #0F172A · surface #1E293B · border #334155 ·
+   text #F8FAFC.
+   ============================================================ */
 [data-theme="dark"] {
 
-    /* Brand — lightened for dark bg contrast */
+    /* Brand (lightened for AA contrast on dark bg) */
     --cx-primary:           #3B9AFF;
-    --cx-primary-hover:     #2B8AEE;
+    --cx-primary-hover:     #5DA5FF;
+    --cx-primary-active:    #2E7CE0;
+    --cx-primary-soft:      rgba(59, 154, 255, 0.12);
+    --cx-primary-soft-2:    rgba(59, 154, 255, 0.18);
+    --cx-primary-border:    rgba(59, 154, 255, 0.25);
+
+    /* Surface */
+    --cx-surface-bg:        #0F172A;
+    --cx-surface-card:      #1E293B;
+    --cx-surface-elevated:  #263449;
+    --cx-surface-sidebar:   #1E293B;
+    --cx-surface-input:     #1E293B;
+    --cx-surface-hover:     #263449;
+    --cx-surface-subtle:    #1E293B;
+
+    /* Border */
+    --cx-border:            #334155;
+    --cx-border-strong:     #475569;
+    --cx-border-subtle:     #1E293B;
+
+    /* Text */
+    --cx-text:              #F8FAFC;
+    --cx-text-secondary:    #CBD5E1;
+    --cx-text-muted:        #94A3B8;
+    --cx-text-inverse:      #0F172A;
+
+    /* Semantic */
+    --cx-success:           #34D399;
+    --cx-success-hover:     #4ADE80;
+    --cx-success-active:    #10B981;
+    --cx-success-soft:      rgba(52, 211, 153, 0.12);
+    --cx-success-border:    rgba(52, 211, 153, 0.25);
+
+    --cx-warning:           #FBBF24;
+    --cx-warning-hover:     #FCD34D;
+    --cx-warning-active:    #F59E0B;
+    --cx-warning-soft:      rgba(251, 191, 36, 0.12);
+    --cx-warning-border:    rgba(251, 191, 36, 0.30);
+
+    --cx-danger:            #F87171;
+    --cx-danger-hover:      #FCA5A5;
+    --cx-danger-active:     #EF4444;
+    --cx-danger-soft:       rgba(248, 113, 113, 0.12);
+    --cx-danger-border:     rgba(248, 113, 113, 0.25);
+
+    --cx-info:              #38BDF8;
+    --cx-info-hover:        #7DD3FC;
+    --cx-info-active:       #0EA5E9;
+    --cx-info-soft:         rgba(56, 189, 248, 0.12);
+    --cx-info-border:       rgba(56, 189, 248, 0.25);
+
+    /* Interactive */
+    --cx-link:              var(--cx-primary);
+    --cx-link-hover:        var(--cx-primary-hover);
+    --cx-link-visited:      #CBD5E1;
+    --cx-focus-ring:        #3B9AFF;
+    --cx-focus-ring-subtle: rgba(59, 154, 255, 0.35);
+    --cx-disabled:          #64748B;
+    --cx-disabled-bg:       #1E293B;
+    --cx-disabled-border:   #334155;
+    --cx-selection:         rgba(59, 154, 255, 0.20);
+    --cx-overlay:           rgba(2, 6, 23, 0.65);
+
+    /* Elevation — dark, deeper & softer */
+    --cx-shadow-1:          0 1px 2px rgba(0, 0, 0, 0.30);
+    --cx-shadow-2:          0 2px 4px rgba(0, 0, 0, 0.32), 0 4px 8px rgba(0, 0, 0, 0.24);
+    --cx-shadow-3:          0 8px 16px rgba(0, 0, 0, 0.36), 0 12px 24px rgba(0, 0, 0, 0.28);
+    --cx-shadow-4:          0 16px 32px rgba(0, 0, 0, 0.40), 0 24px 48px rgba(0, 0, 0, 0.32);
+    --cx-shadow-hover:      0 8px 20px rgba(0, 0, 0, 0.40);
+    --cx-shadow-dropdown:   0 8px 24px rgba(0, 0, 0, 0.45);
+    --cx-shadow-modal:      0 24px 48px rgba(0, 0, 0, 0.55);
+
+    /* Legacy dark overrides */
     --cx-primary-light:     rgba(59, 154, 255, 0.12);
-    --cx-primary-subtle:    rgba(59, 154, 255, 0.08);
-    --cx-primary-border:    rgba(59, 154, 255, 0.15);
+    --cx-primary-subtle:    var(--cx-primary-soft);
     --cx-primary-20:        rgba(59, 154, 255, 0.20);
     --cx-primary-25:        rgba(59, 154, 255, 0.25);
     --cx-primary-30:        rgba(59, 154, 255, 0.30);
     --cx-primary-35:        rgba(59, 154, 255, 0.35);
 
-    /* Neutral — dark surfaces */
     --cx-gray-25:           #0B0F1A;
     --cx-gray-50:           #111827;
     --cx-gray-100:          #1F2937;
@@ -305,31 +642,23 @@
     --cx-gray-800:          #F3F4F6;
     --cx-gray-900:          #F9FAFB;
 
-    /* Semantic — lightened */
-    --cx-success:           #34D399;
-    --cx-success-light:     rgba(52, 211, 153, 0.10);
+    --cx-success-light:     var(--cx-success-soft);
     --cx-success-10:        rgba(52, 211, 153, 0.10);
     --cx-success-15:        rgba(52, 211, 153, 0.15);
     --cx-success-20:        rgba(52, 211, 153, 0.20);
     --cx-success-40:        rgba(52, 211, 153, 0.40);
-    --cx-success-border:    rgba(52, 211, 153, 0.15);
 
-    --cx-warning:           #FBBF24;
-    --cx-warning-light:     rgba(251, 191, 36, 0.10);
+    --cx-warning-light:     var(--cx-warning-soft);
     --cx-warning-10:        rgba(251, 191, 36, 0.10);
     --cx-warning-20:        rgba(251, 191, 36, 0.20);
     --cx-warning-40:        rgba(251, 191, 36, 0.40);
-    --cx-warning-border:    rgba(251, 191, 36, 0.15);
 
-    --cx-danger:            #F87171;
-    --cx-danger-light:      rgba(248, 113, 113, 0.10);
-    --cx-danger-8:          rgba(248, 113, 113, 0.08);
+    --cx-danger-light:      var(--cx-danger-soft);
+    --cx-danger-8:          var(--cx-danger-soft);
     --cx-danger-10:         rgba(248, 113, 113, 0.10);
     --cx-danger-20:         rgba(248, 113, 113, 0.20);
     --cx-danger-25:         rgba(248, 113, 113, 0.25);
-    --cx-danger-border:     rgba(248, 113, 113, 0.15);
 
-    /* Category — lightened */
     --cx-purple:            #A78BFA;
     --cx-purple-light:      rgba(167, 139, 250, 0.10);
     --cx-purple-5:          rgba(167, 139, 250, 0.05);
@@ -360,41 +689,6 @@
     --cx-gold-20:           rgba(251, 191, 36, 0.20);
     --cx-gold-40:           rgba(251, 191, 36, 0.40);
 
-    /* Surface — dark */
-    --cx-surface-page:      #0B0F1A;
-    --cx-surface-card:      #111827;
-    --cx-surface-elevated:  #1F2937;
-    --cx-surface-subtle:    #1F2937;
-    --cx-surface-hover:     #1F2937;
-    --cx-surface-input:     #111827;
-    --cx-surface:           rgba(255, 255, 255, 0.04);
-    --cx-surface-2:         rgba(255, 255, 255, 0.08);
-    --cx-nav-bg:            rgba(11, 15, 26, 0.85);
-    --cx-nav-bg-scroll:     rgba(11, 15, 26, 0.95);
-    --cx-drawer-bg:         rgba(11, 15, 26, 0.98);
-    --cx-footer-bg:         transparent;
-
-    /* Text — dark */
-    --cx-text:              #F9FAFB;
-    --cx-text-2:            #D1D5DB;
-    --cx-text-3:            #94A3B8;
-    --cx-text-inverse:      #000000;
-
-    /* Border — dark */
-    --cx-border:            rgba(255, 255, 255, 0.08);
-    --cx-border-2:          rgba(255, 255, 255, 0.15);
-
-    /* Shadow — dark (subtle) */
-    --cx-shadow-sm:         0 2px 8px rgba(0, 0, 0, 0.3);
-    --cx-shadow-md:         0 8px 24px rgba(0, 0, 0, 0.4);
-    --cx-shadow-lg:         0 20px 60px rgba(0, 0, 0, 0.5);
-    --cx-shadow-xl:         0 32px 80px rgba(0, 0, 0, 0.6);
-
-    /* Scrollbar — dark */
-    --cx-scrollbar-thumb:   rgba(59, 154, 255, 0.3);
-    --cx-scrollbar-hover:   rgba(59, 154, 255, 0.5);
-
-    /* WhatsApp — dark (brand colors stay consistent) */
     --cx-whatsapp:          #15803D;
     --cx-whatsapp-bg:       #25D366;
     --cx-whatsapp-bg-5:     rgba(37, 211, 102, 0.05);
@@ -402,10 +696,29 @@
     --cx-whatsapp-bg-40:    rgba(37, 211, 102, 0.40);
     --cx-whatsapp-bg-45:    rgba(37, 211, 102, 0.45);
 
-    /* Dark mode cyan/blue aliases */
+    --cx-surface-page:      var(--cx-surface-bg);
+    --cx-surface:           rgba(255, 255, 255, 0.04);
+    --cx-surface-2:         rgba(255, 255, 255, 0.08);
+    --cx-nav-bg:            rgba(15, 23, 42, 0.85);
+    --cx-nav-bg-scroll:     rgba(15, 23, 42, 0.95);
+    --cx-drawer-bg:         rgba(15, 23, 42, 0.98);
+    --cx-footer-bg:         transparent;
+
+    --cx-text-2:            var(--cx-text-secondary);
+    --cx-text-3:            var(--cx-text-muted);
+    --cx-border-2:          var(--cx-border-strong);
+
+    --cx-shadow-sm:         var(--cx-shadow-1);
+    --cx-shadow-md:         var(--cx-shadow-2);
+    --cx-shadow-lg:         var(--cx-shadow-3);
+    --cx-shadow-xl:         var(--cx-shadow-4);
+
+    --cx-scrollbar-thumb:   rgba(59, 154, 255, 0.30);
+    --cx-scrollbar-hover:   rgba(59, 154, 255, 0.50);
+
     --cx-cyan:              var(--cx-primary);
-    --cx-cyan-5:            var(--cx-primary-subtle);
-    --cx-cyan-8:            var(--cx-primary-subtle);
+    --cx-cyan-5:            var(--cx-primary-soft);
+    --cx-cyan-8:            var(--cx-primary-soft);
     --cx-cyan-10:           rgba(59, 154, 255, 0.10);
     --cx-cyan-15:           var(--cx-primary-border);
     --cx-cyan-20:           var(--cx-primary-20);
@@ -416,7 +729,7 @@
     --cx-cyan-50:           rgba(59, 154, 255, 0.50);
 
     --cx-blue:              var(--cx-primary);
-    --cx-blue-8:            var(--cx-primary-subtle);
+    --cx-blue-8:            var(--cx-primary-soft);
     --cx-blue-15:           var(--cx-primary-border);
     --cx-blue-20:           var(--cx-primary-20);
 

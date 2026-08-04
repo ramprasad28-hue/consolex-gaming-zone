@@ -1,0 +1,64 @@
+{% extends "users/portal_base.html" %}
+
+{% block portal_title %}Notifications{% endblock %}
+
+{% block portal_content %}
+<div class="dx-card">
+  <h2 class="dx-card-title">Notifications</h2>
+  <p class="dx-form-help">
+    {% if unread_notifications_count %}
+      {{ unread_notifications_count }} unread
+    {% else %}
+      You're all caught up
+    {% endif %}
+  </p>
+
+  {% if unread_notifications_count %}
+    <div class="dx-form-actions">
+      <form method="POST" action="{% url 'users:notifications_read_all' %}">
+        {% csrf_token %}
+        <button type="submit" class="cx-btn cx-btn--outline cx-btn--sm">Mark all as read</button>
+      </form>
+    </div>
+  {% endif %}
+
+  {% if page_obj.object_list %}
+    <div class="dx-portal-list">
+      {% for notification in page_obj %}
+        <div class="dx-portal-row {% if not notification.is_read %}is-unread{% endif %}"
+             id="notification-{{ notification.id }}">
+          <div class="dx-portal-row-main">
+            <div class="dx-portal-row-title">
+              {{ notification.message }}
+              {% if not notification.is_read %}<span class="dx-badge-dot" aria-label="Unread"></span>{% endif %}
+            </div>
+            <div class="dx-portal-row-meta">{{ notification.created_at|timesince }} ago</div>
+          </div>
+          {% if not notification.is_read %}
+            <form method="POST" action="{% url 'users:notification_read' notification.id %}">
+              {% csrf_token %}
+              <button type="submit" class="cx-btn cx-btn--ghost cx-btn--sm">Mark read</button>
+            </form>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if page_obj.has_other_pages %}
+      <nav class="dx-pagination" aria-label="Notifications pages">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}" class="dx-page-link" aria-label="Previous page">&lsaquo;</a>
+        {% endif %}
+        <span class="dx-page-current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}" class="dx-page-link" aria-label="Next page">&rsaquo;</a>
+        {% endif %}
+      </nav>
+    {% endif %}
+  {% else %}
+    <div class="dx-empty">
+      <p class="dx-empty-text">No notifications yet.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

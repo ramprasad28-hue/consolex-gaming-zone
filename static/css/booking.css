@@ -12,8 +12,94 @@
 }
 
 .wiz-wrap {
-    max-width: 820px;
+    max-width: 1100px;
     margin: 0 auto;
+}
+
+/* ═══ Two-column wizard with sticky live summary (Ch10) ═══ */
+.wiz-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 2rem;
+    align-items: start;
+}
+
+.wiz-main {
+    min-width: 0;
+}
+
+.wiz-rail {
+    position: sticky;
+    top: calc(var(--cx-nav-h, 72px) + 1.5rem);
+}
+
+.wiz-rail-card {
+    background: var(--cx-surface-card);
+    border: 1px solid var(--cx-border);
+    border-radius: var(--cx-radius-lg);
+    padding: var(--cx-space-5);
+    box-shadow: var(--cx-shadow-sm);
+}
+
+.wiz-rail-title {
+    display: flex;
+    align-items: center;
+    gap: var(--cx-space-2);
+    font-family: var(--cx-font-ui);
+    font-weight: 700;
+    font-size: var(--cx-text-base);
+    color: var(--cx-text);
+    margin-bottom: var(--cx-space-4);
+}
+
+.wiz-rail-title svg {
+    color: var(--cx-primary);
+}
+
+.wiz-rail-rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cx-space-2);
+}
+
+.wiz-rail-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--cx-space-3);
+    font-size: var(--cx-text-sm);
+}
+
+.wiz-rail-row span {
+    color: var(--cx-text-2);
+}
+
+.wiz-rail-row strong {
+    color: var(--cx-text);
+    text-align: right;
+    font-weight: 600;
+}
+
+.wiz-rail-total strong {
+    font-size: var(--cx-text-base);
+    color: var(--cx-primary);
+}
+
+.wiz-rail-note {
+    margin: var(--cx-space-4) 0 0;
+    font-size: var(--cx-text-xs);
+    color: var(--cx-text-3);
+    line-height: var(--cx-leading-relaxed);
+}
+
+@media (max-width: 1000px) {
+    .wiz-grid {
+        grid-template-columns: 1fr;
+        gap: var(--cx-space-5);
+    }
+    .wiz-rail {
+        position: static;
+    }
 }
 
 .wiz-head {
@@ -73,14 +159,14 @@
     background: var(--cx-surface);
     border: 1.5px solid var(--cx-border-2);
     color: var(--cx-text-3);
-    transition: all 0.35s var(--cx-ease);
+    transition: all var(--cx-duration-slow) var(--cx-ease);
 }
 
 .wiz-step-label {
     font-size: 0.72rem;
     color: var(--cx-text-3);
     letter-spacing: 0.03em;
-    transition: color 0.35s var(--cx-ease);
+    transition: color var(--cx-duration-slow) var(--cx-ease);
 }
 
 /* Active step */
@@ -117,7 +203,7 @@
 /* ── Panels ──────────────────────────────────────────────── */
 .wiz-panel {
     display: none;
-    animation: wizFadeIn 0.35s var(--cx-ease);
+    animation: wizFadeIn var(--cx-duration-slow) var(--cx-ease);
 }
 .wiz-panel.wiz-panel-active {
     display: block;

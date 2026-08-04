@@ -1,11 +1,16 @@
 from datetime import date, datetime
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
+from django.contrib import messages
 from django.db.models import Count, Q, Sum
+from django.http import JsonResponse
 from django.utils import timezone
+from django.views.decorators.http import require_POST
 
 from apps.bookings.models import Booking
+from apps.bookings.services import BookingService
+from apps.common.exceptions import ServiceError
 from apps.users.models import User
 from apps.payments.models import Payment
 from apps.memberships.models import (
@@ -16,7 +21,7 @@ from apps.tournaments.models import Tournament
 from apps.notifications.models import Notification
 from apps.cms.models import SiteSettings
 
-from .services import StaffDashboardService
+from .services import StaffDashboardService, serialize_live_sessions
 
 
 def staff_dashboard(request):
@@ -72,6 +77,50 @@ def booking_detail(request, booking_id):
     )
     return render(request, "staff/bookings/detail.html", {
         "booking": booking,
+    })
+
+
+# ── Live sessions (Ch12) ────────────────────────
+@require_POST
+def booking_checkin(request, booking_id):
+    try:
+        booking = BookingService.check_in(booking_id, request.user)
+    except ServiceError as e:
+        messages.error(request, e.message)
+    else:
+        messages.success(
+            request,
+            f"{booking.user.full_display_name} checked in — session is live.",
+        )
+    return redirect("staff:staff_booking_detail", booking_id=booking_id)
+
+
+@require_POST
+def booking_checkout(request, booking_id):
+    try:
+        booking = BookingService.check_out(booking_id, request.user)
+    except ServiceError as e:
+        messages.error(request, e.message)
+    else:
+        messages.success(
+            request,
+            f"Session for {booking.user.full_display_name} completed.",
+        )
+    return redirect("staff:staff_booking_detail", booking_id=booking_id)
+
+
+def live_sessions(request):
+    data = StaffDashboardService.get_dashboard_data()
+    data["site"] = SiteSettings.objects.get_solo()
+    return render(request, "staff/live_sessions.html", data)
+
+
+def live_sessions_data(request):
+    """JSON feed used by the staff console 30s poll."""
+    sessions = Booking.objects.live().select_related("user", "game_console")
+    return JsonResponse({
+        "count": sessions.count(),
+        "sessions": serialize_live_sessions(sessions),
     })
 
 
@@ -284,3 +333,11 @@ def settings_page(request):
     return render(request, "staff/settings/index.html", {
         "site": site,
     })
+
+
+# ── Ch13: Owner executive dashboard (superuser) ──
+def executive_dashboard(request):
+    data = StaffDashboardService.get_executive_data()
+    data["site"] = SiteSettings.objects.get_solo()
+    data["user_role"] = "Owner"
+    return render(request, "staff/executive/dashboard.html", data)

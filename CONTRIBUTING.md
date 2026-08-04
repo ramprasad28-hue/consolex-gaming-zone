@@ -34,10 +34,12 @@ By participating, you agree to maintain a respectful and inclusive environment.
 - Follow existing code style and conventions
 - Use `--cx-*` CSS custom properties for styling
 - No hardcoded colors or inline styles
-- Templates extend `base.html` or `staff/base_staff.html`
+- Templates extend `base.html`, `users/portal_base.html`, or `staff/base_staff.html`
 - All new views should include appropriate tests
 - Keep functions small and focused
 - Use Django's `config()` for environment variables
+- Run `python manage.py makemigrations --check --dry-run` before pushing to catch missing migrations
+- Install dependencies from `requirements/base.txt` (and `requirements/production.txt` for prod-only packages)
 
 ## Project Structure
 
@@ -47,6 +49,7 @@ config/         # Settings and URL configuration
 static/         # CSS, JS, images
 templates/      # Django templates
 media/          # User-uploaded files
+requirements/   # base.txt + production.txt (root requirements.txt is a flattened reference)
 ```
 
 ## Commit Messages

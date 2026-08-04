@@ -13,31 +13,54 @@
   <link rel="stylesheet" href="{% static 'css/testimonials.css' %}">
   <link rel="stylesheet" href="{% static 'css/faq.css' %}">
   <link rel="stylesheet" href="{% static 'css/booking_cta.css' %}">
+  <link rel="stylesheet" href="{% static 'css/membership.css' %}">
+  <link rel="stylesheet" href="{% static 'css/booking_preview.css' %}">
+  <link rel="stylesheet" href="{% static 'css/why_choose_us.css' %}">
   <link rel="stylesheet" href="{% static 'css/social_cta.css' %}">
 {% endblock %}
 
 {% block content %}
 
+  <!-- 1 ─ Hero -->
   {% include "components/hero.html" %}
 
+  <!-- 2 ─ Stats -->
   {% include "components/stats.html" %}
 
+  <!-- 3 ─ Features -->
   {% include "components/features.html" %}
 
+  <!-- 4 ─ Games -->
   {% include "components/games.html" %}
 
+  <!-- 5 ─ Gallery -->
   {% include "components/gallery.html" %}
 
+  <!-- 6 ─ Pricing (hourly) -->
   {% include "components/pricing.html" %}
 
+  <!-- 7 ─ Tournaments -->
   {% include "components/tournament.html" %}
 
+  <!-- 8 ─ Testimonials -->
   {% include "components/testimonials.html" %}
 
+  <!-- 9 ─ FAQ -->
   {% include "components/faq.html" %}
 
+  <!-- 10 ─ Booking CTA -->
   {% include "components/booking_cta.html" %}
 
+  <!-- 11 ─ Membership preview -->
+  {% include "components/membership.html" %}
+
+  <!-- 12 ─ How it works -->
+  {% include "components/booking_preview.html" %}
+
+  <!-- 13 ─ Why choose us -->
+  {% include "components/why_choose_us.html" %}
+
+  <!-- 14 ─ Social CTA -->
   {% include "components/social_cta.html" %}
 
 {% endblock %}
@@ -68,6 +91,23 @@
               el.classList.add('is-visible');
           });
       }, 3000);
+
+      var revealEls = document.querySelectorAll('[data-reveal]');
+      if (prefersReducedMotion) {
+          revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+      } else if (revealEls.length && 'IntersectionObserver' in window) {
+          var revealObs = new IntersectionObserver(function (entries) {
+              entries.forEach(function (entry) {
+                  if (entry.isIntersecting) {
+                      entry.target.classList.add('is-visible');
+                      revealObs.unobserve(entry.target);
+                  }
+              });
+          }, { threshold: 0.1 });
+          revealEls.forEach(function (el) { revealObs.observe(el); });
+      } else {
+          revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+      }
 
       var counters = document.querySelectorAll('.stat-counter[data-count-to]');
       if (counters.length && 'IntersectionObserver' in window) {

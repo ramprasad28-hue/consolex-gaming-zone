@@ -80,11 +80,18 @@ class BookingConflictTests(TestCase):
 
 class BookingServiceTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(email="svc@b.com", password="x")
+        self.user = User.objects.create_user(email="b@test.com", password="x")
         self.console = GameConsole.objects.create(
             name="PS5", console_type="PS5",
             hourly_rate_weekday=300, hourly_rate_weekend=300,
         )
+
+    @staticmethod
+    def _next_weekday(target):
+        days_ahead = target - date.today().weekday()
+        if days_ahead <= 0:
+            days_ahead += 7
+        return date.today() + timedelta(days=days_ahead)
 
     def test_list_for_user(self):
         Booking.objects.create(
@@ -183,7 +190,7 @@ class BookingServiceTests(TestCase):
             )
 
     def test_slot_outside_operating_hours_weekday(self):
-        future_date = date(2026, 8, 3)  # Monday
+        future_date = self._next_weekday(0)  # next Monday
         with self.assertRaises(SlotOutsideOperatingHoursError):
             BookingService.create_booking(
                 self.user, self.console.id, future_date,
@@ -191,7 +198,7 @@ class BookingServiceTests(TestCase):
             )
 
     def test_slot_conflict_detection(self):
-        future_date = date(2026, 8, 3)  # Monday
+        future_date = self._next_weekday(0)  # next Monday
         Booking.objects.create(
             user=self.user, game_console=self.console,
             booking_date=future_date, start_time=time(10, 0),

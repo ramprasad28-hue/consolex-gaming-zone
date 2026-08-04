@@ -2,12 +2,20 @@ from django.urls import path
 from django.contrib.auth.decorators import user_passes_test
 from . import views
 
+app_name = "staff"
+
 staff_required = user_passes_test(lambda u: u.is_staff or u.is_superuser, login_url="users:login")
+owner_required = user_passes_test(lambda u: u.is_superuser, login_url="users:login")
 
 urlpatterns = [
     path("", staff_required(views.staff_dashboard), name="staff_dashboard"),
+    path("executive/", staff_required(owner_required(views.executive_dashboard)), name="staff_executive"),
     path("bookings/", staff_required(views.booking_list), name="staff_booking_list"),
     path("bookings/<int:booking_id>/", staff_required(views.booking_detail), name="staff_booking_detail"),
+    path("bookings/<int:booking_id>/checkin/", staff_required(views.booking_checkin), name="staff_booking_checkin"),
+    path("bookings/<int:booking_id>/checkout/", staff_required(views.booking_checkout), name="staff_booking_checkout"),
+    path("live-sessions/", staff_required(views.live_sessions), name="staff_live_sessions"),
+    path("live-sessions/data/", staff_required(views.live_sessions_data), name="staff_live_sessions_data"),
     path("customers/", staff_required(views.customer_list), name="staff_customer_list"),
     path("customers/<int:user_id>/", staff_required(views.customer_detail), name="staff_customer_detail"),
     path("games/", staff_required(views.game_list), name="staff_game_list"),

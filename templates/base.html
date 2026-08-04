@@ -12,7 +12,7 @@
     <meta property="og:site_name" content="{{ site.brand_name }}">
     <meta property="og:title" content="{% block og_title %}{{ site.og_title }}{% endblock %}">
     <meta property="og:description" content="{% block og_description %}{{ site.og_description }}{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}/media/logo/favicon.png{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}/media/cxdesign/first.jpeg{% endblock %}">
     <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{% block tw_title %}{{ site.og_title }}{% endblock %}">
@@ -38,16 +38,22 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/tokens.css' %}" media="all">
+    <link rel="stylesheet" href="{% static 'css/motion.css' %}" media="all">
     <link rel="stylesheet" href="{% static 'css/reset.css' %}" media="all">
     <link rel="stylesheet" href="{% static 'css/typography.css' %}" media="all">
     <link rel="stylesheet" href="{% static 'css/utilities.css' %}" media="all">
     <link rel="stylesheet" href="{% static 'css/components.css' %}" media="all">
+    <link rel="stylesheet" href="{% static 'css/layouts.css' %}" media="all">
     <link rel="stylesheet" href="{% static 'css/navbar_footer.css' %}" media="all">
     <link rel="stylesheet" href="{% static 'css/announcement.css' %}" media="all">
     <link rel="stylesheet" href="{% static 'css/style.css' %}" media="all">
-    <link rel="stylesheet" href="{% static 'css/games.css' %}" media="all">
-    <link rel="stylesheet" href="{% static 'css/error_pages.css' %}" media="all">
+    <link rel="stylesheet" href="{% static 'css/games.css' %}" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="{% static 'css/error_pages.css' %}" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="{% static 'css/mobile.css' %}" media="all">
+    <noscript>
+      <link rel="stylesheet" href="{% static 'css/games.css' %}">
+      <link rel="stylesheet" href="{% static 'css/error_pages.css' %}">
+    </noscript>
     {% block extra_css %}{% endblock %}
     <script>
     (function () {
@@ -59,17 +65,17 @@
     </script>
     {% block extra_head %}{% endblock %}
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
     <a href="#main-content" class="skip-link">Skip to main content</a>
     {% block announcement %}{% include 'components/announcement.html' %}{% endblock %}
-    {% include 'components/navbar.html' %}
+    {% block navbar %}{% include 'components/navbar.html' %}{% endblock %}
 
     <main id="main-content">
         {% block content %}{% endblock %}
     </main>
 
-    {% include 'components/footer.html' %}
-    {% include 'components/whatsapp_btn.html' %}
+    {% block footer %}{% include 'components/footer.html' %}{% endblock %}
+    {% block whatsapp %}{% include 'components/whatsapp_btn.html' %}{% endblock %}
     <script src="{% static 'js/theme.js' %}" defer></script>
     <script src="{% static 'js/components.js' %}" defer></script>
     <script src="{% static 'js/search.js' %}" defer></script>

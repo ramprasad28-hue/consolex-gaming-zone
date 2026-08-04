@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{% block auth_title %}{{ site.brand_name }}{% endblock %}{% endblock %}
+{% block body_class %}layout-auth{% endblock %}
+{% block announcement %}{% endblock %}
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block whatsapp %}{% endblock %}
+
+{% block content %}
+<div class="auth-split">
+    <!-- Brand panel (60%) -->
+    <aside class="auth-brand" aria-hidden="true">
+        <div class="auth-brand-inner">
+            <div class="auth-brand-mark">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
+            </div>
+            <h2 class="t-display-md auth-brand-title">{% block auth_brand_title %}{{ site.brand_name }}{% endblock %}</h2>
+            <p class="auth-brand-sub">{% block auth_brand_sub %}{{ site.tagline }}{% endblock %}</p>
+            <div class="auth-brand-meta">{% block auth_brand_meta %}{{ site.address }}{% endblock %}</div>
+        </div>
+    </aside>
+
+    <!-- Form panel (40%) -->
+    <section class="auth-panel" aria-label="Authentication">
+        <div class="auth-card">
+            <div class="auth-card-head">
+                <a class="auth-logo" href="/" aria-label="{{ site.brand_name }} home">
+                    <img src="/media/logo/favicon.png" alt="{{ site.brand_name }}" width="34" height="34">
+                </a>
+                {% block auth_head %}{% endblock %}
+            </div>
+            {% block auth_card %}{% endblock %}
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -174,7 +174,7 @@
 }
 
 .auth-footer a:hover {
-    color: var(--cx-purple);
+    color: var(--cx-primary-hover);
 }
 
 /* Primary button (auth-specific) */
@@ -228,7 +228,7 @@
 .dashboard-section { min-height: 100vh; }
 
 /* ── Status Badges ──────────────────────────────────────── */
-.badge-pending   { background: var(--cx-gold-10); color: var(--cx-gold); padding: 3px 10px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; }
+.badge-pending   { background: var(--cx-warning-10); color: var(--cx-warning); padding: 3px 10px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; }
 .badge-confirmed { background: var(--cx-success-10); color: var(--cx-success); padding: 3px 10px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; }
 .badge-completed { background: var(--cx-surface); color: var(--cx-text-2); padding: 3px 10px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; }
 .badge-cancelled { background: var(--cx-danger-10); color: var(--cx-danger); padding: 3px 10px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; }

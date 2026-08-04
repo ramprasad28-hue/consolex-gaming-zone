@@ -52,10 +52,16 @@
 
         <div class="games-cta stagger-child">
             <p class="games-cta-text">{{ cb.games_cta_text }}</p>
-            <a href="{% url 'bookings:booking_form' %}" class="cx-btn cx-btn--primary">
-                {{ cb.games_cta_btn }}
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
+            <div class="games-cta-actions">
+                <a href="{% url 'games:game_list' %}" class="cx-btn cx-btn--outline">
+                    View All Games
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <a href="{% url 'bookings:booking_form' %}" class="cx-btn cx-btn--primary">
+                    {{ cb.games_cta_btn }}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+            </div>
         </div>
     </div>
 </section>

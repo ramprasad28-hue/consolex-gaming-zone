@@ -161,9 +161,9 @@
 .t-text-success { color: var(--cx-success); }
 .t-text-danger  { color: var(--cx-danger); }
 
-/* ── Gradient text ──────────────────────────────────────── */
+/* ── Gradient text (V4: primary→info, purple removed) ───── */
 .t-gradient-cyan {
-    background: linear-gradient(135deg, var(--cx-cyan) 0%, var(--cx-purple) 100%);
+    background: linear-gradient(135deg, var(--cx-primary) 0%, var(--cx-info) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -221,4 +221,54 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+/* ═══ V4 semantic type slots (Chapter 6 tokens) ═══════════ */
+
+.t-display-xl {
+    font-family: var(--cx-type-display-xl-family);
+    font-size: clamp(var(--cx-type-display-lg-size), 8vw, var(--cx-type-display-xl-size));
+    line-height: var(--cx-type-display-xl-line);
+    font-weight: var(--cx-type-display-xl-weight);
+    letter-spacing: var(--cx-type-display-xl-tracking);
+}
+
+.t-display-lg {
+    font-family: var(--cx-type-display-lg-family);
+    font-size: clamp(var(--cx-type-display-md-size), 6vw, var(--cx-type-display-lg-size));
+    line-height: var(--cx-type-display-lg-line);
+    font-weight: var(--cx-type-display-lg-weight);
+    letter-spacing: var(--cx-type-display-lg-tracking);
+}
+
+.t-display-md {
+    font-family: var(--cx-type-display-md-family);
+    font-size: clamp(var(--cx-type-heading-lg-size), 5vw, var(--cx-type-display-md-size));
+    line-height: var(--cx-type-display-md-line);
+    font-weight: var(--cx-type-display-md-weight);
+    letter-spacing: var(--cx-type-display-md-tracking);
+}
+
+.t-hero {
+    font-family: var(--cx-type-display-md-family);
+    font-size: clamp(var(--cx-type-heading-xl-size), 6vw, var(--cx-type-display-lg-size));
+    line-height: var(--cx-type-display-lg-line);
+    font-weight: var(--cx-type-display-lg-weight);
+    letter-spacing: var(--cx-type-display-lg-tracking);
+}
+
+.t-h1x {
+    font-family: var(--cx-type-heading-xl-family);
+    font-size: clamp(var(--cx-type-heading-lg-size), 4vw, var(--cx-type-heading-xl-size));
+    line-height: var(--cx-type-heading-xl-line);
+    font-weight: var(--cx-type-heading-xl-weight);
+    letter-spacing: var(--cx-type-heading-xl-tracking);
+}
+
+.t-label {
+    font-family: var(--cx-type-label-family);
+    font-size: var(--cx-type-label-size);
+    line-height: var(--cx-type-label-line);
+    font-weight: var(--cx-type-label-weight);
+    letter-spacing: var(--cx-type-label-tracking);
 }

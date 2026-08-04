@@ -151,6 +151,7 @@
                 if (hf) hf.value = state.consoleId;
 
                 hideError('err-console');
+                updateLiveRail();
             });
 
             /* Keyboard: Enter/Space to select */
@@ -261,6 +262,7 @@
                 if (display) display.textContent = formatDateDisplay(ds);
 
                 hideError('err-date');
+                updateLiveRail();
             });
 
             grid.appendChild(cell);
@@ -362,6 +364,7 @@
                 if (display) display.textContent = formatTimeDisplay(t);
 
                 hideError('err-time');
+                updateLiveRail();
             });
 
             grid.appendChild(slot);
@@ -451,6 +454,8 @@
         state.totalCost = total;
         state.advanceCost = advance;
         state.balanceCost = balance;
+
+        updateLiveRail();
     }
 
     /* ==========================================================
@@ -467,6 +472,22 @@
         setText('sumSubtotal', '₹' + (state.totalCost || 0));
         setText('sumAdvance', '₹' + (state.advanceCost || 0));
         setText('sumBalance', '₹' + (state.balanceCost || 0));
+
+        updateLiveRail();
+    }
+
+    /* ==========================================================
+       LIVE RAIL — sticky booking summary (Ch10)
+       ========================================================== */
+    function updateLiveRail() {
+        setText('railConsole', state.consoleName || '—');
+        setText('railDate', state.date ? formatDateDisplay(state.date) : '—');
+        setText('railTime', state.time ? formatTimeDisplay(state.time) : '—');
+        setText('railPlayers', state.players + (state.players === 1 ? ' Player' : ' Players'));
+        setText('railDuration', state.duration + (state.duration === 1 ? ' Hour' : ' Hours'));
+        setText('railSubtotal', '₹' + (state.totalCost || 0));
+        setText('railAdvance', '₹' + (state.advanceCost || 0));
+        setText('railBalance', '₹' + (state.balanceCost || 0));
     }
 
     /* ==========================================================

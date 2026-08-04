@@ -1,10 +1,13 @@
-# CONSOLEX V3
+# CONSOLEX V4
 
 A premium gaming lounge management system built with Django. Manage bookings, memberships, tournaments, and staff operations — all from a single platform.
 
 ## Features
 
 - **Booking System** — Book gaming consoles (PS5, Xbox) by the hour with real-time slot availability
+- **Customer Portal** — Profile, settings, notifications, and booking history for logged-in users
+- **Staff Live Sessions** — Real-time check-in/check-out with a live "sessions in progress" board (30s polling)
+- **Owner Executive Dashboard** — Revenue, MRR, ARPU, retention, utilization, and trend KPIs (superuser only)
 - **Membership Plans** — Tiered subscriptions (Basic, Standard, Pro) with hourly discounts
 - **Games Library** — Browse and filter games by category, rating, and popularity
 - **Tournaments** — Create, register, and manage competitive gaming events
@@ -16,6 +19,7 @@ A premium gaming lounge management system built with Django. Manage bookings, me
 - **WhatsApp Integration** — Booking confirmations and customer support via Twilio
 - **Razorpay Payments** — Secure online payments with demo mode for testing
 - **Dark/Light Theme** — System-aware theme toggle with persistent preference
+- **CMS with Caching** — Admin-editable site content served through a short-TTL cache with signal-based invalidation
 
 ## Tech Stack
 
@@ -91,12 +95,13 @@ consolex/
 │   ├── payments/       # Razorpay integration
 │   ├── staff/          # Staff/admin portal
 │   ├── tournaments/    # Tournament management
-│   └── users/          # Authentication and dashboard
+│   └── users/          # Authentication, dashboard, and customer portal
 ├── config/
 │   ├── settings/       # Django settings (base, dev, production)
 │   ├── urls.py         # Root URL configuration
 │   └── wsgi.py         # WSGI entry point
 ├── media/              # User-uploaded media
+├── requirements/       # base.txt + production.txt (root requirements.txt is a flattened reference)
 ├── static/             # Static assets (CSS, JS, images)
 │   ├── css/            # Design system and page styles
 │   └── js/             # Client-side scripts
@@ -146,7 +151,7 @@ Production settings include:
 python manage.py test
 ```
 
-220+ tests covering API endpoints, services, models, and views.
+253 tests covering API endpoints, services, models, and views. Run `python manage.py makemigrations --check --dry-run` to catch missing migrations.
 
 ## License
 

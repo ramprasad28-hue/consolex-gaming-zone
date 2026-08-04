@@ -81,7 +81,7 @@
                     </div>
                     {% if plan.weekend_hours %}
                     <span class="mc-hours-plus">+</span>
-                    <div class="mc-hours-pill mc-hours-pill-purple">
+                    <div class="mc-hours-pill mc-hours-pill-info">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/>
                             <line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
@@ -112,10 +112,10 @@
                     <li class="mc-perk"><span class="mc-check mc-check-cyan"></span>{{ plan.included_hours }} gaming hours</li>
                     {% endif %}
                     {% if plan.weekend_hours %}
-                    <li class="mc-perk"><span class="mc-check mc-check-purple"></span>{{ plan.weekend_hours }} bonus weekend hours</li>
+                    <li class="mc-perk"><span class="mc-check mc-check-info"></span>{{ plan.weekend_hours }} bonus weekend hours</li>
                     {% endif %}
                     {% if plan.bonus_hours %}
-                    <li class="mc-perk"><span class="mc-check mc-check-orange"></span>{{ plan.bonus_hours }} bonus hours (total {{ plan.included_hours|add:plan.weekend_hours|add:plan.bonus_hours }})</li>
+                    <li class="mc-perk"><span class="mc-check mc-check-success"></span>{{ plan.bonus_hours }} bonus hours (total {{ plan.included_hours|add:plan.weekend_hours|add:plan.bonus_hours }})</li>
                     {% endif %}
                     <li class="mc-perk"><span class="mc-check mc-check-cyan"></span>Valid for {{ plan.duration_days }} days</li>
                     {% if plan.priority_booking %}

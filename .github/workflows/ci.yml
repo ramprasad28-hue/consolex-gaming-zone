@@ -26,8 +26,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r apps/requirements/base.txt
-          pip install -r apps/requirements/production.txt
+          pip install -r requirements/base.txt
+          pip install -r requirements/production.txt
           pip install razorpay twilio
 
       - name: Django system check

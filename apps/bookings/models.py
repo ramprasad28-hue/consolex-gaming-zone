@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.db import models
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
 
 
 class BookingQuerySet(models.QuerySet):
@@ -26,12 +27,20 @@ class BookingQuerySet(models.QuerySet):
             status__in=["pending", "confirmed"]
         ).order_by("booking_date", "start_time")
 
+    def live(self):
+        """Bookings currently checked in (live sessions in progress)."""
+        return self.filter(
+            checked_in_at__isnull=False,
+            status__in=["confirmed", "checked_in"],
+        )
+
 
 class Booking(models.Model):
 
     STATUS_CHOICES = [
         ("pending", "Pending"),
         ("confirmed", "Confirmed"),
+        ("checked_in", "Checked In"),
         ("cancelled", "Cancelled"),
         ("completed", "Completed"),
     ]
@@ -60,6 +69,7 @@ class Booking(models.Model):
         choices=STATUS_CHOICES,
         default="pending",
     )
+    checked_in_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -113,3 +123,22 @@ class Booking(models.Model):
             hasattr(self, "payment")
             and self.payment.status == "captured"
         )
+
+    @property
+    def is_checked_in(self):
+        return self.checked_in_at is not None
+
+    @property
+    def session_remaining_minutes(self):
+        """Minutes left in the session window (0 if ended)."""
+        if not self.is_checked_in:
+            return 0
+        from datetime import datetime, date as date_type, timedelta
+        base = date_type.today()
+        start = datetime.combine(base, self.start_time)
+        end = datetime.combine(base, self.end_time)
+        if end <= start:
+            end += timedelta(days=1)
+        now_dt = datetime.combine(base, timezone.now().time())
+        remaining = (end - now_dt).total_seconds() / 60
+        return max(0, round(remaining))

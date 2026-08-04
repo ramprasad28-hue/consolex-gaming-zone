@@ -81,7 +81,7 @@
 }
 .pricing-per { font-size: var(--cx-text-sm); color: var(--cx-text-3); }
 .pricing-card-note {
-    font-size: var(--cx-text-xs); color: var(--cx-orange); font-weight: 600; min-height: 16px;
+    font-size: var(--cx-text-xs); color: var(--cx-warning); font-weight: 600; min-height: 16px;
 }
 .pricing-footnote {
     text-align: center; font-size: var(--cx-text-sm); color: var(--cx-text-3); margin-top: var(--cx-space-4);
@@ -109,7 +109,7 @@
     position: relative;
 }
 .membership-card:hover { transform: translateY(-2px); }
-.membership-card-featured { border-color: var(--cx-purple-40); }
+.membership-card-featured { border-color: var(--cx-primary); }
 
 .mc-badge {
     position: absolute; top: -12px; left: 50%; transform: translateX(-50%);

@@ -1,14 +1,11 @@
-{% extends "base.html" %}
+{% extends "layouts/layout_dashboard.html" %}
 {% load static %}
 
-{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
 {% block title %}My Dashboard — {{ site.brand_name }}{% endblock %}
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 {% endblock %}
-
-{% block announcement %}{% endblock %}
 
 {% block content %}
 <section class="dashboard-section" aria-label="User Dashboard">
@@ -63,16 +60,13 @@
           </div>
         </div>
 
-        <!-- Settings (placeholder) -->
-        <button type="button"
-                class="dx-icon-btn"
-                aria-label="Account settings (coming soon)"
-                data-stub-action="Account settings are coming soon.">
+        <!-- Settings -->
+        <a href="{% url 'users:settings' %}" class="dx-icon-btn" aria-label="Account settings">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="3"/>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.36.4.66.75.85.24.13.5.19.76.19H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
           </svg>
-        </button>
+        </a>
 
         <form method="POST" action="{% url 'users:logout' %}" aria-label="Logout">
           {% csrf_token %}
@@ -81,6 +75,11 @@
       </div>
     </div>
 
+    <!-- ── PORTAL GRID (left rail + content) ── -->
+    <div class="dx-portal">
+      {% include "users/portal_nav.html" with variant="desktop" %}
+
+      <div>
     <!-- ── HERO CARD ── -->
     <div class="dx-hero dx-animate dx-d1">
       <div class="dx-hero-content">
@@ -214,14 +213,13 @@
         </div>
         <div class="dx-qa-label">Support</div>
       </a>
-      <button type="button" class="dx-qa-card dx-animate dx-d5"
-              onclick="document.getElementById('dxNotifBell').click();"
+      <a href="{% url 'users:notifications' %}" class="dx-qa-card dx-animate dx-d5"
               aria-label="View notifications">
         <div class="dx-qa-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         </div>
         <div class="dx-qa-label">Notifications</div>
-      </button>
+      </a>
     </nav>
 
     <!-- ── MAIN GRID ── -->
@@ -369,11 +367,10 @@
             <div class="dx-profile-row" role="listitem"><span>Joined</span><span>{{ request.user.created_at|date:"d M Y" }}</span></div>
           </div>
 
-          <button type="button" class="cx-btn cx-btn--outline cx-btn--md"
-                  style="width:100%;justify-content:center;"
-                  data-stub-action="Profile editing is coming soon.">
+          <a href="{% url 'users:profile' %}" class="cx-btn cx-btn--outline cx-btn--md"
+                  style="width:100%;justify-content:center;">
             Edit Profile
-          </button>
+          </a>
         </div>
 
         <!-- Membership card -->
@@ -430,21 +427,21 @@
           </div>
 
           <div class="dx-leaderboard" role="list" aria-label="Leaderboard">
-            <div class="dx-lb-row is-top" role="listitem">
-              <span class="dx-lb-rank">1</span>
-              <span class="dx-lb-name">{{ user_display }}</span>
-              <span class="dx-lb-score">{{ total_bookings }} sessions</span>
-            </div>
-            <div class="dx-lb-row" role="listitem">
-              <span class="dx-lb-rank">2</span>
-              <span class="dx-lb-name">ProGamer_X</span>
-              <span class="dx-lb-score">12 sessions</span>
-            </div>
-            <div class="dx-lb-row" role="listitem">
-              <span class="dx-lb-rank">3</span>
-              <span class="dx-lb-name">PixelWarrior</span>
-              <span class="dx-lb-score">9 sessions</span>
-            </div>
+            {% if leaderboard %}
+              {% for entry in leaderboard %}
+                <div class="dx-lb-row {% if entry.user_id == request.user.id %}is-top{% endif %}" role="listitem">
+                  <span class="dx-lb-rank">{{ forloop.counter }}</span>
+                  <span class="dx-lb-name">{{ entry.full_display_name }}</span>
+                  <span class="dx-lb-score">{{ entry.booking_count }} sessions</span>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="dx-lb-row is-top" role="listitem">
+                <span class="dx-lb-rank">1</span>
+                <span class="dx-lb-name">{{ user_display }}</span>
+                <span class="dx-lb-score">{{ total_bookings }} sessions</span>
+              </div>
+            {% endif %}
           </div>
 
           <p style="font-size:var(--cx-text-xs);color:var(--cx-text-3);margin:var(--cx-space-2) 0 0;">
@@ -529,6 +526,11 @@
 
       </div>
     </div>
+
+      </div>
+    </div>
+
+    {% include "users/portal_nav.html" with variant="mobile" %}
 
     {% endwith %}
     {% endwith %}

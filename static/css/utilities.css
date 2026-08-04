@@ -23,39 +23,14 @@
     transform: translateY(-2px);
 }
 
-/* ── Neon border (light: subtle blue border) ────────────── */
+/* ── Neon border (banned in V4 — removed) ────────────────── */
 .neon-border {
     border: 1px solid var(--cx-cyan-25);
 }
-.neon-border-purple {
-    border: 1px solid var(--cx-purple-25);
-}
+.neon-border-purple { display: none; }
 
 /* ── Buttons ────────────────────────────────────────────── */
-.btn-neon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: var(--cx-cyan);
-    color: var(--text-inverse);
-    font-weight: 700;
-    font-family: var(--cx-font-ui);
-    padding: 14px 32px;
-    border-radius: var(--cx-radius-md);
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s var(--cx-ease);
-    letter-spacing: var(--cx-tracking-wide);
-    font-size: 14px;
-    text-decoration: none;
-    position: relative;
-    overflow: hidden;
-}
-.btn-neon:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px var(--cx-cyan-25);
-}
+.btn-neon { display: none; }
 
 .btn-ghost {
     display: inline-flex;
@@ -81,43 +56,18 @@
     transform: translateY(-2px);
 }
 
-.btn-purple {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: var(--cx-purple);
-    color: var(--cx-text-inverse);
-    font-weight: 700;
-    font-family: var(--cx-font-ui);
-    padding: 14px 32px;
-    border-radius: var(--cx-radius-md);
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s var(--cx-ease);
-    letter-spacing: var(--cx-tracking-wide);
-    font-size: 14px;
-    text-decoration: none;
-}
-.btn-purple:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px var(--cx-purple-25);
-}
+.btn-purple { display: none; }
+.btn-purple:hover { display: none; }
 
 /* ── Gradient text ──────────────────────────────────────── */
 .text-gradient-cyan {
-    background: linear-gradient(135deg, var(--cx-cyan) 0%, var(--cx-purple) 100%);
+    background: linear-gradient(135deg, var(--cx-cyan) 0%, var(--cx-info) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
-.text-gradient-orange {
-    background: linear-gradient(135deg, var(--cx-orange) 0%, var(--cx-gold) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
+.text-gradient-orange { display: none; }
 
 /* ── Pills ──────────────────────────────────────────────── */
 .neon-pill {
@@ -132,29 +82,9 @@
     font-family: var(--cx-font-ui);
 }
 
-.neon-pill-purple {
-    background: var(--cx-purple-10);
-    border: 1px solid var(--cx-purple-25);
-    color: var(--cx-purple);
-    padding: 6px 16px;
-    border-radius: var(--cx-radius-pill);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: var(--cx-tracking-wider);
-    font-family: var(--cx-font-ui);
-}
+.neon-pill-purple { display: none; }
 
-.neon-pill-orange {
-    background: var(--cx-orange-10);
-    border: 1px solid var(--cx-orange-25);
-    color: var(--cx-orange);
-    padding: 6px 16px;
-    border-radius: var(--cx-radius-pill);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: var(--cx-tracking-wider);
-    font-family: var(--cx-font-ui);
-}
+.neon-pill-orange { display: none; }
 
 /* ── Badges ─────────────────────────────────────────────── */
 .badge {
@@ -175,9 +105,9 @@
 }
 
 .badge-warning {
-    background: var(--cx-gold-8);
-    color: var(--cx-gold);
-    border: 1px solid var(--cx-gold-40);
+    background: var(--cx-warning-10);
+    color: var(--cx-warning);
+    border: 1px solid var(--cx-warning-20);
 }
 
 .badge-danger {
@@ -202,7 +132,7 @@
 .reveal-up-init {
     opacity: 0;
     transform: translateY(40px);
-    transition: opacity 0.7s var(--cx-ease), transform 0.7s var(--cx-ease);
+    transition: opacity var(--cx-duration-base) var(--cx-ease), transform var(--cx-duration-base) var(--cx-ease);
 }
 .reveal-up-init.is-visible {
     opacity: 1;
@@ -212,40 +142,15 @@
 .stagger-child {
     opacity: 0;
     transform: translateY(30px);
-    transition: opacity 0.6s var(--cx-ease), transform 0.6s var(--cx-ease);
+    transition: opacity var(--cx-duration-base) var(--cx-ease), transform var(--cx-duration-base) var(--cx-ease);
 }
 .stagger-child.is-visible {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* ── Float animations ───────────────────────────────────── */
-.float-anim {
-    animation: float 6s ease-in-out infinite;
-}
-.float-anim-slow {
-    animation: float 9s ease-in-out infinite;
-}
-.float-anim-reverse {
-    animation: floatReverse 7s ease-in-out infinite;
-}
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
-}
-@keyframes floatReverse {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(15px); }
-}
-
-/* ── Pulse ──────────────────────────────────────────────── */
-.pulse-neon {
-    animation: pulseLight 3s ease-in-out infinite;
-}
-@keyframes pulseLight {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-}
+/* ── Float / pulse-neon (banned in V4 — no float / neon pulse) ── */
+.float-anim, .float-anim-slow, .float-anim-reverse, .pulse-neon { animation: none; }
 
 @keyframes pulse {
     0%, 100% { opacity: 1; }
@@ -288,7 +193,7 @@
 /* ── Membership highlight ───────────────────────────────── */
 .membership-popular {
     background: var(--cx-card-bg);
-    border: 2px solid var(--cx-purple);
+    border: 2px solid var(--cx-primary);
     position: relative;
     transform: scale(1.03);
     box-shadow: var(--cx-shadow-lg);
@@ -296,12 +201,12 @@
 
 .membership-best {
     background: var(--cx-card-bg);
-    border: 2px solid var(--cx-orange);
+    border: 2px solid var(--cx-info);
     box-shadow: var(--cx-shadow-lg);
 }
 
 /* ── Star filled ────────────────────────────────────────── */
-.star-filled { color: var(--cx-gold); }
+.star-filled { color: var(--cx-warning); }
 
 /* ── Game card hover ────────────────────────────────────── */
 .game-card-hover {
@@ -353,7 +258,7 @@
     background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(255,255,255,0.3) 0%, transparent 60%);
     opacity: 0;
     transform: scale(0);
-    transition: opacity 0.4s, transform 0.5s;
+    transition: opacity var(--cx-duration-base) var(--cx-ease), transform var(--cx-duration-base) var(--cx-ease);
     pointer-events: none;
 }
 .btn-ripple:active::after {

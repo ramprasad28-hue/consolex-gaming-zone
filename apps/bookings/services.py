@@ -133,6 +133,65 @@ class BookingService:
         logger.info("Booking #%s cancelled by %s", booking.id, user.email)
         return booking
 
+    # ── Check-in / check-out (staff) ──────────────────────
+
+    @staticmethod
+    def get(booking_id):
+        """Fetch a booking by id with related objects for staff operations."""
+        try:
+            return Booking.objects.select_related("user", "game_console", "payment").get(
+                pk=booking_id
+            )
+        except Booking.DoesNotExist:
+            raise BookingNotFoundError(f"Booking #{booking_id} not found.")
+
+    @staticmethod
+    def check_in(booking_id, staff):
+        """
+        Mark a confirmed booking as checked in (session started).
+
+        Raises BookingValidationError if the booking can't be checked in.
+        """
+        booking = BookingService.get(booking_id)
+
+        if booking.checked_in_at is not None:
+            raise BookingValidationError("This booking is already checked in.")
+
+        if booking.status != "confirmed":
+            raise BookingValidationError(
+                "Only confirmed bookings can be checked in."
+            )
+
+        booking.checked_in_at = timezone.now()
+        booking.status = "checked_in"
+        booking.save(update_fields=["checked_in_at", "status", "updated_at"])
+
+        logger.info(
+            "Booking #%s checked in by %s at %s",
+            booking.id, staff.email, booking.checked_in_at,
+        )
+        return booking
+
+    @staticmethod
+    def check_out(booking_id, staff):
+        """
+        Complete a live session and mark the booking completed.
+        """
+        booking = BookingService.get(booking_id)
+
+        if booking.checked_in_at is None:
+            raise BookingValidationError("This booking is not checked in.")
+
+        booking.checked_in_at = None
+        booking.status = "completed"
+        booking.save(update_fields=["checked_in_at", "status", "updated_at"])
+
+        logger.info(
+            "Booking #%s checked out by %s",
+            booking.id, staff.email,
+        )
+        return booking
+
     # ── Internal helpers ───────────────────────────────────
 
     @staticmethod

@@ -126,6 +126,8 @@ class GalleryItemTests(TestCase):
 
 class ContextProcessorTests(TestCase):
     def setUp(self):
+        from django.core.cache import cache
+        cache.clear()
         self.factory = RequestFactory()
         self.site = SiteSettings.objects.get_solo()
         ContentBlock.objects.create(key="hero_title", value="Test Hero")
@@ -163,8 +165,8 @@ class ContextProcessorTests(TestCase):
     def test_only_active_testimonials(self):
         request = self.factory.get("/")
         ctx = site_context(request)
-        self.assertEqual(ctx["cms_testimonials"].count(), 1)
-        self.assertEqual(ctx["cms_testimonials"].first().name, "T1")
+        self.assertEqual(len(ctx["cms_testimonials"]), 1)
+        self.assertEqual(ctx["cms_testimonials"][0].name, "T1")
 
     def test_only_active_announcement(self):
         request = self.factory.get("/")
@@ -176,6 +178,34 @@ class ContextProcessorTests(TestCase):
         ctx = site_context(request)
         self.assertIsInstance(ctx["faq_categories"], list)
         self.assertTrue(len(ctx["faq_categories"]) > 0)
+
+
+class CacheTests(TestCase):
+    def setUp(self):
+        from django.core.cache import cache
+        cache.clear()
+        self.factory = RequestFactory()
+
+    def test_second_call_hits_cache(self):
+        first = site_context(self.factory.get("/"))
+        with self.assertNumQueries(0):
+            second = site_context(self.factory.get("/"))
+        self.assertEqual(second, first)
+
+    def test_save_invalidates_cache(self):
+        site_context(self.factory.get("/"))
+        block = ContentBlock.objects.create(key="hero_title", value="Old")
+        block.value = "New"
+        block.save()
+        ctx = site_context(self.factory.get("/"))
+        self.assertEqual(ctx["cb"]["hero_title"], "New")
+
+    def test_delete_invalidates_cache(self):
+        block = ContentBlock.objects.create(key="hero_title", value="Gone")
+        site_context(self.factory.get("/"))
+        block.delete()
+        ctx = site_context(self.factory.get("/"))
+        self.assertNotIn("hero_title", ctx["cb"])
 
 
 class AdminTests(TestCase):

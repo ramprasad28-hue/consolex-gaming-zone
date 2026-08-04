@@ -15,6 +15,23 @@ from apps.games.models import GameConsole
 from apps.tournaments.models import Tournament
 
 
+def serialize_live_sessions(bookings):
+    """Flatten live-session bookings for the staff poll endpoint."""
+    return [
+        {
+            "id": b.id,
+            "customer": b.user.full_display_name,
+            "console": b.game_console.name if b.game_console else None,
+            "start_time": b.start_time.strftime("%H:%M"),
+            "end_time": b.end_time.strftime("%H:%M"),
+            "checked_in_at": b.checked_in_at.isoformat(),
+            "remaining_minutes": b.session_remaining_minutes,
+            "session_end": f"{b.booking_date} {b.end_time.strftime('%H:%M')}",
+        }
+        for b in bookings
+    ]
+
+
 class StaffDashboardService:
     """Data aggregation for staff/admin dashboard."""
 
@@ -98,14 +115,22 @@ class StaffDashboardService:
         booking_stats = Booking.objects.aggregate(
             total=Count("id"),
             confirmed=Count("id", filter=Q(status="confirmed")),
+            checked_in=Count("id", filter=Q(status="checked_in")),
             pending=Count("id", filter=Q(status="pending")),
             completed=Count("id", filter=Q(status="completed")),
             cancelled=Count("id", filter=Q(status="cancelled")),
         )
 
+        # Live sessions (Ch12)
+        live_sessions = Booking.objects.live().select_related(
+            "user", "game_console"
+        ).order_by("checked_in_at")
+
         return {
             "todays_bookings_count": todays_count,
             "todays_bookings": todays_bookings.select_related("user", "game_console")[:5],
+            "live_sessions_count": live_sessions.count(),
+            "live_sessions": live_sessions[:10],
             "active_customers_count": active_customers_count,
             "total_users": total_users,
             "today_revenue": round(Decimal(today_revenue) / Decimal(100), 2),
@@ -205,6 +230,7 @@ class StaffDashboardService:
         # Booking by status (pie chart data)
         status_data = Booking.objects.aggregate(
             confirmed=Count("id", filter=Q(status="confirmed")),
+            checked_in=Count("id", filter=Q(status="checked_in")),
             pending=Count("id", filter=Q(status="pending")),
             completed=Count("id", filter=Q(status="completed")),
             cancelled=Count("id", filter=Q(status="cancelled")),
@@ -263,6 +289,7 @@ class StaffDashboardService:
             data = base_bookings.aggregate(
                 total=Count("id"),
                 confirmed=Count("id", filter=Q(status="confirmed")),
+                checked_in=Count("id", filter=Q(status="checked_in")),
                 pending=Count("id", filter=Q(status="pending")),
                 completed=Count("id", filter=Q(status="completed")),
                 cancelled=Count("id", filter=Q(status="cancelled")),
@@ -270,6 +297,7 @@ class StaffDashboardService:
             return {
                 "total": data["total"],
                 "confirmed": data["confirmed"],
+                "checked_in": data["checked_in"],
                 "pending": data["pending"],
                 "completed": data["completed"],
                 "cancelled": data["cancelled"],
@@ -332,3 +360,126 @@ class StaffDashboardService:
             }
 
         return {}
+
+    @staticmethod
+    def get_executive_data():
+        """Ch13 — owner-only KPI snapshot (superuser dashboard)."""
+        today = date.today()
+        month_start = today.replace(day=1)
+        now = timezone.now()
+
+        captured = Payment.objects.captured()
+        total_revenue = captured.aggregate(t=Sum("amount"))["t"] or 0
+        month_revenue = captured.filter(
+            created_at__date__gte=month_start
+        ).aggregate(t=Sum("amount"))["t"] or 0
+
+        # Monthly revenue trend (last 12 months)
+        monthly_revenue = []
+        for offset in range(11, -1, -1):
+            year = today.year
+            month = today.month - offset
+            while month <= 0:
+                year -= 1
+                month += 12
+            ym = date(year, month, 1)
+            next_month = (
+                date(year, month + 1, 1) if month < 12 else date(year + 1, 1, 1)
+            )
+            amt = captured.filter(
+                created_at__date__gte=ym, created_at__date__lt=next_month
+            ).aggregate(t=Sum("amount"))["t"] or 0
+            monthly_revenue.append({
+                "label": ym.strftime("%b"),
+                "amount": round(Decimal(amt) / Decimal(100), 2),
+            })
+
+        # Customers
+        total_customers = User.objects.count()
+        bookers = User.objects.filter(bookings__isnull=False).distinct()
+        active_customers = bookers.count()
+        returning = User.objects.annotate(
+            booking_count=Count("bookings")
+        ).filter(booking_count__gte=2).count()
+        retention_rate = round(returning * 100 / active_customers, 1) if active_customers else 0
+
+        # Membership
+        active_subs = MembershipSubscription.objects.active()
+        mrr = active_subs.aggregate(t=Sum("plan__price"))["t"] or 0
+        churned = MembershipSubscription.objects.filter(
+            status__in=["expired", "cancelled"]
+        ).count()
+
+        # Operations
+        total_consoles = GameConsole.objects.active().count()
+        consoles_used_today = Booking.objects.filter(
+            booking_date=today,
+            status__in=["confirmed", "checked_in", "completed"],
+        ).values_list("game_console_id", flat=True).distinct().count()
+        utilization_pct = (
+            round(consoles_used_today * 100 / total_consoles, 1)
+            if total_consoles else 0
+        )
+
+        bookings_total = Booking.objects.count()
+        days_with_data = (today - month_start).days + 1
+        bookings_this_month = Booking.objects.filter(
+            booking_date__gte=month_start
+        ).count()
+        avg_bookings_per_day = (
+            round(bookings_this_month / days_with_data, 1) if days_with_data else 0
+        )
+
+        # Top performers
+        top_consoles = (
+            Booking.objects.values("game_console__name")
+            .annotate(count=Count("id"))
+            .filter(game_console__isnull=False)
+            .order_by("-count")[:5]
+        )
+        top_customers = (
+            User.objects.annotate(
+                total_spent=Sum(
+                    "payments__amount",
+                    filter=Q(payments__status__in=["captured", "demo"]),
+                ),
+                booking_count=Count("bookings"),
+            )
+            .filter(total_spent__gt=0)
+            .order_by("-total_spent")[:5]
+        )
+
+        status_data = Booking.objects.aggregate(
+            confirmed=Count("id", filter=Q(status="confirmed")),
+            checked_in=Count("id", filter=Q(status="checked_in")),
+            pending=Count("id", filter=Q(status="pending")),
+            completed=Count("id", filter=Q(status="completed")),
+            cancelled=Count("id", filter=Q(status="cancelled")),
+        )
+
+        live_now = Booking.objects.live().count()
+
+        return {
+            "total_revenue": round(Decimal(total_revenue) / Decimal(100), 2),
+            "month_revenue": round(Decimal(month_revenue) / Decimal(100), 2),
+            "mrr": round(Decimal(mrr) / Decimal(100), 2),
+            "arpu": round(Decimal(total_revenue) / Decimal(100) / active_customers, 2)
+            if active_customers else 0,
+            "total_customers": total_customers,
+            "active_customers": active_customers,
+            "returning_customers": returning,
+            "retention_rate": retention_rate,
+            "active_subscriptions": active_subs.count(),
+            "churned_subscriptions": churned,
+            "bookings_total": bookings_total,
+            "bookings_this_month": bookings_this_month,
+            "avg_bookings_per_day": avg_bookings_per_day,
+            "total_consoles": total_consoles,
+            "consoles_used_today": consoles_used_today,
+            "utilization_pct": utilization_pct,
+            "live_now": live_now,
+            "monthly_revenue": monthly_revenue,
+            "top_consoles": top_consoles,
+            "top_customers": top_customers,
+            "status_data": status_data,
+        }

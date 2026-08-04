@@ -1,0 +1,272 @@
+/* ============================================================
+   CONSOLEX — layouts.css  (V4 — Page Layout Variants)
+   Chrome variants: auth split, booking, dashboard.
+   ============================================================ */
+
+/* ═══ AUTH — split 60/40 (Ch9) ═══════════════════════════ */
+.layout-auth main {
+    min-height: 100dvh;
+}
+
+.auth-split {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    min-height: 100dvh;
+}
+
+/* Brand panel (left 60%) */
+.auth-brand {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: var(--cx-space-8);
+    color: var(--cx-text-inverse);
+    background: linear-gradient(160deg, var(--cx-primary-hover) 0%, var(--cx-primary-active) 100%);
+    overflow: hidden;
+}
+
+.auth-brand::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 480px;
+    height: 480px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.auth-brand::after {
+    content: '';
+    position: absolute;
+    top: -8%;
+    right: 4%;
+    width: 260px;
+    height: 260px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.auth-brand-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 520px;
+}
+
+.auth-brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--cx-radius-md);
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    margin-bottom: var(--cx-space-5);
+}
+
+.auth-brand-title {
+    margin: 0 0 var(--cx-space-3);
+}
+
+.auth-brand-sub {
+    color: rgba(255, 255, 255, 0.82);
+    font-size: var(--cx-text-lg);
+    line-height: var(--cx-leading-relaxed);
+    margin: 0 0 var(--cx-space-5);
+}
+
+.auth-brand-meta {
+    color: rgba(255, 255, 255, 0.60);
+    font-size: var(--cx-text-sm);
+    font-family: var(--cx-font-sans);
+}
+
+/* Form panel (right 40%) */
+.auth-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--cx-space-8) var(--cx-space-6);
+    background: var(--cx-surface-bg);
+}
+
+.auth-card-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--cx-space-3);
+    margin-bottom: var(--cx-space-6);
+}
+
+.auth-logo img {
+    border-radius: var(--cx-radius-md);
+}
+
+/* Split overrides the centered V3 auth-card */
+.layout-auth .auth-card {
+    max-width: 420px;
+    margin: 0;
+    box-shadow: none;
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.layout-auth .auth-card::before {
+    display: none;
+}
+
+.layout-auth .auth-card-icon {
+    display: none;
+}
+
+/* ═══ Auth widgets (Ch9) ════════════════════════════════ */
+
+.form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--cx-space-3);
+    margin-bottom: var(--cx-space-4);
+}
+
+.remember-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--cx-space-2);
+    cursor: pointer;
+    user-select: none;
+}
+
+.remember-wrap input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--cx-primary);
+    cursor: pointer;
+}
+
+.remember-wrap span {
+    font-family: var(--cx-font-sans);
+    font-size: var(--cx-text-sm);
+    color: var(--cx-text-2);
+}
+
+.auth-link-sm {
+    font-family: var(--cx-font-sans);
+    font-size: var(--cx-text-sm);
+    font-weight: 600;
+    color: var(--cx-primary);
+}
+
+.auth-link-sm:hover {
+    color: var(--cx-primary-hover);
+}
+
+/* Caps lock warning */
+.caps-warn {
+    display: none;
+    align-items: center;
+    gap: var(--cx-space-2);
+    margin-top: var(--cx-space-2);
+    font-family: var(--cx-font-sans);
+    font-size: var(--cx-text-xs);
+    font-weight: 600;
+    color: var(--cx-warning);
+    background: var(--cx-warning-soft);
+    border: 1px solid var(--cx-warning-border);
+    border-radius: var(--cx-radius-sm);
+    padding: var(--cx-space-1) var(--cx-space-2);
+}
+
+.caps-warn.is-visible {
+    display: inline-flex;
+}
+
+/* Password strength meter */
+.pw-strength {
+    margin-top: var(--cx-space-2);
+}
+
+.pw-strength-bars {
+    display: flex;
+    gap: var(--cx-space-1);
+}
+
+.pw-strength-bar {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--cx-border);
+    transition: background var(--cx-duration-fast) var(--cx-ease-out);
+}
+
+.pw-strength-label {
+    display: block;
+    margin-top: var(--cx-space-1);
+    font-family: var(--cx-font-sans);
+    font-size: var(--cx-text-xs);
+    color: var(--cx-text-3);
+}
+
+.pw-strength.is-weak .pw-strength-bar.is-on   { background: var(--cx-danger); }
+.pw-strength.is-fair .pw-strength-bar.is-on   { background: var(--cx-warning); }
+.pw-strength.is-good .pw-strength-bar.is-on   { background: var(--cx-info); }
+.pw-strength.is-strong .pw-strength-bar.is-on { background: var(--cx-success); }
+
+.pw-strength.is-weak .pw-strength-label   { color: var(--cx-danger); }
+.pw-strength.is-fair .pw-strength-label   { color: var(--cx-warning); }
+.pw-strength.is-good .pw-strength-label   { color: var(--cx-info); }
+.pw-strength.is-strong .pw-strength-label { color: var(--cx-success); }
+
+/* Loading submit button */
+.btn-primary.is-loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.btn-primary.is-loading .btn-spinner {
+    display: inline-block;
+}
+
+.btn-spinner {
+    display: none;
+    width: 14px;
+    height: 14px;
+    margin-left: var(--cx-space-2);
+    vertical-align: -2px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: cx-spin 0.8s linear infinite;
+}
+
+@keyframes cx-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ═══ BOOKING (Ch10) ═════════════════════════════════════ */
+.layout-booking main {
+    background: var(--cx-surface-bg);
+}
+
+/* ═══ DASHBOARD ═════════════════════════════════════════ */
+.layout-dashboard main {
+    min-height: 100dvh;
+    background: var(--cx-surface-bg);
+}
+
+/* ═══ Responsive ════════════════════════════════════════ */
+@media (max-width: 900px) {
+    .auth-split {
+        grid-template-columns: 1fr;
+    }
+    .auth-brand {
+        display: none;
+    }
+    .auth-panel {
+        min-height: 100dvh;
+    }
+}

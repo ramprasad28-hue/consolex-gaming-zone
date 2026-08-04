@@ -1,0 +1,133 @@
+/* ============================================================
+   CONSOLEX — why_choose_us.css  (V4 · "Why Choose Us")
+   ============================================================ */
+
+.wcu-section {
+    padding: var(--cx-space-16) 0;
+    background: var(--cx-surface-card);
+    border-top: 1px solid var(--cx-border);
+    border-bottom: 1px solid var(--cx-border);
+    position: relative;
+    overflow: hidden;
+}
+
+.wcu-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 var(--cx-space-4);
+    position: relative;
+    z-index: 1;
+}
+
+.wcu-head {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto var(--cx-space-10);
+}
+
+.wcu-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--cx-space-2);
+    font-family: var(--cx-font-sans);
+    font-size: var(--cx-text-xs);
+    font-weight: 700;
+    letter-spacing: var(--cx-tracking-wide);
+    text-transform: uppercase;
+    color: var(--cx-primary);
+    background: var(--cx-primary-subtle);
+    border: 1px solid var(--cx-primary-border);
+    border-radius: 100px;
+    padding: var(--cx-space-1) var(--cx-space-3);
+    margin-bottom: var(--cx-space-4);
+}
+
+.wcu-title {
+    font-family: var(--cx-type-heading-xl-family);
+    font-size: clamp(var(--cx-type-heading-lg-size), 4vw, var(--cx-type-heading-xl-size));
+    line-height: var(--cx-type-heading-xl-line);
+    font-weight: var(--cx-type-heading-xl-weight);
+    letter-spacing: var(--cx-type-heading-xl-tracking);
+    color: var(--cx-text);
+    margin: 0 0 var(--cx-space-3);
+}
+
+.wcu-neon {
+    color: var(--cx-primary);
+}
+
+.wcu-sub {
+    color: var(--cx-text-2);
+    font-family: var(--cx-font-sans);
+    font-size: var(--cx-text-base);
+    line-height: var(--cx-leading-relaxed);
+    margin: 0;
+}
+
+.wcu-grid-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--cx-space-4);
+}
+
+.wcu-card {
+    padding: var(--cx-space-5);
+    background: var(--cx-surface-bg);
+    border: 1px solid var(--cx-border);
+    border-radius: var(--cx-radius-lg);
+    transition: transform var(--cx-duration-fast) var(--cx-ease-out),
+                border-color var(--cx-duration-fast) var(--cx-ease-out),
+                box-shadow var(--cx-duration-fast) var(--cx-ease-out);
+}
+
+.wcu-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--cx-primary-border);
+    box-shadow: var(--cx-shadow-sm);
+}
+
+.wcu-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--cx-radius-md);
+    background: var(--cx-primary-subtle);
+    border: 1px solid var(--cx-primary-border);
+    color: var(--cx-primary);
+    margin-bottom: var(--cx-space-4);
+}
+
+.wcu-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.wcu-card-title {
+    font-family: var(--cx-type-label-family);
+    font-size: var(--cx-type-label-size);
+    font-weight: 700;
+    color: var(--cx-text);
+    margin: 0 0 var(--cx-space-2);
+}
+
+.wcu-card-desc {
+    color: var(--cx-text-2);
+    font-family: var(--cx-font-sans);
+    font-size: var(--cx-text-sm);
+    line-height: var(--cx-leading-relaxed);
+    margin: 0;
+}
+
+@media (max-width: 900px) {
+    .wcu-grid-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 560px) {
+    .wcu-grid-cards {
+        grid-template-columns: 1fr;
+    }
+}

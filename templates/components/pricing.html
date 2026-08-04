@@ -72,41 +72,12 @@
             <p class="pricing-footnote stagger-child">{{ cb.pricing_footnote }}</p>
         </div>
 
-        <div class="pricing-divider"></div>
-
-        <div class="pricing-memberships">
-            <div class="pricing-membership-header stagger-child">
-                <span class="cx-badge cx-badge--primary">{{ cb.membership_pill }}</span>
-                <h3 class="pricing-membership-title">{{ cb.membership_title }}</h3>
-                <p class="pricing-membership-subtitle">{{ cb.membership_subtitle }}</p>
-            </div>
-
-            <div class="pricing-membership-grid">
-                {% for plan in plans %}
-                <div class="membership-card stagger-child{% if plan.is_popular %} membership-card-featured{% endif %}">
-                    {% if plan.is_popular %}<div class="cx-badge cx-badge--primary mc-badge">Most Popular</div>{% endif %}
-                    <div class="mc-header">
-                        <h4 class="mc-name">{{ plan.name }}</h4>
-                    </div>
-                    <div class="mc-price">
-                        <span class="mc-amount mc-cyan">&#8377;{{ plan.price|floatformat:0 }}</span>
-                        <span class="mc-period">/month</span>
-                    </div>
-                    <div class="mc-hours-box">
-                        <div class="mc-hours-row">
-                            <span class="mc-hours-label">Total Hours</span>
-                            <span class="mc-hours-val mc-cyan">{{ plan.total_hours }} hrs</span>
-                        </div>
-                        <div class="mc-hours-divider"></div>
-                        <div class="mc-hours-row">
-                            <span class="mc-hours-label">Validity</span>
-                            <span class="mc-hours-val">{{ plan.duration_days }} Days</span>
-                        </div>
-                    </div>
-                    <a href="{% url 'memberships:plan_list' %}" class="cx-btn cx-btn--outline" style="width:100%;justify-content:center;">Get {{ plan.name }}</a>
-                </div>
-                {% endfor %}
-            </div>
+        <div class="pricing-membership-cta stagger-child">
+            <p class="pricing-membership-cta-text">{{ cb.membership_subtitle|default:"Play more for less with a membership." }}</p>
+            <a href="{% url 'home' %}#membership" class="cx-btn cx-btn--outline">
+                {{ cb.membership_title|default:"View Membership Plans" }}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
         </div>
     </div>
 </section>

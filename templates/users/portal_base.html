@@ -1,0 +1,25 @@
+{% extends "layouts/layout_dashboard.html" %}
+{% load static %}
+
+{% block title %}{% block portal_title %}{{ site.brand_name }} Portal{% endblock %} — {{ site.brand_name }}{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-section" aria-label="Player Portal">
+  <div class="dashboard-container">
+    {% include "users/portal_topbar.html" %}
+
+    <div class="dx-portal">
+      {% include "users/portal_nav.html" with variant="desktop" %}
+      <div class="dx-portal-content">
+        {% block portal_content %}{% endblock %}
+      </div>
+    </div>
+
+    {% include "users/portal_nav.html" with variant="mobile" %}
+  </div>
+</section>
+{% endblock %}

@@ -94,9 +94,9 @@
     position: relative;
     border: 1px solid var(--cx-border);
     background: var(--cx-surface);
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-                border-color 0.3s ease,
-                box-shadow 0.3s ease;
+    transition: transform var(--cx-duration-slow) var(--cx-ease-out),
+                border-color var(--cx-duration-fast) var(--cx-ease-out),
+                box-shadow var(--cx-duration-fast) var(--cx-ease-out);
     cursor: pointer;
 }
 
@@ -112,7 +112,7 @@
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.5s ease;
+    transition: transform var(--cx-duration-slow) var(--cx-ease-out);
 }
 
 .gallery-card:hover img {

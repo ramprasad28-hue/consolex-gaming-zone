@@ -12,8 +12,8 @@
 
 /* ── Body ───────────────────────────────────────────────── */
 body {
-    font-family: var(--cx-font-ui);
-    background: var(--cx-surface-page);
+    font-family: var(--cx-font-sans);
+    background: var(--cx-surface-bg);
     color: var(--cx-text);
     overflow-x: hidden;
     transition: background var(--cx-theme-speed) ease,
@@ -26,6 +26,20 @@ body {
 a {
     text-decoration: none;
     color: inherit;
+}
+
+a:link { color: inherit; }
+a:visited { color: inherit; }
+
+/* ── Selection (V4 token) ──────────────────────────────── */
+::selection {
+    background: var(--cx-selection);
+}
+
+/* ── Form controls inherit palette ─────────────────────── */
+input, select, textarea, button {
+    color: inherit;
+    font: inherit;
 }
 
 /* ── Lists ──────────────────────────────────────────────── */

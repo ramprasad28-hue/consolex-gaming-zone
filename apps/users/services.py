@@ -137,6 +137,17 @@ class UserService:
         return activity[:6]
 
     @staticmethod
+    def get_leaderboard(limit=5):
+        """Top players by confirmed/completed booking count (real, not stubbed)."""
+        from apps.users.models import User as UserModel
+        return (
+            UserModel.objects
+            .annotate(booking_count=Count("bookings"))
+            .filter(booking_count__gt=0)
+            .order_by("-booking_count")[:limit]
+        )
+
+    @staticmethod
     def get_dashboard_data(user):
         """
         Aggregate all data needed for the user dashboard template view.
@@ -173,6 +184,7 @@ class UserService:
             "achievements": achievements,
             "hours_progress_pct": agg["hours_progress_pct"],
             "games_progress_pct": agg["games_progress_pct"],
+            "leaderboard": UserService.get_leaderboard(),
         }
 
     @staticmethod
