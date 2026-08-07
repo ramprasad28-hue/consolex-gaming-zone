@@ -67,7 +67,7 @@
     <div class="sp-chart-title">Revenue — Last 12 Months</div>
     <div class="sp-bar-chart" role="img" aria-label="Bar chart of monthly revenue for the last 12 months">
       {% for item in monthly_revenue %}
-      <div class="sp-bar" style="height:{% widthratio item.amount 1000 2 %}px;min-height:4px;background:var(--cx-primary)" title="{{ item.label }}: ₹{{ item.amount|floatformat:0 }}">
+      <div class="sp-bar" style="height:{% widthratio item.amount max_monthly_revenue 120 %}px;min-height:8px;background:var(--cx-primary)" title="{{ item.label }}: ₹{{ item.amount|floatformat:0 }}">
         <span class="sp-bar-value">₹{{ item.amount|floatformat:0 }}</span>
         <span class="sp-bar-label">{{ item.label }}</span>
       </div>

@@ -479,6 +479,9 @@ class StaffDashboardService:
             "utilization_pct": utilization_pct,
             "live_now": live_now,
             "monthly_revenue": monthly_revenue,
+            "max_monthly_revenue": max(
+                [m["amount"] for m in monthly_revenue] or [1]
+            ) or 1,
             "top_consoles": top_consoles,
             "top_customers": top_customers,
             "status_data": status_data,

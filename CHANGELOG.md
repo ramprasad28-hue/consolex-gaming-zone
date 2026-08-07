@@ -45,6 +45,7 @@
 
 - Missing `from django.utils import timezone` import in `apps/bookings/models.py`
 - Executive revenue trend now uses manual date arithmetic (`timedelta` has no `months=`)
+- Executive monthly-revenue bars now scale relative to the peak month instead of a fixed ratio; live-session poll URL is resolved via `data-live-sessions-data-url` instead of a hardcoded path
 
 ## [3.0.0] — 2026-07-29
 
