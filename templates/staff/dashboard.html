@@ -2,11 +2,12 @@
 {% load static %}
 
 {% block title %}Staff Dashboard — {{ site.brand_name }}{% endblock %}
+{% block sp_breadcrumb %}Dashboard{% endblock %}
 
 {% block sp_content %}
 <div class="sp-header">
   <div>
-    <h1 class="sp-header-title">Staff Dashboard</h1>
+    <h1 class="sp-header-title">Dashboard</h1>
     <p class="sp-header-sub">{{ user_role }} · {{ site.brand_name }} Management Portal</p>
   </div>
   <div class="sp-header-actions">
@@ -17,91 +18,174 @@
 
 <!-- Stats Grid -->
 <div class="sp-stats-grid" role="list" aria-label="Key statistics">
-  <div class="sp-stat-card" role="listitem">
-    <div class="sp-stat-label">Today's Bookings</div>
-    <div class="sp-stat-value">{{ todays_bookings_count }}</div>
-    <div class="sp-stat-trend sp-stat-trend--up">
-      {% if booking_stats.confirmed > 0 %}{{ booking_stats.confirmed }} confirmed{% endif %}
+  <div class="sp-stat-card sp-stat-card--blue" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Today's Bookings</span>
+      <span class="sp-stat-icon sp-stat-icon--blue" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ todays_bookings_count }}">{{ todays_bookings_count }}</div>
+    <div class="sp-stat-trend sp-stat-trend--up">{{ booking_stats.confirmed }} confirmed</div>
+    <div class="sp-stat-chart" aria-hidden="true">
+      <span style="height:{% widthratio booking_stats.confirmed 20 34 %}px" title="{{ booking_stats.confirmed }} confirmed"></span>
+      <span style="height:{% widthratio booking_stats.checked_in 20 34 %}px" title="{{ booking_stats.checked_in }} checked in"></span>
+      <span style="height:{% widthratio booking_stats.pending 20 34 %}px" title="{{ booking_stats.pending }} pending"></span>
+      <span style="height:{% widthratio booking_stats.completed 20 34 %}px" title="{{ booking_stats.completed }} completed"></span>
+      <span style="height:{% widthratio booking_stats.cancelled 20 34 %}px" title="{{ booking_stats.cancelled }} cancelled"></span>
     </div>
   </div>
-  <div class="sp-stat-card" role="listitem">
-    <div class="sp-stat-label">Active Customers</div>
-    <div class="sp-stat-value">{{ active_customers_count }}</div>
-    <div class="sp-stat-trend">of {{ total_users }} total users</div>
-  </div>
-  <div class="sp-stat-card" role="listitem">
-    <div class="sp-stat-label">Today's Revenue</div>
+
+  <div class="sp-stat-card sp-stat-card--green" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Today's Revenue</span>
+      <span class="sp-stat-icon sp-stat-icon--green" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      </span>
+    </div>
     <div class="sp-stat-value">₹{{ today_revenue|floatformat:0 }}</div>
     <div class="sp-stat-trend sp-stat-trend--up">₹{{ week_revenue|floatformat:0 }} this week</div>
   </div>
-  <div class="sp-stat-card" role="listitem">
-    <div class="sp-stat-label">Active Memberships</div>
-    <div class="sp-stat-value">{{ active_subscriptions }}</div>
-    <div class="sp-stat-trend">{{ membership_plans_count }} plans available</div>
+
+  <div class="sp-stat-card sp-stat-card--cyan" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Live Sessions</span>
+      <span class="sp-stat-icon sp-stat-icon--cyan" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value"><span class="sp-live-dot" aria-hidden="true"></span><span data-count="{{ live_sessions_count }}">{{ live_sessions_count }}</span></div>
+    <div class="sp-stat-trend">{{ booking_stats.checked_in }} checked in today</div>
   </div>
-  <div class="sp-stat-card" role="listitem">
-    <div class="sp-stat-label">Pending Tasks</div>
-    <div class="sp-stat-value">{{ pending_bookings|add:pending_payments }}</div>
-    <div class="sp-stat-trend sp-stat-trend--down">{{ pending_bookings }} bookings · {{ pending_payments }} payments</div>
+
+  <div class="sp-stat-card sp-stat-card--purple" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Active Customers</span>
+      <span class="sp-stat-icon sp-stat-icon--purple" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ active_customers_count }}">{{ active_customers_count }}</div>
+    <div class="sp-stat-trend">of {{ total_users }} total users</div>
   </div>
-  <div class="sp-stat-card" role="listitem">
-    <div class="sp-stat-label">Tournaments</div>
-    <div class="sp-stat-value">{{ upcoming_tournaments }}</div>
+
+  <div class="sp-stat-card sp-stat-card--orange" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Console Utilization</span>
+      <span class="sp-stat-icon sp-stat-icon--orange" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value">{{ consoles_used_today }}/{{ total_consoles }}</div>
+    <div class="sp-progress" aria-hidden="true">
+      <span style="width:{% widthratio consoles_used_today total_consoles 100 %}%"></span>
+    </div>
+    <div class="sp-stat-trend">consoles used today</div>
+  </div>
+
+  <div class="sp-stat-card sp-stat-card--red" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Pending Tasks</span>
+      <span class="sp-stat-icon sp-stat-icon--red" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ pending_bookings|add:pending_payments }}">{{ pending_bookings|add:pending_payments }}</div>
+    <div class="sp-stat-trend sp-stat-trend--down">{{ expiring_subscriptions }} subscriptions expiring</div>
+  </div>
+
+  <div class="sp-stat-card sp-stat-card--pink" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Tournaments</span>
+      <span class="sp-stat-icon sp-stat-icon--pink" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v6a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a3 3 0 0 0 3 6"/><path d="M17 6h3a3 3 0 0 1-3 6"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ upcoming_tournaments }}">{{ upcoming_tournaments }}</div>
     <div class="sp-stat-trend">{{ total_tournaments }} total · {{ upcoming_tournaments }} upcoming</div>
   </div>
-  <div class="sp-stat-card" role="listitem">
-    <div class="sp-stat-label">Console Utilization</div>
-    <div class="sp-stat-value">{{ consoles_used_today }}/{{ total_consoles }}</div>
-    <div class="sp-stat-trend">used today</div>
+
+  <div class="sp-stat-card sp-stat-card--purple" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Active Memberships</span>
+      <span class="sp-stat-icon sp-stat-icon--purple" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ active_subscriptions }}">{{ active_subscriptions }}</div>
+    <div class="sp-stat-trend">{{ membership_plans_count }} plans available</div>
   </div>
-  <div class="sp-stat-card" role="listitem">
-    <div class="sp-stat-label">Peak Booking Hour</div>
-    <div class="sp-stat-value">{{ peak_hour|default:"—" }}</div>
-    <div class="sp-stat-trend">{{ todays_bookings_count }} bookings today</div>
+</div>
+
+<!-- Quick Actions -->
+<div class="sp-widget">
+  <div class="sp-widget-header">
+    <h2 class="sp-widget-title">Quick Actions</h2>
+  </div>
+  <div class="sp-widget-body">
+    <div class="sp-quick-actions">
+      <a href="{% url 'bookings:booking_form' %}" class="sp-qa-card">
+        <span class="sp-qa-icon sp-qa-icon--blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </span>
+        <span><span class="sp-qa-label">New Booking</span><span class="sp-qa-desc">Reserve a console slot</span></span>
+      </a>
+      <a href="{% url 'staff:staff_game_list' %}" class="sp-qa-card">
+        <span class="sp-qa-icon sp-qa-icon--cyan">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
+        </span>
+        <span><span class="sp-qa-label">Manage Games</span><span class="sp-qa-desc">Browse the game library</span></span>
+      </a>
+      <a href="{% url 'staff:staff_live_sessions' %}" class="sp-qa-card">
+        <span class="sp-qa-icon sp-qa-icon--green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </span>
+        <span><span class="sp-qa-label">Live Sessions</span><span class="sp-qa-desc">Console for checked-in players</span></span>
+      </a>
+      <a href="{% url 'staff:staff_customer_list' %}" class="sp-qa-card">
+        <span class="sp-qa-icon sp-qa-icon--purple">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </span>
+        <span><span class="sp-qa-label">Customers</span><span class="sp-qa-desc">Manage customer accounts</span></span>
+      </a>
+      <a href="{% url 'staff:staff_reports' %}" class="sp-qa-card">
+        <span class="sp-qa-icon sp-qa-icon--green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </span>
+        <span><span class="sp-qa-label">View Reports</span><span class="sp-qa-desc">Revenue &amp; booking reports</span></span>
+      </a>
+      <a href="{% url 'staff:staff_analytics' %}" class="sp-qa-card">
+        <span class="sp-qa-icon sp-qa-icon--orange">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </span>
+        <span><span class="sp-qa-label">Analytics</span><span class="sp-qa-desc">Trends, peaks &amp; utilization</span></span>
+      </a>
+      {% if user.is_superuser %}
+      <a href="{% url 'admin:tournaments_tournament_add' %}" class="sp-qa-card" target="_blank" rel="noopener">
+        <span class="sp-qa-icon sp-qa-icon--pink">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v6a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a3 3 0 0 0 3 6"/><path d="M17 6h3a3 3 0 0 1-3 6"/></svg>
+        </span>
+        <span><span class="sp-qa-label">Add Tournament</span><span class="sp-qa-desc">Create a new tournament</span></span>
+      </a>
+      <a href="{% url 'staff:staff_communication' %}" class="sp-qa-card">
+        <span class="sp-qa-icon sp-qa-icon--purple">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
+        </span>
+        <span><span class="sp-qa-label">Send Announcement</span><span class="sp-qa-desc">Broadcast to customers</span></span>
+      </a>
+      <a href="{% url 'staff:staff_import' %}" class="sp-qa-card">
+        <span class="sp-qa-icon sp-qa-icon--cyan">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </span>
+        <span><span class="sp-qa-label">Import Customers</span><span class="sp-qa-desc">Bulk upload customer data</span></span>
+      </a>
+      {% endif %}
+    </div>
   </div>
 </div>
 
 <!-- Main dashboard grid -->
 <div class="sp-dash-grid">
-  <!-- Quick Actions -->
-  <div class="sp-widget sp-dash-full">
-    <div class="sp-widget-header">
-      <h2 class="sp-widget-title">Quick Actions</h2>
-    </div>
-    <div class="sp-widget-body">
-      <div class="sp-quick-actions">
-        <a href="{% url 'bookings:booking_form' %}" class="sp-qa-card">
-          <span class="sp-qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
-          <span class="sp-qa-label">New Booking</span>
-        </a>
-        {% if user.is_superuser %}
-        <a href="{% url 'staff:staff_import' %}" class="sp-qa-card">
-          <span class="sp-qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
-          <span class="sp-qa-label">Import Customers</span>
-        </a>
-        <a href="{% url 'staff:staff_tournament_list' %}" class="sp-qa-card">
-          <span class="sp-qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
-          <span class="sp-qa-label">Create Tournament</span>
-        </a>
-        {% endif %}
-        <a href="{% url 'staff:staff_game_list' %}" class="sp-qa-card">
-          <span class="sp-qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/></svg></span>
-          <span class="sp-qa-label">Manage Games</span>
-        </a>
-        <a href="{% url 'admin:index' %}" class="sp-qa-card" target="_blank" rel="noopener">
-          <span class="sp-qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06"/></svg></span>
-          <span class="sp-qa-label">Django Admin</span>
-        </a>
-        {% if user.is_superuser %}
-        <a href="{% url 'staff:staff_communication' %}" class="sp-qa-card">
-          <span class="sp-qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></span>
-          <span class="sp-qa-label">Send Announcement</span>
-        </a>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-
   <!-- Live Sessions -->
   {% include "staff/includes/live_sessions_widget.html" %}
 
@@ -139,7 +223,7 @@
     </div>
   </div>
 
-  <!-- Expiring & Pending -->
+  <!-- Pending Tasks -->
   <div class="sp-widget">
     <div class="sp-widget-header">
       <h2 class="sp-widget-title">Pending Tasks</h2>
@@ -159,6 +243,10 @@
           <span class="sp-data-value"><span class="cx-badge cx-badge--warning">{{ expiring_subscriptions }}</span></span>
         </div>
         <div class="sp-data-row" role="listitem">
+          <span class="sp-data-label">Upcoming Tournaments</span>
+          <span class="sp-data-value">{{ upcoming_tournaments }}</span>
+        </div>
+        <div class="sp-data-row" role="listitem">
           <span class="sp-data-label">Month Revenue</span>
           <span class="sp-data-value">₹{{ month_revenue|floatformat:0 }}</span>
         </div>
@@ -174,10 +262,49 @@
     </div>
   </div>
 
+  <!-- Peak & Utilization -->
+  <div class="sp-widget">
+    <div class="sp-widget-header">
+      <h2 class="sp-widget-title">Today at a Glance</h2>
+    </div>
+    <div class="sp-widget-body">
+      <div class="sp-data-list" role="list" aria-label="Today's activity snapshot">
+        <div class="sp-data-row" role="listitem">
+          <span class="sp-data-label">Peak Booking Hour</span>
+          <span class="sp-data-value">{{ peak_hour|default:"—" }}:00</span>
+        </div>
+        <div class="sp-data-row" role="listitem">
+          <span class="sp-data-label">Bookings Today</span>
+          <span class="sp-data-value">{{ todays_bookings_count }}</span>
+        </div>
+        <div class="sp-data-row" role="listitem">
+          <span class="sp-data-label">Checked-in</span>
+          <span class="sp-data-value">{{ booking_stats.checked_in }}</span>
+        </div>
+        <div class="sp-data-row" role="listitem">
+          <span class="sp-data-label">Week Revenue</span>
+          <span class="sp-data-value">₹{{ week_revenue|floatformat:0 }}</span>
+        </div>
+        <div class="sp-data-row" role="listitem">
+          <span class="sp-data-label">Console Utilization</span>
+          <span class="sp-data-value">{{ consoles_used_today }}/{{ total_consoles }}</span>
+        </div>
+        <div class="sp-progress" aria-hidden="true">
+          <span style="width:{% widthratio consoles_used_today total_consoles 100 %}%"></span>
+        </div>
+        <div class="sp-data-row" role="listitem">
+          <span class="sp-data-label">Membership Revenue (MRR)</span>
+          <span class="sp-data-value">₹{{ total_membership_revenue|floatformat:0 }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Recent Activity -->
   <div class="sp-widget sp-dash-full">
     <div class="sp-widget-header">
       <h2 class="sp-widget-title">Recent Activity</h2>
+      <a href="{% url 'staff:staff_booking_list' %}" class="cx-btn cx-btn--ghost cx-btn--sm">View all bookings</a>
     </div>
     <div class="sp-widget-body">
       {% if recent_activity %}
@@ -200,9 +327,6 @@
       {% else %}
         <p class="cx-empty-desc">No recent activity.</p>
       {% endif %}
-    </div>
-    <div class="sp-widget-footer">
-      <a href="{% url 'staff:staff_booking_list' %}" class="cx-btn cx-btn--ghost cx-btn--sm">View all bookings</a>
     </div>
   </div>
 </div>

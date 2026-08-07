@@ -3,103 +3,255 @@
 
 {% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
 
+{% block announcement %}{% endblock %}
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block whatsapp %}{% endblock %}
+
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/staff.css' %}">
   {% block sp_extra_css %}{% endblock %}
 {% endblock %}
 
-{% block announcement %}{% endblock %}
-
 {% block content %}
 {% with role=user.is_superuser|yesno:"Owner,Staff" %}
-<section class="sp-layout" aria-label="Staff Panel">
-  <!-- Backdrop (mobile) -->
+<div class="sp-shell" id="spShell">
+  <!-- Backdrop (mobile drawer) -->
   <div id="spSidebarBackdrop" class="sp-sidebar-backdrop" aria-hidden="true"></div>
 
   <!-- Sidebar -->
   <nav id="spSidebar" class="sp-sidebar" aria-label="Staff navigation">
     <div class="sp-sidebar-head">
-      {{ site.brand_name }} {{ role }} Panel
+      <a href="{% url 'staff:staff_dashboard' %}" class="sp-brand" title="{{ site.brand_name }} — {{ role }} Panel">
+        <span class="sp-brand-mark" aria-hidden="true">CX</span>
+        <span class="sp-brand-text">
+          <span class="sp-brand-name">{{ site.brand_name }}</span>
+          <span class="sp-brand-role">{{ role }} Panel</span>
+        </span>
+      </a>
+      <button type="button" class="sp-sidebar-collapse" id="spSidebarCollapse" aria-label="Collapse sidebar" title="Collapse sidebar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="18" rx="1"/><line x1="13" y1="8" x2="17" y2="12"/><line x1="17" y1="12" x2="13" y2="16"/></svg>
+      </button>
     </div>
 
     <div class="sp-sidenav">
+      <span class="sp-sidenav-group">Overview</span>
+
       <a href="{% url 'staff:staff_dashboard' %}" class="sp-sidenav-item {% if request.resolver_match.view_name == 'staff:staff_dashboard' %}is-active{% endif %}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        Dashboard
-      </a>
-      <a href="{% url 'staff:staff_booking_list' %}" class="sp-sidenav-item {% if 'booking' in request.resolver_match.view_name %}is-active{% endif %}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Bookings
+        <span class="sp-sidenav-label">Dashboard</span>
       </a>
       <a href="{% url 'staff:staff_live_sessions' %}" class="sp-sidenav-item {% if 'live' in request.resolver_match.view_name %}is-active{% endif %}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Live Sessions
+        <span class="sp-sidenav-label">Live Sessions</span>
         <span class="sp-sidenav-badge" data-live-nav-count>{{ live_sessions_count|default:"" }}</span>
+      </a>
+
+      <span class="sp-sidenav-group">Management</span>
+
+      <a href="{% url 'staff:staff_booking_list' %}" class="sp-sidenav-item {% if 'booking' in request.resolver_match.view_name %}is-active{% endif %}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="sp-sidenav-label">Bookings</span>
       </a>
       <a href="{% url 'staff:staff_customer_list' %}" class="sp-sidenav-item {% if 'customer' in request.resolver_match.view_name %}is-active{% endif %}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Customers
+        <span class="sp-sidenav-label">Customers</span>
       </a>
       <a href="{% url 'staff:staff_game_list' %}" class="sp-sidenav-item {% if 'game' in request.resolver_match.view_name %}is-active{% endif %}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
-        Games
+        <span class="sp-sidenav-label">Games</span>
+      </a>
+      <a href="{% url 'admin:games_game_changelist' %}" class="sp-sidenav-item" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <span class="sp-sidenav-label">Game Library</span>
       </a>
       <a href="{% url 'staff:staff_tournament_list' %}" class="sp-sidenav-item {% if 'tournament' in request.resolver_match.view_name %}is-active{% endif %}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-        Tournaments
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v6a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a3 3 0 0 0 3 6"/><path d="M17 6h3a3 3 0 0 1-3 6"/></svg>
+        <span class="sp-sidenav-label">Tournaments</span>
       </a>
       <a href="{% url 'staff:staff_membership_list' %}" class="sp-sidenav-item {% if 'membership' in request.resolver_match.view_name %}is-active{% endif %}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
-        Memberships
+        <span class="sp-sidenav-label">Memberships</span>
+      </a>
+      <a href="{% url 'admin:payments_payment_changelist' %}" class="sp-sidenav-item" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        <span class="sp-sidenav-label">Payments</span>
+      </a>
+      <a href="{% url 'admin:notifications_notification_changelist' %}" class="sp-sidenav-item" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="sp-sidenav-label">Notifications</span>
+      </a>
+      <a href="{% url 'admin:users_user_changelist' %}" class="sp-sidenav-item" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span class="sp-sidenav-label">Users</span>
       </a>
 
-      <div class="sp-sidenav-divider" role="separator"></div>
+      <span class="sp-sidenav-group">Insights</span>
 
       <a href="{% url 'staff:staff_analytics' %}" class="sp-sidenav-item {% if 'analytics' in request.resolver_match.view_name %}is-active{% endif %}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        Analytics
+        <span class="sp-sidenav-label">Analytics</span>
       </a>
       <a href="{% url 'staff:staff_reports' %}" class="sp-sidenav-item {% if 'report' in request.resolver_match.view_name %}is-active{% endif %}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        Reports
+        <span class="sp-sidenav-label">Reports</span>
       </a>
-
       {% if user.is_superuser %}
       <a href="{% url 'staff:staff_executive' %}" class="sp-sidenav-item {% if 'executive' in request.resolver_match.view_name %}is-active{% endif %}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Executive KPIs
-      </a>
-      <a href="{% url 'staff:staff_import' %}" class="sp-sidenav-item {% if 'import' in request.resolver_match.view_name %}is-active{% endif %}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Import
+        <span class="sp-sidenav-label">Executive KPIs</span>
       </a>
       <a href="{% url 'staff:staff_communication' %}" class="sp-sidenav-item {% if 'communication' in request.resolver_match.view_name %}is-active{% endif %}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
-        Communication
+        <span class="sp-sidenav-label">Communication</span>
       </a>
       {% endif %}
 
-      <div class="sp-sidenav-divider" role="separator"></div>
+      <span class="sp-sidenav-group">System</span>
 
+      {% if user.is_superuser %}
+      <a href="{% url 'staff:staff_import' %}" class="sp-sidenav-item {% if 'import' in request.resolver_match.view_name %}is-active{% endif %}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span class="sp-sidenav-label">Import</span>
+      </a>
+      {% endif %}
       <a href="{% url 'staff:staff_settings' %}" class="sp-sidenav-item {% if 'setting' in request.resolver_match.view_name %}is-active{% endif %}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 .75.85c.24.13.5.19.76.19H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        Settings
+        <span class="sp-sidenav-label">Settings</span>
       </a>
+    </div>
 
-      <div class="sp-sidenav-divider" role="separator"></div>
-
+    <div class="sp-sidebar-foot">
       <a href="{% url 'users:dashboard' %}" class="sp-sidenav-item">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Back to Site
+        <span class="sp-sidenav-label">Back to Site</span>
       </a>
+      <form method="POST" action="{% url 'users:logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="cx-btn cx-btn--outline cx-btn--sm sp-sidenav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+          <span class="sp-sidenav-label">Logout</span>
+        </button>
+      </form>
     </div>
   </nav>
 
-  <!-- Main content -->
-  <main class="sp-main" id="spMain">
-    {% block sp_content %}{% endblock %}
-  </main>
-</section>
+  <!-- Main wrap -->
+  <div class="sp-main-wrap">
+    <!-- Topbar -->
+    <header class="sp-topbar" aria-label="Staff toolbar">
+      <div class="sp-topbar-left">
+        <button type="button" class="sp-topbar-btn sp-sidebar-toggle" id="spSidebarToggle" aria-label="Open menu" aria-controls="spSidebar" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <nav class="sp-breadcrumb" aria-label="Breadcrumb">
+          <a href="{% url 'staff:staff_dashboard' %}">{{ site.brand_name }}</a>
+          <span class="sp-breadcrumb-sep" aria-hidden="true">/</span>
+          <span class="sp-breadcrumb-current">{% block sp_breadcrumb %}Staff{% endblock %}</span>
+        </nav>
+      </div>
+
+      <form class="sp-topbar-search" method="GET" action="{% url 'staff:staff_customer_list' %}" role="search">
+        <svg class="sp-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" name="q" class="cx-input" placeholder="Search customers…" aria-label="Search customers">
+      </form>
+
+      <div class="sp-topbar-right">
+        <span class="sp-date-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <time>{% now "D, d M Y" %}</time>
+        </span>
+
+        <button type="button" class="sp-topbar-btn sp-ripple" id="themeToggle" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+
+        <div class="sp-dropdown">
+          <button type="button" class="sp-quick-add sp-ripple" data-dropdown-toggle aria-haspopup="true" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Quick Add
+          </button>
+          <div class="sp-dropdown-menu" role="menu">
+            <div class="sp-dropdown-header">
+              <div class="sp-dropdown-title">Quick Actions</div>
+              <div class="sp-dropdown-sub">Jump straight to a task</div>
+            </div>
+            <a href="{% url 'bookings:booking_form' %}" class="sp-dropdown-item" role="menuitem">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              New Booking
+            </a>
+            <a href="{% url 'admin:games_game_add' %}" class="sp-dropdown-item" role="menuitem" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
+              Add Game
+            </a>
+            <a href="{% url 'admin:tournaments_tournament_add' %}" class="sp-dropdown-item" role="menuitem" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v6a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a3 3 0 0 0 3 6"/><path d="M17 6h3a3 3 0 0 1-3 6"/></svg>
+              Add Tournament
+            </a>
+            <a href="{% url 'admin:memberships_membership_add' %}" class="sp-dropdown-item" role="menuitem" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+              Add Membership
+            </a>
+            {% if user.is_superuser %}
+            <a href="{% url 'staff:staff_communication' %}" class="sp-dropdown-item" role="menuitem">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
+              Send Announcement
+            </a>
+            {% endif %}
+          </div>
+        </div>
+
+        <a href="{% url 'users:notifications' %}" class="sp-topbar-btn sp-ripple" aria-label="Your notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </a>
+
+        <div class="sp-dropdown">
+          <button type="button" class="sp-profile-btn" data-dropdown-toggle aria-haspopup="true" aria-expanded="false">
+            <span class="sp-profile-avatar" aria-hidden="true">{{ user.username|slice:":1"|upper }}</span>
+            <span class="sp-profile-meta">
+              <span class="sp-profile-name">{{ user.username }}</span>
+              <span class="sp-profile-role">{{ role }}</span>
+            </span>
+            <svg class="sp-profile-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="sp-dropdown-menu" role="menu">
+            <div class="sp-dropdown-header">
+              <div class="sp-dropdown-title">{{ user.get_full_name|default:user.username }}</div>
+              <div class="sp-dropdown-sub">{{ user.email|default:"No email on file" }}</div>
+            </div>
+            <a href="{% url 'users:dashboard' %}" class="sp-dropdown-item" role="menuitem">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              My Dashboard
+            </a>
+            <a href="{% url 'users:notifications' %}" class="sp-dropdown-item" role="menuitem">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              Notifications
+            </a>
+            <a href="{% url 'staff:staff_settings' %}" class="sp-dropdown-item" role="menuitem">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 .75.85c.24.13.5.19.76.19H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              Settings
+            </a>
+            <form method="POST" action="{% url 'users:logout' %}" style="margin:0;">
+              {% csrf_token %}
+              <button type="submit" class="sp-dropdown-item is-danger" role="menuitem">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                Logout
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="sp-main" id="spMain">
+      <div class="sp-container">
+        {% block sp_content %}{% endblock %}
+      </div>
+    </main>
+  </div>
+</div>
 {% endwith %}
 {% endblock %}
 

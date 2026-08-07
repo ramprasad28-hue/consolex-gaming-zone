@@ -217,4 +217,123 @@
         setInterval(refreshCountdowns, 30000);
     }
 
+    /* ── Desktop sidebar collapse (persisted) ── */
+    var shell = document.getElementById('spShell');
+    var collapseBtn = document.getElementById('spSidebarCollapse');
+
+    if (shell && collapseBtn) {
+        var COLLAPSE_KEY = 'cx-staff-sidebar-collapsed';
+        var savedCollapsed = false;
+        try { savedCollapsed = localStorage.getItem(COLLAPSE_KEY) === '1'; } catch (e) { /* ignore */ }
+
+        if (savedCollapsed && window.matchMedia('(min-width: 1025px)').matches) {
+            shell.classList.add('is-collapsed');
+        }
+
+        collapseBtn.addEventListener('click', function () {
+            var collapsed = shell.classList.toggle('is-collapsed');
+            try { localStorage.setItem(COLLAPSE_KEY, collapsed ? '1' : '0'); } catch (e) { /* ignore */ }
+        });
+    }
+
+    /* ── Topbar dropdowns ── */
+    function closeAllDropdowns(except) {
+        document.querySelectorAll('.sp-dropdown.is-open').forEach(function (d) {
+            if (except && d === except) return;
+            d.classList.remove('is-open');
+            var t = d.querySelector('[data-dropdown-toggle]');
+            if (t) t.setAttribute('aria-expanded', 'false');
+        });
+    }
+
+    document.querySelectorAll('[data-dropdown-toggle]').forEach(function (btn) {
+        var parent = btn.closest('.sp-dropdown');
+        if (!parent) return;
+
+        function closeDropdown() {
+            parent.classList.remove('is-open');
+            btn.setAttribute('aria-expanded', 'false');
+        }
+
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (parent.classList.contains('is-open')) {
+                closeDropdown();
+            } else {
+                closeAllDropdowns(parent);
+                parent.classList.add('is-open');
+                btn.setAttribute('aria-expanded', 'true');
+            }
+        });
+
+        parent.addEventListener('click', function (e) {
+            var activated = e.target.closest('.sp-dropdown-item, .sp-dropdown-menu a, .sp-dropdown-menu button');
+            if (activated) closeDropdown();
+        });
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.sp-dropdown')) closeAllDropdowns();
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeAllDropdowns();
+    });
+
+    /* ── Animated counters (once, honours reduced motion) ── */
+    function animateCount(el) {
+        var target = parseInt(el.getAttribute('data-count'), 10);
+        if (isNaN(target)) return;
+
+        var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduced) { el.textContent = target; return; }
+
+        var duration = 900;
+        var start = null;
+
+        function frame(ts) {
+            if (start === null) start = ts;
+            var p = Math.min((ts - start) / duration, 1);
+            var eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = Math.round(eased * target);
+            if (p < 1) requestAnimationFrame(frame);
+            else el.textContent = target;
+        }
+
+        requestAnimationFrame(frame);
+    }
+
+    var counters = document.querySelectorAll('[data-count]');
+    if (counters.length) {
+        if ('IntersectionObserver' in window) {
+            var counterObserver = new IntersectionObserver(function (entries, obs) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        animateCount(entry.target);
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+            counters.forEach(function (el) { counterObserver.observe(el); });
+        } else {
+            counters.forEach(animateCount);
+        }
+    }
+
+    /* ── Ripple on .sp-ripple elements ── */
+    document.querySelectorAll('.sp-ripple').forEach(function (el) {
+        el.addEventListener('click', function (e) {
+            var rect = el.getBoundingClientRect();
+            var d = Math.max(rect.width, rect.height);
+            var ink = document.createElement('span');
+            ink.className = 'sp-ripple-ink';
+            ink.style.width = d + 'px';
+            ink.style.height = d + 'px';
+            ink.style.left = (e.clientX - rect.left - d / 2) + 'px';
+            ink.style.top = (e.clientY - rect.top - d / 2) + 'px';
+            el.appendChild(ink);
+            window.setTimeout(function () { if (ink.parentNode) ink.parentNode.removeChild(ink); }, 600);
+        });
+    });
+
 })();
