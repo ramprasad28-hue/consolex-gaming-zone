@@ -5,8 +5,8 @@ from urllib.parse import urlencode
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.contrib import messages
-from django.db.models import Avg, Count, F, Q, Sum
-from django.db.models import ExpressionWrapper, FloatField
+from django.db.models import Avg, Count, F, Q, Sum, Max
+from django.db.models import ExpressionWrapper, FloatField, OuterRef, Subquery
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
@@ -17,7 +17,7 @@ from apps.common.exceptions import ServiceError
 from apps.users.models import User
 from apps.payments.models import Payment
 from apps.memberships.models import (
-    Membership, MembershipSubscription, LoyaltyProfile
+    Membership, MembershipSubscription, LoyaltyProfile, MembershipPayment
 )
 from apps.games.models import GameConsole, Game
 from apps.tournaments.models import Tournament
@@ -213,10 +213,18 @@ def live_sessions_data(request):
     })
 
 
-def customer_list(request):
+def filter_customers(request):
+    """Shared queryset builder for the customer management page."""
     q = request.GET.get("q", "")
-    membership_filter = request.GET.get("membership", "")
+    membership_filter = request.GET.get("membership", "")  # active / subscriber / none
+    status_filter = request.GET.get("status", "")          # active / inactive
     sort = request.GET.get("sort", "-date_joined")
+
+    active_plan = MembershipSubscription.objects.filter(
+        user=OuterRef("pk"),
+        status="active",
+        expires_at__gt=timezone.now(),
+    ).values("plan__name")[:1]
 
     users = User.objects.annotate(
         booking_count=Count("bookings"),
@@ -224,6 +232,8 @@ def customer_list(request):
             "payments__amount",
             filter=Q(payments__status__in=["captured", "demo"])
         ),
+        last_booking_date=Max("bookings__booking_date"),
+        active_plan_name=Subquery(active_plan),
     ).select_related("membership")
 
     if q:
@@ -232,28 +242,71 @@ def customer_list(request):
             | Q(first_name__icontains=q)
             | Q(last_name__icontains=q)
             | Q(phone__icontains=q)
+            | Q(username__icontains=q)
+            | Q(id__icontains=q)
         )
-    if membership_filter:
-        if membership_filter == "none":
-            users = users.filter(membership__isnull=True)
-        else:
-            users = users.filter(membership__isnull=False)
+    if membership_filter == "active":
+        users = users.filter(
+            subscriptions__status="active",
+            subscriptions__expires_at__gt=timezone.now(),
+        ).distinct()
+    elif membership_filter == "subscriber":
+        users = users.filter(subscriptions__isnull=False).distinct()
+    elif membership_filter == "none":
+        users = users.filter(subscriptions__isnull=True)
+    if status_filter == "active":
+        users = users.filter(is_active=True)
+    elif status_filter == "inactive":
+        users = users.filter(is_active=False)
 
-    valid_sorts = ["date_joined", "-date_joined", "email", "-email",
-                   "booking_count", "-booking_count", "last_login", "-last_login"]
-    if sort in valid_sorts:
-        users = users.order_by(sort)
-    else:
-        users = users.order_by("-date_joined")
+    valid_sorts = {
+        "date_joined": ["date_joined"],
+        "-date_joined": ["-date_joined"],
+        "email": ["email"],
+        "-email": ["-email"],
+        "booking_count": ["booking_count", "-date_joined"],
+        "-booking_count": ["-booking_count", "-date_joined"],
+        "total_spent": ["total_spent", "-date_joined"],
+        "-total_spent": ["-total_spent", "-date_joined"],
+        "last_login": ["last_login", "-date_joined"],
+        "-last_login": ["-last_login", "-date_joined"],
+        "name": ["first_name", "last_name", "-date_joined"],
+    }
+    users = users.order_by(*valid_sorts.get(sort, valid_sorts["-date_joined"]))
+
+    return users, {
+        "q": q,
+        "membership_filter": membership_filter,
+        "status_filter": status_filter,
+        "sort": sort,
+    }
+
+
+def customer_list(request):
+    users, filters = filter_customers(request)
 
     paginator = Paginator(users, 20)
     page = paginator.get_page(request.GET.get("page"))
 
+    params = {}
+    for key in ("q", "membership_filter", "status_filter"):
+        if filters[key]:
+            params[key if key != "membership_filter" else "membership"] = filters[key]
+    if filters["sort"] != "-date_joined":
+        params["sort"] = filters["sort"]
+
+    month_start = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
     return render(request, "staff/customers/list.html", {
         "page_obj": page,
-        "q": q,
-        "membership_filter": membership_filter,
-        "sort": sort,
+        "qs": urlencode(params),
+        "customer_stats": {
+            "total": User.objects.count(),
+            "active": User.objects.filter(is_active=True).count(),
+            "new_this_month": User.objects.filter(date_joined__gte=month_start).count(),
+            "members": MembershipSubscription.objects.active().values("user").distinct().count(),
+        },
+        **filters,
     })
 
 
@@ -274,11 +327,53 @@ def customer_detail(request, user_id):
         user=customer
     ).select_related("plan").order_by("-started_at")
 
+    active_subscription = subscriptions.filter(
+        status="active", expires_at__gt=timezone.now()
+    ).first()
+
+    totals = Booking.objects.filter(user=customer).aggregate(
+        booking_total=Count("id"),
+        spent=Sum(
+            "payment__amount",
+            filter=Q(payment__status__in=["captured", "demo"])
+        ),
+    )
+
+    events = []
+    for b in bookings:
+        events.append({
+            "kind": "booking",
+            "booking_id": b.id,
+            "title": f"Booking #{b.id} — {b.game_console.name if b.game_console else 'Console'}",
+            "sub": f"{b.booking_date} · {b.start_time:%I:%M %p} · ₹{b.total_cost} · {b.get_status_display()}",
+            "at": b.created_at,
+        })
+    for p in payments:
+        events.append({
+            "kind": "payment",
+            "booking_id": p.booking_id,
+            "title": f"Payment #{p.id} — Booking #{p.booking_id}",
+            "sub": f"₹{p.amount_rupees} · {p.get_status_display()}",
+            "at": p.created_at,
+        })
+    for s in subscriptions:
+        events.append({
+            "kind": "membership",
+            "title": f"{s.plan.name} membership — {s.get_status_display()}",
+            "sub": f"Started {s.started_at:%d %b %Y}" + (f" · Expires {s.expires_at:%d %b %Y}" if s.expires_at else ""),
+            "at": s.created_at,
+        })
+    events.sort(key=lambda e: e["at"], reverse=True)
+    events = events[:15]
+
     return render(request, "staff/customers/detail.html", {
         "customer": customer,
         "bookings": bookings,
         "payments": payments,
         "subscriptions": subscriptions,
+        "active_subscription": active_subscription,
+        "totals": totals,
+        "timeline": events,
     })
 
 
@@ -500,20 +595,110 @@ def tournament_set_status(request, tournament_id):
 
 
 def membership_list(request):
-    memberships = Membership.objects.all()
+    q = request.GET.get("q", "")
+    status_filter = request.GET.get("status", "")
+    sort = request.GET.get("sort", "tier")
+
+    memberships = Membership.objects.annotate(
+        active_member_count=Count(
+            "subscriptions",
+            filter=Q(subscriptions__status="active"),
+        ),
+        total_subscriptions=Count("subscriptions"),
+    )
+
+    if q:
+        memberships = memberships.filter(
+            Q(name__icontains=q) | Q(description__icontains=q)
+        )
+    if status_filter == "active":
+        memberships = memberships.filter(is_active=True)
+    elif status_filter == "inactive":
+        memberships = memberships.filter(is_active=False)
+
+    valid_sorts = {
+        "tier": ["tier_level", "price"],
+        "-tier": ["-tier_level", "-price"],
+        "name": ["name"],
+        "-name": ["-name"],
+        "price": ["price"],
+        "-price": ["-price"],
+        "members": ["active_member_count", "tier_level"],
+        "-members": ["-active_member_count", "tier_level"],
+    }
+    memberships = memberships.order_by(*valid_sorts.get(sort, valid_sorts["tier"]))
+
+    now = timezone.now()
+    expiring_soon = MembershipSubscription.objects.filter(
+        status="active",
+        expires_at__gte=now,
+        expires_at__lte=now + timezone.timedelta(days=30),
+    ).select_related("user", "plan").order_by("expires_at")
+
+    captured_30 = MembershipPayment.objects.filter(
+        status=MembershipPayment.Status.CAPTURED,
+        created_at__gte=now - timezone.timedelta(days=30),
+    ).aggregate(t=Sum("amount"))["t"] or 0
+
     subscriptions = MembershipSubscription.objects.select_related(
         "user", "plan"
-    ).order_by("-created_at")[:30]
-
-    total_active = MembershipSubscription.objects.active().count()
-    total_expired = MembershipSubscription.objects.filter(status="expired").count()
+    ).order_by("-created_at")[:12]
 
     return render(request, "staff/memberships/list.html", {
         "memberships": memberships,
         "subscriptions": subscriptions,
-        "total_active": total_active,
-        "total_expired": total_expired,
+        "expiring_soon": expiring_soon,
+        "q": q,
+        "status_filter": status_filter,
+        "sort": sort,
+        "membership_stats": {
+            "plans": Membership.objects.count(),
+            "active_plans": Membership.objects.filter(is_active=True).count(),
+            "members": MembershipSubscription.objects.active().values("user").distinct().count(),
+            "active_subscriptions": MembershipSubscription.objects.active().count(),
+            "expiring_7": MembershipSubscription.objects.filter(
+                status="active",
+                expires_at__gte=now,
+                expires_at__lte=now + timezone.timedelta(days=7),
+            ).count(),
+            "expiring_30": expiring_soon.count(),
+            "revenue_30": round(captured_30 / 100, 2),
+        },
     })
+
+
+def membership_plan_detail(request, plan_id):
+    plan = get_object_or_404(
+        Membership.objects.annotate(
+            active_member_count=Count(
+                "subscriptions",
+                filter=Q(subscriptions__status="active"),
+            ),
+            total_subscriptions=Count("subscriptions"),
+        ),
+        id=plan_id,
+    )
+    members = MembershipSubscription.objects.filter(plan=plan).select_related(
+        "user"
+    ).order_by("-started_at")[:50]
+    return render(request, "staff/memberships/detail.html", {
+        "plan": plan,
+        "members": members,
+    })
+
+
+@require_POST
+def membership_toggle_active(request, plan_id):
+    plan = get_object_or_404(Membership, id=plan_id)
+    plan.is_active = not plan.is_active
+    plan.save(update_fields=["is_active"])
+    action = "activated" if plan.is_active else "deactivated"
+    messages.success(request, f"“{plan.name}” plan {action}.")
+
+    next_url = request.POST.get("next", "")
+    if next_url.startswith("/staff/memberships"):
+        return redirect(next_url)
+    return redirect("staff:staff_membership_list")
 
 
 def analytics_dashboard(request):

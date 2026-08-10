@@ -1,0 +1,97 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}{{ plan.name }} — Memberships — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <div class="cx-breadcrumb" style="margin-bottom:var(--cx-space-2)">
+      <a href="{% url 'staff:staff_dashboard' %}" class="cx-breadcrumb-link">Dashboard</a>
+      <span class="cx-breadcrumb-sep">/</span>
+      <a href="{% url 'staff:staff_membership_list' %}" class="cx-breadcrumb-link">Memberships</a>
+      <span class="cx-breadcrumb-sep">/</span>
+      <span class="cx-breadcrumb-current">{{ plan.name }}</span>
+    </div>
+    <h1 class="sp-header-title">{{ plan.name }}</h1>
+    <p class="sp-header-sub">
+      {% if plan.is_active %}<span class="cx-badge cx-badge--success">Active</span>
+      {% else %}<span class="cx-badge cx-badge--neutral">Inactive</span>{% endif %}
+      {% if plan.is_popular %}<span class="cx-badge cx-badge--primary">Popular</span>{% endif %}
+      <span class="sp-activity-time">Tier {{ plan.tier_level }}</span>
+    </p>
+  </div>
+  <div class="sp-header-actions">
+    <form method="POST" action="{% url 'staff:staff_membership_toggle_active' plan.id %}" data-sp-confirm data-sp-confirm-message="{% if plan.is_active %}Deactivate “{{ plan.name }}”? New purchases will stop but existing subscriptions stay.{% else %}Activate “{{ plan.name }}”? It becomes available for purchase again.{% endif %}">
+      {% csrf_token %}
+      <button type="submit" class="cx-btn {% if plan.is_active %}cx-btn--danger-outline{% else %}cx-btn--primary{% endif %} cx-btn--sm">
+        {% if plan.is_active %}Deactivate Plan{% else %}Activate Plan{% endif %}
+      </button>
+    </form>
+    <a href="{% url 'admin:memberships_membership_change' plan.id %}" class="cx-btn cx-btn--outline cx-btn--sm" target="_blank" rel="noopener">Edit in Admin</a>
+  </div>
+</div>
+
+{% if messages %}
+  <div class="cx-flash-stack">
+    {% for message in messages %}
+      <div class="cx-flash" role="status">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div class="sp-dash-grid">
+  <!-- Plan summary -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Plan Summary</h2></div>
+    <div class="sp-widget-body">
+      {% if plan.description %}<p class="sp-plan-summary-desc">{{ plan.description }}</p>{% endif %}
+      <div class="sp-data-list">
+        <div class="sp-data-row"><span class="sp-data-label">Price</span><span class="sp-data-value sp-plan-summary-price">₹{{ plan.price|floatformat:0 }} <small>/ {{ plan.duration_days }} days</small></span></div>
+        <div class="sp-data-row"><span class="sp-data-label">Tier Level</span><span class="sp-data-value">{{ plan.tier_level }}</span></div>
+        <div class="sp-data-row"><span class="sp-data-label">Discount</span><span class="sp-data-value">{% if plan.discount_percent %}{{ plan.discount_percent }}% on bookings{% else %}None{% endif %}</span></div>
+        <div class="sp-data-row"><span class="sp-data-label">Priority Booking</span><span class="sp-data-value">{% if plan.priority_booking %}Yes{% else %}No{% endif %}</span></div>
+        <div class="sp-data-row"><span class="sp-data-label">Free Hours</span><span class="sp-data-value">{{ plan.free_hours_per_month }} per month</span></div>
+        <div class="sp-data-row"><span class="sp-data-label">Included Hours</span><span class="sp-data-value">{{ plan.included_hours }} hrs</span></div>
+        <div class="sp-data-row"><span class="sp-data-label">Weekend Hours</span><span class="sp-data-value">{{ plan.weekend_hours }} hrs</span></div>
+        <div class="sp-data-row"><span class="sp-data-label">Bonus Hours</span><span class="sp-data-value">{{ plan.bonus_hours }} hrs</span></div>
+        <div class="sp-data-row"><span class="sp-data-label">Total Hours</span><span class="sp-data-value"><strong>{{ plan.total_hours }} hrs</strong></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Members -->
+  <div class="sp-widget">
+    <div class="sp-widget-header">
+      <h2 class="sp-widget-title">Subscribers</h2>
+      <span class="sp-activity-time">{{ plan.active_member_count }} active · {{ plan.total_subscriptions }} total</span>
+    </div>
+    <div class="sp-widget-body">
+      {% if members %}
+      <div class="sp-expiring-list" aria-label="Plan subscribers">
+        {% for s in members %}
+        <div class="sp-expiring-item">
+          <span class="cx-avatar">{{ s.user.full_display_name|first|upper }}</span>
+          <div class="sp-expiring-main">
+            <div class="sp-expiring-name">{{ s.user.full_display_name }}</div>
+            <div class="sp-expiring-sub">Started {{ s.started_at|date:"d M Y" }}{% if s.expires_at %} · Expires {{ s.expires_at|date:"d M Y" }}{% endif %}{% if s.auto_renew %} · Auto-renew{% endif %}</div>
+          </div>
+          <span class="cx-badge
+            {% if s.status == 'active' %}cx-badge--success
+            {% elif s.status == 'expired' %}cx-badge--warning
+            {% elif s.status == 'cancelled' %}cx-badge--danger
+            {% else %}cx-badge--neutral{% endif %}">{{ s.get_status_display }}</span>
+          <a href="{% url 'staff:staff_customer_detail' s.user_id %}" class="cx-btn cx-btn--ghost cx-btn--sm">View</a>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="cx-empty" role="status">
+        <div class="cx-empty-title">No subscribers yet</div>
+        <div class="cx-empty-desc">When members buy this plan, they'll show up here.</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

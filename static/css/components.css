@@ -1874,3 +1874,10 @@
         animation-duration: 0.01ms !important;
     }
 }
+.cx-flash-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cx-space-2);
+    margin-bottom: var(--cx-space-4);
+}
+.cx-flash-stack .cx-flash { margin-bottom: 0; }

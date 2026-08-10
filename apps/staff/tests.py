@@ -10,6 +10,7 @@ from apps.games.models import GameConsole, Game
 from apps.bookings.models import Booking
 from apps.payments.models import Payment
 from apps.tournaments.models import Tournament
+from apps.memberships.models import Membership, MembershipSubscription, MembershipPayment
 
 
 def make_staff(email="staff@test.com", superuser=False):
@@ -452,3 +453,263 @@ class TournamentManagementTests(TestCase):
             reverse("staff:staff_tournament_set_status", args=[self.tournament.id])
         )
         self.assertEqual(resp.status_code, 405)
+
+
+def make_plan(
+    name="Pro Play",
+    price=Decimal("1499.00"),
+    duration_days=30,
+    tier_level=1,
+    is_active=True,
+    is_popular=False,
+    discount_percent=0,
+    priority_booking=False,
+    included_hours=10,
+    weekend_hours=4,
+    bonus_hours=2,
+):
+    return Membership.objects.create(
+        name=name, price=price, duration_days=duration_days,
+        tier_level=tier_level, is_active=is_active, is_popular=is_popular,
+        discount_percent=discount_percent, priority_booking=priority_booking,
+        included_hours=included_hours, weekend_hours=weekend_hours,
+        bonus_hours=bonus_hours, badge_color="",
+    )
+
+
+class CustomerManagementTests(TestCase):
+    """Phase 4 — customer list stats, filters, sorts, pagination and detail."""
+
+    def setUp(self):
+        make_staff()
+        self.client.force_login(User.objects.get(email="staff@test.com"))
+        self.customer = User.objects.create_user(
+            email="player@test.com", password="x", first_name="Aarav", last_name="Sharma",
+            phone="9876543210",
+        )
+        User.objects.create_user(
+            email="other@test.com", password="x", first_name="Zoya", last_name="Khan",
+            is_active=False,
+        )
+        self.console = make_console()
+        self.booking = Booking.objects.create(
+            user=self.customer, game_console=self.console,
+            booking_date="2026-08-10", start_time="12:00", end_time="14:00",
+            total_cost=Decimal("260.00"), status="confirmed",
+        )
+        Payment.objects.create(
+            booking=self.booking, user=self.customer,
+            amount=26000, status="captured",
+        )
+        self.plan = make_plan()
+        MembershipSubscription.objects.create(
+            user=self.customer, plan=self.plan,
+            status="active",
+            started_at=timezone.now(),
+            expires_at=timezone.now() + timezone.timedelta(days=20),
+        )
+
+    def test_list_renders_with_stats(self):
+        resp = self.client.get(reverse("staff:staff_customer_list"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("customer_stats", resp.context)
+        self.assertEqual(resp.context["customer_stats"]["total"], 3)
+        self.assertEqual(resp.context["customer_stats"]["active"], 2)
+        self.assertEqual(resp.context["customer_stats"]["members"], 1)
+        self.assertIn("page_obj", resp.context)
+
+    def test_search_by_email(self):
+        resp = self.client.get(
+            reverse("staff:staff_customer_list"), {"q": "player@test.com"}
+        )
+        self.assertEqual(len(resp.context["page_obj"].object_list), 1)
+        self.assertEqual(resp.context["page_obj"].object_list[0].email, "player@test.com")
+
+    def test_search_by_phone(self):
+        resp = self.client.get(
+            reverse("staff:staff_customer_list"), {"q": "9876543210"}
+        )
+        self.assertEqual(len(resp.context["page_obj"].object_list), 1)
+
+    def test_filter_membership_active(self):
+        resp = self.client.get(
+            reverse("staff:staff_customer_list"), {"membership": "active"}
+        )
+        self.assertEqual(len(resp.context["page_obj"].object_list), 1)
+        self.assertEqual(resp.context["page_obj"].object_list[0].active_plan_name, "Pro Play")
+
+    def test_filter_membership_none(self):
+        resp = self.client.get(
+            reverse("staff:staff_customer_list"), {"membership": "none"}
+        )
+        self.assertEqual(len(resp.context["page_obj"].object_list), 2)
+
+    def test_filter_status_inactive(self):
+        resp = self.client.get(
+            reverse("staff:staff_customer_list"), {"status": "inactive"}
+        )
+        self.assertEqual(len(resp.context["page_obj"].object_list), 1)
+        self.assertEqual(resp.context["page_obj"].object_list[0].email, "other@test.com")
+
+    def test_sort_highest_spend(self):
+        resp = self.client.get(
+            reverse("staff:staff_customer_list"), {"sort": "-total_spent"}
+        )
+        rows = resp.context["page_obj"].object_list
+        self.assertEqual(rows[0].total_spent, 26000)
+
+    def test_sort_by_name(self):
+        resp = self.client.get(
+            reverse("staff:staff_customer_list"), {"sort": "name"}
+        )
+        rows = list(resp.context["page_obj"].object_list)
+        names = [r.first_name for r in rows if r.first_name]
+        self.assertEqual(names[0], "Aarav")
+        self.assertEqual(names[1], "Zoya")
+
+    def test_detail_renders_context(self):
+        resp = self.client.get(
+            reverse("staff:staff_customer_detail", args=[self.customer.id])
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("totals", resp.context)
+        self.assertEqual(resp.context["totals"]["booking_total"], 1)
+        self.assertEqual(resp.context["totals"]["spent"], 26000)
+        self.assertIn("active_subscription", resp.context)
+        self.assertIsNotNone(resp.context["active_subscription"])
+        self.assertIn("timeline", resp.context)
+        self.assertIn("payments", resp.context)
+        self.assertIn("subscriptions", resp.context)
+
+    def test_anonymous_cannot_access_detail(self):
+        self.client.logout()
+        resp = self.client.get(
+            reverse("staff:staff_customer_detail", args=[self.customer.id])
+        )
+        self.assertNotEqual(resp.status_code, 200)
+
+    def test_pagination_preserves_page(self):
+        resp = self.client.get(
+            reverse("staff:staff_customer_list"), {"page": "1"}
+        )
+        self.assertEqual(resp.status_code, 200)
+
+
+class MembershipManagementTests(TestCase):
+    """Phase 4 — membership plan cards, stats, expiring list and toggle."""
+
+    def setUp(self):
+        make_staff()
+        self.client.force_login(User.objects.get(email="staff@test.com"))
+        self.plan = make_plan()
+        make_plan(
+            name="Elite", price=Decimal("4999.00"),
+            tier_level=3, is_popular=True, discount_percent=15,
+        )
+        self.member = User.objects.create_user(email="m@test.com", password="x")
+        MembershipSubscription.objects.create(
+            user=self.member, plan=self.plan,
+            status="active",
+            started_at=timezone.now(),
+            expires_at=timezone.now() + timezone.timedelta(days=12),
+        )
+        MembershipPayment.objects.create(
+            subscription=MembershipSubscription.objects.first(),
+            user=self.member, amount=149900, status="captured",
+            created_at=timezone.now(),
+        )
+
+    def test_list_renders_with_stats(self):
+        resp = self.client.get(reverse("staff:staff_membership_list"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("membership_stats", resp.context)
+        self.assertEqual(resp.context["membership_stats"]["plans"], 5)
+        self.assertEqual(resp.context["membership_stats"]["active_plans"], 5)
+        self.assertEqual(resp.context["membership_stats"]["members"], 1)
+        self.assertIn("expiring_soon", resp.context)
+        self.assertIn("subscriptions", resp.context)
+
+    def test_revenue_30_captured(self):
+        resp = self.client.get(reverse("staff:staff_membership_list"))
+        self.assertEqual(resp.context["membership_stats"]["revenue_30"], 1499.0)
+
+    def test_expiring_soon_list(self):
+        resp = self.client.get(reverse("staff:staff_membership_list"))
+        self.assertEqual(len(resp.context["expiring_soon"]), 1)
+
+    def test_filter_status_inactive(self):
+        make_plan(name="Retired", price=Decimal("999.00"), is_active=False)
+        resp = self.client.get(
+            reverse("staff:staff_membership_list"), {"status": "inactive"}
+        )
+        self.assertEqual(len(resp.context["memberships"]), 1)
+        self.assertEqual(resp.context["memberships"][0].name, "Retired")
+
+    def test_search_by_name(self):
+        resp = self.client.get(
+            reverse("staff:staff_membership_list"), {"q": "elite"}
+        )
+        self.assertEqual(len(resp.context["memberships"]), 1)
+        self.assertEqual(resp.context["memberships"][0].name, "Elite")
+
+    def test_sort_by_members(self):
+        resp = self.client.get(
+            reverse("staff:staff_membership_list"), {"sort": "-members"}
+        )
+        rows = list(resp.context["memberships"])
+        self.assertEqual(rows[0].active_member_count, 1)
+
+    def test_plan_detail_renders(self):
+        resp = self.client.get(
+            reverse("staff:staff_membership_detail", args=[self.plan.id])
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("plan", resp.context)
+        self.assertEqual(resp.context["plan"].active_member_count, 1)
+        self.assertEqual(len(resp.context["members"]), 1)
+
+    def test_anonymous_cannot_access_plan_detail(self):
+        self.client.logout()
+        resp = self.client.get(
+            reverse("staff:staff_membership_detail", args=[self.plan.id])
+        )
+        self.assertNotEqual(resp.status_code, 200)
+
+    def test_toggle_active_deactivates(self):
+        resp = self.client.post(
+            reverse("staff:staff_membership_toggle_active", args=[self.plan.id])
+        )
+        self.assertEqual(resp.status_code, 302)
+        self.plan.refresh_from_db()
+        self.assertFalse(self.plan.is_active)
+
+    def test_toggle_active_reactivates(self):
+        self.plan.is_active = False
+        self.plan.save(update_fields=["is_active"])
+        self.client.post(
+            reverse("staff:staff_membership_toggle_active", args=[self.plan.id])
+        )
+        self.plan.refresh_from_db()
+        self.assertTrue(self.plan.is_active)
+
+    def test_toggle_active_requires_post(self):
+        resp = self.client.get(
+            reverse("staff:staff_membership_toggle_active", args=[self.plan.id])
+        )
+        self.assertEqual(resp.status_code, 405)
+
+    def test_toggle_active_next_redirect_guard(self):
+        resp = self.client.post(
+            reverse("staff:staff_membership_toggle_active", args=[self.plan.id]),
+            {"next": "https://evil.example/"},
+        )
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.url, reverse("staff:staff_membership_list"))
+
+    def test_toggle_active_next_redirect_internal(self):
+        resp = self.client.post(
+            reverse("staff:staff_membership_toggle_active", args=[self.plan.id]),
+            {"next": reverse("staff:staff_membership_detail", args=[self.plan.id])},
+        )
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.url, reverse("staff:staff_membership_detail", args=[self.plan.id]))
