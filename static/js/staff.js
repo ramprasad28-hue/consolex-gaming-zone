@@ -583,4 +583,44 @@
         });
     });
 
+    /* ── Phase 6: Settings hub nav + scrollspy ── */
+    var settingsNav = document.querySelector('[data-sp-settings-nav]');
+    if (settingsNav) {
+        var settingsLinks = settingsNav.querySelectorAll('[data-sp-settings-link]');
+        var settingsSections = document.querySelectorAll('[data-sp-settings-section]');
+
+        function setActiveSettings(id) {
+            settingsLinks.forEach(function (link) {
+                var on = link.getAttribute('data-sp-settings-link') === id;
+                link.classList.toggle('is-active', on);
+                link.setAttribute('aria-current', on ? 'true' : 'false');
+            });
+        }
+
+        // Initial tab: URL hash > ?tab= > general
+        var initialId = (location.hash || '').replace('#', '')
+            || new URLSearchParams(location.search).get('tab')
+            || 'general';
+        setActiveSettings(initialId);
+        if (initialId && !location.hash) {
+            var initialEl = document.getElementById(initialId);
+            if (initialEl && initialEl.scrollIntoView) initialEl.scrollIntoView({ block: 'start' });
+        }
+
+        settingsLinks.forEach(function (link) {
+            link.addEventListener('click', function () {
+                setActiveSettings(link.getAttribute('data-sp-settings-link'));
+            });
+        });
+
+        if (settingsSections.length && 'IntersectionObserver' in window) {
+            var settingsSpy = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) setActiveSettings(entry.target.id);
+                });
+            }, { rootMargin: '-20% 0px -70% 0px' });
+            settingsSections.forEach(function (section) { settingsSpy.observe(section); });
+        }
+    }
+
 })();

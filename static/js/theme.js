@@ -1,6 +1,6 @@
 /**
  * CONSOLEX ThemeManager
- * Handles dark/light theme with system preference detection,
+ * Handles dark/light/system theme with system preference detection,
  * localStorage persistence, and smooth transitions.
  */
 (function () {
@@ -9,17 +9,35 @@
     var STORAGE_KEY = 'theme';
     var DARK = 'dark';
     var LIGHT = 'light';
+    var SYSTEM = 'system';
 
-    /** Load saved theme — light is always the default */
-    function loadTheme() {
+    /** Current mode — light is always the default */
+    function currentMode() {
         var saved = localStorage.getItem(STORAGE_KEY);
         return saved || LIGHT;
     }
 
+    /** Get system color scheme preference */
+    function getSystemPreference() {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            return DARK;
+        }
+        return LIGHT;
+    }
+
+    /** Resolve a mode ('light' | 'dark' | 'system') to a concrete theme */
+    function resolveTheme(mode) {
+        if (mode === SYSTEM) return getSystemPreference();
+        return mode;
+    }
+
     /** Apply theme to document */
-    function applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        updateToggleIcon(theme);
+    function applyTheme(mode) {
+        var resolved = resolveTheme(mode);
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', mode);
+        updateToggleIcon(resolved);
+        updateThemeOptions(mode);
     }
 
     /** Update toggle button icon visibility */
@@ -32,38 +50,43 @@
         if (moon) moon.style.display = theme === LIGHT ? 'block' : 'none';
     }
 
+    /** Reflect active state on [data-theme-option] buttons */
+    function updateThemeOptions(mode) {
+        document.querySelectorAll('[data-theme-option]').forEach(function (btn) {
+            var on = btn.getAttribute('data-theme-option') === mode;
+            btn.classList.toggle('is-active', on);
+            btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+    }
+
     /** Save preference */
-    function saveTheme(theme) {
+    function saveTheme(mode) {
         try {
-            localStorage.setItem(STORAGE_KEY, theme);
+            localStorage.setItem(STORAGE_KEY, mode);
         } catch (e) {
             // localStorage unavailable
         }
     }
 
-    /** Get system color scheme preference */
-    function getSystemPreference() {
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            return DARK;
-        }
-        return LIGHT;
+    /** Set and persist a theme mode */
+    function setTheme(mode) {
+        applyTheme(mode);
+        saveTheme(mode);
     }
 
     /** Toggle between dark and light */
     function toggleTheme() {
-        var current = document.documentElement.getAttribute('data-theme') || getSystemPreference();
-        var next = current === LIGHT ? DARK : LIGHT;
-        applyTheme(next);
-        saveTheme(next);
+        var next = currentMode() === LIGHT ? DARK : LIGHT;
+        setTheme(next);
     }
 
-    /** Listen for system preference changes (only if user has no saved preference) */
+    /** Listen for system preference changes (only relevant in 'system' mode) */
     function watchSystemPreference() {
         if (!window.matchMedia) return;
         var mq = window.matchMedia('(prefers-color-scheme: dark)');
         var handler = function (e) {
-            if (!localStorage.getItem(STORAGE_KEY)) {
-                applyTheme(e.matches ? DARK : LIGHT);
+            if (currentMode() === SYSTEM) {
+                applyTheme(SYSTEM);
             }
         };
         if (mq.addEventListener) {
@@ -73,10 +96,20 @@
         }
     }
 
+    /** Bind theme picker buttons ([data-theme-option]) */
+    function bindThemeOptions() {
+        document.querySelectorAll('[data-theme-option]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                setTheme(btn.getAttribute('data-theme-option'));
+            });
+        });
+    }
+
     /** Initialize on DOM ready */
     function init() {
-        applyTheme(loadTheme());
+        applyTheme(currentMode());
         watchSystemPreference();
+        bindThemeOptions();
 
         var btn = document.getElementById('themeToggle');
         if (btn) {
@@ -90,4 +123,11 @@
     } else {
         init();
     }
+
+    window.CXTheme = {
+        setTheme: setTheme,
+        currentMode: currentMode,
+        resolveTheme: resolveTheme,
+        getSystemPreference: getSystemPreference,
+    };
 })();

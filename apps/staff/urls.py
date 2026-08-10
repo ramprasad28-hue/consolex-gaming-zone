@@ -37,5 +37,12 @@ urlpatterns = [
     path("import/", staff_required(views.import_customers), name="staff_import"),
     path("communication/", staff_required(views.bulk_communication), name="staff_communication"),
     path("communication/history/", staff_required(views.communication_history), name="staff_comm_history"),
+    path("profile/", staff_required(views.profile_page), name="staff_profile"),
+    path("staff/", staff_required(views.staff_list), name="staff_staff_list"),
+    path("staff/<int:user_id>/toggle-active/", staff_required(views.staff_toggle_active), name="staff_staff_toggle_active"),
+    path("staff/<int:user_id>/toggle-role/", staff_required(views.staff_toggle_role), name="staff_staff_toggle_role"),
+    path("notifications/", staff_required(views.staff_notifications), name="staff_notifications"),
+    path("notifications/read-all/", staff_required(views.staff_notification_read_all), name="staff_notifications_read_all"),
+    path("notifications/<int:notification_id>/read/", staff_required(views.staff_notification_read), name="staff_notification_read"),
     path("settings/", staff_required(views.settings_page), name="staff_settings"),
 ]

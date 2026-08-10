@@ -206,3 +206,7 @@ class MembershipService:
             user,
             f"Your {subscription.plan.name} membership is now active!",
         )
+        NotificationService.notify_staff(
+            f"{user.full_display_name} activated a {subscription.plan.name} membership.",
+            category="membership",
+        )

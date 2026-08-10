@@ -229,6 +229,10 @@ class PaymentService:
             payment.user,
             f"Booking #{booking.id} confirmed successfully.",
         )
+        NotificationService.notify_staff(
+            f"Booking #{booking.id} confirmed — payment captured for {payment.user.full_display_name}.",
+            category="payment",
+        )
 
     # ── Receipt ────────────────────────────────────────────
 

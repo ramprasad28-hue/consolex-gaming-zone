@@ -62,6 +62,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
                 'apps.cms.context_processors.site_context',
+                'apps.staff.context_processors.staff_topbar',
             ],
         },
     },

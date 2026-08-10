@@ -14,12 +14,26 @@ class NotificationQuerySet(models.QuerySet):
 
 
 class Notification(models.Model):
+
+    class Category(models.TextChoices):
+        SYSTEM = "system", "System"
+        BOOKING = "booking", "Booking"
+        PAYMENT = "payment", "Payment"
+        MEMBERSHIP = "membership", "Membership"
+        TOURNAMENT = "tournament", "Tournament"
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="notifications",
     )
     message = models.TextField()
+    category = models.CharField(
+        max_length=20,
+        choices=Category.choices,
+        default=Category.SYSTEM,
+        db_index=True,
+    )
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

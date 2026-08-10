@@ -13,6 +13,9 @@ A premium gaming lounge management system built with Django. Manage bookings, me
 - **Tournaments** — Create, register, and manage competitive gaming events
 - **User Dashboard** — View booking history, stats, achievements, and membership status
 - **Staff Portal** — Manage bookings, customers, games, memberships, and tournaments
+- **Staff Notification Center** — Category/status-filtered inbox with unread badge and mark-read/read-all (staff bell)
+- **Staff Management** — Search, activate/deactivate, and change roles for staff (owner-only toggles)
+- **Staff Profile & Settings Hub** — Edit profile/password and manage site-wide settings with health checks
 - **Analytics & Reports** — Visual dashboards with daily/weekly/monthly trends
 - **Bulk Communication** — Send targeted messages to customer segments
 - **CSV/XLS Import** — Import customer data via drag-and-drop

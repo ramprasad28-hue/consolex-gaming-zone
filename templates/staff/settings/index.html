@@ -3,91 +3,271 @@
 
 {% block title %}Settings — {{ site.brand_name }}{% endblock %}
 
+{% block sp_breadcrumb %}Settings{% endblock %}
+
 {% block sp_content %}
 <div class="sp-header">
   <div>
     <h1 class="sp-header-title">Settings</h1>
-    <p class="sp-header-sub">Manage your business profile and preferences</p>
+    <p class="sp-header-sub">Business profile, appearance and account preferences</p>
   </div>
   <div class="sp-header-actions">
     <a href="{% url 'admin:index' %}" class="cx-btn cx-btn--outline cx-btn--sm" target="_blank" rel="noopener">Django Admin</a>
   </div>
 </div>
 
-<div class="sp-settings-section">
-  <h2 class="sp-settings-heading">Business Information</h2>
-  <p class="sp-settings-desc">Your business details shown across the site.</p>
-
-  <div class="cx-field">
-    <label class="cx-label">Brand Name</label>
-    <input type="text" class="cx-input" value="{{ site.brand_name }}" readonly>
-    <p class="cx-hint">Edit via <a href="{% url 'admin:cms_sitesettings_change' 1 %}" target="_blank">Django Admin → Site Settings</a></p>
+{% if messages %}
+  <div class="cx-flash-stack">
+    {% for message in messages %}
+      <div class="cx-flash" role="status">{{ message }}</div>
+    {% endfor %}
   </div>
+{% endif %}
 
-  <div class="cx-field">
-    <label class="cx-label">Tagline</label>
-    <input type="text" class="cx-input" value="{{ site.tagline }}" readonly>
-  </div>
+<div class="sp-settings-layout">
+  <nav class="sp-settings-nav" data-sp-settings-nav aria-label="Settings sections">
+    <a href="#general" class="sp-settings-nav-item" data-sp-settings-link="general" aria-current="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <span>General</span>
+    </a>
+    <a href="#appearance" class="sp-settings-nav-item" data-sp-settings-link="appearance">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <span>Appearance</span>
+    </a>
+    <a href="#bookings" class="sp-settings-nav-item" data-sp-settings-link="bookings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>Bookings</span>
+    </a>
+    <a href="#payments" class="sp-settings-nav-item" data-sp-settings-link="payments">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <span>Payments</span>
+    </a>
+    <a href="#notifications" class="sp-settings-nav-item" data-sp-settings-link="notifications">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span>Notifications</span>
+    </a>
+    <a href="#email" class="sp-settings-nav-item" data-sp-settings-link="email">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
+      <span>Email</span>
+    </a>
+    <a href="#security" class="sp-settings-nav-item" data-sp-settings-link="security">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      <span>Security</span>
+    </a>
+    <a href="#system" class="sp-settings-nav-item" data-sp-settings-link="system">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <span>System</span>
+    </a>
+  </nav>
 
-  <div class="cx-field">
-    <label class="cx-label">Phone</label>
-    <input type="text" class="cx-input" value="{{ site.phone }}" readonly>
-  </div>
+  <div class="sp-settings-content">
 
-  <div class="cx-field">
-    <label class="cx-label">Address</label>
-    <textarea class="cx-textarea" rows="2" readonly>{{ site.address }}</textarea>
-  </div>
+    <section id="general" class="sp-settings-section" data-sp-settings-section>
+      <h2 class="sp-settings-heading">General</h2>
+      <p class="sp-settings-desc">Business details shown across the public site.</p>
+      <form method="POST" action="{% url 'staff:staff_settings' %}">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="general">
+        {% for field in settings_form %}
+        <div class="cx-field">
+          <label class="cx-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<p class="cx-hint">{{ field.help_text }}</p>{% endif %}
+          {% for e in field.errors %}<p class="cx-hint is-error">{{ e }}</p>{% endfor %}
+        </div>
+        {% endfor %}
+        <div class="sp-settings-actions">
+          <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Save changes</button>
+          <a href="{% url 'staff:staff_settings' %}" class="cx-btn cx-btn--ghost cx-btn--sm">Cancel</a>
+        </div>
+      </form>
+    </section>
 
-  <div class="cx-field">
-    <label class="cx-label">Operating Hours</label>
-    <input type="text" class="cx-input" value="{{ site.operating_hours }}" readonly>
-  </div>
+    <section id="appearance" class="sp-settings-section" data-sp-settings-section>
+      <h2 class="sp-settings-heading">Appearance</h2>
+      <div class="sp-settings-block">
+        <div class="sp-settings-subhead">Theme mode</div>
+        <p class="sp-settings-desc">Saved to this browser and applied across the whole site.</p>
+        <div class="sp-theme-picker" role="group" aria-label="Theme mode">
+          <button type="button" class="cx-btn cx-btn--outline cx-btn--md" data-theme-option="light">Light</button>
+          <button type="button" class="cx-btn cx-btn--outline cx-btn--md" data-theme-option="dark">Dark</button>
+          <button type="button" class="cx-btn cx-btn--outline cx-btn--md" data-theme-option="system">System</button>
+        </div>
+      </div>
+      <div class="sp-settings-block">
+        <div class="sp-settings-subhead">Brand accent</div>
+        <div class="sp-data-list">
+          <div class="sp-data-row">
+            <span class="sp-data-label">Dark accent</span>
+            <span class="sp-data-value"><span class="sp-swatch" style="background:{{ site.theme_color }}" aria-hidden="true"></span>{{ site.theme_color }}</span>
+          </div>
+          <div class="sp-data-row">
+            <span class="sp-data-label">Light accent</span>
+            <span class="sp-data-value"><span class="sp-swatch" style="background:{{ site.theme_color_light }}" aria-hidden="true"></span>{{ site.theme_color_light }}</span>
+          </div>
+        </div>
+        <p class="sp-settings-desc">Accent colors are used by the public site. Edit them in <a href="{% url 'admin:cms_sitesettings_change' 1 %}" target="_blank" rel="noopener">Django Admin → Site Settings</a>.</p>
+      </div>
+    </section>
 
-  <div class="sp-data-list" style="margin-top:var(--cx-space-4)">
-    <div class="sp-data-row">
-      <span class="sp-data-label">WhatsApp</span>
-      <span class="sp-data-value">{{ site.whatsapp_number }}</span>
-    </div>
-    <div class="sp-data-row">
-      <span class="sp-data-label">Instagram</span>
-      <span class="sp-data-value">{{ site.instagram_handle }}</span>
-    </div>
-    <div class="sp-data-row">
-      <span class="sp-data-label">Google Rating</span>
-      <span class="sp-data-value">{{ site.google_rating }} ({{ site.google_review_count }} reviews)</span>
-    </div>
-  </div>
-</div>
+    <section id="bookings" class="sp-settings-section" data-sp-settings-section>
+      <h2 class="sp-settings-heading">Bookings</h2>
+      <p class="sp-settings-desc">Booking behaviour is enforced by the booking flow — there are no overrides here.</p>
+      <div class="sp-settings-block">
+        <div class="sp-settings-subhead">Booking rules</div>
+        <div class="sp-data-list">
+          <div class="sp-data-row">
+            <span class="sp-data-label">Operating hours</span>
+            <span class="sp-data-value">{{ site.operating_hours }}</span>
+          </div>
+          <div class="sp-data-row">
+            <span class="sp-data-label">Advance required</span>
+            <span class="sp-data-value">30% of session cost</span>
+          </div>
+          <div class="sp-data-row">
+            <span class="sp-data-label">Players per booking</span>
+            <span class="sp-data-value">1–4</span>
+          </div>
+          <div class="sp-data-row">
+            <span class="sp-data-label">Statuses</span>
+            <span class="sp-data-value">pending · confirmed · checked in · cancelled · completed</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<div class="sp-settings-section">
-  <h2 class="sp-settings-heading">Theme Preference</h2>
-  <p class="sp-settings-desc">Toggle between light and dark mode (affects your browser session).</p>
-  <div style="display:flex;gap:var(--cx-space-3)">
-    <button type="button" class="cx-btn cx-btn--outline cx-btn--md" onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('theme','light')"><img src="{% static 'images/icons/sun.png' %}" alt="" width="16" height="16" loading="lazy"> Light Mode</button>
-    <button type="button" class="cx-btn cx-btn--outline cx-btn--md" onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('theme','dark')"><img src="{% static 'images/icons/moon.png' %}" alt="" width="16" height="16" loading="lazy"> Dark Mode</button>
-  </div>
-</div>
+    <section id="payments" class="sp-settings-section" data-sp-settings-section>
+      <h2 class="sp-settings-heading">Payments</h2>
+      <p class="sp-settings-desc">Gateway status — read from your environment, secrets are never shown.</p>
+      <div class="sp-settings-block">
+        <div class="sp-data-list">
+          <div class="sp-data-row">
+            <span class="sp-data-label">Gateway</span>
+            <span class="sp-data-value">
+              {% if razorpay_configured %}<span class="cx-badge cx-badge--success">Live</span>
+              {% else %}<span class="cx-badge cx-badge--warning">Demo mode</span>{% endif %}
+            </span>
+          </div>
+          <div class="sp-data-row">
+            <span class="sp-data-label">Currency</span>
+            <span class="sp-data-value">INR (₹)</span>
+          </div>
+        </div>
+        <p class="sp-settings-desc">
+          {% if razorpay_configured %}Payments are processed through Razorpay.{% else %}
+          No Razorpay keys are configured, so payments run in demo mode — orders are approved without real charges.{% endif %}
+          Credentials are read from <code>.env</code> / environment variables.
+        </p>
+      </div>
+    </section>
 
-<div class="sp-settings-section">
-  <h2 class="sp-settings-heading">Account</h2>
-  <p class="sp-settings-desc">Your staff account information.</p>
-  <div class="sp-data-list">
-    <div class="sp-data-row">
-      <span class="sp-data-label">Email</span>
-      <span class="sp-data-value">{{ request.user.email }}</span>
-    </div>
-    <div class="sp-data-row">
-      <span class="sp-data-label">Role</span>
-      <span class="sp-data-value">{% if request.user.is_superuser %}Owner{% else %}Staff{% endif %}</span>
-    </div>
-    <div class="sp-data-row">
-      <span class="sp-data-label">Joined</span>
-      <span class="sp-data-value">{{ request.user.date_joined|date:"d M Y" }}</span>
-    </div>
-  </div>
-  <div style="margin-top:var(--cx-space-4)">
-    <a href="{% url 'users:logout' %}" class="cx-btn cx-btn--outline cx-btn--sm">Logout</a>
+    <section id="notifications" class="sp-settings-section" data-sp-settings-section>
+      <h2 class="sp-settings-heading">Notifications</h2>
+      <p class="sp-settings-desc">What your staff inbox receives today — every item is generated by a real event.</p>
+      <div class="sp-settings-block">
+        <div class="sp-settings-subhead">In-app notification sources</div>
+        <ul class="sp-settings-list">
+          <li><span class="sp-notif-dot sp-notif-dot--payment" aria-hidden="true"></span>Booking confirmed — sent when a payment is captured for a booking</li>
+          <li><span class="sp-notif-dot sp-notif-dot--membership" aria-hidden="true"></span>Membership activated — sent when a subscription goes live</li>
+        </ul>
+        <div class="sp-settings-actions">
+          <a href="{% url 'staff:staff_notifications' %}" class="cx-btn cx-btn--primary cx-btn--sm">Open notification center</a>
+        </div>
+      </div>
+      <div class="sp-settings-block">
+        <div class="sp-settings-subhead">Delivery</div>
+        <div class="sp-data-list">
+          <div class="sp-data-row">
+            <span class="sp-data-label">WhatsApp (Twilio)</span>
+            <span class="sp-data-value">
+              {% if whatsapp_configured %}<span class="cx-badge cx-badge--success">Configured</span>
+              {% else %}<span class="cx-badge cx-badge--warning">Not configured</span>{% endif %}
+            </span>
+          </div>
+        </div>
+        <p class="sp-settings-desc">
+          {% if whatsapp_configured %}Twilio keys are set — WhatsApp messages can be delivered.{% else %}
+          No Twilio keys are set, so WhatsApp notifications stay disabled.{% endif %}
+        </p>
+      </div>
+      <div class="sp-coming-soon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        Email delivery preferences are planned. The current build sends in-app notifications only.
+      </div>
+    </section>
+
+    <section id="email" class="sp-settings-section" data-sp-settings-section>
+      <h2 class="sp-settings-heading">Email</h2>
+      <p class="sp-settings-desc">Mail server configuration is managed through the environment.</p>
+      <div class="sp-settings-block">
+        <div class="sp-data-list">
+          <div class="sp-data-row">
+            <span class="sp-data-label">Backend</span>
+            <span class="sp-data-value">{{ email_backend }}</span>
+          </div>
+        </div>
+        <p class="sp-settings-desc">
+          {% if email_backend == 'console' %}
+          Development uses the console backend — emails are printed to the terminal instead of being delivered.
+          {% else %}
+          Email is sent through an SMTP backend.
+          {% endif %}
+        </p>
+      </div>
+      <div class="sp-coming-soon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        An in-app SMTP configuration form is planned.
+      </div>
+    </section>
+
+    <section id="security" class="sp-settings-section" data-sp-settings-section>
+      <h2 class="sp-settings-heading">Security</h2>
+      <div class="sp-settings-block">
+        <div class="sp-settings-subhead">Change password</div>
+        <form method="POST" action="{% url 'staff:staff_settings' %}">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="password">
+          {% for field in password_form %}
+          <div class="cx-field">
+            <label class="cx-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<p class="cx-hint">{{ field.help_text }}</p>{% endif %}
+            {% for e in field.errors %}<p class="cx-hint is-error">{{ e }}</p>{% endfor %}
+          </div>
+          {% endfor %}
+          <div class="sp-settings-actions">
+            <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Update password</button>
+          </div>
+        </form>
+      </div>
+      <div class="sp-settings-block">
+        <div class="sp-settings-subhead">Account</div>
+        <div class="sp-data-list">
+          <div class="sp-data-row"><span class="sp-data-label">Email</span><span class="sp-data-value">{{ request.user.email }}</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Role</span><span class="sp-data-value">{{ role }}</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Last login</span><span class="sp-data-value">{{ request.user.last_login|date:"d M Y, H:i"|default:"Never" }}</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Joined</span><span class="sp-data-value">{{ request.user.date_joined|date:"d M Y" }}</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="system" class="sp-settings-section" data-sp-settings-section>
+      <h2 class="sp-settings-heading">System</h2>
+      <p class="sp-settings-desc">Live checks of the services this panel depends on.</p>
+      <div class="sp-health-list" role="list" aria-label="System health">
+        {% for check in system_checks %}
+        <div class="sp-health-row" role="listitem">
+          <span class="sp-health-dot sp-health-dot--{{ check.tone }}" aria-hidden="true"></span>
+          <div class="sp-health-main">
+            <div class="sp-health-label">{{ check.label }}</div>
+            {% if check.detail %}<div class="sp-health-detail">{{ check.detail }}</div>{% endif %}
+          </div>
+          <span class="cx-badge {% if check.tone == 'ok' %}cx-badge--success{% elif check.tone == 'warn' %}cx-badge--warning{% else %}cx-badge--neutral{% endif %}">{{ check.status }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
   </div>
 </div>
 {% endblock %}

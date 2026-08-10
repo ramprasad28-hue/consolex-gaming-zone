@@ -1,0 +1,83 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}My Profile — {{ site.brand_name }}{% endblock %}
+
+{% block sp_breadcrumb %}My Profile{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <h1 class="sp-header-title">My Profile</h1>
+    <p class="sp-header-sub">Your account details and security</p>
+  </div>
+</div>
+
+{% if messages %}
+  <div class="cx-flash-stack">
+    {% for message in messages %}
+      <div class="cx-flash" role="status">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div class="sp-profile-layout">
+  <aside class="sp-profile-card">
+    <span class="sp-profile-avatar-lg" aria-hidden="true">{{ user.username|slice:":1"|upper }}</span>
+    <div class="sp-profile-name">{{ user.get_full_name|default:user.username }}</div>
+    <div class="sp-profile-role"><span class="cx-badge cx-badge--primary">{{ role }}</span></div>
+    <div class="sp-data-list sp-profile-facts">
+      <div class="sp-data-row"><span class="sp-data-label">Email</span><span class="sp-data-value">{{ user.email }}</span></div>
+      <div class="sp-data-row"><span class="sp-data-label">Phone</span><span class="sp-data-value">{{ user.phone|default:"—" }}</span></div>
+      <div class="sp-data-row"><span class="sp-data-label">Last login</span><span class="sp-data-value">{{ user.last_login|date:"d M Y, H:i"|default:"Never" }}</span></div>
+      <div class="sp-data-row"><span class="sp-data-label">Joined</span><span class="sp-data-value">{{ user.date_joined|date:"d M Y" }}</span></div>
+    </div>
+  </aside>
+
+  <div class="sp-profile-main">
+    <div class="sp-widget">
+      <div class="sp-widget-header">
+        <h2 class="sp-widget-title">Edit profile</h2>
+        <a href="{% url 'staff:staff_settings' %}#security" class="cx-btn cx-btn--ghost cx-btn--sm">More security options</a>
+      </div>
+      <div class="sp-widget-body">
+        <form method="POST" action="{% url 'staff:staff_profile' %}">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="profile">
+          {% for field in profile_form %}
+          <div class="cx-field">
+            <label class="cx-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% for e in field.errors %}<p class="cx-hint is-error">{{ e }}</p>{% endfor %}
+          </div>
+          {% endfor %}
+          <div class="sp-settings-actions">
+            <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="sp-widget">
+      <div class="sp-widget-header"><h2 class="sp-widget-title">Change password</h2></div>
+      <div class="sp-widget-body">
+        <form method="POST" action="{% url 'staff:staff_profile' %}">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="password">
+          {% for field in password_form %}
+          <div class="cx-field">
+            <label class="cx-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<p class="cx-hint">{{ field.help_text }}</p>{% endif %}
+            {% for e in field.errors %}<p class="cx-hint is-error">{{ e }}</p>{% endfor %}
+          </div>
+          {% endfor %}
+          <div class="sp-settings-actions">
+            <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Update password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

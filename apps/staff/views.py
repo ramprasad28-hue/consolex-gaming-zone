@@ -6,6 +6,8 @@ from urllib.parse import urlencode
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.conf import settings as django_settings
 from django.db.models import Avg, Count, F, Q, Sum, Max
 from django.db.models import ExpressionWrapper, FloatField, OuterRef, Subquery
 from django.http import HttpResponse, JsonResponse, Http404
@@ -23,9 +25,12 @@ from apps.memberships.models import (
 from apps.games.models import GameConsole, Game
 from apps.tournaments.models import Tournament
 from apps.notifications.models import Notification
+from apps.notifications.services import NotificationService
 from apps.cms.models import SiteSettings
 
 from .services import StaffDashboardService, serialize_live_sessions
+from .forms import GeneralSettingsForm, StaffPasswordChangeForm, StaffProfileForm
+from .health import run_health_checks
 
 
 def staff_dashboard(request):
@@ -1187,16 +1192,184 @@ def communication_history(request):
     })
 
 
+def _staff_next(request, default):
+    """Redirect back to a safe staff URL after a POST action."""
+    next_url = request.POST.get("next", "") or request.META.get("HTTP_REFERER", "")
+    if next_url and next_url.startswith("/staff/") and "//" not in next_url:
+        return redirect(next_url)
+    return redirect(default)
+
+
+# ── Phase 6: Settings hub ─────────────────────
 def settings_page(request):
     site = SiteSettings.objects.get_solo()
+    general_form = GeneralSettingsForm(instance=site)
+    password_form = StaffPasswordChangeForm(request.user)
+
+    if request.method == "POST":
+        if request.POST.get("form_type") == "password":
+            password_form = StaffPasswordChangeForm(request.user, request.POST)
+            if password_form.is_valid():
+                password_form.save()
+                update_session_auth_hash(request, request.user)
+                messages.success(request, "Password updated successfully.")
+                return redirect("staff:staff_settings")
+        else:
+            general_form = GeneralSettingsForm(request.POST, instance=site)
+            if general_form.is_valid():
+                general_form.save()
+                messages.success(request, "General settings saved.")
+                return redirect("staff:staff_settings")
+            messages.error(request, "Please fix the errors below.")
+
     return render(request, "staff/settings/index.html", {
         "site": site,
+        "settings_form": general_form,
+        "password_form": password_form,
+        "active_tab": request.GET.get("tab", "general"),
+        "razorpay_configured": bool(
+            django_settings.RAZORPAY_KEY_ID and django_settings.RAZORPAY_KEY_SECRET
+        ),
+        "email_backend": django_settings.EMAIL_BACKEND.split(".")[-1],
+        "whatsapp_configured": bool(
+            getattr(django_settings, "TWILIO_ACCOUNT_SID", "")
+            and getattr(django_settings, "TWILIO_AUTH_TOKEN", "")
+        ),
+        "system_checks": run_health_checks(),
     })
+
+
+# ── Phase 6: Admin profile ────────────────────
+def profile_page(request):
+    profile_form = StaffProfileForm(instance=request.user)
+    password_form = StaffPasswordChangeForm(request.user)
+
+    if request.method == "POST":
+        if request.POST.get("form_type") == "password":
+            password_form = StaffPasswordChangeForm(request.user, request.POST)
+            if password_form.is_valid():
+                password_form.save()
+                update_session_auth_hash(request, request.user)
+                messages.success(request, "Password updated successfully.")
+                return redirect("staff:staff_profile")
+        else:
+            profile_form = StaffProfileForm(request.POST, instance=request.user)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, "Profile updated successfully.")
+                return redirect("staff:staff_profile")
+            messages.error(request, "Please fix the errors below.")
+
+    return render(request, "staff/profile.html", {
+        "profile_form": profile_form,
+        "password_form": password_form,
+    })
+
+
+# ── Phase 6: Staff management ─────────────────
+def staff_list(request):
+    q = request.GET.get("q", "").strip()
+    staff = User.objects.filter(is_staff=True).order_by("-is_superuser", "email")
+    if q:
+        staff = staff.filter(
+            Q(email__icontains=q)
+            | Q(first_name__icontains=q)
+            | Q(last_name__icontains=q)
+            | Q(phone__icontains=q)
+        )
+    paginator = Paginator(staff, 20)
+    page_obj = paginator.get_page(request.GET.get("page"))
+
+    base = User.objects.filter(is_staff=True)
+    return render(request, "staff/staff/list.html", {
+        "page_obj": page_obj,
+        "q": q,
+        "staff_stats": {
+            "total": base.count(),
+            "owners": base.filter(is_superuser=True).count(),
+            "active": base.filter(is_active=True).count(),
+            "inactive": base.filter(is_active=False).count(),
+        },
+    })
+
+
+@require_POST
+def staff_toggle_active(request, user_id):
+    if not request.user.is_superuser:
+        raise Http404
+    target = get_object_or_404(User, id=user_id, is_staff=True)
+    if target == request.user:
+        messages.error(request, "You can't change your own account status.")
+        return redirect("staff:staff_staff_list")
+    target.is_active = not target.is_active
+    target.save(update_fields=["is_active"])
+    action = "reactivated" if target.is_active else "deactivated"
+    messages.success(request, f"{target.email} {action}.")
+    return _staff_next(request, "staff:staff_staff_list")
+
+
+@require_POST
+def staff_toggle_role(request, user_id):
+    if not request.user.is_superuser:
+        raise Http404
+    target = get_object_or_404(User, id=user_id, is_staff=True)
+    if target == request.user:
+        messages.error(request, "You can't change your own role.")
+        return redirect("staff:staff_staff_list")
+    target.is_superuser = not target.is_superuser
+    target.save(update_fields=["is_superuser"])
+    action = "made an Owner" if target.is_superuser else "demoted to Staff"
+    messages.success(request, f"{target.email} {action}.")
+    return _staff_next(request, "staff:staff_staff_list")
+
+
+# ── Phase 6: Staff notification center ────────
+def staff_notifications(request):
+    notifications = Notification.objects.filter(user=request.user).order_by("-created_at")
+    category = request.GET.get("category", "")
+    status = request.GET.get("status", "")
+
+    if category in Notification.Category.values:
+        notifications = notifications.filter(category=category)
+    if status == "unread":
+        notifications = notifications.filter(is_read=False)
+    elif status == "read":
+        notifications = notifications.filter(is_read=True)
+
+    paginator = Paginator(notifications, 20)
+    page_obj = paginator.get_page(request.GET.get("page"))
+
+    user_qs = Notification.objects.filter(user=request.user)
+    return render(request, "staff/notifications/list.html", {
+        "page_obj": page_obj,
+        "category": category,
+        "status": status,
+        "unread_count": NotificationService.unread_count(request.user),
+        "category_stats": [
+            {"key": key, "label": label, "count": user_qs.filter(category=key).count()}
+            for key, label in Notification.Category.choices
+        ],
+    })
+
+
+@require_POST
+def staff_notification_read(request, notification_id):
+    try:
+        NotificationService.mark_read(request.user, notification_id)
+    except ServiceError:
+        messages.error(request, "Notification not found.")
+    return _staff_next(request, "staff:staff_notifications")
+
+
+@require_POST
+def staff_notification_read_all(request):
+    Notification.objects.mark_all_read(request.user)
+    return _staff_next(request, "staff:staff_notifications")
 
 
 # ── Ch13: Owner executive dashboard (superuser) ──
 def executive_dashboard(request):
     data = StaffDashboardService.get_executive_data()
     data["site"] = SiteSettings.objects.get_solo()
-    data["user_role"] = "Owner"
     return render(request, "staff/executive/dashboard.html", data)
+

@@ -1,5 +1,20 @@
 # Changelog
 
+## [4.1.0] — 2026-08-10
+
+### Added
+
+#### Ch16 — Staff Portal Phase 6
+- **Notification center** (`staff:staff_notifications`): category/status filters, unread count, mark-read, read-all, pagination; `Notification.category` (system/booking/payment/membership/tournament) + migration `0003_notification_category`
+- **Notification admin**: `category` added to `list_display` and `list_filter`
+- **Staff management** (`staff:staff_staff_list`): staff listing with search, owner-only active/role toggles (HTTP 404 for non-owners), self-toggle protection, guarded redirect back to listing
+- **Staff profile** (`staff:staff_profile`): name/phone/email form + password change using `update_session_auth_hash`
+- **Settings hub** (`staff:staff_settings`): `SiteSettings`-backed general settings with tabbed sections (general/appearance/bookings/payments/notifications/email/security/system), health checks, WhatsApp/Twilio status, Razorpay status, email backend indicator
+- **Topbar notification bell**: context processor (`staff_topbar`) supplying unread count + recent 8 notifications on every staff page
+- **Business-event hooks**: membership activation and booking-confirm now emit staff notifications with `membership`/`payment` categories
+- **3-mode theme** (dark/light/system) with `data-theme-mode` persistence; settings-nav scrollspy
+- Phase 6 tests: notification center, staff management, profile, settings, bell, business-event notifications (incl. membership activation)
+
 ## [4.0.0] — 2026-08-04
 
 ### Added

@@ -5,8 +5,8 @@ from .models import Notification
 
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
-    list_display = ("id", "user_email", "message_truncated", "is_read_badge", "created_at")
-    list_filter = ("is_read", "created_at")
+    list_display = ("id", "user_email", "category", "message_truncated", "is_read_badge", "created_at")
+    list_filter = ("category", "is_read", "created_at")
     search_fields = ("user__email", "message")
     readonly_fields = ("created_at",)
     ordering = ("-created_at",)

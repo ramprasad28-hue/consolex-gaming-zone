@@ -1,0 +1,104 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}Notifications — {{ site.brand_name }}{% endblock %}
+
+{% block sp_breadcrumb %}Notifications{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <h1 class="sp-header-title">Notification Center</h1>
+    <p class="sp-header-sub">{% if unread_count %}{{ unread_count }} unread — every item comes from a real event.{% else %}You're all caught up.{% endif %}</p>
+  </div>
+  <div class="sp-header-actions">
+    {% if unread_count %}
+    <form method="POST" action="{% url 'staff:staff_notifications_read_all' %}">
+      {% csrf_token %}
+      <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Mark all as read</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+
+{% if messages %}
+  <div class="cx-flash-stack">
+    {% for message in messages %}
+      <div class="cx-flash" role="status">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div class="sp-notif-filters" role="group" aria-label="Filter notifications">
+  <span class="sp-notif-filters-label">Category:</span>
+  <a class="sp-chip {% if not category %}is-active{% endif %}" href="?{% if status %}status={{ status }}&{% endif %}">All</a>
+  {% for stat in category_stats %}
+  <a class="sp-chip {% if category == stat.key %}is-active{% endif %}" href="?category={{ stat.key }}{% if status %}&status={{ status }}{% endif %}">
+    {{ stat.label }} <b>{{ stat.count }}</b>
+  </a>
+  {% endfor %}
+  <span class="sp-notif-filters-sep" aria-hidden="true"></span>
+  <span class="sp-notif-filters-label">Status:</span>
+  <a class="sp-chip {% if not status %}is-active{% endif %}" href="?{% if category %}category={{ category }}&{% endif %}">All</a>
+  <a class="sp-chip {% if status == 'unread' %}is-active{% endif %}" href="?status=unread{% if category %}&category={{ category }}{% endif %}">Unread</a>
+  <a class="sp-chip {% if status == 'read' %}is-active{% endif %}" href="?status=read{% if category %}&category={{ category }}{% endif %}">Read</a>
+</div>
+
+<div class="sp-widget">
+  <div class="sp-widget-header">
+    <h2 class="sp-widget-title">{{ page_obj.paginator.count }} Notification{{ page_obj.paginator.count|pluralize }}</h2>
+    {% if page_obj %}<span class="sp-activity-time">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>{% endif %}
+  </div>
+  <div class="sp-widget-body">
+    {% if page_obj %}
+    <div class="sp-notif-feed" aria-label="Notifications">
+      {% for n in page_obj %}
+      <div class="sp-notif-item {% if not n.is_read %}is-unread{% endif %}">
+        <span class="sp-notif-dot sp-notif-dot--{{ n.category }}" aria-hidden="true"></span>
+        <div class="sp-notif-body">
+          <div class="sp-notif-msg">{{ n.message }}</div>
+          <div class="sp-notif-meta">
+            <span class="cx-badge cx-badge--neutral">{{ n.get_category_display }}</span>
+            <time title="{{ n.created_at|date:"d M Y, H:i" }}">{{ n.created_at|timesince }} ago</time>
+          </div>
+        </div>
+        <div class="sp-notif-actions">
+          {% if n.is_read %}
+          <span class="sp-notif-read-state">Read</span>
+          {% else %}
+          <form method="POST" action="{% url 'staff:staff_notification_read' n.id %}">
+            {% csrf_token %}
+            <button type="submit" class="cx-btn cx-btn--ghost cx-btn--sm">Mark read</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="cx-pagination" aria-label="Notification pages" style="margin-top:var(--cx-space-4)">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if category %}&category={{ category }}{% endif %}{% if status %}&status={{ status }}{% endif %}" class="cx-page-btn" aria-label="Previous">&lsaquo;</a>
+      {% endif %}
+      {% for n in page_obj.paginator.page_range %}
+        {% if n >= page_obj.number|add:"-2" and n <= page_obj.number|add:"2" %}
+          <a href="?page={{ n }}{% if category %}&category={{ category }}{% endif %}{% if status %}&status={{ status }}{% endif %}" class="cx-page-btn {% if n == page_obj.number %}cx-page-btn--active{% endif %}">{{ n }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if category %}&category={{ category }}{% endif %}{% if status %}&status={{ status }}{% endif %}" class="cx-page-btn" aria-label="Next">&rsaquo;</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if category %}&category={{ category }}{% endif %}{% if status %}&status={{ status }}{% endif %}" class="cx-page-btn" aria-label="Last">&raquo;</a>
+      {% endif %}
+    </nav>
+    {% endif %}
+    {% else %}
+    <div class="cx-empty" role="status">
+      <div class="cx-empty-title">No notifications</div>
+      <div class="cx-empty-desc">{% if category or status %}Nothing matches the current filters.{% else %}Booking confirmations and membership activity will appear here.{% endif %}</div>
+      {% if category or status %}<a href="{% url 'staff:staff_notifications' %}" class="cx-btn cx-btn--primary cx-btn--sm">Clear Filters</a>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

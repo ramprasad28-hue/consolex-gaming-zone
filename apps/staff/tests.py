@@ -975,3 +975,331 @@ class StaffTemplateTagTests(TestCase):
         from django.template import Template, Context
         out = Template("{% load staff_extras %}{{ v|inr_paise }}").render(Context({"v": 26000}))
         self.assertEqual(out, "260.00")
+
+
+# ============================================================
+# Phase 6 � Settings, Profile, Staff & Notification Center
+# ============================================================
+
+from apps.notifications.models import Notification  # noqa: E402
+
+
+class Phase6SettingsTests(TestCase):
+    """Settings hub � general form persists, categories render."""
+
+    def setUp(self):
+        self.owner = make_staff(superuser=True)
+        self.client.force_login(self.owner)
+
+    def test_settings_page_renders_categories(self):
+        resp = self.client.get(reverse("staff:staff_settings"))
+        self.assertEqual(resp.status_code, 200)
+        html = resp.content.decode()
+        for anchor in ("#general", "#appearance", "#bookings", "#payments", "#notifications", "#email", "#security", "#system"):
+            self.assertIn(anchor, html)
+
+    def test_system_health_checks_present(self):
+        resp = self.client.get(reverse("staff:staff_settings"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Database")
+        self.assertContains(resp, "Cache")
+        self.assertContains(resp, "Debug mode")
+
+    def test_general_form_saves_to_site_settings(self):
+        from apps.cms.models import SiteSettings
+        resp = self.client.post(reverse("staff:staff_settings"), {
+            "form_type": "general",
+            "brand_name": "ConsoleX Pro",
+            "tagline": "Play Harder",
+            "phone": "+91 90000 00000",
+            "address": "Erode",
+            "operating_hours": "11:00 AM � 11:00 PM",
+            "whatsapp_number": "919000000000",
+            "instagram_handle": "@consolexpro",
+        })
+        self.assertRedirects(resp, reverse("staff:staff_settings"))
+        site = SiteSettings.objects.get_solo()
+        self.assertEqual(site.brand_name, "ConsoleX Pro")
+        self.assertEqual(site.instagram_handle, "@consolexpro")
+
+    def test_general_form_invalid_posts_error(self):
+        resp = self.client.post(reverse("staff:staff_settings"), {
+            "form_type": "general",
+            "brand_name": "",
+            "tagline": "",
+            "phone": "",
+            "address": "",
+            "operating_hours": "",
+            "whatsapp_number": "",
+            "instagram_handle": "",
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Please fix the errors below.")
+
+    def test_password_change_success(self):
+        resp = self.client.post(reverse("staff:staff_settings"), {
+            "form_type": "password",
+            "old_password": "x",
+            "new_password1": "New-Secure-Pass-123",
+            "new_password2": "New-Secure-Pass-123",
+        })
+        self.assertRedirects(resp, reverse("staff:staff_settings"))
+        self.owner.refresh_from_db()
+        self.assertTrue(self.owner.check_password("New-Secure-Pass-123"))
+
+    def test_password_change_wrong_current(self):
+        resp = self.client.post(reverse("staff:staff_settings"), {
+            "form_type": "password",
+            "old_password": "wrong",
+            "new_password1": "New-Secure-Pass-123",
+            "new_password2": "New-Secure-Pass-123",
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Your old password was entered incorrectly")
+
+
+class Phase6ProfileTests(TestCase):
+    def setUp(self):
+        self.staff = make_staff()
+        self.client.force_login(self.staff)
+
+    def test_profile_page_renders(self):
+        resp = self.client.get(reverse("staff:staff_profile"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "My Profile")
+
+    def test_profile_edit_updates_user(self):
+        resp = self.client.post(reverse("staff:staff_profile"), {
+            "form_type": "profile",
+            "first_name": "Ada",
+            "last_name": "Lovelace",
+            "phone": "+91 98765 43210",
+        })
+        self.assertRedirects(resp, reverse("staff:staff_profile"))
+        self.staff.refresh_from_db()
+        self.assertEqual(self.staff.first_name, "Ada")
+        self.assertEqual(self.staff.phone, "+91 98765 43210")
+
+    def test_profile_phone_invalid_rejected(self):
+        resp = self.client.post(reverse("staff:staff_profile"), {
+            "form_type": "profile",
+            "first_name": "Ada",
+            "last_name": "Lovelace",
+            "phone": "not-a-phone",
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Please fix the errors below.")
+
+    def test_profile_password_change_success(self):
+        resp = self.client.post(reverse("staff:staff_profile"), {
+            "form_type": "password",
+            "old_password": "x",
+            "new_password1": "New-Secure-Pass-123",
+            "new_password2": "New-Secure-Pass-123",
+        })
+        self.assertRedirects(resp, reverse("staff:staff_profile"))
+        self.staff.refresh_from_db()
+        self.assertTrue(self.staff.check_password("New-Secure-Pass-123"))
+
+
+class Phase6StaffManagementTests(TestCase):
+    def setUp(self):
+        self.owner = make_staff(superuser=True)
+        self.staff = make_staff(email="staff2@test.com")
+        self.client.force_login(self.owner)
+
+    def test_staff_list_renders_members(self):
+        resp = self.client.get(reverse("staff:staff_staff_list"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "staff2@test.com")
+
+    def test_staff_list_search(self):
+        resp = self.client.get(reverse("staff:staff_staff_list"), {"q": "staff2"})
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "staff2@test.com")
+
+    def test_non_owner_cannot_toggle(self):
+        self.client.force_login(self.staff)
+        resp = self.client.post(
+            reverse("staff:staff_staff_toggle_active", args=[self.owner.id])
+        )
+        self.assertEqual(resp.status_code, 404)
+
+    def test_owner_toggles_active(self):
+        resp = self.client.post(
+            reverse("staff:staff_staff_toggle_active", args=[self.staff.id]),
+            {"next": reverse("staff:staff_staff_list")},
+        )
+        self.assertRedirects(resp, reverse("staff:staff_staff_list"))
+        self.staff.refresh_from_db()
+        self.assertFalse(self.staff.is_active)
+
+    def test_owner_toggles_role(self):
+        resp = self.client.post(
+            reverse("staff:staff_staff_toggle_role", args=[self.staff.id]),
+            {"next": reverse("staff:staff_staff_list")},
+        )
+        self.assertRedirects(resp, reverse("staff:staff_staff_list"))
+        self.staff.refresh_from_db()
+        self.assertTrue(self.staff.is_superuser)
+
+    def test_owner_cannot_toggle_self(self):
+        resp = self.client.post(
+            reverse("staff:staff_staff_toggle_active", args=[self.owner.id]),
+            {"next": reverse("staff:staff_staff_list")},
+        )
+        self.assertRedirects(resp, reverse("staff:staff_staff_list"))
+        self.owner.refresh_from_db()
+        self.assertTrue(self.owner.is_active)
+
+    def test_toggle_redirect_guarded_against_external(self):
+        resp = self.client.post(
+            reverse("staff:staff_staff_toggle_active", args=[self.staff.id]),
+            {"next": "https://evil.example.com"},
+        )
+        self.assertRedirects(resp, reverse("staff:staff_staff_list"))
+
+
+class Phase6NotificationCenterTests(TestCase):
+    def setUp(self):
+        self.staff = make_staff()
+        self.client.force_login(self.staff)
+        self.n1 = Notification.objects.create(
+            user=self.staff, message="Booking #1 confirmed", category="payment"
+        )
+        self.n2 = Notification.objects.create(
+            user=self.staff, message="Membership activated", category="membership"
+        )
+
+    def test_notification_center_renders_and_lists(self):
+        resp = self.client.get(reverse("staff:staff_notifications"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Booking #1 confirmed")
+        self.assertContains(resp, "Membership activated")
+
+    def test_filter_by_category(self):
+        resp = self.client.get(reverse("staff:staff_notifications"), {"category": "membership"})
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Membership activated")
+        self.assertEqual(
+            list(resp.context["page_obj"]),
+            [self.n2],
+        )
+
+    def test_filter_by_status(self):
+        Notification.objects.filter(pk=self.n2.pk).update(is_read=True)
+        resp = self.client.get(reverse("staff:staff_notifications"), {"status": "unread"})
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Booking #1 confirmed")
+        self.assertEqual(
+            list(resp.context["page_obj"]),
+            [self.n1],
+        )
+
+    def test_mark_single_read(self):
+        resp = self.client.post(
+            reverse("staff:staff_notification_read", args=[self.n1.id]),
+            {"next": reverse("staff:staff_notifications")},
+        )
+        self.assertRedirects(resp, reverse("staff:staff_notifications"))
+        self.n1.refresh_from_db()
+        self.assertTrue(self.n1.is_read)
+
+    def test_mark_all_read(self):
+        resp = self.client.post(
+            reverse("staff:staff_notifications_read_all"),
+            {"next": reverse("staff:staff_notifications")},
+        )
+        self.assertRedirects(resp, reverse("staff:staff_notifications"))
+        self.assertEqual(Notification.objects.unread(self.staff).count(), 0)
+
+    def test_mark_others_notification_blocked(self):
+        other = User.objects.create_user(email="other@test.com", password="x")
+        foreign = Notification.objects.create(user=other, message="Theirs")
+        resp = self.client.post(
+            reverse("staff:staff_notification_read", args=[foreign.id]),
+            {"next": reverse("staff:staff_notifications")},
+        )
+        self.assertRedirects(resp, reverse("staff:staff_notifications"))
+        foreign.refresh_from_db()
+        self.assertFalse(foreign.is_read)
+
+
+class Phase6BellContextTests(TestCase):
+    def test_unread_count_in_context_for_staff(self):
+        staff = make_staff()
+        self.client.force_login(staff)
+        Notification.objects.create(user=staff, message="Hi")
+        resp = self.client.get(reverse("staff:staff_dashboard"))
+        self.assertEqual(resp.context["staff_unread_count"], 1)
+
+    def test_recent_notifications_in_context(self):
+        staff = make_staff()
+        self.client.force_login(staff)
+        Notification.objects.create(user=staff, message="Recent one")
+        resp = self.client.get(reverse("staff:staff_dashboard"))
+        self.assertEqual(
+            resp.context["staff_recent_notifications"][0].message, "Recent one"
+        )
+
+    def test_public_site_gets_no_staff_context(self):
+        resp = self.client.get("/")
+        self.assertNotIn("staff_unread_count", resp.context)
+
+
+class Phase6StaffNotificationEventsTests(TestCase):
+    """Real business events must create staff notifications with categories."""
+
+    def test_booking_confirm_notifies_staff(self):
+        staff = make_staff()
+        customer = User.objects.create_user(email="cust@test.com", password="x")
+        console = make_console()
+        booking = Booking.objects.create(
+            user=customer,
+            game_console=console,
+            booking_date=timezone.localdate(),
+            start_time="14:00",
+            end_time="16:00",
+            number_of_players=1,
+            total_cost=Decimal("260.00"),
+        )
+        from apps.payments.services import PaymentService
+        from unittest.mock import patch
+        payment = Payment.objects.create(
+            booking=booking,
+            user=customer,
+            amount=int(booking.advance_amount * Decimal("100")),
+            status=Payment.Status.PENDING,
+        )
+        with patch.object(PaymentService, "_get_client", return_value=None):
+            PaymentService.verify_payment(
+                customer, payment.id, "order_demo", "pay_demo", "sig_demo"
+            )
+        notif = Notification.objects.filter(user=staff, category="payment").first()
+        self.assertIsNotNone(notif)
+        self.assertIn(f"Booking #{booking.id}", notif.message)
+
+    def test_membership_activated_notifies_staff(self):
+        from apps.memberships.models import Membership, MembershipSubscription
+        from apps.memberships.services import MembershipService
+        from unittest.mock import patch
+        staff = make_staff()
+        customer = User.objects.create_user(email="member@test.com", password="x")
+        plan = Membership.objects.create(
+            name="Basic", price=1199, duration_days=30, tier_level=1, is_active=True,
+        )
+        with patch.object(MembershipService, "_get_client", return_value=None):
+            result = MembershipService.create_order(customer, plan.id)
+            self.assertTrue(result["demo_mode"])
+            MembershipService.verify_payment(
+                customer, result["subscription_id"], "order_demo", "pay_demo", "sig_demo"
+            )
+        notif = Notification.objects.filter(user=staff, category="membership").first()
+        self.assertIsNotNone(notif)
+        self.assertIn("activated a Basic membership", notif.message)
+        self.assertEqual(
+            Notification.objects.filter(
+                user=customer, message__contains="Basic membership is now active"
+            ).count(),
+            1,
+        )

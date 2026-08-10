@@ -13,12 +13,24 @@ class NotificationService:
     """Stateless notification operations."""
 
     @staticmethod
-    def notify(user, message):
+    def notify(user, message, category=None):
         """Create a notification for a user. Never raises."""
         try:
-            Notification.objects.create(user=user, message=message)
+            Notification.objects.create(
+                user=user,
+                message=message,
+                category=category or Notification.Category.SYSTEM,
+            )
         except Exception:
             logger.exception("Failed to create notification for %s", user)
+
+    @staticmethod
+    def notify_staff(message, category=None):
+        """Notify every staff member about a real business event."""
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        for user in User.objects.filter(is_staff=True).only("id"):
+            NotificationService.notify(user, message, category=category)
 
     @staticmethod
     def list_for_user(user, page=1, page_size=20):

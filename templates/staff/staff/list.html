@@ -1,0 +1,184 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}Staff — {{ site.brand_name }}{% endblock %}
+
+{% block sp_breadcrumb %}Staff{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <h1 class="sp-header-title">Staff Management</h1>
+    <p class="sp-header-sub">Who has access to this panel — roles and access status</p>
+  </div>
+  <div class="sp-header-actions">
+    {% if user.is_superuser %}
+    <a href="{% url 'admin:users_user_add' %}" class="cx-btn cx-btn--primary cx-btn--sm" target="_blank" rel="noopener">+ Add Staff</a>
+    {% endif %}
+  </div>
+</div>
+
+{% if messages %}
+  <div class="cx-flash-stack">
+    {% for message in messages %}
+      <div class="cx-flash" role="status">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div class="sp-stats-grid" role="list" aria-label="Staff statistics">
+  <div class="sp-stat-card sp-stat-card--blue" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Staff members</span>
+      <span class="sp-stat-icon sp-stat-icon--blue" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ staff_stats.total }}">{{ staff_stats.total }}</div>
+    <div class="sp-stat-trend">panel access</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--purple" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Owners</span>
+      <span class="sp-stat-icon sp-stat-icon--purple" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ staff_stats.owners }}">{{ staff_stats.owners }}</div>
+    <div class="sp-stat-trend">full access</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--green" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Active</span>
+      <span class="sp-stat-icon sp-stat-icon--green" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ staff_stats.active }}">{{ staff_stats.active }}</div>
+    <div class="sp-stat-trend">can sign in</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--orange" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Inactive</span>
+      <span class="sp-stat-icon sp-stat-icon--orange" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ staff_stats.inactive }}">{{ staff_stats.inactive }}</div>
+    <div class="sp-stat-trend">suspended</div>
+  </div>
+</div>
+
+<form method="GET" action="">
+  <div class="sp-toolbar" role="search" aria-label="Search staff">
+    <div class="sp-search-wrap">
+      <svg class="sp-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="search" name="q" class="cx-input" placeholder="Search by name, email or phone…" value="{{ q }}" aria-label="Search staff">
+    </div>
+    <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Search</button>
+    {% if q %}<a href="{% url 'staff:staff_staff_list' %}" class="cx-btn cx-btn--ghost cx-btn--sm">Clear</a>{% endif %}
+  </div>
+</form>
+
+<div class="sp-widget">
+  <div class="sp-widget-header">
+    <h2 class="sp-widget-title">{{ page_obj.paginator.count }} Staff member{{ page_obj.paginator.count|pluralize }}</h2>
+    {% if page_obj %}<span class="sp-activity-time">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>{% endif %}
+  </div>
+  <div class="sp-widget-body">
+    {% if page_obj %}
+    <div class="sp-table-wrap">
+      <table class="sp-table" aria-label="Staff members">
+        <thead>
+          <tr>
+            <th scope="col">Member</th>
+            <th scope="col">Role</th>
+            <th scope="col">Status</th>
+            <th scope="col">Last login</th>
+            <th scope="col">Joined</th>
+            <th scope="col"><span class="sp-muted">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for member in page_obj %}
+          <tr>
+            <td>
+              <a class="sp-bk-id" href="{% url 'staff:staff_customer_detail' member.id %}">
+                <span class="cx-avatar" aria-hidden="true">{{ member.username|slice:":1"|upper }}</span>
+                <span>
+                  <span class="sp-staff-name">{{ member.get_full_name|default:member.username }}</span>
+                  <span class="sp-staff-sub">{{ member.email }}<br>{% if member.phone %}{{ member.phone }}{% else %}no phone{% endif %}</span>
+                </span>
+              </a>
+            </td>
+            <td>
+              {% if member.is_superuser %}<span class="cx-badge cx-badge--primary">Owner</span>
+              {% else %}<span class="cx-badge cx-badge--neutral">Staff</span>{% endif %}
+            </td>
+            <td>
+              {% if member.is_active %}<span class="cx-badge cx-badge--success">Active</span>
+              {% else %}<span class="cx-badge cx-badge--danger">Inactive</span>{% endif %}
+              {% if member == request.user %}<span class="cx-badge cx-badge--neutral">You</span>{% endif %}
+            </td>
+            <td>{{ member.last_login|date:"d M Y, H:i"|default:"Never" }}</td>
+            <td>{{ member.date_joined|date:"d M Y" }}</td>
+            <td>
+              <div class="sp-inline-actions">
+                <a href="{% url 'staff:staff_customer_detail' member.id %}" class="cx-btn cx-btn--ghost cx-btn--sm">View</a>
+                {% if user.is_superuser and member != request.user %}
+                <div class="sp-menu" data-sp-menu>
+                  <button type="button" class="sp-menu-toggle" data-sp-menu-toggle aria-label="Manage {{ member.email }}" aria-haspopup="menu" aria-expanded="false">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                  </button>
+                  <div class="sp-menu-panel" role="menu" aria-label="{{ member.email }} actions">
+                    <form method="POST" action="{% url 'staff:staff_staff_toggle_role' member.id %}" data-sp-confirm data-sp-confirm-message="{% if member.is_superuser %}Demote {{ member.email }} to Staff? They will lose owner-level access.{% else %}Make {{ member.email }} an Owner? They will gain full panel access.{% endif %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                      <button type="submit" class="sp-menu-item" role="menuitem">
+                        {% if member.is_superuser %}Demote to Staff{% else %}Make Owner{% endif %}
+                      </button>
+                    </form>
+                    <form method="POST" action="{% url 'staff:staff_staff_toggle_active' member.id %}" data-sp-confirm data-sp-confirm-danger data-sp-confirm-message="{% if member.is_active %}Deactivate {{ member.email }}? They will no longer be able to sign in.{% else %}Reactivate {{ member.email }}? They will regain panel access.{% endif %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                      <button type="submit" class="sp-menu-item {% if member.is_active %}is-danger{% endif %}" role="menuitem">
+                        {% if member.is_active %}Deactivate{% else %}Reactivate{% endif %}
+                      </button>
+                    </form>
+                  </div>
+                </div>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="cx-pagination" aria-label="Staff pages" style="margin-top:var(--cx-space-4)">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}" class="cx-page-btn" aria-label="Previous">&lsaquo;</a>
+      {% endif %}
+      {% for n in page_obj.paginator.page_range %}
+        {% if n >= page_obj.number|add:"-2" and n <= page_obj.number|add:"2" %}
+          <a href="?page={{ n }}{% if q %}&q={{ q }}{% endif %}" class="cx-page-btn {% if n == page_obj.number %}cx-page-btn--active{% endif %}">{{ n }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}" class="cx-page-btn" aria-label="Next">&rsaquo;</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if q %}&q={{ q }}{% endif %}" class="cx-page-btn" aria-label="Last">&raquo;</a>
+      {% endif %}
+    </nav>
+    {% endif %}
+    {% else %}
+    <div class="cx-empty" role="status">
+      <div class="cx-empty-title">No staff found</div>
+      <div class="cx-empty-desc">{% if q %}Nothing matches “{{ q }}”.{% else %}Add staff members via Django Admin → Users.{% endif %}</div>
+      {% if q %}<a href="{% url 'staff:staff_staff_list' %}" class="cx-btn cx-btn--primary cx-btn--sm">Clear Search</a>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
