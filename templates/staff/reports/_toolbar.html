@@ -1,0 +1,20 @@
+{% load staff_extras %}
+<form method="GET" class="sp-toolbar sp-report-toolbar" role="search" aria-label="Filter report by date">
+  <div class="sp-seg-control" role="group" aria-label="Date presets">
+    <a class="sp-seg-btn {% if not date_from and not date_to %}is-active{% endif %}" href="{% url 'staff:staff_report_detail' report_type %}">All time</a>
+    <a class="sp-seg-btn" href="{% url 'staff:staff_report_detail' report_type %}?from={{ presets.7d|date:'Y-m-d' }}">7D</a>
+    <a class="sp-seg-btn" href="{% url 'staff:staff_report_detail' report_type %}?from={{ presets.30d|date:'Y-m-d' }}">30D</a>
+    <a class="sp-seg-btn" href="{% url 'staff:staff_report_detail' report_type %}?from={{ presets.90d|date:'Y-m-d' }}">90D</a>
+    <a class="sp-seg-btn" href="{% url 'staff:staff_report_detail' report_type %}?from={{ presets.month|date:'Y-m-d' }}">This Month</a>
+  </div>
+  <div class="cx-field">
+    <label class="cx-label">From</label>
+    <input type="date" name="from" class="cx-input" value="{{ date_from|date:'Y-m-d'|default:'' }}">
+  </div>
+  <div class="cx-field">
+    <label class="cx-label">To</label>
+    <input type="date" name="to" class="cx-input" value="{{ date_to|date:'Y-m-d'|default:'' }}">
+  </div>
+  <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm" style="margin-top:20px">Apply</button>
+  <a href="{% url 'staff:staff_report_export' report_type %}{% if date_from or date_to %}?{% endif %}{% if date_from %}from={{ date_from|date:'Y-m-d' }}{% endif %}{% if date_from and date_to %}&{% endif %}{% if date_to %}to={{ date_to|date:'Y-m-d' }}{% endif %}" class="cx-btn cx-btn--outline cx-btn--sm" style="margin-top:20px">Export CSV</a>
+</form>

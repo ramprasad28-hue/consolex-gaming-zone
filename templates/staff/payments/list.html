@@ -1,0 +1,318 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+{% load staff_extras %}
+
+{% block title %}Payments &amp; Billing — {{ site.brand_name }}{% endblock %}
+{% block sp_breadcrumb %}Payments{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <h1 class="sp-header-title">Payments &amp; Billing</h1>
+    <p class="sp-header-sub">Real revenue, Razorpay transactions and outstanding amounts — straight from your database.</p>
+  </div>
+  <div class="sp-header-actions">
+    <a href="{% url 'staff:staff_payment_export' %}{% if qs %}?{{ qs }}{% endif %}" class="cx-btn cx-btn--outline cx-btn--sm">Export CSV</a>
+    <button type="button" class="cx-btn cx-btn--outline cx-btn--sm" onclick="window.print()">Print</button>
+  </div>
+</div>
+
+{% if messages %}
+  <div class="cx-flash-stack">
+    {% for message in messages %}
+      <div class="cx-flash" role="status">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<!-- Revenue hero -->
+<section class="sp-revenue-hero" aria-label="Revenue overview">
+  <div class="sp-revenue-hero-head">
+    <div>
+      <h2 class="sp-widget-title">Revenue Overview</h2>
+      <p class="sp-activity-time">Captured payments only · amounts in INR</p>
+    </div>
+    <span class="sp-revenue-total">Total ₹{{ revenue.total|inr }}</span>
+  </div>
+  <div class="sp-revenue-grid" role="list" aria-label="Revenue figures">
+    <div class="sp-revenue-cell" role="listitem">
+      <span class="sp-revenue-label">Today</span>
+      <span class="sp-revenue-value">₹{{ revenue.today|inr }}</span>
+      <span class="sp-revenue-sub">{{ revenue.tx_today }} transaction{{ revenue.tx_today|pluralize }}</span>
+    </div>
+    <div class="sp-revenue-cell" role="listitem">
+      <span class="sp-revenue-label">This Week</span>
+      <span class="sp-revenue-value">₹{{ revenue.week|inr }}</span>
+      <span class="sp-revenue-sub">{{ revenue.tx_week }} transaction{{ revenue.tx_week|pluralize }}</span>
+    </div>
+    <div class="sp-revenue-cell" role="listitem">
+      <span class="sp-revenue-label">This Month</span>
+      <span class="sp-revenue-value">₹{{ revenue.month|inr }}</span>
+      <span class="sp-revenue-sub">{{ revenue.tx_month }} transaction{{ revenue.tx_month|pluralize }}</span>
+    </div>
+    <div class="sp-revenue-cell" role="listitem">
+      <span class="sp-revenue-label">All Time</span>
+      <span class="sp-revenue-value">₹{{ revenue.total|inr }}</span>
+      <span class="sp-revenue-sub">{{ revenue.tx_total }} transaction{{ revenue.tx_total|pluralize }}</span>
+    </div>
+  </div>
+</section>
+
+<!-- Billing snapshot -->
+<section class="sp-billing-strip" aria-label="Membership billing snapshot">
+  <div class="sp-billing-cell">
+    <span class="sp-billing-label">Active Subscriptions</span>
+    <span class="sp-billing-value">{{ membership_billing.active_subs }}</span>
+  </div>
+  <div class="sp-billing-cell">
+    <span class="sp-billing-label">Membership Revenue · This Month</span>
+    <span class="sp-billing-value">₹{{ membership_billing.month|inr }}</span>
+  </div>
+  <div class="sp-billing-cell">
+    <span class="sp-billing-label">Membership Revenue · 30 Days</span>
+    <span class="sp-billing-value">₹{{ membership_billing.recent_30|inr }}</span>
+  </div>
+  <div class="sp-billing-cell">
+    <span class="sp-billing-label">Membership Revenue · Total</span>
+    <span class="sp-billing-value">₹{{ membership_billing.total|inr }}</span>
+  </div>
+</section>
+
+<!-- Status breakdown -->
+<section class="sp-pay-status-grid" role="list" aria-label="Payment status breakdown">
+  <div class="sp-pay-status sp-pay-status--captured" role="listitem">
+    <span class="sp-pay-status-dot" aria-hidden="true"></span>
+    <div><div class="sp-pay-status-label">Captured</div><div class="sp-pay-status-value">{{ status_counts.captured|default:0 }}</div></div>
+  </div>
+  <div class="sp-pay-status sp-pay-status--pending" role="listitem">
+    <span class="sp-pay-status-dot" aria-hidden="true"></span>
+    <div><div class="sp-pay-status-label">Pending</div><div class="sp-pay-status-value">{{ status_counts.pending|default:0 }}</div></div>
+  </div>
+  <div class="sp-pay-status sp-pay-status--failed" role="listitem">
+    <span class="sp-pay-status-dot" aria-hidden="true"></span>
+    <div><div class="sp-pay-status-label">Failed</div><div class="sp-pay-status-value">{{ status_counts.failed|default:0 }}</div></div>
+  </div>
+  <div class="sp-pay-status sp-pay-status--refunded" role="listitem">
+    <span class="sp-pay-status-dot" aria-hidden="true"></span>
+    <div><div class="sp-pay-status-label">Refunded</div><div class="sp-pay-status-value">{{ status_counts.refunded|default:0 }}</div></div>
+    <span class="sp-pay-status-sub">₹{{ refunded_amount|inr }}</span>
+  </div>
+  <div class="sp-pay-status sp-pay-status--demo" role="listitem">
+    <span class="sp-pay-status-dot" aria-hidden="true"></span>
+    <div><div class="sp-pay-status-label">Demo Approved</div><div class="sp-pay-status-value">{{ status_counts.demo|default:0 }}</div></div>
+  </div>
+</section>
+
+<!-- Revenue trend -->
+<section class="sp-widget">
+  <div class="sp-widget-header">
+    <div>
+      <h2 class="sp-widget-title">Revenue Trend</h2>
+      <p class="sp-activity-time">Daily captured revenue · last {{ trend.days }} days · peak ₹{{ trend.max_amount|inr }}</p>
+    </div>
+    <div class="sp-seg-control" role="group" aria-label="Chart range">
+      <a class="sp-seg-btn {% if trend_days == 7 %}is-active{% endif %}" href="?days=7{% if qs %}&{{ qs }}{% endif %}">7D</a>
+      <a class="sp-seg-btn {% if trend_days == 30 %}is-active{% endif %}" href="?days=30{% if qs %}&{{ qs }}{% endif %}">30D</a>
+      <a class="sp-seg-btn {% if trend_days == 90 %}is-active{% endif %}" href="?days=90{% if qs %}&{{ qs }}{% endif %}">90D</a>
+    </div>
+  </div>
+  <div class="sp-widget-body">
+    {% if trend.max_amount %}
+    <div class="sp-revenue-chart" role="img" aria-label="Bar chart of daily revenue for the last {{ trend.days }} days">
+      {% for b in trend.buckets %}
+      <div class="sp-rev-bar-wrap" {% if b.show_label %}data-label="{{ b.date|date:'d M' }}"{% endif %}>
+        <div class="sp-rev-bar" style="height:{% widthratio b.amount trend.max_amount 100 %}%" title="₹{{ b.amount|inr }} · {{ b.date|date:'d M Y' }}"></div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="sp-chart-axis">
+      {% for b in trend.buckets %}{% if b.show_label %}<span>{{ b.date|date:"d M" }}</span>{% else %}<span aria-hidden="true"></span>{% endif %}{% endfor %}
+    </div>
+    {% else %}
+    <div class="cx-empty" role="status">
+      <div class="cx-empty-title">No revenue yet</div>
+      <div class="cx-empty-desc">Captured payments in the last {{ trend.days }} days will appear here.</div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Transactions -->
+<section class="sp-widget">
+  <div class="sp-widget-header">
+    <h2 class="sp-widget-title">Transactions</h2>
+    {% if page_obj %}<span class="sp-activity-time">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>{% endif %}
+  </div>
+  <div class="sp-widget-body">
+    <form method="GET" action="">
+    <div class="sp-toolbar" role="search" aria-label="Filter payments">
+      <div class="sp-search-wrap">
+        <svg class="sp-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" name="q" class="cx-input" placeholder="Search customer, booking ID, Razorpay ID…" value="{{ q }}" aria-label="Search payments">
+      </div>
+
+      <div class="cx-field">
+        <select name="status" class="cx-select" data-auto-submit aria-label="Filter by payment status">
+          <option value="">All Statuses</option>
+          {% for val, label in payment_status_choices %}
+          <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="sp-date-group" aria-label="Filter by payment date">
+        <input type="date" name="date_from" class="cx-input" value="{{ date_from }}" aria-label="From date">
+        <span class="sp-date-sep" aria-hidden="true">→</span>
+        <input type="date" name="date_to" class="cx-input" value="{{ date_to }}" aria-label="To date">
+      </div>
+
+      <div class="sp-amount-group" aria-label="Filter by amount in rupees">
+        <input type="number" name="amount_min" class="cx-input" min="0" step="1" placeholder="Min ₹" value="{{ amount_min }}" aria-label="Minimum amount in rupees">
+        <span class="sp-date-sep" aria-hidden="true">–</span>
+        <input type="number" name="amount_max" class="cx-input" min="0" step="1" placeholder="Max ₹" value="{{ amount_max }}" aria-label="Maximum amount in rupees">
+      </div>
+
+      <div class="cx-field">
+        <select name="sort" class="cx-select" data-auto-submit aria-label="Sort transactions">
+          <option value="-created_at" {% if sort == '-created_at' %}selected{% endif %}>Newest</option>
+          <option value="created_at" {% if sort == 'created_at' %}selected{% endif %}>Oldest</option>
+          <option value="-amount" {% if sort == '-amount' %}selected{% endif %}>Highest Amount</option>
+          <option value="amount" {% if sort == 'amount' %}selected{% endif %}>Lowest Amount</option>
+          <option value="status" {% if sort == 'status' %}selected{% endif %}>Status A–Z</option>
+        </select>
+      </div>
+
+      <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Filter</button>
+      {% if q or status_filter or date_from or date_to or amount_min or amount_max %}
+      <a href="{% url 'staff:staff_payment_list' %}" class="cx-btn cx-btn--ghost cx-btn--sm">Clear</a>
+      {% endif %}
+    </div>
+    </form>
+
+    {% if q or status_filter or date_from or date_to or amount_min or amount_max %}
+    <div class="sp-active-filters" aria-label="Active filters">
+      <span class="sp-filter-chip">Filtered results <b>{{ page_obj.paginator.count }}</b> transactions</span>
+      <a class="sp-filter-chip" href="{% url 'staff:staff_payment_list' %}">Clear all <span aria-hidden="true">×</span></a>
+    </div>
+    {% endif %}
+
+    {% if page_obj %}
+    <!-- Desktop table -->
+    <div class="sp-table-wrap sp-txn-table">
+      <table class="sp-table" aria-label="Payment transactions">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Customer</th>
+            <th scope="col">Console / Booking</th>
+            <th scope="col">Date</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Razorpay Ref</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in page_obj %}
+          <tr class="{% if p.status == 'failed' %}sp-row-danger{% elif p.status == 'refunded' %}sp-row-warning{% elif p.status == 'captured' or p.status == 'demo' %}sp-row-success{% else %}sp-row-info{% endif %}">
+            <td><span class="sp-bk-id">#{{ p.id }}</span></td>
+            <td>
+              {% if p.user %}
+              <div class="sp-user-cell">
+                <span class="cx-avatar cx-avatar--xs">{{ p.user.full_display_name|first|upper }}</span>
+                <div>
+                  <div class="sp-cell-name">{{ p.user.full_display_name }}</div>
+                  <div class="sp-activity-time">{{ p.user.email|default:"" }}</div>
+                </div>
+              </div>
+              {% else %}
+              <span class="sp-cell-name">Unassigned</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="sp-console-cell">
+                <span class="sp-console-name">{{ p.booking.game_console.name|default:"—" }}</span>
+                <span class="sp-console-type">Booking #{{ p.booking_id }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="sp-bk-time">{{ p.created_at|date:"d M Y" }}
+                <div class="sp-bk-time-sub">{{ p.created_at|time:"h:i A" }}</div>
+              </div>
+            </td>
+            <td><strong>₹{{ p.amount_rupees|inr:2 }}</strong></td>
+            <td>
+              <span class="sp-txn-ref" title="{{ p.razorpay_order_id|default:'' }}">{{ p.razorpay_order_id|default:"—"|truncatechars:18 }}</span>
+            </td>
+            <td>{% include "staff/payments/_status_badge.html" with payment=p %}</td>
+            <td class="sp-cell-actions">
+              <a href="{% url 'staff:staff_booking_detail' p.booking_id %}" class="cx-btn cx-btn--ghost cx-btn--sm">Booking</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile cards -->
+    <div class="sp-booking-cards" aria-label="Payment transactions list">
+      {% for p in page_obj %}
+      <article class="sp-bk-card {% if p.status == 'failed' %}sp-bk-card--danger{% elif p.status == 'refunded' %}sp-bk-card--warning{% elif p.status == 'captured' or p.status == 'demo' %}sp-bk-card--success{% else %}sp-bk-card--info{% endif %}">
+        <div class="sp-bk-card-top">
+          <div class="sp-user-cell">
+            <span class="cx-avatar cx-avatar--sm">{{ p.user.full_display_name|first|upper|default:"?" }}</span>
+            <div>
+              <div class="sp-cell-name">{{ p.user.full_display_name|default:"Unassigned" }}</div>
+              <div class="sp-activity-time">Booking #{{ p.booking_id }} · {{ p.booking.game_console.name|default:"—" }}</div>
+            </div>
+          </div>
+          <span class="sp-bk-id">#{{ p.id }}</span>
+        </div>
+        <div class="sp-bk-card-row"><span>Amount</span><b>₹{{ p.amount_rupees|inr:2 }}</b></div>
+        <div class="sp-bk-card-row"><span>Date</span><b>{{ p.created_at|date:"d M Y h:i A" }}</b></div>
+        <div class="sp-bk-card-row"><span>Razorpay Ref</span><b class="sp-txn-ref">{{ p.razorpay_order_id|default:"—"|truncatechars:20 }}</b></div>
+        <div class="sp-bk-card-row"><span>Status</span>{% include "staff/payments/_status_badge.html" with payment=p %}</div>
+        <div class="sp-bk-card-actions">
+          <a href="{% url 'staff:staff_booking_detail' p.booking_id %}" class="cx-btn cx-btn--outline cx-btn--sm">View Booking</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="cx-pagination" aria-label="Payment pages" style="margin-top:var(--cx-space-4)">
+      {% if page_obj.has_previous %}
+        <a href="?page=1{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn" aria-label="First">&laquo;</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn" aria-label="Previous">&lsaquo;</a>
+      {% endif %}
+      {% for n in page_obj.paginator.page_range %}
+        {% if n >= page_obj.number|add:"-2" and n <= page_obj.number|add:"2" %}
+          <a href="?page={{ n }}{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn {% if n == page_obj.number %}cx-page-btn--active{% endif %}">{{ n }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn" aria-label="Next">&rsaquo;</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn" aria-label="Last">&raquo;</a>
+      {% endif %}
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="cx-empty" role="status">
+      <div class="cx-empty-title">No transactions found</div>
+      <div class="cx-empty-desc">
+        {% if q or status_filter or date_from or date_to or amount_min or amount_max %}
+        Nothing matches your search or filters. Try widening the date range or clearing filters.
+        {% else %}
+        Payments will appear here as customers complete checkout via Razorpay.
+        {% endif %}
+      </div>
+      {% if q or status_filter or date_from or date_to or amount_min or amount_max %}
+      <a href="{% url 'staff:staff_payment_list' %}" class="cx-btn cx-btn--outline cx-btn--md">Clear Filters</a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

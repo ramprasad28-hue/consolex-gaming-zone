@@ -1,0 +1,71 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+{% load staff_extras %}
+
+{% block title %}Games Report — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <div class="cx-breadcrumb" style="margin-bottom:var(--cx-space-2)">
+      <a href="{% url 'staff:staff_reports' %}" class="cx-breadcrumb-link">Reports</a>
+      <span class="cx-breadcrumb-sep">/</span>
+      <span class="cx-breadcrumb-current">Games</span>
+    </div>
+    <h1 class="sp-header-title">Games Report</h1>
+  </div>
+  <div class="sp-header-actions">
+    <button type="button" class="cx-btn cx-btn--outline cx-btn--sm" onclick="window.print()">Print</button>
+  </div>
+</div>
+
+{% include "staff/reports/_toolbar.html" %}
+
+<div class="sp-stats-grid">
+  <div class="sp-stat-card sp-stat-card--blue">
+    <div class="sp-stat-label">Total Consoles</div>
+    <div class="sp-stat-value">{{ report_data.total_consoles }}</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--green">
+    <div class="sp-stat-label">Active Consoles</div>
+    <div class="sp-stat-value">{{ report_data.active_consoles }}</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--purple">
+    <div class="sp-stat-label">Consoles Booked</div>
+    <div class="sp-stat-value">{{ report_data.booked_consoles }}</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--cyan">
+    <div class="sp-stat-label">Revenue from Bookings</div>
+    <div class="sp-stat-value">₹{{ report_data.revenue|inr:2 }}</div>
+    <div class="sp-stat-trend">captured payments</div>
+  </div>
+</div>
+
+<div class="sp-widget">
+  <div class="sp-widget-header"><h2 class="sp-widget-title">Console Utilisation</h2></div>
+  <div class="sp-widget-body">
+    {% if report_data.items %}
+    <div class="sp-table-wrap">
+      <table class="sp-table" aria-label="Consoles">
+        <thead>
+          <tr><th scope="col">Console</th><th scope="col">Type</th><th scope="col">Bookings</th><th scope="col">Players</th><th scope="col">Revenue</th></tr>
+        </thead>
+        <tbody>
+          {% for c in report_data.items %}
+          <tr>
+            <td><strong>{{ c.name }}</strong></td>
+            <td><span class="cx-badge cx-badge--neutral">{{ c.get_console_type_display }}</span></td>
+            <td>{{ c.booking_count }}</td>
+            <td>{{ c.players|default:0 }}</td>
+            <td>{% if c.revenue %}₹{{ c.revenue|inr_paise }}{% else %}—{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="cx-empty"><div class="cx-empty-desc">No console data found in this range.</div></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

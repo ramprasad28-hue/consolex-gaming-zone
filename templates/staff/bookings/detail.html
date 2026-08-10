@@ -132,12 +132,35 @@
     </div>
   </div>
 
-  <!-- Payment Info -->
+  <!-- Billing & Payment -->
   <div class="sp-widget">
-    <div class="sp-widget-header"><h2 class="sp-widget-title">Payment</h2></div>
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Billing &amp; Payment</h2></div>
     <div class="sp-widget-body">
       {% if booking.payment %}
-      <div class="sp-data-list">
+      <div class="sp-bill-breakdown">
+        <div class="sp-bill-row">
+          <span class="sp-data-label">Booking Amount</span>
+          <span class="sp-data-value">₹{{ billing.booking_amount|floatformat:2 }}</span>
+        </div>
+        <div class="sp-bill-row">
+          <span class="sp-data-label">Paid</span>
+          <span class="sp-data-value sp-bill-paid">₹{{ billing.paid|floatformat:2 }}</span>
+        </div>
+        <div class="sp-bill-row">
+          <span class="sp-data-label">Outstanding</span>
+          <span class="sp-data-value {% if billing.outstanding %}sp-bill-due{% endif %}">₹{{ billing.outstanding|floatformat:2 }}</span>
+        </div>
+      </div>
+
+      <div class="sp-bill-track" role="img" aria-label="{{ billing.paid_pct }} percent of the booking amount is paid">
+        <span style="width:{% widthratio billing.paid_pct 100 100 %}%"></span>
+      </div>
+      <div class="sp-bill-track-labels">
+        <span>{{ billing.paid_pct }}% paid</span>
+        <span>{% if billing.outstanding %}Balance due{% else %}Fully paid{% endif %}</span>
+      </div>
+
+      <div class="sp-data-list" style="margin-top:var(--cx-space-4)">
         <div class="sp-data-row">
           <span class="sp-data-label">Payment ID</span>
           <span class="sp-data-value">#{{ booking.payment.id }}</span>
@@ -148,25 +171,45 @@
         </div>
         <div class="sp-data-row">
           <span class="sp-data-label">Status</span>
-          <span class="sp-data-value">{{ booking.payment.get_status_display }}</span>
+          <span class="sp-data-value">{% include "staff/bookings/_payment_badge.html" with payment=booking.payment %}</span>
         </div>
         <div class="sp-data-row">
           <span class="sp-data-label">Amount</span>
-          <span class="sp-data-value">₹{{ booking.payment.amount|floatformat:2 }}</span>
+          <span class="sp-data-value">₹{{ booking.payment.amount_rupees|floatformat:2 }}</span>
         </div>
         <div class="sp-data-row">
           <span class="sp-data-label">Razorpay Order</span>
-          <span class="sp-data-value" style="font-size:var(--cx-text-xs);font-family:var(--cx-font-mono)">{{ booking.payment.razorpay_order_id|default:"—"|truncatechars:24 }}</span>
+          <span class="sp-data-value sp-data-mono" title="{{ booking.payment.razorpay_order_id|default:'' }}">{{ booking.payment.razorpay_order_id|default:"—"|truncatechars:24 }}</span>
         </div>
+        {% if booking.payment.razorpay_payment_id %}
+        <div class="sp-data-row">
+          <span class="sp-data-label">Razorpay Payment</span>
+          <span class="sp-data-value sp-data-mono" title="{{ booking.payment.razorpay_payment_id }}">{{ booking.payment.razorpay_payment_id|truncatechars:24 }}</span>
+        </div>
+        {% endif %}
         <div class="sp-data-row">
           <span class="sp-data-label">Created</span>
           <span class="sp-data-value">{{ booking.payment.created_at|date:"d M Y h:i A" }}</span>
         </div>
       </div>
       {% else %}
-      <div class="cx-empty">
+      <div class="sp-bill-breakdown">
+        <div class="sp-bill-row">
+          <span class="sp-data-label">Booking Amount</span>
+          <span class="sp-data-value">₹{{ billing.booking_amount|floatformat:2 }}</span>
+        </div>
+        <div class="sp-bill-row">
+          <span class="sp-data-label">Paid</span>
+          <span class="sp-data-value sp-bill-paid">₹0.00</span>
+        </div>
+        <div class="sp-bill-row">
+          <span class="sp-data-label">Outstanding</span>
+          <span class="sp-data-value sp-bill-due">₹{{ billing.outstanding|floatformat:2 }}</span>
+        </div>
+      </div>
+      <div class="cx-empty" style="margin-top:var(--cx-space-4)">
         <div class="cx-empty-title">No payment recorded</div>
-        <div class="cx-empty-desc">This booking has no associated payment.</div>
+        <div class="cx-empty-desc">This booking has no associated Razorpay payment yet.</div>
       </div>
       {% endif %}
     </div>

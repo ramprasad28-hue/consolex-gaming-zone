@@ -1,5 +1,6 @@
 import csv
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
+from decimal import Decimal, InvalidOperation
 from urllib.parse import urlencode
 
 from django.shortcuts import render, get_object_or_404, redirect
@@ -7,7 +8,7 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from django.db.models import Avg, Count, F, Q, Sum, Max
 from django.db.models import ExpressionWrapper, FloatField, OuterRef, Subquery
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
@@ -159,13 +160,205 @@ def booking_export(request):
     return response
 
 
+def filter_payments(request):
+    """Shared queryset builder for the payments page and CSV export."""
+    q = request.GET.get("q", "")
+    status_filter = request.GET.get("status", "")
+    date_from = request.GET.get("date_from", "")
+    date_to = request.GET.get("date_to", "")
+    amount_min = request.GET.get("amount_min", "")
+    amount_max = request.GET.get("amount_max", "")
+    sort = request.GET.get("sort", "-created_at")
+
+    payments = Payment.objects.select_related("user", "booking", "booking__game_console").all()
+
+    if q:
+        payments = payments.filter(
+            Q(user__email__icontains=q)
+            | Q(user__first_name__icontains=q)
+            | Q(user__last_name__icontains=q)
+            | Q(user__phone__icontains=q)
+            | Q(id__icontains=q)
+            | Q(booking__id__icontains=q)
+            | Q(razorpay_order_id__icontains=q)
+            | Q(razorpay_payment_id__icontains=q)
+        )
+    if status_filter:
+        payments = payments.filter(status=status_filter)
+    if date_from:
+        try:
+            payments = payments.filter(
+                created_at__date__gte=datetime.strptime(date_from, "%Y-%m-%d").date()
+            )
+        except ValueError:
+            pass
+    if date_to:
+        try:
+            payments = payments.filter(
+                created_at__date__lte=datetime.strptime(date_to, "%Y-%m-%d").date()
+            )
+        except ValueError:
+            pass
+    for field, key in (("amount__gte", amount_min), ("amount__lte", amount_max)):
+        if key:
+            try:
+                paise = int(Decimal(key) * 100)
+            except (InvalidOperation, ValueError):
+                continue
+            if paise >= 0:
+                payments = payments.filter(**{field: paise})
+
+    valid_sorts = [
+        "created_at", "-created_at", "amount", "-amount",
+        "status", "-status", "booking_id", "-booking_id",
+    ]
+    if sort in valid_sorts:
+        payments = payments.order_by(sort)
+    else:
+        payments = payments.order_by("-created_at")
+
+    return payments, {
+        "q": q,
+        "status_filter": status_filter,
+        "date_from": date_from,
+        "date_to": date_to,
+        "amount_min": amount_min,
+        "amount_max": amount_max,
+        "sort": sort,
+    }
+
+
+def _rupees(paise):
+    return round(Decimal(paise or 0) / Decimal(100), 2)
+
+
+def payment_list(request):
+    payments, filters = filter_payments(request)
+
+    paginator = Paginator(payments, 20)
+    page = paginator.get_page(request.GET.get("page"))
+
+    params = {}
+    for key in ("q", "status_filter", "date_from", "date_to", "amount_min", "amount_max"):
+        if filters[key]:
+            params[key if key != "status_filter" else "status"] = filters[key]
+    if filters["sort"] != "-created_at":
+        params["sort"] = filters["sort"]
+
+    today = timezone.localdate()
+    week_start = today - timedelta(days=today.weekday())
+    month_start = today.replace(day=1)
+
+    captured = Payment.objects.captured()
+    today_captured = captured.filter(created_at__date=today)
+    week_captured = captured.filter(created_at__date__gte=week_start)
+    month_captured = captured.filter(created_at__date__gte=month_start)
+
+    revenue = {
+        "today": _rupees(today_captured.aggregate(t=Sum("amount"))["t"]),
+        "week": _rupees(week_captured.aggregate(t=Sum("amount"))["t"]),
+        "month": _rupees(month_captured.aggregate(t=Sum("amount"))["t"]),
+        "total": _rupees(captured.aggregate(t=Sum("amount"))["t"]),
+        "tx_today": today_captured.count(),
+        "tx_week": week_captured.count(),
+        "tx_month": month_captured.count(),
+        "tx_total": captured.count(),
+    }
+
+    status_counts = dict(
+        Payment.objects.values_list("status").annotate(c=Count("id"))
+    )
+    refunded_amount = _rupees(
+        Payment.objects.filter(status="refunded").aggregate(t=Sum("amount"))["t"]
+    )
+
+    days = request.GET.get("days", "30")
+    try:
+        days = int(days)
+    except (TypeError, ValueError):
+        days = 30
+    trend = StaffDashboardService.get_revenue_trend(days)
+
+    now = timezone.now()
+    memb_captured = MembershipPayment.objects.filter(
+        status=MembershipPayment.Status.CAPTURED
+    )
+    memb_month = memb_captured.filter(created_at__date__gte=month_start)
+    memb_30 = memb_captured.filter(created_at__gte=now - timedelta(days=30))
+    membership_billing = {
+        "month": _rupees(memb_month.aggregate(t=Sum("amount"))["t"]),
+        "total": _rupees(memb_captured.aggregate(t=Sum("amount"))["t"]),
+        "recent_30": _rupees(memb_30.aggregate(t=Sum("amount"))["t"]),
+        "active_subs": MembershipSubscription.objects.active().count(),
+    }
+
+    return render(request, "staff/payments/list.html", {
+        "page_obj": page,
+        "qs": urlencode(params),
+        "payment_status_choices": Payment.Status.choices,
+        "revenue": revenue,
+        "status_counts": status_counts,
+        "refunded_amount": refunded_amount,
+        "trend": trend,
+        "trend_days": days,
+        "membership_billing": membership_billing,
+        "today": today,
+        **filters,
+    })
+
+
+def payment_export(request):
+    """CSV export of payments honouring the same filters as the payments page."""
+    payments, _ = filter_payments(request)
+
+    response = HttpResponse(content_type="text/csv; charset=utf-8")
+    response["Content-Disposition"] = 'attachment; filename="payments.csv"'
+    writer = csv.writer(response)
+    writer.writerow([
+        "Payment ID", "Booking ID", "Customer", "Email", "Phone",
+        "Amount (INR)", "Currency", "Status", "Razorpay Order ID",
+        "Razorpay Payment ID", "Payment Date", "Updated At",
+    ])
+    for p in payments:
+        booking = p.booking
+        writer.writerow([
+            p.id,
+            booking.id if booking else "",
+            p.user.full_display_name if p.user else "",
+            p.user.email if p.user else "",
+            p.user.phone if p.user and p.user.phone else "",
+            p.amount_rupees,
+            p.currency,
+            p.get_status_display(),
+            p.razorpay_order_id,
+            p.razorpay_payment_id or "",
+            p.created_at.strftime("%Y-%m-%d %H:%M:%S") if p.created_at else "",
+            p.updated_at.strftime("%Y-%m-%d %H:%M:%S") if p.updated_at else "",
+        ])
+    return response
+
+
 def booking_detail(request, booking_id):
     booking = get_object_or_404(
         Booking.objects.select_related("user", "game_console", "payment"),
         id=booking_id
     )
+    payment = getattr(booking, "payment", None)
+    booking_amount = booking.total_cost
+    paid = payment.amount_rupees if payment and payment.is_successful else Decimal("0.00")
+    outstanding = max(booking_amount - paid, Decimal("0.00"))
+    paid_pct = (
+        round(float(paid) * 100 / float(booking_amount), 1)
+        if booking_amount else 0
+    )
     return render(request, "staff/bookings/detail.html", {
         "booking": booking,
+        "billing": {
+            "booking_amount": booking_amount,
+            "paid": paid,
+            "outstanding": outstanding,
+            "paid_pct": paid_pct,
+        },
     })
 
 
@@ -681,9 +874,24 @@ def membership_plan_detail(request, plan_id):
     members = MembershipSubscription.objects.filter(plan=plan).select_related(
         "user"
     ).order_by("-started_at")[:50]
+
+    plan_payments = MembershipPayment.objects.filter(
+        subscription__plan=plan
+    ).select_related("subscription", "user")
+    plan_counts = dict(plan_payments.values_list("status").annotate(c=Count("id")))
+    plan_revenue = _rupees(
+        plan_payments.filter(
+            status=MembershipPayment.Status.CAPTURED
+        ).aggregate(t=Sum("amount"))["t"]
+    )
+    recent_plan_payments = plan_payments.order_by("-created_at")[:10]
+
     return render(request, "staff/memberships/detail.html", {
         "plan": plan,
         "members": members,
+        "plan_payments": recent_plan_payments,
+        "plan_payment_counts": plan_counts,
+        "plan_revenue": plan_revenue,
     })
 
 
@@ -706,35 +914,259 @@ def analytics_dashboard(request):
     return render(request, "staff/analytics/dashboard.html", data)
 
 
+REPORT_TYPES = {
+    "revenue", "bookings", "payments", "customers",
+    "memberships", "tournaments", "games",
+}
+
+
 def reports(request):
-    return render(request, "staff/reports/index.html")
+    today = timezone.localdate()
+    week_start = today - timedelta(days=today.weekday())
+    month_start = today.replace(day=1)
+
+    captured = Payment.objects.captured()
+    revenue_total = _rupees(captured.aggregate(t=Sum("amount"))["t"])
+    revenue_month = _rupees(
+        captured.filter(created_at__date__gte=month_start).aggregate(t=Sum("amount"))["t"]
+    )
+
+    booking_stats = Booking.objects.aggregate(
+        total=Count("id"),
+        today=Count("id", filter=Q(booking_date=today)),
+        week=Count("id", filter=Q(booking_date__gte=week_start)),
+    )
+
+    payment_stats = Payment.objects.aggregate(
+        total=Count("id"),
+        captured=Count("id", filter=Q(status__in=["captured", "demo"])),
+        pending=Count("id", filter=Q(status="pending")),
+        failed=Count("id", filter=Q(status="failed")),
+    )
+
+    customers_total = User.objects.count()
+    customers_active = User.objects.filter(
+        bookings__isnull=False
+    ).distinct().count()
+
+    active_subs = MembershipSubscription.objects.active().count()
+    memberships_total = Membership.objects.count()
+
+    games_total = Game.objects.count()
+    games_consoles = GameConsole.objects.count()
+    booked_consoles = Booking.objects.values("game_console_id").distinct().count()
+
+    tournaments_total = Tournament.objects.count()
+    tournaments_open = Tournament.objects.filter(
+        status="registrations_open"
+    ).count()
+
+    summary = {
+        "revenue": {
+            "total": revenue_total,
+            "month": revenue_month,
+            "count": captured.count(),
+            "url": "staff:staff_report_detail",
+        },
+        "bookings": {
+            "total": booking_stats["total"],
+            "today": booking_stats["today"],
+            "week": booking_stats["week"],
+            "url": "staff:staff_report_detail",
+        },
+        "payments": {
+            "total": payment_stats["total"],
+            "captured": payment_stats["captured"],
+            "pending": payment_stats["pending"],
+            "failed": payment_stats["failed"],
+            "url": "staff:staff_report_detail",
+        },
+        "customers": {
+            "total": customers_total,
+            "active": customers_active,
+            "url": "staff:staff_report_detail",
+        },
+        "memberships": {
+            "total": memberships_total,
+            "active_subs": active_subs,
+            "url": "staff:staff_report_detail",
+        },
+        "tournaments": {
+            "total": tournaments_total,
+            "open": tournaments_open,
+            "url": "staff:staff_report_detail",
+        },
+        "games": {
+            "total": games_total,
+            "consoles": games_consoles,
+            "booked": booked_consoles,
+            "url": "staff:staff_report_detail",
+        },
+    }
+
+    return render(request, "staff/reports/index.html", {
+        "summary": summary,
+        "today": today,
+    })
+
+
+def _parse_report_dates(request):
+    """Parse ?from= and ?to= into dates (invalid values are ignored)."""
+    date_from = None
+    date_to = None
+    for key in ("from", "to"):
+        raw = request.GET.get(key, "")
+        if raw:
+            try:
+                parsed = datetime.strptime(raw, "%Y-%m-%d").date()
+            except ValueError:
+                continue
+            if key == "from":
+                date_from = parsed
+            else:
+                date_to = parsed
+    return date_from, date_to
 
 
 def report_detail(request, report_type):
-    date_from_str = request.GET.get("from", "")
-    date_to_str = request.GET.get("to", "")
+    if report_type not in REPORT_TYPES:
+        raise Http404
 
-    date_from = None
-    date_to = None
-    if date_from_str:
-        try:
-            date_from = datetime.strptime(date_from_str, "%Y-%m-%d").date()
-        except ValueError:
-            pass
-    if date_to_str:
-        try:
-            date_to = datetime.strptime(date_to_str, "%Y-%m-%d").date()
-        except ValueError:
-            pass
-
+    date_from, date_to = _parse_report_dates(request)
     data = StaffDashboardService.get_report_data(report_type, date_from, date_to)
 
-    return render(request, f"staff/reports/{report_type}.html", {
+    today = timezone.localdate()
+    presets = {
+        "7d": today - timedelta(days=6),
+        "30d": today - timedelta(days=29),
+        "90d": today - timedelta(days=89),
+        "month": today.replace(day=1),
+    }
+
+    context = {
         "report_data": data,
         "date_from": date_from,
         "date_to": date_to,
         "report_type": report_type,
-    })
+        "presets": presets,
+        "today": today,
+    }
+    if report_type in ("revenue", "payments"):
+        context["trend"] = StaffDashboardService.get_revenue_trend(30)
+
+    return render(request, f"staff/reports/{report_type}.html", context)
+
+
+def report_export(request, report_type):
+    """CSV export of a report honouring the same from/to date filters."""
+    if report_type not in REPORT_TYPES:
+        raise Http404
+
+    date_from, date_to = _parse_report_dates(request)
+
+    def within(qs, field):
+        if date_from:
+            qs = qs.filter(**{f"{field}__gte": date_from})
+        if date_to:
+            qs = qs.filter(**{f"{field}__lte": date_to})
+        return qs
+
+    response = HttpResponse(content_type="text/csv; charset=utf-8")
+    response["Content-Disposition"] = (
+        f'attachment; filename="{report_type}-report.csv"'
+    )
+    writer = csv.writer(response)
+
+    if report_type == "bookings":
+        writer.writerow([
+            "Booking ID", "Customer", "Email", "Phone", "Console",
+            "Booking Date", "Start", "End", "Duration (hrs)", "Players",
+            "Amount (INR)", "Status", "Payment Status", "Payment Amount (INR)",
+            "Razorpay Order ID", "Created At",
+        ])
+        qs = within(Booking.objects.select_related("user", "game_console", "payment"), "booking_date")
+        for b in qs.order_by("-booking_date"):
+            payment = getattr(b, "payment", None)
+            writer.writerow([
+                b.id, b.user.full_display_name, b.user.email, b.user.phone or "",
+                b.game_console.name if b.game_console else "",
+                b.booking_date.isoformat(), b.start_time.strftime("%H:%M"),
+                b.end_time.strftime("%H:%M"), b.duration_hours, b.number_of_players,
+                b.total_cost, b.get_status_display(),
+                payment.get_status_display() if payment else "",
+                payment.amount_rupees if payment else "",
+                payment.razorpay_order_id if payment else "",
+                b.created_at.strftime("%Y-%m-%d %H:%M:%S") if b.created_at else "",
+            ])
+
+    elif report_type in ("revenue", "payments"):
+        writer.writerow([
+            "Payment ID", "Booking ID", "Customer", "Email", "Phone",
+            "Amount (INR)", "Currency", "Status", "Razorpay Order ID",
+            "Razorpay Payment ID", "Payment Date",
+        ])
+        qs = within(Payment.objects.select_related("user", "booking"), "created_at__date")
+        for p in qs.order_by("-created_at"):
+            booking = p.booking
+            writer.writerow([
+                p.id, booking.id if booking else "",
+                p.user.full_display_name if p.user else "",
+                p.user.email if p.user else "",
+                p.user.phone if p.user and p.user.phone else "",
+                p.amount_rupees, p.currency, p.get_status_display(),
+                p.razorpay_order_id, p.razorpay_payment_id or "",
+                p.created_at.strftime("%Y-%m-%d %H:%M:%S") if p.created_at else "",
+            ])
+
+    elif report_type == "customers":
+        writer.writerow(["Customer", "Email", "Phone", "Joined", "Bookings", "Total Spent (INR)"])
+        customers = within(User.objects.annotate(
+            booking_count=Count("bookings"),
+            total_spent=Sum("payments__amount", filter=Q(payments__status__in=["captured", "demo"])),
+        ), "date_joined")
+        for u in customers.order_by("-date_joined"):
+            writer.writerow([
+                u.full_display_name, u.email, u.phone or "",
+                u.date_joined.strftime("%Y-%m-%d"),
+                u.booking_count,
+                round((u.total_spent or 0) / 100, 2),
+            ])
+
+    elif report_type == "memberships":
+        writer.writerow(["User", "Email", "Plan", "Started", "Expires", "Status", "Auto Renew"])
+        qs = within(MembershipSubscription.objects.select_related("user", "plan"), "created_at")
+        for s in qs.order_by("-created_at"):
+            writer.writerow([
+                s.user.full_display_name, s.user.email, s.plan.name,
+                s.started_at.strftime("%Y-%m-%d") if s.started_at else "",
+                s.expires_at.strftime("%Y-%m-%d") if s.expires_at else "",
+                s.get_status_display(), "Yes" if s.auto_renew else "No",
+            ])
+
+    elif report_type == "tournaments":
+        writer.writerow(["Title", "Game", "Date", "Prize (INR)", "Slots", "Registered", "Status"])
+        qs = within(Tournament.objects.all(), "date")
+        for t in qs.order_by("-date"):
+            writer.writerow([
+                t.title, t.game, t.date.isoformat() if t.date else "",
+                t.prize_pool, t.total_slots, t.registered_slots, t.get_status_display(),
+            ])
+
+    elif report_type == "games":
+        writer.writerow(["Console", "Type", "Bookings", "Players", "Revenue (INR)"])
+        qs = GameConsole.objects.annotate(
+            booking_count=Count("bookings"),
+            revenue=Sum("bookings__payment__amount", filter=Q(bookings__payment__status__in=["captured", "demo"])),
+            players=Sum("bookings__number_of_players"),
+        )
+        qs = within(qs, "bookings__booking_date")
+        for c in qs.distinct().order_by("-booking_count"):
+            writer.writerow([
+                c.name, c.console_type, c.booking_count, c.players or 0,
+                round((c.revenue or 0) / 100, 2),
+            ])
+
+    return response
 
 
 def import_customers(request):

@@ -93,5 +93,54 @@
       {% endif %}
     </div>
   </div>
+
+  <!-- Revenue & Payments -->
+  <div class="sp-widget">
+    <div class="sp-widget-header">
+      <h2 class="sp-widget-title">Revenue &amp; Payments</h2>
+      <span class="sp-activity-time">Razorpay captures for this plan</span>
+    </div>
+    <div class="sp-widget-body">
+      <div class="sp-bill-breakdown">
+        <div class="sp-bill-row">
+          <span class="sp-data-label">Total Collected</span>
+          <span class="sp-data-value sp-bill-paid">₹{{ plan_revenue|floatformat:2 }}</span>
+        </div>
+        <div class="sp-bill-row">
+          <span class="sp-data-label">Captured</span>
+          <span class="sp-data-value">{{ plan_payment_counts.captured|default:0 }}</span>
+        </div>
+        <div class="sp-bill-row">
+          <span class="sp-data-label">Pending</span>
+          <span class="sp-data-value">{{ plan_payment_counts.pending|default:0 }}</span>
+        </div>
+        <div class="sp-bill-row">
+          <span class="sp-data-label">Failed</span>
+          <span class="sp-data-value">{{ plan_payment_counts.failed|default:0 }}</span>
+        </div>
+      </div>
+
+      {% if plan_payments %}
+      <div class="sp-expiring-list" aria-label="Recent membership payments" style="margin-top:var(--cx-space-4)">
+        {% for mp in plan_payments %}
+        <div class="sp-expiring-item">
+          <span class="cx-avatar">{{ mp.user.full_display_name|first|upper }}</span>
+          <div class="sp-expiring-main">
+            <div class="sp-expiring-name">{{ mp.user.full_display_name }}</div>
+            <div class="sp-expiring-sub">{{ mp.created_at|date:"d M Y h:i A" }} · ₹{{ mp.amount_rupees|floatformat:2 }}</div>
+          </div>
+          {% if mp.status == 'captured' %}<span class="cx-badge cx-badge--success">Captured</span>
+          {% elif mp.status == 'failed' %}<span class="cx-badge cx-badge--danger">Failed</span>
+          {% else %}<span class="cx-badge cx-badge--warning">Pending</span>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="cx-empty" style="margin-top:var(--cx-space-4)" role="status">
+        <div class="cx-empty-desc">No payments recorded for this plan yet.</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
 </div>
 {% endblock %}

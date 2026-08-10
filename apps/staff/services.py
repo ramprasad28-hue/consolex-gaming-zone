@@ -3,6 +3,7 @@ from decimal import Decimal
 from collections import defaultdict
 
 from django.db.models import Sum, Count, Q, Avg
+from django.db.models.functions import TruncDate
 from django.utils import timezone
 
 from apps.bookings.models import Booking
@@ -359,7 +360,114 @@ class StaffDashboardService:
                 "items": tours.order_by("-date")[:50],
             }
 
+        elif report_type == "payments":
+            payments = Payment.objects.all()
+            if date_from:
+                payments = payments.filter(created_at__date__gte=date_from)
+            if date_to:
+                payments = payments.filter(created_at__date__lte=date_to)
+            data = payments.aggregate(
+                total=Count("id"),
+                captured=Count("id", filter=Q(status__in=["captured", "demo"])),
+                pending=Count("id", filter=Q(status="pending")),
+                failed=Count("id", filter=Q(status="failed")),
+                refunded=Count("id", filter=Q(status="refunded")),
+                revenue=Sum("amount", filter=Q(status__in=["captured", "demo"])),
+            )
+            refunded_amount = payments.filter(
+                status="refunded"
+            ).aggregate(t=Sum("amount"))["t"] or 0
+            revenue = round(Decimal(data["revenue"] or 0) / Decimal(100), 2)
+            return {
+                "total": data["total"],
+                "captured": data["captured"],
+                "pending": data["pending"],
+                "failed": data["failed"],
+                "refunded": data["refunded"],
+                "revenue": revenue,
+                "avg_payment": round(
+                    revenue / (data["captured"] or 1), 2
+                ),
+                "refunded_amount": round(
+                    Decimal(refunded_amount) / Decimal(100), 2
+                ),
+                "items": payments.select_related("booking", "user").order_by(
+                    "-created_at"
+                )[:100],
+            }
+
+        elif report_type == "games":
+            consoles = GameConsole.objects.annotate(
+                booking_count=Count("bookings"),
+                revenue=Sum(
+                    "bookings__payment__amount",
+                    filter=Q(bookings__payment__status__in=["captured", "demo"]),
+                ),
+                players=Sum("bookings__number_of_players"),
+            ).order_by("-booking_count")
+            if date_from:
+                consoles = consoles.filter(bookings__booking_date__gte=date_from)
+            if date_to:
+                consoles = consoles.filter(bookings__booking_date__lte=date_to)
+            return {
+                "total_consoles": GameConsole.objects.count(),
+                "active_consoles": GameConsole.objects.active().count(),
+                "booked_consoles": consoles.filter(booking_count__gt=0).count(),
+                "revenue": round(
+                    Decimal(
+                        consoles.aggregate(t=Sum("revenue"))["t"] or 0
+                    ) / Decimal(100), 2
+                ),
+                "items": consoles.distinct()[:50],
+            }
+
         return {}
+
+    @staticmethod
+    def get_revenue_trend(days=30):
+        """Daily captured-revenue buckets for the payments page chart.
+
+        Returns a list of dicts with `date`, `label`, `amount` (rupees) and
+        `pct` (0-100 relative to the busiest day), plus the max amount so the
+        template can render an empty state when there is no data.
+        """
+        days = min(max(int(days), 7), 365)
+        end = timezone.localdate()
+        start = end - timedelta(days=days - 1)
+
+        rows = {
+            row["d"]: row["t"]
+            for row in (
+                Payment.objects.captured()
+                .filter(created_at__date__gte=start, created_at__date__lte=end)
+                .annotate(d=TruncDate("created_at"))
+                .values("d")
+                .annotate(t=Sum("amount"))
+            )
+        }
+
+        bucket_count = days
+        label_every = max(1, bucket_count // 12)
+        buckets = []
+        max_amount = max(rows.values()) if rows else 0
+        for i in range(days):
+            day = start + timedelta(days=i)
+            paise = rows.get(day, 0)
+            amount = round(Decimal(paise) / Decimal(100), 2)
+            pct = round(float(amount) * 100 / float(max_amount), 1) if max_amount else 0
+            buckets.append({
+                "date": day,
+                "label": day.strftime("%d"),
+                "show_label": i % label_every == 0,
+                "amount": amount,
+                "pct": pct,
+            })
+
+        return {
+            "buckets": buckets,
+            "max_amount": round(Decimal(max_amount) / Decimal(100), 2),
+            "days": days,
+        }
 
     @staticmethod
     def get_executive_data():

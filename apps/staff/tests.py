@@ -713,3 +713,265 @@ class MembershipManagementTests(TestCase):
         )
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp.url, reverse("staff:staff_membership_detail", args=[self.plan.id]))
+
+
+# ─────────────────────────────────────────────
+# Phase 5 — Payments, Billing & Reports
+# ─────────────────────────────────────────────
+
+class PaymentManagementTests(TestCase):
+    """Phase 5 — payments admin page: stats, filters, export, gating."""
+
+    def setUp(self):
+        make_staff()
+        self.client.force_login(User.objects.get(email="staff@test.com"))
+        self.console = make_console()
+        self.customer = User.objects.create_user(
+            email="payer@test.com", password="x", phone="9876500001"
+        )
+        self.booking = Booking.objects.create(
+            user=self.customer, game_console=self.console,
+            booking_date=timezone.localdate().isoformat(),
+            start_time="12:00", end_time="14:00",
+            total_cost=Decimal("260.00"), status="confirmed",
+        )
+        self.captured = Payment.objects.create(
+            booking=self.booking, user=self.customer, amount=26000, status="captured",
+        )
+        refunded_booking = Booking.objects.create(
+            user=self.customer, game_console=self.console,
+            booking_date=timezone.localdate().isoformat(),
+            start_time="15:00", end_time="16:00",
+            total_cost=Decimal("50.00"), status="confirmed",
+        )
+        self.refunded = Payment.objects.create(
+            booking=refunded_booking, user=self.customer,
+            amount=5000, status="refunded",
+            razorpay_order_id="order_REFUNDED1",
+        )
+
+    def _other(self):
+        other_user = User.objects.create_user(email="other@test.com", password="x")
+        other_booking = Booking.objects.create(
+            user=other_user, game_console=self.console,
+            booking_date=timezone.localdate().isoformat(),
+            start_time="16:00", end_time="17:00",
+            total_cost=Decimal("100.00"), status="confirmed",
+        )
+        return Payment.objects.create(
+            booking=other_booking, user=other_user,
+            amount=10000, status="pending",
+            razorpay_order_id="order_PENDING1",
+        )
+
+    def test_list_renders_with_stats(self):
+        resp = self.client.get(reverse("staff:staff_payment_list"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("revenue", resp.context)
+        self.assertIn("status_counts", resp.context)
+        self.assertIn("trend", resp.context)
+        self.assertEqual(resp.context["status_counts"]["captured"], 1)
+
+    def test_revenue_in_rupees(self):
+        Payment.objects.filter(pk=self.refunded.pk).delete()
+        resp = self.client.get(reverse("staff:staff_payment_list"))
+        self.assertEqual(resp.context["revenue"]["total"], Decimal("260.00"))
+
+    def test_refunded_amount(self):
+        resp = self.client.get(reverse("staff:staff_payment_list"))
+        self.assertEqual(resp.context["refunded_amount"], Decimal("50.00"))
+
+    def test_revenue_excludes_refunds_and_pending(self):
+        self._other()
+        resp = self.client.get(reverse("staff:staff_payment_list"))
+        self.assertEqual(resp.context["revenue"]["total"], Decimal("260.00"))
+
+    def test_status_filter(self):
+        resp = self.client.get(reverse("staff:staff_payment_list"), {"status": "refunded"})
+        self.assertEqual(len(resp.context["page_obj"].object_list), 1)
+
+    def test_search_by_razorpay_order(self):
+        resp = self.client.get(reverse("staff:staff_payment_list"), {"q": "order_REFUNDED1"})
+        self.assertEqual(len(resp.context["page_obj"].object_list), 1)
+
+    def test_search_by_customer_phone(self):
+        resp = self.client.get(reverse("staff:staff_payment_list"), {"q": "9876500001"})
+        self.assertEqual(len(resp.context["page_obj"].object_list), 2)
+
+    def test_amount_range_filter_in_rupees(self):
+        self._other()
+        resp = self.client.get(
+            reverse("staff:staff_payment_list"), {"amount_min": "200", "amount_max": "300"}
+        )
+        self.assertEqual(len(resp.context["page_obj"].object_list), 1)
+
+    def test_date_range_filter(self):
+        Payment.objects.filter(pk=self.captured.pk).update(
+            created_at="2026-08-01 10:00:00+00:00"
+        )
+        resp = self.client.get(
+            reverse("staff:staff_payment_list"),
+            {"date_from": "2026-08-02", "date_to": "2026-08-31"},
+        )
+        self.assertEqual(len(resp.context["page_obj"].object_list), 1)
+
+    def test_sort_by_amount(self):
+        self._other()
+        resp = self.client.get(reverse("staff:staff_payment_list"), {"sort": "-amount"})
+        self.assertEqual(len(resp.context["page_obj"].object_list), 3)
+        first = resp.context["page_obj"].object_list[0]
+        self.assertEqual(first.pk, self.captured.pk)
+
+    def test_trend_days_preset(self):
+        resp = self.client.get(reverse("staff:staff_payment_list"), {"days": "7"})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.context["trend"]["buckets"]), 7)
+
+    def test_export_csv_contains_real_data(self):
+        resp = self.client.get(reverse("staff:staff_payment_export"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp["Content-Type"], "text/csv; charset=utf-8")
+        self.assertContains(resp, "payer@test.com")
+        self.assertContains(resp, "order_REFUNDED1")
+        self.assertContains(resp, "Payment ID")
+
+    def test_export_csv_excludes_signature_and_secrets(self):
+        resp = self.client.get(reverse("staff:staff_payment_export"))
+        self.assertNotContains(resp, "razorpay_signature")
+        self.assertNotContains(resp, "RAZORPAY_KEY_SECRET")
+        self.assertNotContains(resp, "WEBHOOK_SECRET")
+
+    def test_export_respects_filters(self):
+        resp = self.client.get(
+            reverse("staff:staff_payment_export"), {"status": "pending"}
+        )
+        self.assertNotContains(resp, "payer@test.com")
+
+    def test_regular_user_cannot_access(self):
+        user = User.objects.create_user(email="plain@test.com", password="x")
+        self.client.force_login(user)
+        resp = self.client.get(reverse("staff:staff_payment_list"))
+        self.assertNotEqual(resp.status_code, 200)
+
+
+class ReportsPhase5Tests(TestCase):
+    """Phase 5 — report hub, new report types, exports, 404 guards."""
+
+    def setUp(self):
+        make_staff()
+        self.client.force_login(User.objects.get(email="staff@test.com"))
+        self.console = make_console()
+        self.customer = User.objects.create_user(email="rep@test.com", password="x")
+        self.booking = Booking.objects.create(
+            user=self.customer, game_console=self.console,
+            booking_date=timezone.localdate().isoformat(),
+            start_time="12:00", end_time="14:00",
+            total_cost=Decimal("260.00"), status="confirmed",
+        )
+        self.payment = Payment.objects.create(
+            booking=self.booking, user=self.customer, amount=26000, status="captured",
+        )
+
+    def test_hub_shows_live_summary(self):
+        resp = self.client.get(reverse("staff:staff_reports"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.context["summary"]["revenue"]["total"], Decimal("260.00"))
+        self.assertContains(resp, "Revenue Report")
+        self.assertContains(resp, "Payments Report")
+
+    def test_payments_report_type(self):
+        resp = self.client.get(reverse("staff:staff_report_detail", args=["payments"]))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.context["report_data"]["revenue"], Decimal("260.00"))
+        self.assertEqual(resp.context["report_data"]["captured"], 1)
+
+    def test_games_report_type(self):
+        resp = self.client.get(reverse("staff:staff_report_detail", args=["games"]))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.context["report_data"]["booked_consoles"], 1)
+
+    def test_revenue_report_shows_rupees_not_paise(self):
+        resp = self.client.get(reverse("staff:staff_report_detail", args=["revenue"]))
+        self.assertContains(resp, "260.00")
+        self.assertNotContains(resp, "26,000.00")
+
+    def test_unknown_report_type_404(self):
+        resp = self.client.get(reverse("staff:staff_report_detail", args=["nope"]))
+        self.assertEqual(resp.status_code, 404)
+
+    def test_unknown_export_type_404(self):
+        resp = self.client.get(reverse("staff:staff_report_export", args=["nope"]))
+        self.assertEqual(resp.status_code, 404)
+
+    def test_export_payments_contains_real_data(self):
+        resp = self.client.get(reverse("staff:staff_report_export", args=["payments"]))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "rep@test.com")
+        self.assertContains(resp, "Captured")
+
+    def test_export_revenue_respects_date_filter(self):
+        Payment.objects.filter(pk=self.payment.pk).update(
+            created_at="2026-09-01 10:00:00+00:00"
+        )
+        resp = self.client.get(
+            reverse("staff:staff_report_export", args=["revenue"]),
+            {"from": "2026-08-01", "to": "2026-08-31"},
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotContains(resp, "rep@test.com")
+
+    def test_export_bookings(self):
+        resp = self.client.get(reverse("staff:staff_report_export", args=["bookings"]))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "rep@test.com")
+        self.assertContains(resp, "Booking ID")
+
+
+class MembershipPlanBillingTests(TestCase):
+    """Phase 5 — plan detail shows real payment statistics."""
+
+    def setUp(self):
+        make_staff()
+        self.client.force_login(User.objects.get(email="staff@test.com"))
+        self.plan = Membership.objects.create(
+            name="Pro", price=Decimal("499.00"), duration_days=30, tier_level=2,
+        )
+        self.member = User.objects.create_user(email="member@test.com", password="x")
+        self.sub = MembershipSubscription.objects.create(
+            user=self.member, plan=self.plan, status="active",
+            expires_at=timezone.now() + timezone.timedelta(days=20),
+        )
+        self.mp = MembershipPayment.objects.create(
+            subscription=self.sub, user=self.member, amount=49900, status="captured",
+        )
+
+    def test_plan_detail_renders_billing(self):
+        resp = self.client.get(reverse("staff:staff_membership_detail", args=[self.plan.id]))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.context["plan_revenue"], Decimal("499.00"))
+        self.assertEqual(resp.context["plan_payment_counts"]["captured"], 1)
+        self.assertContains(resp, "499.00")
+
+    def test_plan_detail_excludes_failed_from_revenue(self):
+        MembershipPayment.objects.filter(pk=self.mp.pk).update(status="failed")
+        resp = self.client.get(reverse("staff:staff_membership_detail", args=[self.plan.id]))
+        self.assertEqual(resp.context["plan_revenue"], Decimal("0.00"))
+
+
+class StaffTemplateTagTests(TestCase):
+    """Phase 5 — Indian grouping filters."""
+
+    def test_inr_whole(self):
+        from django.template import Template, Context
+        out = Template("{% load staff_extras %}{{ v|inr }}").render(Context({"v": 1234567}))
+        self.assertEqual(out, "12,34,567")
+
+    def test_inr_decimals(self):
+        from django.template import Template, Context
+        out = Template("{% load staff_extras %}{{ v|inr:2 }}").render(Context({"v": "1234.5"}))
+        self.assertEqual(out, "1,234.50")
+
+    def test_inr_paise(self):
+        from django.template import Template, Context
+        out = Template("{% load staff_extras %}{{ v|inr_paise }}").render(Context({"v": 26000}))
+        self.assertEqual(out, "260.00")

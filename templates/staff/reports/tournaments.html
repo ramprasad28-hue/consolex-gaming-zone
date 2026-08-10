@@ -1,5 +1,6 @@
 {% extends "staff/base_staff.html" %}
 {% load static %}
+{% load staff_extras %}
 
 {% block title %}Tournaments Report — {{ site.brand_name }}{% endblock %}
 
@@ -18,22 +19,21 @@
   </div>
 </div>
 
-<form method="GET" class="sp-toolbar">
-  <div class="cx-field">
-    <label class="cx-label">From</label>
-    <input type="date" name="from" class="cx-input" value="{{ date_from|date:'Y-m-d'|default:'' }}">
-  </div>
-  <div class="cx-field">
-    <label class="cx-label">To</label>
-    <input type="date" name="to" class="cx-input" value="{{ date_to|date:'Y-m-d'|default:'' }}">
-  </div>
-  <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm" style="margin-top:20px">Apply</button>
-</form>
+{% include "staff/reports/_toolbar.html" %}
 
 <div class="sp-stats-grid">
-  <div class="sp-stat-card"><div class="sp-stat-label">Total Tournaments</div><div class="sp-stat-value">{{ report_data.total }}</div></div>
-  <div class="sp-stat-card"><div class="sp-stat-label">Total Slots</div><div class="sp-stat-value">{{ report_data.total_slots|default:"0" }}</div></div>
-  <div class="sp-stat-card"><div class="sp-stat-label">Registered</div><div class="sp-stat-value">{{ report_data.registered|default:"0" }}</div></div>
+  <div class="sp-stat-card sp-stat-card--blue">
+    <div class="sp-stat-label">Total Tournaments</div>
+    <div class="sp-stat-value">{{ report_data.total }}</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--purple">
+    <div class="sp-stat-label">Total Slots</div>
+    <div class="sp-stat-value">{{ report_data.total_slots|default:0 }}</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--green">
+    <div class="sp-stat-label">Registered</div>
+    <div class="sp-stat-value">{{ report_data.registered|default:0 }}</div>
+  </div>
 </div>
 
 <div class="sp-widget">
@@ -51,7 +51,7 @@
             <td><strong>{{ t.title }}</strong></td>
             <td>{{ t.game }}</td>
             <td>{{ t.date|date:"d M Y" }}</td>
-            <td>₹{{ t.prize_pool|floatformat:0 }}</td>
+            <td>₹{{ t.prize_pool|inr }}</td>
             <td>{{ t.total_slots }}</td>
             <td>{{ t.registered_slots }}</td>
             <td><span class="cx-badge cx-badge--{% if t.status == 'registrations_open' %}success{% elif t.status == 'completed' %}neutral{% elif t.status == 'cancelled' %}danger{% else %}primary{% endif %}">{{ t.get_status_display }}</span></td>
@@ -61,7 +61,7 @@
       </table>
     </div>
     {% else %}
-    <div class="cx-empty"><div class="cx-empty-desc">No tournament data found.</div></div>
+    <div class="cx-empty"><div class="cx-empty-desc">No tournament data found in this range.</div></div>
     {% endif %}
   </div>
 </div>

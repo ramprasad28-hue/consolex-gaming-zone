@@ -1,5 +1,6 @@
 {% extends "staff/base_staff.html" %}
 {% load static %}
+{% load staff_extras %}
 
 {% block title %}Bookings Report — {{ site.brand_name }}{% endblock %}
 
@@ -18,24 +19,53 @@
   </div>
 </div>
 
-<form method="GET" class="sp-toolbar">
-  <div class="cx-field">
-    <label class="cx-label">From</label>
-    <input type="date" name="from" class="cx-input" value="{{ date_from|date:'Y-m-d'|default:'' }}">
-  </div>
-  <div class="cx-field">
-    <label class="cx-label">To</label>
-    <input type="date" name="to" class="cx-input" value="{{ date_to|date:'Y-m-d'|default:'' }}">
-  </div>
-  <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm" style="margin-top:20px">Apply</button>
-</form>
+{% include "staff/reports/_toolbar.html" %}
 
 <div class="sp-stats-grid">
-  <div class="sp-stat-card"><div class="sp-stat-label">Total</div><div class="sp-stat-value">{{ report_data.total }}</div></div>
-  <div class="sp-stat-card"><div class="sp-stat-label">Confirmed</div><div class="sp-stat-value sp-stat-trend--up">{{ report_data.confirmed }}</div></div>
-  <div class="sp-stat-card"><div class="sp-stat-label">Pending</div><div class="sp-stat-value sp-stat-trend--down">{{ report_data.pending }}</div></div>
-  <div class="sp-stat-card"><div class="sp-stat-label">Completed</div><div class="sp-stat-value">{{ report_data.completed }}</div></div>
-  <div class="sp-stat-card"><div class="sp-stat-label">Cancelled</div><div class="sp-stat-value" style="color:var(--cx-danger)">{{ report_data.cancelled }}</div></div>
+  <div class="sp-stat-card sp-stat-card--blue">
+    <div class="sp-stat-label">Total</div>
+    <div class="sp-stat-value">{{ report_data.total }}</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--green">
+    <div class="sp-stat-label">Confirmed</div>
+    <div class="sp-stat-value">{{ report_data.confirmed }}</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--orange">
+    <div class="sp-stat-label">Pending</div>
+    <div class="sp-stat-value">{{ report_data.pending }}</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--cyan">
+    <div class="sp-stat-label">Checked In</div>
+    <div class="sp-stat-value">{{ report_data.checked_in }}</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--purple">
+    <div class="sp-stat-label">Completed</div>
+    <div class="sp-stat-value">{{ report_data.completed }}</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--red">
+    <div class="sp-stat-label">Cancelled</div>
+    <div class="sp-stat-value">{{ report_data.cancelled }}</div>
+  </div>
+</div>
+
+<div class="sp-chart-grid">
+  <div class="sp-chart-box">
+    <h3 class="sp-chart-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Status Breakdown
+    </h3>
+    <div class="sp-hbar-list" role="img" aria-label="Booking status breakdown">
+      {% if report_data.total %}
+      <div class="sp-hbar-row"><span class="sp-hbar-label">Confirmed</span><span class="sp-hbar-track"><span style="width:{% widthratio report_data.confirmed report_data.total 100 %}%;background:var(--sp-grad-green)"></span></span><span class="sp-hbar-value">{{ report_data.confirmed }}</span></div>
+      <div class="sp-hbar-row"><span class="sp-hbar-label">Pending</span><span class="sp-hbar-track"><span style="width:{% widthratio report_data.pending report_data.total 100 %}%;background:var(--sp-grad-orange)"></span></span><span class="sp-hbar-value">{{ report_data.pending }}</span></div>
+      <div class="sp-hbar-row"><span class="sp-hbar-label">Checked In</span><span class="sp-hbar-track"><span style="width:{% widthratio report_data.checked_in report_data.total 100 %}%;background:var(--sp-grad-blue)"></span></span><span class="sp-hbar-value">{{ report_data.checked_in }}</span></div>
+      <div class="sp-hbar-row"><span class="sp-hbar-label">Completed</span><span class="sp-hbar-track"><span style="width:{% widthratio report_data.completed report_data.total 100 %}%;background:var(--sp-grad-purple)"></span></span><span class="sp-hbar-value">{{ report_data.completed }}</span></div>
+      <div class="sp-hbar-row"><span class="sp-hbar-label">Cancelled</span><span class="sp-hbar-track"><span style="width:{% widthratio report_data.cancelled report_data.total 100 %}%;background:var(--sp-grad-red)"></span></span><span class="sp-hbar-value">{{ report_data.cancelled }}</span></div>
+      {% else %}
+      <div class="cx-empty"><div class="cx-empty-desc">No bookings in this range.</div></div>
+      {% endif %}
+    </div>
+  </div>
 </div>
 
 <div class="sp-widget">
@@ -54,15 +84,15 @@
             <td>{{ b.user.full_display_name }}</td>
             <td>{{ b.game_console.name|default:"—" }}</td>
             <td>{{ b.booking_date|date:"d M Y" }}</td>
-            <td>₹{{ b.total_cost|floatformat:0 }}</td>
-            <td><span class="cx-badge cx-badge--{% if b.status == 'confirmed' %}success{% elif b.status == 'pending' %}warning{% elif b.status == 'cancelled' %}danger{% else %}primary{% endif %}">{{ b.get_status_display }}</span></td>
+            <td><strong>₹{{ b.total_cost|inr:2 }}</strong></td>
+            <td><span class="cx-badge cx-badge--{% if b.status == 'confirmed' %}success{% elif b.status == 'pending' %}warning{% elif b.status == 'cancelled' %}danger{% elif b.status == 'completed' %}neutral{% else %}primary{% endif %}">{{ b.get_status_display }}</span></td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
     {% else %}
-    <div class="cx-empty"><div class="cx-empty-desc">No booking data found.</div></div>
+    <div class="cx-empty"><div class="cx-empty-desc">No booking data found in this range.</div></div>
     {% endif %}
   </div>
 </div>

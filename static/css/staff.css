@@ -2832,3 +2832,401 @@ html[data-theme="light"] .sp-cover-fallback {
     .sp-expiring-item { flex-wrap: wrap; }
     .sp-expiring-item .cx-btn { margin-left: auto; }
 }
+
+/* ============================================================
+   24 · PHASE 5 — PAYMENTS, BILLING & REPORTS
+   ============================================================ */
+
+/* ── Revenue hero ─────────────────────────────────────────── */
+.sp-revenue-hero {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(700px 300px at 88% -30%, rgba(34, 211, 238, 0.22) 0%, transparent 60%),
+        radial-gradient(600px 300px at -10% 130%, rgba(139, 92, 246, 0.24) 0%, transparent 60%),
+        linear-gradient(135deg, rgba(0, 112, 243, 0.92) 0%, rgba(11, 30, 72, 0.98) 60%, rgba(37, 22, 92, 0.98) 100%);
+    border: 1px solid var(--sp-border-strong);
+    border-radius: var(--sp-radius-xl);
+    box-shadow: var(--sp-shadow-2), var(--sp-glow-blue);
+    padding: var(--cx-space-5) var(--cx-space-5) var(--cx-space-4);
+    margin-bottom: var(--sp-gap);
+}
+.sp-revenue-hero-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--cx-space-3);
+    margin-bottom: var(--cx-space-4);
+}
+.sp-revenue-hero-head .sp-widget-title,
+.sp-revenue-hero-head .sp-activity-time { color: #EAF0FF; }
+.sp-revenue-total {
+    font-size: var(--cx-text-lg);
+    font-weight: 800;
+    color: #EAF0FF;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: var(--cx-space-2) var(--cx-space-4);
+    border-radius: var(--sp-radius-pill);
+    white-space: nowrap;
+}
+.sp-revenue-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--cx-space-3);
+}
+.sp-revenue-cell {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--sp-radius-md);
+    padding: var(--cx-space-3) var(--cx-space-4);
+    min-width: 0;
+}
+.sp-revenue-label {
+    display: block;
+    font-size: var(--cx-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(234, 240, 255, 0.72);
+    margin-bottom: var(--cx-space-2);
+}
+.sp-revenue-value {
+    display: block;
+    font-size: clamp(20px, 2.4vw, 30px);
+    font-weight: 800;
+    line-height: 1.15;
+    color: #FFFFFF;
+    letter-spacing: -0.01em;
+}
+.sp-revenue-sub {
+    display: block;
+    font-size: var(--cx-text-xs);
+    color: rgba(234, 240, 255, 0.62);
+    margin-top: var(--cx-space-1);
+}
+
+/* ── Billing strip ───────────────────────────────────────── */
+.sp-billing-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--cx-space-3);
+    background: var(--sp-grad-surface);
+    border: 1px solid var(--sp-border);
+    border-radius: var(--sp-radius-lg);
+    padding: var(--cx-space-4);
+    margin-bottom: var(--sp-gap);
+}
+.sp-billing-cell {
+    border-left: 3px solid var(--sp-purple);
+    padding-left: var(--cx-space-3);
+    min-width: 0;
+}
+.sp-billing-cell:nth-child(2) { border-left-color: var(--sp-blue); }
+.sp-billing-cell:nth-child(3) { border-left-color: var(--sp-cyan); }
+.sp-billing-cell:nth-child(4) { border-left-color: var(--sp-green); }
+.sp-billing-label {
+    display: block;
+    font-size: var(--cx-text-xs);
+    color: var(--sp-text-2);
+    margin-bottom: var(--cx-space-1);
+}
+.sp-billing-value {
+    display: block;
+    font-size: var(--cx-text-md);
+    font-weight: 800;
+    color: var(--sp-text);
+}
+
+/* ── Payment status chips ────────────────────────────────── */
+.sp-pay-status-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--cx-space-3);
+    margin-bottom: var(--sp-gap);
+}
+.sp-pay-status {
+    display: flex;
+    align-items: center;
+    gap: var(--cx-space-3);
+    background: var(--sp-grad-surface);
+    border: 1px solid var(--sp-border);
+    border-radius: var(--sp-radius-md);
+    padding: var(--cx-space-3) var(--cx-space-4);
+    min-width: 0;
+}
+.sp-pay-status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex: none;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.04);
+}
+.sp-pay-status--captured .sp-pay-status-dot { background: var(--sp-green); box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.16); }
+.sp-pay-status--pending .sp-pay-status-dot  { background: var(--sp-orange); box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.16); }
+.sp-pay-status--failed .sp-pay-status-dot   { background: var(--sp-red); box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.16); }
+.sp-pay-status--refunded .sp-pay-status-dot { background: var(--sp-pink); box-shadow: 0 0 0 4px rgba(244, 114, 182, 0.16); }
+.sp-pay-status--demo .sp-pay-status-dot     { background: var(--sp-blue); box-shadow: 0 0 0 4px rgba(59, 154, 255, 0.16); }
+.sp-pay-status-label {
+    font-size: var(--cx-text-xs);
+    color: var(--sp-text-2);
+    white-space: nowrap;
+}
+.sp-pay-status-value {
+    font-size: var(--cx-text-lg);
+    font-weight: 800;
+    color: var(--sp-text);
+    line-height: 1;
+}
+.sp-pay-status-sub {
+    margin-left: auto;
+    font-size: var(--cx-text-xs);
+    font-weight: 700;
+    color: var(--sp-pink);
+    white-space: nowrap;
+}
+
+/* ── Segmented control (range presets) ───────────────────── */
+.sp-seg-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--sp-surface-2);
+    border: 1px solid var(--sp-border);
+    border-radius: var(--sp-radius-pill);
+    padding: 4px;
+    flex-wrap: wrap;
+}
+.sp-seg-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+    padding: 0 var(--cx-space-3);
+    border-radius: var(--sp-radius-pill);
+    font-size: var(--cx-text-xs);
+    font-weight: 700;
+    color: var(--sp-text-2);
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: background var(--sp-fast) var(--sp-ease), color var(--sp-fast) var(--sp-ease), border-color var(--sp-fast) var(--sp-ease);
+}
+.sp-seg-btn:hover { color: var(--sp-text); background: var(--sp-surface); }
+.sp-seg-btn:focus-visible { outline: 2px solid var(--sp-blue); outline-offset: 2px; }
+.sp-seg-btn.is-active {
+    color: #FFFFFF;
+    background: var(--sp-grad-blue);
+    border-color: transparent;
+    box-shadow: var(--sp-glow-blue);
+}
+
+/* ── Revenue bar chart ───────────────────────────────────── */
+.sp-revenue-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 190px;
+    padding-top: var(--cx-space-2);
+    padding-bottom: 26px;
+    overflow: hidden;
+}
+.sp-rev-bar-wrap {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
+}
+.sp-rev-bar {
+    width: 100%;
+    max-width: 26px;
+    min-height: 3px;
+    border-radius: 6px 6px 2px 2px;
+    background: linear-gradient(180deg, var(--sp-blue) 0%, rgba(59, 154, 255, 0.28) 100%);
+    transition: filter var(--sp-fast) var(--sp-ease), transform var(--sp-fast) var(--sp-ease);
+    cursor: default;
+}
+.sp-rev-bar:hover { filter: brightness(1.2); transform: translateY(-2px); }
+.sp-rev-bar--blue { background: linear-gradient(180deg, var(--sp-blue) 0%, rgba(59, 154, 255, 0.25) 100%); }
+.sp-rev-bar-wrap[data-label]::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: -26px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    color: var(--sp-text-3);
+    white-space: nowrap;
+}
+.sp-chart-axis {
+    display: none;
+}
+
+/* ── Transaction ref / mono helpers ──────────────────────── */
+.sp-txn-ref {
+    font-family: var(--cx-font-mono);
+    font-size: var(--cx-text-xs);
+    color: var(--sp-text-2);
+    max-width: 140px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.sp-txn-table .sp-console-cell { max-width: 200px; }
+
+/* ── Amount / billing panel ──────────────────────────────── */
+.sp-amount { font-variant-numeric: tabular-nums; }
+.sp-bill-breakdown {
+    background: var(--sp-surface);
+    border: 1px solid var(--sp-border);
+    border-radius: var(--sp-radius-md);
+    padding: var(--cx-space-3) var(--cx-space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--cx-space-2);
+}
+.sp-bill-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--cx-space-2);
+    font-size: var(--cx-text-sm);
+}
+.sp-bill-paid { color: var(--sp-green); }
+.sp-bill-due { color: var(--sp-red); }
+.sp-bill-track {
+    height: 10px;
+    border-radius: var(--sp-radius-pill);
+    background: var(--sp-surface-2);
+    overflow: hidden;
+    margin-top: var(--cx-space-4);
+}
+.sp-bill-track > span {
+    display: block;
+    height: 100%;
+    border-radius: var(--sp-radius-pill);
+    background: var(--sp-grad-green);
+    transition: width var(--sp-slow) var(--sp-ease);
+}
+.sp-bill-track-labels {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--cx-space-2);
+    margin-top: 6px;
+    font-size: var(--cx-text-xs);
+    color: var(--sp-text-3);
+}
+
+/* ── Report hub cards ────────────────────────────────────── */
+.sp-report-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--sp-gap);
+}
+.sp-report-card {
+    display: flex;
+    align-items: center;
+    gap: var(--cx-space-4);
+    background: var(--sp-grad-surface);
+    border: 1px solid var(--sp-border);
+    border-radius: var(--sp-radius-lg);
+    padding: var(--cx-space-4) var(--cx-space-5);
+    text-decoration: none;
+    min-width: 0;
+    transition: transform var(--sp-fast) var(--sp-ease), border-color var(--sp-fast) var(--sp-ease), box-shadow var(--sp-fast) var(--sp-ease);
+}
+.sp-report-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--sp-border-strong);
+    box-shadow: var(--sp-shadow-2);
+}
+.sp-report-card:focus-visible { outline: 2px solid var(--sp-blue); outline-offset: 2px; }
+.sp-report-icon {
+    flex: none;
+    width: 46px;
+    height: 46px;
+    border-radius: var(--sp-radius-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+}
+.sp-report-icon svg { width: 22px; height: 22px; }
+.sp-report-card--blue .sp-report-icon   { background: var(--sp-grad-blue); }
+.sp-report-card--green .sp-report-icon  { background: var(--sp-grad-green); }
+.sp-report-card--purple .sp-report-icon { background: var(--sp-grad-purple); }
+.sp-report-card--cyan .sp-report-icon   { background: var(--sp-grad-cyan); }
+.sp-report-card--orange .sp-report-icon { background: var(--sp-grad-orange); }
+.sp-report-card--pink .sp-report-icon   { background: var(--sp-grad-pink); }
+.sp-report-card--violet .sp-report-icon { background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%); }
+.sp-report-main { flex: 1; min-width: 0; }
+.sp-report-title {
+    font-size: var(--cx-text-md);
+    font-weight: 800;
+    color: var(--sp-text);
+}
+.sp-report-sub {
+    font-size: var(--cx-text-xs);
+    color: var(--sp-text-2);
+    margin-top: 2px;
+}
+.sp-report-meta { text-align: right; flex: none; min-width: 0; }
+.sp-report-value {
+    display: block;
+    font-size: var(--cx-text-lg);
+    font-weight: 800;
+    color: var(--sp-text);
+    line-height: 1.2;
+    white-space: nowrap;
+}
+.sp-report-note {
+    display: block;
+    font-size: var(--cx-text-xs);
+    color: var(--sp-text-3);
+    margin-top: 2px;
+    white-space: nowrap;
+}
+
+/* ── Report toolbar ──────────────────────────────────────── */
+.sp-report-toolbar { flex-wrap: wrap; }
+
+/* ── Amount filter group ─────────────────────────────────── */
+.sp-amount-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.sp-amount-group .cx-input { width: 110px; }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 1100px) {
+    .sp-revenue-grid { grid-template-columns: repeat(2, 1fr); }
+    .sp-billing-strip { grid-template-columns: repeat(2, 1fr); }
+    .sp-pay-status-grid { grid-template-columns: repeat(3, 1fr); }
+    .sp-pay-status--refunded { grid-column: auto; }
+}
+
+@media (max-width: 768px) {
+    .sp-revenue-hero { padding: var(--cx-space-4); }
+    .sp-revenue-hero-head { flex-direction: column; align-items: flex-start; }
+    .sp-revenue-total { align-self: flex-start; }
+    .sp-pay-status-grid { grid-template-columns: repeat(2, 1fr); }
+    .sp-pay-status { padding: var(--cx-space-3); }
+    .sp-report-grid { grid-template-columns: 1fr; }
+    .sp-report-card { padding: var(--cx-space-4); }
+    .sp-report-meta { text-align: left; }
+}
+
+@media (max-width: 600px) {
+    .sp-revenue-grid,
+    .sp-billing-strip { grid-template-columns: 1fr 1fr; gap: var(--cx-space-2); }
+    .sp-revenue-cell { padding: var(--cx-space-3); }
+    .sp-revenue-value { font-size: 20px; }
+    .sp-seg-control { width: 100%; }
+    .sp-seg-btn { flex: 1; padding: 0 var(--cx-space-2); }
+    .sp-amount-group { width: 100%; }
+    .sp-amount-group .cx-input { flex: 1; width: auto; }
+    .sp-pay-status-grid { grid-template-columns: repeat(2, 1fr); gap: var(--cx-space-2); }
+    .sp-report-card { flex-wrap: wrap; }
+    .sp-report-meta { width: 100%; }
+}

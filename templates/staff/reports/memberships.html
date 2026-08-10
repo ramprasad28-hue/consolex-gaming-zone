@@ -1,5 +1,6 @@
 {% extends "staff/base_staff.html" %}
 {% load static %}
+{% load staff_extras %}
 
 {% block title %}Memberships Report — {{ site.brand_name }}{% endblock %}
 
@@ -18,23 +19,25 @@
   </div>
 </div>
 
-<form method="GET" class="sp-toolbar">
-  <div class="cx-field">
-    <label class="cx-label">From</label>
-    <input type="date" name="from" class="cx-input" value="{{ date_from|date:'Y-m-d'|default:'' }}">
-  </div>
-  <div class="cx-field">
-    <label class="cx-label">To</label>
-    <input type="date" name="to" class="cx-input" value="{{ date_to|date:'Y-m-d'|default:'' }}">
-  </div>
-  <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm" style="margin-top:20px">Apply</button>
-</form>
+{% include "staff/reports/_toolbar.html" %}
 
 <div class="sp-stats-grid">
-  <div class="sp-stat-card"><div class="sp-stat-label">Total Subscriptions</div><div class="sp-stat-value">{{ report_data.total }}</div></div>
-  <div class="sp-stat-card"><div class="sp-stat-label">Active</div><div class="sp-stat-value sp-stat-trend--up">{{ report_data.active }}</div></div>
-  <div class="sp-stat-card"><div class="sp-stat-label">Expired</div><div class="sp-stat-value">{{ report_data.expired }}</div></div>
-  <div class="sp-stat-card"><div class="sp-stat-label">Cancelled</div><div class="sp-stat-value" style="color:var(--cx-danger)">{{ report_data.cancelled }}</div></div>
+  <div class="sp-stat-card sp-stat-card--blue">
+    <div class="sp-stat-label">Total Subscriptions</div>
+    <div class="sp-stat-value">{{ report_data.total }}</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--green">
+    <div class="sp-stat-label">Active</div>
+    <div class="sp-stat-value">{{ report_data.active }}</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--orange">
+    <div class="sp-stat-label">Expired</div>
+    <div class="sp-stat-value">{{ report_data.expired }}</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--red">
+    <div class="sp-stat-label">Cancelled</div>
+    <div class="sp-stat-value">{{ report_data.cancelled }}</div>
+  </div>
 </div>
 
 <div class="sp-widget">
@@ -60,7 +63,7 @@
       </table>
     </div>
     {% else %}
-    <div class="cx-empty"><div class="cx-empty-desc">No subscription data found.</div></div>
+    <div class="cx-empty"><div class="cx-empty-desc">No subscription data found in this range.</div></div>
     {% endif %}
   </div>
 </div>

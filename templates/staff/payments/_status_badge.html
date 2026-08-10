@@ -1,0 +1,5 @@
+{% if payment.status == 'captured' %}<span class="cx-badge cx-badge--success">Captured</span>
+{% elif payment.status == 'demo' %}<span class="cx-badge cx-badge--primary">Demo Approved</span>
+{% elif payment.status == 'failed' %}<span class="cx-badge cx-badge--danger">Failed</span>
+{% elif payment.status == 'refunded' %}<span class="cx-badge cx-badge--warning">Refunded</span>
+{% else %}<span class="cx-badge cx-badge--warning">Pending</span>{% endif %}

@@ -1,5 +1,6 @@
 {% extends "staff/base_staff.html" %}
 {% load static %}
+{% load staff_extras %}
 
 {% block title %}Customers Report — {{ site.brand_name }}{% endblock %}
 
@@ -18,21 +19,17 @@
   </div>
 </div>
 
-<form method="GET" class="sp-toolbar">
-  <div class="cx-field">
-    <label class="cx-label">From</label>
-    <input type="date" name="from" class="cx-input" value="{{ date_from|date:'Y-m-d'|default:'' }}">
-  </div>
-  <div class="cx-field">
-    <label class="cx-label">To</label>
-    <input type="date" name="to" class="cx-input" value="{{ date_to|date:'Y-m-d'|default:'' }}">
-  </div>
-  <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm" style="margin-top:20px">Apply</button>
-</form>
+{% include "staff/reports/_toolbar.html" %}
 
 <div class="sp-stats-grid">
-  <div class="sp-stat-card"><div class="sp-stat-label">Total Customers</div><div class="sp-stat-value">{{ report_data.total_customers }}</div></div>
-  <div class="sp-stat-card"><div class="sp-stat-label">Active (has bookings)</div><div class="sp-stat-value">{{ report_data.active_customers }}</div></div>
+  <div class="sp-stat-card sp-stat-card--blue">
+    <div class="sp-stat-label">Total Customers</div>
+    <div class="sp-stat-value">{{ report_data.total_customers }}</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--green">
+    <div class="sp-stat-label">Active (has bookings)</div>
+    <div class="sp-stat-value">{{ report_data.active_customers }}</div>
+  </div>
 </div>
 
 <div class="sp-widget">
@@ -51,14 +48,14 @@
             <td>{{ u.email }}</td>
             <td>{{ u.date_joined|date:"d M Y" }}</td>
             <td>{{ u.booking_count }}</td>
-            <td>{% if u.total_spent %}₹{{ u.total_spent|floatformat:0 }}{% else %}—{% endif %}</td>
+            <td>{% if u.total_spent %}₹{{ u.total_spent|inr_paise }}{% else %}—{% endif %}</td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
     {% else %}
-    <div class="cx-empty"><div class="cx-empty-desc">No customer data found.</div></div>
+    <div class="cx-empty"><div class="cx-empty-desc">No customer data found in this range.</div></div>
     {% endif %}
   </div>
 </div>

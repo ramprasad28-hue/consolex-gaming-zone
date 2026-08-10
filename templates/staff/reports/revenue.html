@@ -1,5 +1,6 @@
 {% extends "staff/base_staff.html" %}
 {% load static %}
+{% load staff_extras %}
 
 {% block title %}Revenue Report — {{ site.brand_name }}{% endblock %}
 
@@ -18,31 +19,49 @@
   </div>
 </div>
 
-<!-- Date filter -->
-<form method="GET" class="sp-toolbar">
-  <div class="cx-field">
-    <label class="cx-label">From</label>
-    <input type="date" name="from" class="cx-input" value="{{ date_from|date:'Y-m-d'|default:'' }}">
-  </div>
-  <div class="cx-field">
-    <label class="cx-label">To</label>
-    <input type="date" name="to" class="cx-input" value="{{ date_to|date:'Y-m-d'|default:'' }}">
-  </div>
-  <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm" style="margin-top:20px">Apply</button>
-</form>
+{% include "staff/reports/_toolbar.html" %}
 
 <div class="sp-stats-grid">
-  <div class="sp-stat-card">
+  <div class="sp-stat-card sp-stat-card--blue">
     <div class="sp-stat-label">Total Revenue</div>
-    <div class="sp-stat-value">₹{{ report_data.total_revenue|floatformat:0 }}</div>
+    <div class="sp-stat-value">₹{{ report_data.total_revenue|inr:2 }}</div>
+    <div class="sp-stat-trend">captured payments in range</div>
   </div>
-  <div class="sp-stat-card">
+  <div class="sp-stat-card sp-stat-card--purple">
     <div class="sp-stat-label">Transactions</div>
     <div class="sp-stat-value">{{ report_data.payment_count }}</div>
+    <div class="sp-stat-trend">payments captured</div>
   </div>
-  <div class="sp-stat-card">
+  <div class="sp-stat-card sp-stat-card--green">
     <div class="sp-stat-label">Avg. Per Transaction</div>
-    <div class="sp-stat-value">₹{{ report_data.avg_payment|floatformat:0 }}</div>
+    <div class="sp-stat-value">₹{{ report_data.avg_payment|inr:2 }}</div>
+    <div class="sp-stat-trend">average ticket size</div>
+  </div>
+</div>
+
+<div class="sp-widget">
+  <div class="sp-widget-header">
+    <h2 class="sp-widget-title">Daily Revenue Trend</h2>
+    <span class="sp-activity-time">last 30 days · peak ₹{{ trend.max_amount|inr }}</span>
+  </div>
+  <div class="sp-widget-body">
+    {% if trend.max_amount %}
+    <div class="sp-revenue-chart" role="img" aria-label="Bar chart of daily revenue for the last 30 days">
+      {% for b in trend.buckets %}
+      <div class="sp-rev-bar-wrap" {% if b.show_label %}data-label="{{ b.date|date:'d M' }}"{% endif %}>
+        <div class="sp-rev-bar sp-rev-bar--blue" style="height:{% widthratio b.amount trend.max_amount 100 %}%" title="₹{{ b.amount|inr }} · {{ b.date|date:'d M Y' }}"></div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="sp-chart-axis">
+      {% for b in trend.buckets %}{% if b.show_label %}<span>{{ b.date|date:"d M" }}</span>{% else %}<span aria-hidden="true"></span>{% endif %}{% endfor %}
+    </div>
+    {% else %}
+    <div class="cx-empty" role="status">
+      <div class="cx-empty-title">No revenue in this period</div>
+      <div class="cx-empty-desc">Captured payments will appear here as customers pay.</div>
+    </div>
+    {% endif %}
   </div>
 </div>
 
@@ -58,11 +77,11 @@
         <tbody>
           {% for p in report_data.items %}
           <tr>
-            <td>{{ p.id }}</td>
-            <td>{{ p.user.full_display_name }}</td>
+            <td><span class="sp-bk-id">#{{ p.id }}</span></td>
+            <td>{{ p.user.full_display_name|default:"Unassigned" }}</td>
             <td><a href="{% url 'staff:staff_booking_detail' p.booking.id %}">#{{ p.booking.id }}</a></td>
-            <td>₹{{ p.amount|floatformat:2 }}</td>
-            <td><span class="cx-badge cx-badge--{% if p.status == 'captured' %}success{% elif p.status == 'demo' %}primary{% elif p.status == 'failed' %}danger{% else %}warning{% endif %}">{{ p.get_status_display }}</span></td>
+            <td><strong>₹{{ p.amount_rupees|inr:2 }}</strong></td>
+            <td>{% include "staff/payments/_status_badge.html" with payment=p %}</td>
             <td>{{ p.created_at|date:"d M Y h:i A" }}</td>
           </tr>
           {% endfor %}
@@ -70,7 +89,7 @@
       </table>
     </div>
     {% else %}
-    <div class="cx-empty"><div class="cx-empty-desc">No payment data found.</div></div>
+    <div class="cx-empty"><div class="cx-empty-desc">No payment data found in this range.</div></div>
     {% endif %}
   </div>
 </div>

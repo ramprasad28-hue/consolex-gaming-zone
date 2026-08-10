@@ -1,0 +1,95 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+{% load staff_extras %}
+
+{% block title %}Payments Report — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <div class="cx-breadcrumb" style="margin-bottom:var(--cx-space-2)">
+      <a href="{% url 'staff:staff_reports' %}" class="cx-breadcrumb-link">Reports</a>
+      <span class="cx-breadcrumb-sep">/</span>
+      <span class="cx-breadcrumb-current">Payments</span>
+    </div>
+    <h1 class="sp-header-title">Payments Report</h1>
+  </div>
+  <div class="sp-header-actions">
+    <button type="button" class="cx-btn cx-btn--outline cx-btn--sm" onclick="window.print()">Print</button>
+  </div>
+</div>
+
+{% include "staff/reports/_toolbar.html" %}
+
+<div class="sp-stats-grid">
+  <div class="sp-stat-card sp-stat-card--blue">
+    <div class="sp-stat-label">Total Transactions</div>
+    <div class="sp-stat-value">{{ report_data.total }}</div>
+    <div class="sp-stat-trend">all statuses in range</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--green">
+    <div class="sp-stat-label">Captured Revenue</div>
+    <div class="sp-stat-value">₹{{ report_data.revenue|inr:2 }}</div>
+    <div class="sp-stat-trend">{{ report_data.captured }} captured</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--purple">
+    <div class="sp-stat-label">Avg. Per Transaction</div>
+    <div class="sp-stat-value">₹{{ report_data.avg_payment|inr:2 }}</div>
+    <div class="sp-stat-trend">per captured payment</div>
+  </div>
+  <div class="sp-stat-card sp-stat-card--orange">
+    <div class="sp-stat-label">Refunded Amount</div>
+    <div class="sp-stat-value">₹{{ report_data.refunded_amount|inr:2 }}</div>
+    <div class="sp-stat-trend">{{ report_data.refunded }} refunded</div>
+  </div>
+</div>
+
+<div class="sp-chart-grid">
+  <div class="sp-chart-box">
+    <h3 class="sp-chart-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Status Breakdown
+    </h3>
+    <div class="sp-hbar-list" role="img" aria-label="Payment status breakdown">
+      {% if report_data.total %}
+      <div class="sp-hbar-row"><span class="sp-hbar-label">Captured</span><span class="sp-hbar-track"><span style="width:{% widthratio report_data.captured report_data.total 100 %}%;background:var(--sp-grad-green)"></span></span><span class="sp-hbar-value">{{ report_data.captured }}</span></div>
+      <div class="sp-hbar-row"><span class="sp-hbar-label">Pending</span><span class="sp-hbar-track"><span style="width:{% widthratio report_data.pending report_data.total 100 %}%;background:var(--sp-grad-orange)"></span></span><span class="sp-hbar-value">{{ report_data.pending }}</span></div>
+      <div class="sp-hbar-row"><span class="sp-hbar-label">Failed</span><span class="sp-hbar-track"><span style="width:{% widthratio report_data.failed report_data.total 100 %}%;background:var(--sp-grad-red)"></span></span><span class="sp-hbar-value">{{ report_data.failed }}</span></div>
+      <div class="sp-hbar-row"><span class="sp-hbar-label">Refunded</span><span class="sp-hbar-track"><span style="width:{% widthratio report_data.refunded report_data.total 100 %}%;background:var(--sp-grad-pink)"></span></span><span class="sp-hbar-value">{{ report_data.refunded }}</span></div>
+      {% else %}
+      <div class="cx-empty"><div class="cx-empty-desc">No payments in this range.</div></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="sp-widget">
+  <div class="sp-widget-header"><h2 class="sp-widget-title">Transaction List</h2></div>
+  <div class="sp-widget-body">
+    {% if report_data.items %}
+    <div class="sp-table-wrap">
+      <table class="sp-table" aria-label="Payments">
+        <thead>
+          <tr><th scope="col">#</th><th scope="col">User</th><th scope="col">Booking</th><th scope="col">Amount</th><th scope="col">Razorpay Ref</th><th scope="col">Status</th><th scope="col">Date</th></tr>
+        </thead>
+        <tbody>
+          {% for p in report_data.items %}
+          <tr>
+            <td><span class="sp-bk-id">#{{ p.id }}</span></td>
+            <td>{{ p.user.full_display_name|default:"Unassigned" }}</td>
+            <td><a href="{% url 'staff:staff_booking_detail' p.booking.id %}">#{{ p.booking.id }}</a></td>
+            <td><strong>₹{{ p.amount_rupees|inr:2 }}</strong></td>
+            <td><span class="sp-txn-ref">{{ p.razorpay_order_id|default:"—"|truncatechars:18 }}</span></td>
+            <td>{% include "staff/payments/_status_badge.html" with payment=p %}</td>
+            <td>{{ p.created_at|date:"d M Y h:i A" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="cx-empty"><div class="cx-empty-desc">No payment data found in this range.</div></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

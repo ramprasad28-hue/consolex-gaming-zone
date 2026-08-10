@@ -73,7 +73,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
         <span class="sp-sidenav-label">Memberships</span>
       </a>
-      <a href="{% url 'admin:payments_payment_changelist' %}" class="sp-sidenav-item" target="_blank" rel="noopener">
+      <a href="{% url 'staff:staff_payment_list' %}" class="sp-sidenav-item {% if 'payment' in request.resolver_match.view_name %}is-active{% endif %}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
         <span class="sp-sidenav-label">Payments</span>
       </a>

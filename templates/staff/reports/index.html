@@ -1,40 +1,119 @@
 {% extends "staff/base_staff.html" %}
 {% load static %}
+{% load staff_extras %}
 
 {% block title %}Reports — {{ site.brand_name }}{% endblock %}
+{% block sp_breadcrumb %}Reports{% endblock %}
 
 {% block sp_content %}
 <div class="sp-header">
   <div>
     <h1 class="sp-header-title">Reports</h1>
-    <p class="sp-header-sub">Generate and export reports across your business</p>
+    <p class="sp-header-sub">Live figures from your database — open a report to filter by date and export.</p>
+  </div>
+  <div class="sp-header-actions">
+    <a href="{% url 'staff:staff_analytics' %}" class="cx-btn cx-btn--outline cx-btn--sm">Full Analytics</a>
+    <button type="button" class="cx-btn cx-btn--outline cx-btn--sm" onclick="window.print()">Print</button>
   </div>
 </div>
 
-<div class="sp-stats-grid" style="grid-template-columns: repeat(3, 1fr)">
-  <a href="{% url 'staff:staff_report_detail' 'revenue' %}" class="sp-stat-card" style="text-decoration:none;cursor:pointer">
-    <div class="sp-stat-label"><img src="{% static 'images/icons/coin.png' %}" alt="" width="16" height="16" loading="lazy"> Revenue Report</div>
-    <div class="sp-stat-value sp-stat-value--sm">View revenue data</div>
+<div class="sp-report-grid" role="list" aria-label="Available reports">
+  <a href="{% url 'staff:staff_report_detail' 'revenue' %}" class="sp-report-card sp-report-card--blue" role="listitem">
+    <span class="sp-report-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    </span>
+    <div class="sp-report-main">
+      <div class="sp-report-title">Revenue Report</div>
+      <div class="sp-report-sub">Captured payments · totals &amp; averages</div>
+    </div>
+    <div class="sp-report-meta">
+      <span class="sp-report-value">₹{{ summary.revenue.total|inr }}</span>
+      <span class="sp-report-note">{{ summary.revenue.count }} payments · ₹{{ summary.revenue.month|inr }} this month</span>
+    </div>
   </a>
-  <a href="{% url 'staff:staff_report_detail' 'bookings' %}" class="sp-stat-card" style="text-decoration:none;cursor:pointer">
-    <div class="sp-stat-label"><img src="{% static 'images/icons/calendar.png' %}" alt="" width="16" height="16" loading="lazy"> Bookings Report</div>
-    <div class="sp-stat-value sp-stat-value--sm">Booking analytics</div>
+
+  <a href="{% url 'staff:staff_report_detail' 'bookings' %}" class="sp-report-card sp-report-card--green" role="listitem">
+    <span class="sp-report-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </span>
+    <div class="sp-report-main">
+      <div class="sp-report-title">Bookings Report</div>
+      <div class="sp-report-sub">Reservations by status &amp; period</div>
+    </div>
+    <div class="sp-report-meta">
+      <span class="sp-report-value">{{ summary.bookings.total }}</span>
+      <span class="sp-report-note">{{ summary.bookings.today }} today · {{ summary.bookings.week }} this week</span>
+    </div>
   </a>
-  <a href="{% url 'staff:staff_report_detail' 'customers' %}" class="sp-stat-card" style="text-decoration:none;cursor:pointer">
-    <div class="sp-stat-label"><img src="{% static 'images/icons/users.png' %}" alt="" width="16" height="16" loading="lazy"> Customers Report</div>
-    <div class="sp-stat-value sp-stat-value--sm">Customer analytics</div>
+
+  <a href="{% url 'staff:staff_report_detail' 'payments' %}" class="sp-report-card sp-report-card--purple" role="listitem">
+    <span class="sp-report-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+    </span>
+    <div class="sp-report-main">
+      <div class="sp-report-title">Payments Report</div>
+      <div class="sp-report-sub">Every Razorpay transaction &amp; its status</div>
+    </div>
+    <div class="sp-report-meta">
+      <span class="sp-report-value">{{ summary.payments.total }}</span>
+      <span class="sp-report-note">{{ summary.payments.captured }} captured · {{ summary.payments.pending }} pending · {{ summary.payments.failed }} failed</span>
+    </div>
   </a>
-  <a href="{% url 'staff:staff_report_detail' 'memberships' %}" class="sp-stat-card" style="text-decoration:none;cursor:pointer">
-    <div class="sp-stat-label"><img src="{% static 'images/icons/gold-star.png' %}" alt="" width="16" height="16" loading="lazy"> Memberships Report</div>
-    <div class="sp-stat-value sp-stat-value--sm">Subscription analytics</div>
+
+  <a href="{% url 'staff:staff_report_detail' 'customers' %}" class="sp-report-card sp-report-card--cyan" role="listitem">
+    <span class="sp-report-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </span>
+    <div class="sp-report-main">
+      <div class="sp-report-title">Customers Report</div>
+      <div class="sp-report-sub">Registered users, spend &amp; activity</div>
+    </div>
+    <div class="sp-report-meta">
+      <span class="sp-report-value">{{ summary.customers.total }}</span>
+      <span class="sp-report-note">{{ summary.customers.active }} have booked</span>
+    </div>
   </a>
-  <a href="{% url 'staff:staff_report_detail' 'tournaments' %}" class="sp-stat-card" style="text-decoration:none;cursor:pointer">
-    <div class="sp-stat-label"><img src="{% static 'images/icons/trophy.png' %}" alt="" width="16" height="16" loading="lazy"> Tournaments Report</div>
-    <div class="sp-stat-value sp-stat-value--sm">Tournament analytics</div>
+
+  <a href="{% url 'staff:staff_report_detail' 'memberships' %}" class="sp-report-card sp-report-card--orange" role="listitem">
+    <span class="sp-report-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+    </span>
+    <div class="sp-report-main">
+      <div class="sp-report-title">Memberships Report</div>
+      <div class="sp-report-sub">Subscription plans &amp; active members</div>
+    </div>
+    <div class="sp-report-meta">
+      <span class="sp-report-value">{{ summary.memberships.active_subs }}</span>
+      <span class="sp-report-note">active of {{ summary.memberships.total }} plans</span>
+    </div>
   </a>
-  <a href="{% url 'staff:staff_analytics' %}" class="sp-stat-card" style="text-decoration:none;cursor:pointer">
-    <div class="sp-stat-label"><img src="{% static 'images/icons/chart.png' %}" alt="" width="16" height="16" loading="lazy"> Full Analytics</div>
-    <div class="sp-stat-value sp-stat-value--sm">Complete analytics dashboard</div>
+
+  <a href="{% url 'staff:staff_report_detail' 'tournaments' %}" class="sp-report-card sp-report-card--pink" role="listitem">
+    <span class="sp-report-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v6a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a3 3 0 0 0 3 6"/><path d="M17 6h3a3 3 0 0 1-3 6"/></svg>
+    </span>
+    <div class="sp-report-main">
+      <div class="sp-report-title">Tournaments Report</div>
+      <div class="sp-report-sub">Events, slots &amp; registrations</div>
+    </div>
+    <div class="sp-report-meta">
+      <span class="sp-report-value">{{ summary.tournaments.total }}</span>
+      <span class="sp-report-note">{{ summary.tournaments.open }} open for registrations</span>
+    </div>
+  </a>
+
+  <a href="{% url 'staff:staff_report_detail' 'games' %}" class="sp-report-card sp-report-card--violet" role="listitem">
+    <span class="sp-report-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
+    </span>
+    <div class="sp-report-main">
+      <div class="sp-report-title">Games Report</div>
+      <div class="sp-report-sub">Console utilisation &amp; booking revenue</div>
+    </div>
+    <div class="sp-report-meta">
+      <span class="sp-report-value">{{ summary.games.consoles }}</span>
+      <span class="sp-report-note">{{ summary.games.booked }} consoles booked · {{ summary.games.total }} games in library</span>
+    </div>
   </a>
 </div>
 {% endblock %}
