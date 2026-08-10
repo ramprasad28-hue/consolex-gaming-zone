@@ -1,0 +1,6 @@
+{% if status == 'confirmed' %}<span class="cx-badge cx-badge--success">Confirmed</span>
+{% elif status == 'pending' %}<span class="cx-badge cx-badge--warning">Pending</span>
+{% elif status == 'cancelled' %}<span class="cx-badge cx-badge--danger">Cancelled</span>
+{% elif status == 'completed' %}<span class="cx-badge cx-badge--neutral">Completed</span>
+{% elif status == 'checked_in' %}<span class="cx-badge cx-badge--primary"><span class="sp-live-badge-dot" aria-hidden="true"></span> Live</span>
+{% else %}<span class="cx-badge cx-badge--neutral">{{ status|default:"Unknown" }}</span>{% endif %}

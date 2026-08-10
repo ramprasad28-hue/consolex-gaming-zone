@@ -1,10 +1,12 @@
+import csv
 from datetime import date, datetime
+from urllib.parse import urlencode
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.db.models import Count, Q, Sum
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
@@ -31,9 +33,13 @@ def staff_dashboard(request):
     return render(request, "staff/dashboard.html", data)
 
 
-def booking_list(request):
+def filter_bookings(request):
+    """Shared queryset builder for the booking list page and CSV export."""
     q = request.GET.get("q", "")
     status_filter = request.GET.get("status", "")
+    payment_status = request.GET.get("payment_status", "")
+    date_from = request.GET.get("date_from", "")
+    date_to = request.GET.get("date_to", "")
     sort = request.GET.get("sort", "-booking_date")
 
     bookings = Booking.objects.select_related("user", "game_console", "payment").all()
@@ -42,11 +48,28 @@ def booking_list(request):
         bookings = bookings.filter(
             Q(user__email__icontains=q)
             | Q(user__first_name__icontains=q)
+            | Q(user__phone__icontains=q)
             | Q(id__icontains=q)
             | Q(game_console__name__icontains=q)
         )
     if status_filter:
         bookings = bookings.filter(status=status_filter)
+    if payment_status:
+        bookings = bookings.filter(payment__status=payment_status)
+    if date_from:
+        try:
+            bookings = bookings.filter(
+                booking_date__gte=datetime.strptime(date_from, "%Y-%m-%d").date()
+            )
+        except ValueError:
+            pass
+    if date_to:
+        try:
+            bookings = bookings.filter(
+                booking_date__lte=datetime.strptime(date_to, "%Y-%m-%d").date()
+            )
+        except ValueError:
+            pass
 
     valid_sorts = [
         "booking_date", "-booking_date", "start_time", "-start_time",
@@ -58,16 +81,81 @@ def booking_list(request):
     else:
         bookings = bookings.order_by("-booking_date")
 
+    return bookings, {
+        "q": q,
+        "status_filter": status_filter,
+        "payment_status": payment_status,
+        "date_from": date_from,
+        "date_to": date_to,
+        "sort": sort,
+    }
+
+
+def booking_list(request):
+    bookings, filters = filter_bookings(request)
+
     paginator = Paginator(bookings, 20)
     page = paginator.get_page(request.GET.get("page"))
 
+    params = {}
+    for key in ("q", "status_filter", "payment_status", "date_from", "date_to"):
+        if filters[key]:
+            params[key if key != "status_filter" else "status"] = filters[key]
+    if filters["sort"] != "-booking_date":
+        params["sort"] = filters["sort"]
+
+    today = timezone.localdate()
     return render(request, "staff/bookings/list.html", {
         "page_obj": page,
-        "q": q,
-        "status_filter": status_filter,
-        "sort": sort,
+        "qs": urlencode(params),
         "status_choices": Booking.STATUS_CHOICES,
+        "payment_status_choices": Payment.Status.choices,
+        "booking_stats": {
+            "total": Booking.objects.count(),
+            "today": Booking.objects.filter(booking_date=today).count(),
+            "upcoming": Booking.objects.active().count(),
+            "live": Booking.objects.live().count(),
+        },
+        "today": today,
+        **filters,
     })
+
+
+def booking_export(request):
+    """CSV export of bookings honouring the same filters as the list page."""
+    bookings, _ = filter_bookings(request)
+
+    response = HttpResponse(content_type="text/csv; charset=utf-8")
+    response["Content-Disposition"] = 'attachment; filename="bookings.csv"'
+    writer = csv.writer(response)
+    writer.writerow([
+        "Booking ID", "Customer", "Email", "Phone", "Console", "Console Type",
+        "Booking Date", "Start", "End", "Duration (hrs)", "Players",
+        "Amount (INR)", "Booking Status", "Payment Status",
+        "Payment Amount (INR)", "Razorpay Order ID", "Created At",
+    ])
+    for b in bookings:
+        payment = getattr(b, "payment", None)
+        writer.writerow([
+            b.id,
+            b.user.full_display_name,
+            b.user.email,
+            b.user.phone or "",
+            b.game_console.name if b.game_console else "",
+            b.game_console.console_type if b.game_console else "",
+            b.booking_date.isoformat(),
+            b.start_time.strftime("%H:%M"),
+            b.end_time.strftime("%H:%M"),
+            b.duration_hours,
+            b.number_of_players,
+            b.total_cost,
+            b.get_status_display(),
+            payment.get_status_display() if payment else "",
+            payment.amount_rupees if payment else "",
+            payment.razorpay_order_id if payment else "",
+            b.created_at.strftime("%Y-%m-%d %H:%M:%S") if b.created_at else "",
+        ])
+    return response
 
 
 def booking_detail(request, booking_id):

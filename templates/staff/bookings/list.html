@@ -2,16 +2,73 @@
 {% load static %}
 
 {% block title %}Booking Management — {{ site.brand_name }}{% endblock %}
+{% block sp_breadcrumb %}Bookings{% endblock %}
 
 {% block sp_content %}
 <div class="sp-header">
   <div>
     <h1 class="sp-header-title">Booking Management</h1>
-    <p class="sp-header-sub">Search, filter and manage all bookings</p>
+    <p class="sp-header-sub">Search, filter and manage all customer bookings, payments and reservations.</p>
   </div>
   <div class="sp-header-actions">
     <a href="{% url 'bookings:booking_form' %}" class="cx-btn cx-btn--primary cx-btn--sm">+ New Booking</a>
+    <a href="{% url 'staff:staff_booking_export' %}{% if qs %}?{{ qs }}{% endif %}" class="cx-btn cx-btn--outline cx-btn--sm">Export CSV</a>
     <button type="button" class="cx-btn cx-btn--outline cx-btn--sm" onclick="window.print()">Print</button>
+  </div>
+</div>
+
+{% if messages %}
+  <div class="cx-flash-stack">
+    {% for message in messages %}
+      <div class="cx-flash" role="status">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<!-- Stats -->
+<div class="sp-stats-grid" role="list" aria-label="Booking statistics">
+  <div class="sp-stat-card sp-stat-card--blue" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Total Bookings</span>
+      <span class="sp-stat-icon sp-stat-icon--blue" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ booking_stats.total }}">{{ booking_stats.total }}</div>
+    <div class="sp-stat-trend">{{ booking_stats.today }} booked today</div>
+  </div>
+
+  <div class="sp-stat-card sp-stat-card--orange" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Today's Bookings</span>
+      <span class="sp-stat-icon sp-stat-icon--orange" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ booking_stats.today }}">{{ booking_stats.today }}</div>
+    <div class="sp-stat-trend">on {{ today|date:"d M Y" }}</div>
+  </div>
+
+  <div class="sp-stat-card sp-stat-card--purple" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Upcoming</span>
+      <span class="sp-stat-icon sp-stat-icon--purple" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ booking_stats.upcoming }}">{{ booking_stats.upcoming }}</div>
+    <div class="sp-stat-trend">pending or confirmed</div>
+  </div>
+
+  <div class="sp-stat-card sp-stat-card--green" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Live Now</span>
+      <span class="sp-stat-icon sp-stat-icon--green" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value"><span class="sp-live-dot" aria-hidden="true"></span><span data-count="{{ booking_stats.live }}">{{ booking_stats.live }}</span></div>
+    <div class="sp-stat-trend">sessions in progress</div>
   </div>
 </div>
 
@@ -20,16 +77,31 @@
 <div class="sp-toolbar" role="search" aria-label="Filter bookings">
   <div class="sp-search-wrap">
     <svg class="sp-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="search" name="q" class="cx-input" placeholder="Search by email, ID, console…" value="{{ q }}" aria-label="Search bookings">
+    <input type="search" name="q" class="cx-input" placeholder="Search by name, email, phone, ID, console…" value="{{ q }}" aria-label="Search bookings">
   </div>
 
   <div class="cx-field">
-    <select name="status" class="cx-select" data-auto-submit aria-label="Filter by status">
-      <option value="">All Status</option>
+    <select name="status" class="cx-select" data-auto-submit aria-label="Filter by booking status">
+      <option value="">All Statuses</option>
       {% for val, label in status_choices %}
       <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ label }}</option>
       {% endfor %}
     </select>
+  </div>
+
+  <div class="cx-field">
+    <select name="payment_status" class="cx-select" data-auto-submit aria-label="Filter by payment status">
+      <option value="">All Payments</option>
+      {% for val, label in payment_status_choices %}
+      <option value="{{ val }}" {% if payment_status == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="sp-date-group" aria-label="Filter by booking date">
+    <input type="date" name="date_from" class="cx-input" value="{{ date_from }}" aria-label="From date">
+    <span class="sp-date-sep" aria-hidden="true">→</span>
+    <input type="date" name="date_to" class="cx-input" value="{{ date_to }}" aria-label="To date">
   </div>
 
   <div class="cx-field">
@@ -44,28 +116,36 @@
   </div>
 
   <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Filter</button>
-  {% if q or status_filter %}
+  {% if q or status_filter or payment_status or date_from or date_to %}
   <a href="{% url 'staff:staff_booking_list' %}" class="cx-btn cx-btn--ghost cx-btn--sm">Clear</a>
   {% endif %}
 </div>
 </form>
 
-<!-- Bookings table -->
+{% if q or status_filter or payment_status or date_from or date_to %}
+<div class="sp-active-filters" aria-label="Active filters">
+  <span class="sp-filter-chip">Filtered results <b>{{ page_obj.paginator.count }}</b> of {{ booking_stats.total }} bookings</span>
+  <a class="sp-filter-chip" href="{% url 'staff:staff_booking_list' %}">Clear all <span aria-hidden="true">×</span></a>
+</div>
+{% endif %}
+
+<!-- Bookings -->
 <div class="sp-widget">
   <div class="sp-widget-header">
     <h2 class="sp-widget-title">{{ page_obj.paginator.count }} Booking{{ page_obj.paginator.count|pluralize }}</h2>
+    {% if page_obj %}<span class="sp-activity-time">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>{% endif %}
   </div>
   <div class="sp-widget-body">
     {% if page_obj %}
-    <div class="sp-table-wrap">
+    <!-- Desktop table -->
+    <div class="sp-table-wrap sp-booking-table">
       <table class="sp-table" aria-label="Bookings">
         <thead>
           <tr>
-            <th scope="col">#</th>
+            <th scope="col">ID</th>
             <th scope="col">Customer</th>
             <th scope="col">Console</th>
-            <th scope="col">Date</th>
-            <th scope="col">Time</th>
+            <th scope="col">Date &amp; Time</th>
             <th scope="col">Players</th>
             <th scope="col">Amount</th>
             <th scope="col">Payment</th>
@@ -75,40 +155,35 @@
         </thead>
         <tbody>
           {% for b in page_obj %}
-          <tr class="{% if b.status == 'cancelled' %}sp-row-danger{% elif b.status == 'confirmed' %}sp-row-success{% elif b.status == 'pending' %}sp-row-warning{% elif b.status == 'completed' %}sp-row-info{% endif %}">
-            <td><strong>#{{ b.id }}</strong></td>
+          <tr class="{% if b.status == 'cancelled' %}sp-row-danger{% elif b.status == 'confirmed' %}sp-row-success{% elif b.status == 'pending' %}sp-row-warning{% elif b.status == 'checked_in' or b.status == 'completed' %}sp-row-info{% endif %}">
+            <td><span class="sp-bk-id">#{{ b.id }}</span></td>
             <td>
               <div class="sp-user-cell">
                 <span class="cx-avatar cx-avatar--xs">{{ b.user.full_display_name|first|upper }}</span>
                 <div>
-                  <div>{{ b.user.full_display_name }}</div>
+                  <div class="sp-cell-name">{{ b.user.full_display_name }}</div>
                   <div class="sp-activity-time">{{ b.user.email }}</div>
                 </div>
               </div>
             </td>
-            <td>{{ b.game_console.name|default:"—" }}</td>
-            <td>{{ b.booking_date|date:"d M Y" }}</td>
-            <td>{{ b.start_time|time:"h:i A" }}–{{ b.end_time|time:"h:i A" }}</td>
+            <td>
+              <div class="sp-console-cell">
+                <span class="sp-console-name">{{ b.game_console.name|default:"—" }}</span>
+                <span class="sp-console-type">{{ b.game_console.console_type|default:"—" }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="sp-bk-time">{{ b.booking_date|date:"d M Y" }}
+                <div class="sp-bk-time-sub">{{ b.start_time|time:"h:i A" }}–{{ b.end_time|time:"h:i A" }} · {{ b.duration_hours }}h</div>
+              </div>
+            </td>
             <td>{{ b.number_of_players }}</td>
-            <td>₹{{ b.total_cost|floatformat:0 }}</td>
-            <td>
-              {% if b.payment %}
-                {% if b.payment.status == 'captured' %}<span class="cx-badge cx-badge--success">Paid</span>
-                {% elif b.payment.status == 'demo' %}<span class="cx-badge cx-badge--primary">Demo</span>
-                {% elif b.payment.status == 'failed' %}<span class="cx-badge cx-badge--danger">Failed</span>
-                {% elif b.payment.status == 'refunded' %}<span class="cx-badge cx-badge--warning">Refunded</span>
-                {% else %}<span class="cx-badge cx-badge--warning">Pending</span>{% endif %}
-              {% else %}<span class="cx-badge cx-badge--neutral">Unpaid</span>{% endif %}
-            </td>
-            <td>
-              {% if b.status == 'confirmed' %}<span class="cx-badge cx-badge--success">Confirmed</span>
-              {% elif b.status == 'pending' %}<span class="cx-badge cx-badge--warning">Pending</span>
-              {% elif b.status == 'cancelled' %}<span class="cx-badge cx-badge--danger">Cancelled</span>
-              {% elif b.status == 'completed' %}<span class="cx-badge cx-badge--primary">Completed</span>{% endif %}
-            </td>
+            <td><strong>₹{{ b.total_cost|floatformat:0 }}</strong></td>
+            <td>{% include "staff/bookings/_payment_badge.html" with payment=b.payment %}</td>
+            <td>{% include "staff/bookings/_status_badge.html" with status=b.status %}</td>
             <td class="sp-cell-actions">
-              <a href="{% url 'staff:staff_booking_detail' b.id %}" class="cx-btn cx-btn--ghost cx-btn--sm" aria-label="View booking #{{ b.id }}">View</a>
-              <a href="{% url 'bookings:booking_detail' b.id %}" class="cx-btn cx-btn--ghost cx-btn--sm" aria-label="Edit booking #{{ b.id }}">Edit</a>
+              <button type="button" class="cx-btn cx-btn--ghost cx-btn--sm" data-sp-drawer-open="{{ b.id }}" data-sp-drawer-title="Booking #{{ b.id }}" aria-haspopup="dialog" aria-controls="spBookingDrawer">View</button>
+              <a href="{% url 'staff:staff_booking_detail' b.id %}" class="cx-btn cx-btn--ghost cx-btn--sm">Full</a>
             </td>
           </tr>
           {% endfor %}
@@ -116,21 +191,168 @@
       </table>
     </div>
 
+    <!-- Mobile cards -->
+    <div class="sp-booking-cards" aria-label="Bookings list">
+      {% for b in page_obj %}
+      <article class="sp-bk-card {% if b.status == 'cancelled' %}sp-bk-card--danger{% elif b.status == 'confirmed' %}sp-bk-card--success{% elif b.status == 'pending' %}sp-bk-card--warning{% else %}sp-bk-card--info{% endif %}">
+        <div class="sp-bk-card-top">
+          <div class="sp-user-cell">
+            <span class="cx-avatar cx-avatar--sm">{{ b.user.full_display_name|first|upper }}</span>
+            <div>
+              <div class="sp-cell-name">{{ b.user.full_display_name }}</div>
+              <div class="sp-activity-time">{{ b.user.email }}</div>
+            </div>
+          </div>
+          <span class="sp-bk-id">#{{ b.id }}</span>
+        </div>
+        <div class="sp-bk-card-row"><span>Console</span><b>{{ b.game_console.name|default:"—" }}</b></div>
+        <div class="sp-bk-card-row"><span>Date &amp; Time</span><b>{{ b.booking_date|date:"d M Y" }} · {{ b.start_time|time:"h:i A" }}–{{ b.end_time|time:"h:i A" }}</b></div>
+        <div class="sp-bk-card-row"><span>Players</span><b>{{ b.number_of_players }}</b></div>
+        <div class="sp-bk-card-row"><span>Amount</span><b>₹{{ b.total_cost|floatformat:0 }}</b></div>
+        <div class="sp-bk-card-row"><span>Payment</span>{% include "staff/bookings/_payment_badge.html" with payment=b.payment %}</div>
+        <div class="sp-bk-card-row"><span>Status</span>{% include "staff/bookings/_status_badge.html" with status=b.status %}</div>
+        <div class="sp-bk-card-actions">
+          <button type="button" class="cx-btn cx-btn--outline cx-btn--sm" data-sp-drawer-open="{{ b.id }}" data-sp-drawer-title="Booking #{{ b.id }}" aria-haspopup="dialog" aria-controls="spBookingDrawer">Details</button>
+          <a href="{% url 'staff:staff_booking_detail' b.id %}" class="cx-btn cx-btn--ghost cx-btn--sm">Full page</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    <!-- Drawer content templates (cloned into the drawer on demand) -->
+    {% for b in page_obj %}
+    <template data-sp-drawer-template="{{ b.id }}">
+      <div class="sp-drawer-hero">
+        <span class="sp-activity-time">Customer · {{ b.user.email }}</span>
+        <div style="margin-top:6px">{% include "staff/bookings/_status_badge.html" with status=b.status %}</div>
+      </div>
+
+      <div class="sp-drawer-section">
+        <div class="sp-drawer-section-title">Customer</div>
+        <div class="sp-data-list">
+          <div class="sp-data-row"><span class="sp-data-label">Name</span><span class="sp-data-value">{{ b.user.full_display_name }}</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Email</span><span class="sp-data-value">{{ b.user.email }}</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Phone</span><span class="sp-data-value">{{ b.user.phone|default:"—" }}</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Member Since</span><span class="sp-data-value">{{ b.user.created_at|date:"M Y" }}</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Membership</span><span class="sp-data-value">{{ b.user.membership.name|default:"—" }}</span></div>
+        </div>
+      </div>
+
+      <div class="sp-drawer-section">
+        <div class="sp-drawer-section-title">Booking</div>
+        <div class="sp-data-list">
+          <div class="sp-data-row"><span class="sp-data-label">Console</span><span class="sp-data-value">{{ b.game_console.name|default:"—" }} <span class="sp-console-type">{{ b.game_console.console_type|default:"" }}</span></span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Date</span><span class="sp-data-value">{{ b.booking_date|date:"l, d M Y" }}</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Time</span><span class="sp-data-value">{{ b.start_time|time:"h:i A" }} – {{ b.end_time|time:"h:i A" }}</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Duration</span><span class="sp-data-value">{{ b.duration_hours }} hr{{ b.duration_hours|pluralize }}</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Players</span><span class="sp-data-value">{{ b.number_of_players }}</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Total</span><span class="sp-data-value">₹{{ b.total_cost|floatformat:2 }}</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Advance (30%)</span><span class="sp-data-value">₹{{ b.advance_amount|floatformat:2 }}</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Balance</span><span class="sp-data-value">₹{{ b.balance_amount|floatformat:2 }}</span></div>
+          {% if b.checked_in_at %}
+          <div class="sp-data-row"><span class="sp-data-label">Checked In</span><span class="sp-data-value">{{ b.checked_in_at|date:"h:i A" }}</span></div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="sp-drawer-section">
+        <div class="sp-drawer-section-title">Payment</div>
+        {% if b.payment %}
+        <div class="sp-data-list">
+          <div class="sp-data-row"><span class="sp-data-label">Status</span><span class="sp-data-value">{% include "staff/bookings/_payment_badge.html" with payment=b.payment %}</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Amount</span><span class="sp-data-value">₹{{ b.payment.amount_rupees|floatformat:2 }}</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Method</span><span class="sp-data-value">Razorpay</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Razorpay Order</span><span class="sp-data-value sp-data-mono">{{ b.payment.razorpay_order_id|default:"—"|truncatechars:24 }}</span></div>
+          <div class="sp-data-row"><span class="sp-data-label">Created</span><span class="sp-data-value">{{ b.payment.created_at|date:"d M Y h:i A" }}</span></div>
+        </div>
+        {% else %}
+        <div class="sp-data-list">
+          <div class="sp-data-row"><span class="sp-data-label">Status</span><span class="sp-data-value">{% include "staff/bookings/_payment_badge.html" with payment=None %}</span></div>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="sp-drawer-section">
+        <div class="sp-drawer-section-title">Activity</div>
+        <div class="sp-activity">
+          <div class="sp-activity-item">
+            <span class="sp-activity-dot is-success" aria-hidden="true"></span>
+            <div>
+              <div class="sp-activity-text">Booking created</div>
+              <div class="sp-activity-time">{{ b.created_at|date:"d M Y h:i A" }}</div>
+            </div>
+          </div>
+          {% if b.payment and b.payment.status == 'captured' %}
+          <div class="sp-activity-item">
+            <span class="sp-activity-dot is-success" aria-hidden="true"></span>
+            <div>
+              <div class="sp-activity-text">Payment captured</div>
+              <div class="sp-activity-time">{{ b.payment.updated_at|date:"d M Y h:i A" }}</div>
+            </div>
+          </div>
+          {% endif %}
+          {% if b.checked_in_at %}
+          <div class="sp-activity-item">
+            <span class="sp-activity-dot is-success" aria-hidden="true"></span>
+            <div>
+              <div class="sp-activity-text">Checked in — session started</div>
+              <div class="sp-activity-time">{{ b.checked_in_at|date:"d M Y h:i A" }}</div>
+            </div>
+          </div>
+          {% endif %}
+          {% if b.status == 'cancelled' %}
+          <div class="sp-activity-item">
+            <span class="sp-activity-dot is-danger" aria-hidden="true"></span>
+            <div>
+              <div class="sp-activity-text">Booking cancelled</div>
+              <div class="sp-activity-time">{{ b.updated_at|date:"d M Y h:i A" }}</div>
+            </div>
+          </div>
+          {% endif %}
+          {% if b.status == 'completed' %}
+          <div class="sp-activity-item">
+            <span class="sp-activity-dot is-success" aria-hidden="true"></span>
+            <div>
+              <div class="sp-activity-text">Booking completed</div>
+              <div class="sp-activity-time">{{ b.updated_at|date:"d M Y h:i A" }}</div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="sp-drawer-actions">
+        {% if b.status == 'confirmed' %}
+        <form method="POST" action="{% url 'staff:staff_booking_checkin' b.id %}">
+          {% csrf_token %}
+          <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Check In</button>
+        </form>
+        {% elif b.status == 'checked_in' %}
+        <form method="POST" action="{% url 'staff:staff_booking_checkout' b.id %}">
+          {% csrf_token %}
+          <button type="submit" class="cx-btn cx-btn--success cx-btn--sm">Check Out</button>
+        </form>
+        {% endif %}
+        <a href="{% url 'staff:staff_booking_detail' b.id %}" class="cx-btn cx-btn--outline cx-btn--sm">Open Full Page</a>
+      </div>
+    </template>
+    {% endfor %}
+
     <!-- Pagination -->
     {% if page_obj.paginator.num_pages > 1 %}
     <nav class="cx-pagination" aria-label="Booking pages" style="margin-top:var(--cx-space-4)">
       {% if page_obj.has_previous %}
-        <a href="?page=1{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="cx-page-btn" aria-label="First">&laquo;</a>
-        <a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="cx-page-btn" aria-label="Previous">&lsaquo;</a>
+        <a href="?page=1{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn" aria-label="First">&laquo;</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn" aria-label="Previous">&lsaquo;</a>
       {% endif %}
       {% for n in page_obj.paginator.page_range %}
         {% if n >= page_obj.number|add:"-2" and n <= page_obj.number|add:"2" %}
-          <a href="?page={{ n }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="cx-page-btn {% if n == page_obj.number %}cx-page-btn--active{% endif %}">{{ n }}</a>
+          <a href="?page={{ n }}{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn {% if n == page_obj.number %}cx-page-btn--active{% endif %}">{{ n }}</a>
         {% endif %}
       {% endfor %}
       {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="cx-page-btn" aria-label="Next">&rsaquo;</a>
-        <a href="?page={{ page_obj.paginator.num_pages }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}" class="cx-page-btn" aria-label="Last">&raquo;</a>
+        <a href="?page={{ page_obj.next_page_number }}{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn" aria-label="Next">&rsaquo;</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn" aria-label="Last">&raquo;</a>
       {% endif %}
     </nav>
     {% endif %}
@@ -138,10 +360,37 @@
     {% else %}
     <div class="cx-empty" role="status">
       <div class="cx-empty-title">No bookings found</div>
-      <div class="cx-empty-desc">Try adjusting your search or filters.</div>
+      <div class="cx-empty-desc">
+        {% if q or status_filter or payment_status or date_from or date_to %}
+        Nothing matches your search or filters. Try widening the date range or clearing filters.
+        {% else %}
+        Bookings will appear here as customers reserve consoles.
+        {% endif %}
+      </div>
+      {% if q or status_filter or payment_status or date_from or date_to %}
+      <a href="{% url 'staff:staff_booking_list' %}" class="cx-btn cx-btn--outline cx-btn--md">Clear Filters</a>
+      {% endif %}
       <a href="{% url 'bookings:booking_form' %}" class="cx-btn cx-btn--primary cx-btn--md">New Booking</a>
     </div>
     {% endif %}
   </div>
 </div>
+
+<!-- Detail drawer -->
+<div class="sp-drawer-backdrop" id="spDrawerBackdrop" aria-hidden="true"></div>
+<aside class="sp-drawer" id="spBookingDrawer" role="dialog" aria-modal="true" aria-labelledby="spDrawerTitle" aria-hidden="true">
+  <div class="sp-drawer-head">
+    <div>
+      <div class="sp-drawer-eyebrow">Booking Details</div>
+      <h2 class="sp-drawer-title" id="spDrawerTitle">Booking details</h2>
+    </div>
+    <button type="button" class="sp-drawer-close" data-sp-drawer-close aria-label="Close booking details">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="sp-drawer-body" data-sp-drawer-body></div>
+  <div class="sp-drawer-actions sp-drawer-footer">
+    <button type="button" class="cx-btn cx-btn--outline cx-btn--sm" data-sp-drawer-close>Close</button>
+  </div>
+</aside>
 {% endblock %}

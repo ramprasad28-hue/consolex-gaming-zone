@@ -336,4 +336,55 @@
         });
     });
 
+    /* ── Booking detail drawer ── */
+    var drawer = document.getElementById('spBookingDrawer');
+    var drawerBackdrop = document.getElementById('spDrawerBackdrop');
+    var drawerBody = document.querySelector('[data-sp-drawer-body]');
+    var drawerTitle = document.getElementById('spDrawerTitle');
+    var lastTrigger = null;
+
+    function closeDrawer() {
+        if (!drawer) return;
+        drawer.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden', 'true');
+        if (drawerBackdrop) drawerBackdrop.classList.remove('is-shown');
+        document.body.classList.remove('sp-no-scroll');
+        if (lastTrigger && typeof lastTrigger.focus === 'function') lastTrigger.focus();
+        lastTrigger = null;
+    }
+
+    if (drawer) {
+        document.querySelectorAll('[data-sp-drawer-open]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var id = btn.getAttribute('data-sp-drawer-open');
+                var tpl = document.querySelector('[data-sp-drawer-template="' + id + '"]');
+                if (!tpl) return;
+                lastTrigger = btn;
+                if (drawerBody) {
+                    drawerBody.innerHTML = '';
+                    drawerBody.appendChild(document.importNode(tpl.content, true));
+                }
+                if (drawerTitle) {
+                    drawerTitle.textContent = btn.getAttribute('data-sp-drawer-title') || 'Booking details';
+                }
+                drawer.classList.add('is-open');
+                drawer.setAttribute('aria-hidden', 'false');
+                if (drawerBackdrop) drawerBackdrop.classList.add('is-shown');
+                document.body.classList.add('sp-no-scroll');
+                var closeBtn = drawer.querySelector('[data-sp-drawer-close]');
+                if (closeBtn) closeBtn.focus();
+            });
+        });
+
+        document.querySelectorAll('[data-sp-drawer-close]').forEach(function (btn) {
+            btn.addEventListener('click', closeDrawer);
+        });
+        if (drawerBackdrop) {
+            drawerBackdrop.addEventListener('click', closeDrawer);
+        }
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && drawer.classList.contains('is-open')) closeDrawer();
+        });
+    }
+
 })();

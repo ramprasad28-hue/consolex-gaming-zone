@@ -11,6 +11,7 @@ urlpatterns = [
     path("", staff_required(views.staff_dashboard), name="staff_dashboard"),
     path("executive/", staff_required(owner_required(views.executive_dashboard)), name="staff_executive"),
     path("bookings/", staff_required(views.booking_list), name="staff_booking_list"),
+    path("bookings/export/", staff_required(views.booking_export), name="staff_booking_export"),
     path("bookings/<int:booking_id>/", staff_required(views.booking_detail), name="staff_booking_detail"),
     path("bookings/<int:booking_id>/checkin/", staff_required(views.booking_checkin), name="staff_booking_checkin"),
     path("bookings/<int:booking_id>/checkout/", staff_required(views.booking_checkout), name="staff_booking_checkout"),

@@ -8,6 +8,7 @@ from django.utils import timezone
 from apps.users.models import User
 from apps.games.models import GameConsole
 from apps.bookings.models import Booking
+from apps.payments.models import Payment
 
 
 def make_staff(email="staff@test.com", superuser=False):
@@ -204,3 +205,80 @@ class ExecutiveDashboardTests(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.context["active_customers"], 0)
         self.assertEqual(resp.context["retention_rate"], 0)
+
+
+class BookingListFilterTests(TestCase):
+    """Phase 2 — extended booking list filters and CSV export."""
+
+    def setUp(self):
+        make_staff()
+        self.client.force_login(User.objects.get(email="staff@test.com"))
+        self.console = make_console()
+        self.customer = User.objects.create_user(
+            email="payer@test.com", password="x", phone="9876543210"
+        )
+        self.booking = Booking.objects.create(
+            user=self.customer, game_console=self.console,
+            booking_date="2026-08-10", start_time="12:00", end_time="14:00",
+            total_cost=Decimal("260.00"), status="confirmed",
+        )
+        self.payment = Payment.objects.create(
+            booking=self.booking, user=self.customer,
+            amount=26000, status="captured",
+        )
+
+    def test_list_renders_with_stats(self):
+        resp = self.client.get(reverse("staff:staff_booking_list"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("booking_stats", resp.context)
+        self.assertEqual(resp.context["booking_stats"]["total"], 1)
+        self.assertIn("payment_status_choices", resp.context)
+
+    def test_filter_by_payment_status(self):
+        resp = self.client.get(
+            reverse("staff:staff_booking_list"), {"payment_status": "captured"}
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.context["page_obj"].object_list), 1)
+
+    def test_filter_by_payment_status_excludes(self):
+        Payment.objects.filter(booking=self.booking).update(status="failed")
+        resp = self.client.get(
+            reverse("staff:staff_booking_list"), {"payment_status": "captured"}
+        )
+        self.assertEqual(len(resp.context["page_obj"].object_list), 0)
+
+    def test_search_by_phone(self):
+        resp = self.client.get(
+            reverse("staff:staff_booking_list"), {"q": "9876543210"}
+        )
+        self.assertEqual(len(resp.context["page_obj"].object_list), 1)
+
+    def test_filter_by_date_range(self):
+        resp = self.client.get(
+            reverse("staff:staff_booking_list"),
+            {"date_from": "2026-08-01", "date_to": "2026-08-31"},
+        )
+        self.assertEqual(len(resp.context["page_obj"].object_list), 1)
+
+    def test_filter_by_date_range_excludes(self):
+        resp = self.client.get(
+            reverse("staff:staff_booking_list"),
+            {"date_from": "2026-09-01", "date_to": "2026-09-30"},
+        )
+        self.assertEqual(len(resp.context["page_obj"].object_list), 0)
+
+    def test_export_csv(self):
+        resp = self.client.get(reverse("staff:staff_booking_export"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp["Content-Type"], "text/csv; charset=utf-8")
+        self.assertContains(resp, "payer@test.com")
+        self.assertContains(resp, "9876543210")
+        self.assertContains(resp, "Booking ID")
+
+    def test_export_respects_filters(self):
+        resp = self.client.get(
+            reverse("staff:staff_booking_export"), {"payment_status": "failed"}
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotContains(resp, "payer@test.com")
