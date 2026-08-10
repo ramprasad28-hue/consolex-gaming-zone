@@ -1,107 +1,285 @@
 {% extends "staff/base_staff.html" %}
 {% load static %}
 
-{% block title %}Game Management — {{ site.brand_name }}{% endblock %}
+{% block title %}Game Library — {{ site.brand_name }}{% endblock %}
+{% block sp_breadcrumb %}Games{% endblock %}
 
 {% block sp_content %}
 <div class="sp-header">
   <div>
-    <h1 class="sp-header-title">Game Management</h1>
-    <p class="sp-header-sub">Manage game catalog and console availability</p>
+    <h1 class="sp-header-title">Game Library</h1>
+    <p class="sp-header-sub">Browse the catalog, curate covers and badges, and keep the library fresh.</p>
   </div>
   <div class="sp-header-actions">
-    <a href="{% url 'admin:games_game_add' %}" class="cx-btn cx-btn--primary cx-btn--sm" target="_blank">+ Add Game</a>
+    <a href="{% url 'admin:games_game_add' %}" class="cx-btn cx-btn--primary cx-btn--sm" target="_blank" rel="noopener">+ Add Game</a>
   </div>
 </div>
 
+{% if messages %}
+  <div class="cx-flash-stack">
+    {% for message in messages %}
+      <div class="cx-flash" role="status">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<!-- Stats -->
+<div class="sp-stats-grid" role="list" aria-label="Game library statistics">
+  <div class="sp-stat-card sp-stat-card--blue" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Total Titles</span>
+      <span class="sp-stat-icon sp-stat-icon--blue" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ game_stats.total }}">{{ game_stats.total }}</div>
+    <div class="sp-stat-trend">in the catalog</div>
+  </div>
+
+  <div class="sp-stat-card sp-stat-card--green" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Active</span>
+      <span class="sp-stat-icon sp-stat-icon--green" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ game_stats.active }}">{{ game_stats.active }}</div>
+    <div class="sp-stat-trend">live on the site</div>
+  </div>
+
+  <div class="sp-stat-card sp-stat-card--purple" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Avg Rating</span>
+      <span class="sp-stat-icon sp-stat-icon--purple" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value">{{ game_stats.avg_rating }}<span style="font-size:.55em;opacity:.6">/10</span></div>
+    <div class="sp-stat-trend">across rated titles</div>
+  </div>
+
+  <div class="sp-stat-card sp-stat-card--orange" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Archived</span>
+      <span class="sp-stat-icon sp-stat-icon--orange" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ game_stats.archived }}">{{ game_stats.archived }}</div>
+    <div class="sp-stat-trend">hidden from guests</div>
+  </div>
+</div>
+
+<!-- Filters -->
 <form method="GET" action="">
 <div class="sp-toolbar" role="search" aria-label="Filter games">
   <div class="sp-search-wrap">
     <svg class="sp-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="search" name="q" class="cx-input" placeholder="Search games…" value="{{ q }}" aria-label="Search games">
+    <input type="search" name="q" class="cx-input" placeholder="Search title, category, badge…" value="{{ q }}" aria-label="Search games">
   </div>
+
   <div class="cx-field">
-    <select name="platform" class="cx-select" data-auto-submit aria-label="Filter by platform">
-      <option value="">All Platforms</option>
-      <option value="PS5" {% if platform == 'PS5' %}selected{% endif %}>PS5</option>
-      <option value="PS4" {% if platform == 'PS4' %}selected{% endif %}>PS4</option>
-      <option value="XBOX" {% if platform == 'XBOX' %}selected{% endif %}>Xbox</option>
+    <select name="category" class="cx-select" data-auto-submit aria-label="Filter by category">
+      <option value="">All Categories</option>
+      {% for val, label in categories %}
+      <option value="{{ val }}" {% if category == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
     </select>
   </div>
+
+  <div class="cx-field">
+    <select name="badge" class="cx-select" data-auto-submit aria-label="Filter by badge">
+      <option value="">All Badges</option>
+      {% for val, label in badge_choices %}
+      <option value="{{ val }}" {% if badge == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
   <div class="cx-field">
     <select name="active" class="cx-select" data-auto-submit aria-label="Filter by availability">
-      <option value="">All</option>
+      <option value="">All Availability</option>
       <option value="active" {% if active_filter == 'active' %}selected{% endif %}>Active</option>
       <option value="archived" {% if active_filter == 'archived' %}selected{% endif %}>Archived</option>
     </select>
   </div>
+
+  <div class="cx-field">
+    <select name="sort" class="cx-select" data-auto-submit aria-label="Sort games">
+      <option value="popular" {% if sort == 'popular' %}selected{% endif %}>Featured</option>
+      <option value="title" {% if sort == 'title' %}selected{% endif %}>Title A–Z</option>
+      <option value="-title" {% if sort == '-title' %}selected{% endif %}>Title Z–A</option>
+      <option value="rating" {% if sort == 'rating' %}selected{% endif %}>Highest Rated</option>
+      <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest</option>
+    </select>
+  </div>
+
   <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Filter</button>
-  {% if q or platform or active_filter %}
+  {% if q or category or badge or active_filter %}
   <a href="{% url 'staff:staff_game_list' %}" class="cx-btn cx-btn--ghost cx-btn--sm">Clear</a>
   {% endif %}
 </div>
 </form>
 
-<div class="sp-dash-grid">
-  <!-- Games -->
-  <div class="sp-widget">
-    <div class="sp-widget-header">
-      <h2 class="sp-widget-title">Games ({{ page_obj.paginator.count }})</h2>
-    </div>
-    <div class="sp-widget-body">
-      {% if page_obj %}
-      <div class="sp-table-wrap">
-        <table class="sp-table" aria-label="Games">
-          <thead>
-            <tr><th scope="col">Title</th><th scope="col">Category</th><th scope="col">Rating</th><th scope="col">Active</th><th scope="col">Actions</th></tr>
-          </thead>
-          <tbody>
-            {% for g in page_obj %}
-            <tr>
-              <td><strong>{{ g.title }}</strong></td>
-              <td><span class="cx-badge cx-badge--neutral">{{ g.get_category_display|default:"—" }}</span></td>
-              <td>{% if g.rating %}{{ g.rating }}/10{% else %}—{% endif %}</td>
-              <td>{% if g.is_active %}<span class="cx-badge cx-badge--success">Active</span>{% else %}<span class="cx-badge cx-badge--neutral">Archived</span>{% endif %}</td>
-              <td class="sp-cell-actions">
-                <a href="{% url 'admin:games_game_change' g.id %}" class="cx-btn cx-btn--ghost cx-btn--sm" target="_blank">Edit</a>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+{% if q or category or badge or active_filter %}
+<div class="sp-active-filters" aria-label="Active filters">
+  <span class="sp-filter-chip">Filtered <b>{{ page_obj.paginator.count }}</b> of {{ game_stats.total }} games</span>
+  <a class="sp-filter-chip" href="{% url 'staff:staff_game_list' %}">Clear all <span aria-hidden="true">×</span></a>
+</div>
+{% endif %}
+
+<!-- Catalog -->
+<div class="sp-widget">
+  <div class="sp-widget-header">
+    <h2 class="sp-widget-title">{{ page_obj.paginator.count }} Title{{ page_obj.paginator.count|pluralize }}</h2>
+    <div class="sp-widget-tools">
+      {% if page_obj %}<span class="sp-activity-time">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>{% endif %}
+      <div class="sp-view-switch" role="group" aria-label="Switch layout">
+        <button type="button" class="sp-view-btn" data-sp-view-switch="games" data-view="grid" aria-label="Grid view" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </button>
+        <button type="button" class="sp-view-btn" data-sp-view-switch="games" data-view="list" aria-label="List view" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </button>
       </div>
-      {% else %}
-      <div class="cx-empty" role="status">
-        <div class="cx-empty-title">No games found</div>
-        <div class="cx-empty-desc">Add games to your catalog.</div>
-      </div>
-      {% endif %}
     </div>
   </div>
-
-  <!-- Consoles -->
-  <div class="sp-widget">
-    <div class="sp-widget-header"><h2 class="sp-widget-title">Consoles ({{ consoles|length }})</h2></div>
-    <div class="sp-widget-body">
-      <div class="sp-table-wrap">
-        <table class="sp-table" aria-label="Consoles">
-          <thead>
-            <tr><th scope="col">Name</th><th scope="col">Type</th><th scope="col">Weekday</th><th scope="col">Weekend</th><th scope="col">Status</th></tr>
-          </thead>
-          <tbody>
-            {% for c in consoles %}
-            <tr>
-              <td><strong>{{ c.name }}</strong></td>
-              <td><span class="cx-badge cx-badge--neutral">{{ c.console_type }}</span></td>
-              <td>₹{{ c.hourly_rate_weekday|floatformat:0 }}/hr</td>
-              <td>₹{{ c.hourly_rate_weekend|floatformat:0 }}/hr</td>
-              <td>{% if c.is_active %}<span class="cx-badge cx-badge--success">Active</span>{% else %}<span class="cx-badge cx-badge--neutral">Inactive</span>{% endif %}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+  <div class="sp-widget-body">
+    {% if page_obj %}
+    <div class="sp-catalog-grid" data-sp-view="games" data-sp-view-default="grid">
+      {% for g in page_obj %}
+      <article class="sp-cat-card {% if not g.is_active %}sp-cat-card--muted{% endif %}">
+        <div class="sp-cover sp-cover--poster">
+          {% if g.image_src %}
+            <img class="sp-cover-img" src="{{ g.image_src }}" alt="{{ g.title }} cover art" loading="lazy">
+          {% else %}
+            <div class="sp-cover-fallback" aria-hidden="true">{{ g.title|slice:":1"|upper }}</div>
+          {% endif %}
+          {% if g.badge_label %}
+            <span class="sp-cover-ribbon">{{ g.badge_label }}</span>
+          {% endif %}
+          <span class="sp-cover-status {% if not g.is_active %}is-muted{% endif %}">{% if g.is_active %}Active{% else %}Archived{% endif %}</span>
+        </div>
+        <div class="sp-cat-card-body">
+          <h3 class="sp-cat-card-title">{{ g.title }}</h3>
+          <div class="sp-cat-card-meta">
+            <span class="cx-badge cx-badge--neutral">{{ g.get_category_display }}</span>
+            {% if g.rating %}
+            <span class="sp-rating" title="Rating">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              {{ g.rating|floatformat:1 }}
+            </span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="sp-cat-card-actions">
+          <a href="{% url 'staff:staff_game_detail' g.id %}" class="cx-btn cx-btn--outline cx-btn--sm">View</a>
+          <a href="{% url 'admin:games_game_change' g.id %}" class="cx-btn cx-btn--ghost cx-btn--sm" target="_blank" rel="noopener">Edit</a>
+          <div class="sp-menu" data-sp-menu>
+            <button type="button" class="sp-menu-toggle" data-sp-menu-toggle aria-label="More actions for {{ g.title }}" aria-haspopup="menu" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>
+            </button>
+            <div class="sp-menu-panel" role="menu" aria-label="Game actions">
+              <a href="{% url 'games:game_detail' g.id %}" class="sp-menu-item" role="menuitem" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                View on site
+              </a>
+              {% if g.is_active %}
+              <form method="POST" action="{% url 'staff:staff_game_toggle_active' g.id %}" data-sp-confirm data-sp-confirm-message="Archive “{{ g.title }}”? It will be hidden from the public library.">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="sp-menu-item is-danger" role="menuitem">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+                  Archive
+                </button>
+              </form>
+              {% else %}
+              <form method="POST" action="{% url 'staff:staff_game_toggle_active' g.id %}" data-sp-confirm data-sp-confirm-message="Restore “{{ g.title }}” to the public library?">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="sp-menu-item is-success" role="menuitem">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg>
+                  Restore
+                </button>
+              </form>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
     </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="cx-pagination" aria-label="Game pages" style="margin-top:var(--cx-space-4)">
+      {% if page_obj.has_previous %}
+        <a href="?page=1{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn" aria-label="First">&laquo;</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn" aria-label="Previous">&lsaquo;</a>
+      {% endif %}
+      {% for n in page_obj.paginator.page_range %}
+        {% if n >= page_obj.number|add:"-2" and n <= page_obj.number|add:"2" %}
+          <a href="?page={{ n }}{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn {% if n == page_obj.number %}cx-page-btn--active{% endif %}">{{ n }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn" aria-label="Next">&rsaquo;</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn" aria-label="Last">&raquo;</a>
+      {% endif %}
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="cx-empty" role="status">
+      <div class="cx-empty-title">No games found</div>
+      <div class="cx-empty-desc">
+        {% if q or category or badge or active_filter %}
+        Nothing matches your search or filters. Try widening them.
+        {% else %}
+        Your game catalog is empty. Add a title to get started.
+        {% endif %}
+      </div>
+      {% if q or category or badge or active_filter %}
+      <a href="{% url 'staff:staff_game_list' %}" class="cx-btn cx-btn--outline cx-btn--md">Clear Filters</a>
+      {% endif %}
+      <a href="{% url 'admin:games_game_add' %}" class="cx-btn cx-btn--primary cx-btn--md" target="_blank" rel="noopener">Add Game</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Console fleet -->
+<div class="sp-widget">
+  <div class="sp-widget-header">
+    <h2 class="sp-widget-title">Console Fleet ({{ consoles|length }})</h2>
+    <span class="sp-activity-time">{{ consoles_active }} active console{{ consoles_active|pluralize }}</span>
+  </div>
+  <div class="sp-widget-body">
+    {% if consoles %}
+    <div class="sp-console-grid">
+      {% for c in consoles %}
+      <div class="sp-console-card {% if not c.is_active %}sp-console-card--muted{% endif %}">
+        <div class="sp-console-card-top">
+          <span class="sp-console-card-type">{{ c.console_type }}</span>
+          {% if c.is_active %}<span class="cx-badge cx-badge--success">Active</span>{% else %}<span class="cx-badge cx-badge--neutral">Inactive</span>{% endif %}
+        </div>
+        <div class="sp-console-card-name">{{ c.name }}</div>
+        <div class="sp-console-card-rates">
+          <div class="sp-console-rate"><span>Weekday</span><b>₹{{ c.hourly_rate_weekday|floatformat:0 }}/hr</b></div>
+          <div class="sp-console-rate"><span>Weekend</span><b>₹{{ c.hourly_rate_weekend|floatformat:0 }}/hr</b></div>
+        </div>
+        <div class="sp-console-card-foot">
+          <span class="sp-activity-time">{{ c.booking_count }} booking{{ c.booking_count|pluralize }}</span>
+          <a href="{% url 'staff:staff_booking_list' %}?q={{ c.name }}" class="cx-btn cx-btn--ghost cx-btn--sm">Bookings</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="cx-empty" role="status">
+      <div class="cx-empty-title">No consoles yet</div>
+      <div class="cx-empty-desc">Add consoles to start accepting bookings.</div>
+    </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

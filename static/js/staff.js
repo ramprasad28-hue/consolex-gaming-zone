@@ -387,4 +387,200 @@
         });
     }
 
+    /* ── Phase 3: catalog view switcher (grid/list, persisted) ── */
+    document.querySelectorAll('[data-sp-view]').forEach(function (container) {
+        var key = container.getAttribute('data-sp-view');
+        var storageKey = 'cx-staff-view-' + key;
+        var defaultView = container.getAttribute('data-sp-view-default') || 'grid';
+        var buttons = document.querySelectorAll('[data-sp-view-switch="' + key + '"]');
+
+        var saved = null;
+        try { saved = localStorage.getItem(storageKey); } catch (e) { /* ignore */ }
+        var current = saved || defaultView;
+
+        function applyView(view) {
+            container.classList.toggle('is-list', view === 'list');
+            buttons.forEach(function (b) {
+                var active = b.getAttribute('data-view') === view;
+                b.classList.toggle('is-active', active);
+                b.setAttribute('aria-pressed', active ? 'true' : 'false');
+            });
+        }
+
+        applyView(current);
+
+        buttons.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var view = btn.getAttribute('data-view');
+                applyView(view);
+                try { localStorage.setItem(storageKey, view); } catch (e) { /* ignore */ }
+            });
+        });
+    });
+
+    /* ── Phase 3: card ⋮ action menus ── */
+    var openMenu = null;
+
+    function closeCardMenu(menu) {
+        if (!menu) return;
+        menu.classList.remove('is-open');
+        var t = menu.querySelector('[data-sp-menu-toggle]');
+        if (t) t.setAttribute('aria-expanded', 'false');
+        if (openMenu === menu) openMenu = null;
+    }
+
+    document.querySelectorAll('[data-sp-menu-toggle]').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var menu = btn.closest('.sp-menu');
+            if (!menu) return;
+            if (openMenu && openMenu !== menu) closeCardMenu(openMenu);
+            if (menu.classList.contains('is-open')) {
+                closeCardMenu(menu);
+            } else {
+                menu.classList.add('is-open');
+                btn.setAttribute('aria-expanded', 'true');
+                openMenu = menu;
+            }
+        });
+    });
+
+    document.querySelectorAll('.sp-menu-panel').forEach(function (panel) {
+        panel.addEventListener('click', function () {
+            closeCardMenu(panel.closest('.sp-menu'));
+        });
+    });
+
+    document.addEventListener('click', function () {
+        if (openMenu) closeCardMenu(openMenu);
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && openMenu) closeCardMenu(openMenu);
+    });
+
+    /* ── Phase 3: confirm dialog for destructive forms ── */
+    function openConfirmDialog(message, isDanger) {
+        return new Promise(function (resolve) {
+            var lastFocused = document.activeElement;
+
+            var backdrop = document.createElement('div');
+            backdrop.className = 'sp-confirm-backdrop';
+            backdrop.setAttribute('role', 'dialog');
+            backdrop.setAttribute('aria-modal', 'true');
+            backdrop.setAttribute('aria-label', 'Please confirm');
+
+            var dialog = document.createElement('div');
+            dialog.className = 'sp-confirm';
+
+            var head = document.createElement('div');
+            head.className = 'sp-confirm-head';
+
+            var icon = document.createElement('span');
+            icon.className = 'sp-confirm-icon' + (isDanger ? '' : ' sp-confirm-icon--info');
+            icon.setAttribute('aria-hidden', 'true');
+            var iconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            iconSvg.setAttribute('viewBox', '0 0 24 24');
+            iconSvg.setAttribute('fill', 'none');
+            iconSvg.setAttribute('stroke', 'currentColor');
+            iconSvg.setAttribute('stroke-width', '2');
+            iconSvg.setAttribute('stroke-linecap', 'round');
+            iconSvg.setAttribute('stroke-linejoin', 'round');
+            var path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path1.setAttribute('d', 'M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z');
+            var line1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line1.setAttribute('x1', '12'); line1.setAttribute('y1', '9'); line1.setAttribute('x2', '12'); line1.setAttribute('y2', '13');
+            var line2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line2.setAttribute('x1', '12'); line2.setAttribute('y1', '17'); line2.setAttribute('x2', '12.01'); line2.setAttribute('y2', '17');
+            iconSvg.appendChild(path1); iconSvg.appendChild(line1); iconSvg.appendChild(line2);
+            icon.appendChild(iconSvg);
+
+            var headText = document.createElement('div');
+            var title = document.createElement('div');
+            title.className = 'sp-confirm-title';
+            title.textContent = isDanger ? 'Are you sure?' : 'Please confirm';
+            var text = document.createElement('div');
+            text.className = 'sp-confirm-text';
+            text.textContent = message;
+            headText.appendChild(title);
+            headText.appendChild(text);
+
+            head.appendChild(icon);
+            head.appendChild(headText);
+
+            var actions = document.createElement('div');
+            actions.className = 'sp-confirm-actions';
+
+            var cancelBtn = document.createElement('button');
+            cancelBtn.type = 'button';
+            cancelBtn.className = 'cx-btn cx-btn--outline cx-btn--sm';
+            cancelBtn.textContent = 'Cancel';
+
+            var okBtn = document.createElement('button');
+            okBtn.type = 'button';
+            okBtn.className = 'cx-btn cx-btn--sm ' + (isDanger ? 'cx-btn--danger' : 'cx-btn--primary');
+            okBtn.textContent = isDanger ? 'Yes, proceed' : 'Confirm';
+
+            actions.appendChild(cancelBtn);
+            actions.appendChild(okBtn);
+
+            dialog.appendChild(head);
+            dialog.appendChild(actions);
+            backdrop.appendChild(dialog);
+            document.body.appendChild(backdrop);
+
+            var finished = false;
+            function cleanup() {
+                if (finished) return;
+                finished = true;
+                document.body.classList.remove('sp-no-scroll');
+                backdrop.remove();
+                if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+            }
+            function confirmOk() {
+                cleanup();
+                resolve(true);
+            }
+            function confirmNo() {
+                cleanup();
+                resolve(false);
+            }
+
+            backdrop.addEventListener('click', function (e) {
+                if (e.target === backdrop) confirmNo();
+            });
+            cancelBtn.addEventListener('click', confirmNo);
+            okBtn.addEventListener('click', confirmOk);
+
+            function onKey(e) {
+                if (e.key === 'Escape') {
+                    document.removeEventListener('keydown', onKey);
+                    confirmNo();
+                }
+            }
+            document.addEventListener('keydown', onKey);
+
+            document.body.classList.add('sp-no-scroll');
+            backdrop.classList.add('is-shown');
+            okBtn.focus();
+        });
+    }
+
+    document.addEventListener('submit', function (e) {
+        var form = e.target;
+        if (!(form instanceof HTMLFormElement)) return;
+        if (!form.hasAttribute('data-sp-confirm')) return;
+
+        e.preventDefault();
+        var message = form.getAttribute('data-sp-confirm-message') || 'Are you sure you want to continue?';
+        var isDanger = form.hasAttribute('data-sp-confirm-danger');
+
+        openConfirmDialog(message, isDanger).then(function (ok) {
+            if (ok) {
+                form.removeAttribute('data-sp-confirm');
+                form.submit();
+            }
+        });
+    });
+
 })();

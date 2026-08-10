@@ -1,0 +1,172 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}{{ game.title }} — Game Library — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <div class="cx-breadcrumb" style="margin-bottom:var(--cx-space-2)">
+      <a href="{% url 'staff:staff_dashboard' %}" class="cx-breadcrumb-link">Dashboard</a>
+      <span class="cx-breadcrumb-sep">/</span>
+      <a href="{% url 'staff:staff_game_list' %}" class="cx-breadcrumb-link">Game Library</a>
+      <span class="cx-breadcrumb-sep">/</span>
+      <span class="cx-breadcrumb-current">{{ game.title }}</span>
+    </div>
+    <h1 class="sp-header-title">{{ game.title }}</h1>
+    <p class="sp-header-sub">
+      {% if game.is_active %}<span class="cx-badge cx-badge--success">Active</span>
+      {% else %}<span class="cx-badge cx-badge--neutral">Archived</span>{% endif %}
+      <span class="cx-badge cx-badge--neutral">{{ game.get_category_display }}</span>
+      {% if game.badge_label %}<span class="cx-badge cx-badge--primary">{{ game.badge_label }}</span>{% endif %}
+    </p>
+  </div>
+  <div class="sp-header-actions">
+    {% if game.is_active %}
+    <form method="POST" action="{% url 'staff:staff_game_toggle_active' game.id %}" data-sp-confirm data-sp-confirm-message="Archive “{{ game.title }}”? It will be hidden from the public library.">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <button type="submit" class="cx-btn cx-btn--danger cx-btn--sm">Archive</button>
+    </form>
+    {% else %}
+    <form method="POST" action="{% url 'staff:staff_game_toggle_active' game.id %}" data-sp-confirm data-sp-confirm-message="Restore “{{ game.title }}” to the public library?">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <button type="submit" class="cx-btn cx-btn--success cx-btn--sm">Restore</button>
+    </form>
+    {% endif %}
+    <a href="{% url 'games:game_detail' game.id %}" class="cx-btn cx-btn--outline cx-btn--sm" target="_blank" rel="noopener">View on Site</a>
+    <a href="{% url 'admin:games_game_change' game.id %}" class="cx-btn cx-btn--primary cx-btn--sm" target="_blank" rel="noopener">Edit</a>
+  </div>
+</div>
+
+{% if messages %}
+  <div class="cx-flash-stack">
+    {% for message in messages %}
+      <div class="cx-flash" role="status">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div class="sp-dash-grid">
+  <!-- Cover + facts -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Cover Art</h2></div>
+    <div class="sp-widget-body">
+      <div class="sp-cover sp-cover--poster sp-cover--large">
+        {% if game.image_src %}
+          <img class="sp-cover-img" src="{{ game.image_src }}" alt="{{ game.title }} cover art" loading="lazy">
+        {% else %}
+          <div class="sp-cover-fallback" aria-hidden="true">{{ game.title|slice:":1"|upper }}</div>
+        {% endif %}
+        {% if game.badge_label %}
+          <span class="sp-cover-ribbon">{{ game.badge_label }}</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Details -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Catalog Details</h2></div>
+    <div class="sp-widget-body">
+      <div class="sp-data-list">
+        <div class="sp-data-row">
+          <span class="sp-data-label">Title</span>
+          <span class="sp-data-value">{{ game.title }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Category</span>
+          <span class="sp-data-value">{{ game.get_category_display }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Rating</span>
+          <span class="sp-data-value">{% if game.rating %}<span class="sp-rating"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>{{ game.rating|floatformat:1 }} / 10</span>{% else %}—{% endif %}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Badge</span>
+          <span class="sp-data-value">{{ game.badge_label|default:"—" }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Feature Order</span>
+          <span class="sp-data-value">{{ game.sort_order }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Status</span>
+          <span class="sp-data-value">{% if game.is_active %}Active{% else %}Archived{% endif %}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Added</span>
+          <span class="sp-data-value">{{ game.created_at|date:"d M Y h:i A" }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Last Updated</span>
+          <span class="sp-data-value">{{ game.updated_at|date:"d M Y h:i A" }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tournaments on this title -->
+  <div class="sp-widget">
+    <div class="sp-widget-header">
+      <h2 class="sp-widget-title">Tournaments on this Title</h2>
+      {% if related_tournaments %}<a href="{% url 'staff:staff_tournament_list' %}?q={{ game.title }}" class="cx-btn cx-btn--ghost cx-btn--sm">View all</a>{% endif %}
+    </div>
+    <div class="sp-widget-body">
+      {% if related_tournaments %}
+      <div class="sp-mini-list">
+        {% for t in related_tournaments %}
+        <a href="{% url 'staff:staff_tournament_detail' t.id %}" class="sp-mini-item">
+          <div class="sp-mini-main">
+            <div class="sp-mini-title">{{ t.title }}</div>
+            <div class="sp-mini-sub">{{ t.date|date:"d M Y h:i A" }} · ₹{{ t.prize_pool|floatformat:0 }} · {{ t.registered_slots }}/{{ t.total_slots }} slots</div>
+          </div>
+          <span class="cx-badge
+            {% if t.status == 'registrations_open' %}cx-badge--success
+            {% elif t.status == 'in_progress' %}cx-badge--warning
+            {% elif t.status == 'completed' %}cx-badge--neutral
+            {% elif t.status == 'cancelled' %}cx-badge--danger
+            {% elif t.status == 'full' %}cx-badge--warning
+            {% else %}cx-badge--primary{% endif %}">{{ t.get_status_display }}</span>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="cx-empty" role="status">
+        <div class="cx-empty-title">No tournaments yet</div>
+        <div class="cx-empty-desc">Tournaments are matched by game title.</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Similar titles -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Similar Titles</h2></div>
+    <div class="sp-widget-body">
+      {% if similar_games %}
+      <div class="sp-mini-list">
+        {% for s in similar_games %}
+        <a href="{% url 'staff:staff_game_detail' s.id %}" class="sp-mini-item">
+          <span class="sp-mini-thumb">
+            {% if s.image_src %}<img src="{{ s.image_src }}" alt="{{ s.title }} cover art" loading="lazy">{% else %}<span class="sp-mini-thumb-fallback" aria-hidden="true">{{ s.title|slice:":1"|upper }}</span>{% endif %}
+          </span>
+          <div class="sp-mini-main">
+            <div class="sp-mini-title">{{ s.title }}</div>
+            <div class="sp-mini-sub">{{ s.get_category_display }}{% if s.rating %} · {{ s.rating|floatformat:1 }}/10{% endif %}</div>
+          </div>
+          {% if not s.is_active %}<span class="cx-badge cx-badge--neutral">Archived</span>{% endif %}
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="cx-empty" role="status">
+        <div class="cx-empty-title">No similar titles</div>
+        <div class="cx-empty-desc">Other games in this category will appear here.</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,206 @@
+{% extends "staff/base_staff.html" %}
+{% load static %}
+
+{% block title %}{{ tournament.title }} — Tournament Management — {{ site.brand_name }}{% endblock %}
+
+{% block sp_content %}
+<div class="sp-header">
+  <div>
+    <div class="cx-breadcrumb" style="margin-bottom:var(--cx-space-2)">
+      <a href="{% url 'staff:staff_dashboard' %}" class="cx-breadcrumb-link">Dashboard</a>
+      <span class="cx-breadcrumb-sep">/</span>
+      <a href="{% url 'staff:staff_tournament_list' %}" class="cx-breadcrumb-link">Tournaments</a>
+      <span class="cx-breadcrumb-sep">/</span>
+      <span class="cx-breadcrumb-current">{{ tournament.title }}</span>
+    </div>
+    <h1 class="sp-header-title">{{ tournament.title }}</h1>
+    <p class="sp-header-sub">
+      <span class="cx-badge
+        {% if tournament.status == 'registrations_open' %}cx-badge--success
+        {% elif tournament.status == 'in_progress' %}cx-badge--warning
+        {% elif tournament.status == 'completed' %}cx-badge--neutral
+        {% elif tournament.status == 'cancelled' %}cx-badge--danger
+        {% elif tournament.status == 'full' %}cx-badge--warning
+        {% else %}cx-badge--primary{% endif %}">
+        {% if tournament.status == 'registrations_open' %}<span class="sp-live-dot" aria-hidden="true"></span>{% endif %}{{ tournament.get_status_display }}
+      </span>
+      <span class="cx-badge cx-badge--neutral">{{ tournament.game }}</span>
+    </p>
+  </div>
+  <div class="sp-header-actions">
+    {% if tournament.status == 'registrations_open' %}
+    <form method="POST" action="{% url 'staff:staff_tournament_set_status' tournament.id %}" data-sp-confirm data-sp-confirm-message="Close registration and mark “{{ tournament.title }}” as full?">
+      {% csrf_token %}
+      <input type="hidden" name="status" value="full">
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <button type="submit" class="cx-btn cx-btn--outline cx-btn--sm">Close Registration</button>
+    </form>
+    {% elif tournament.status == 'full' %}
+    <form method="POST" action="{% url 'staff:staff_tournament_set_status' tournament.id %}" data-sp-confirm data-sp-confirm-message="Reopen registration for “{{ tournament.title }}”?">
+      {% csrf_token %}
+      <input type="hidden" name="status" value="registrations_open">
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <button type="submit" class="cx-btn cx-btn--outline cx-btn--sm">Reopen Registration</button>
+    </form>
+    {% elif tournament.status == 'upcoming' %}
+    <form method="POST" action="{% url 'staff:staff_tournament_set_status' tournament.id %}" data-sp-confirm data-sp-confirm-message="Open registration for “{{ tournament.title }}”?">
+      {% csrf_token %}
+      <input type="hidden" name="status" value="registrations_open">
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Open Registration</button>
+    </form>
+    {% elif tournament.status == 'in_progress' %}
+    <form method="POST" action="{% url 'staff:staff_tournament_set_status' tournament.id %}" data-sp-confirm data-sp-confirm-message="Mark “{{ tournament.title }}” as completed?">
+      {% csrf_token %}
+      <input type="hidden" name="status" value="completed">
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <button type="submit" class="cx-btn cx-btn--success cx-btn--sm">Mark Completed</button>
+    </form>
+    {% elif tournament.status == 'completed' or tournament.status == 'cancelled' %}
+    <form method="POST" action="{% url 'staff:staff_tournament_set_status' tournament.id %}" data-sp-confirm data-sp-confirm-message="Move “{{ tournament.title }}” back to upcoming?">
+      {% csrf_token %}
+      <input type="hidden" name="status" value="upcoming">
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <button type="submit" class="cx-btn cx-btn--outline cx-btn--sm">Reopen as Upcoming</button>
+    </form>
+    {% endif %}
+    {% if tournament.status != 'cancelled' %}
+    <form method="POST" action="{% url 'staff:staff_tournament_set_status' tournament.id %}" data-sp-confirm data-sp-confirm-message="Cancel “{{ tournament.title }}”? Players will see it as cancelled." data-sp-confirm-danger>
+      {% csrf_token %}
+      <input type="hidden" name="status" value="cancelled">
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <button type="submit" class="cx-btn cx-btn--danger cx-btn--sm">Cancel</button>
+    </form>
+    {% endif %}
+    <a href="{% url 'tournaments:tournament_detail' tournament.id %}" class="cx-btn cx-btn--outline cx-btn--sm" target="_blank" rel="noopener">View on Site</a>
+    <a href="{% url 'admin:tournaments_tournament_change' tournament.id %}" class="cx-btn cx-btn--primary cx-btn--sm" target="_blank" rel="noopener">Edit</a>
+  </div>
+</div>
+
+{% if messages %}
+  <div class="cx-flash-stack">
+    {% for message in messages %}
+      <div class="cx-flash" role="status">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div class="sp-dash-grid">
+  <!-- Banner -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Banner</h2></div>
+    <div class="sp-widget-body">
+      <div class="sp-cover sp-cover--banner sp-cover--large">
+        {% if tournament.image_src %}
+          <img class="sp-cover-img" src="{{ tournament.image_src }}" alt="{{ tournament.title }} banner" loading="lazy">
+        {% else %}
+          <div class="sp-cover-fallback" aria-hidden="true">{{ tournament.title|slice:":1"|upper }}</div>
+        {% endif %}
+      </div>
+      {% if tournament.description %}
+      <div class="sp-description">{{ tournament.description }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Event details -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Event Details</h2></div>
+    <div class="sp-widget-body">
+      <div class="sp-data-list">
+        <div class="sp-data-row">
+          <span class="sp-data-label">Game</span>
+          <span class="sp-data-value">{{ tournament.game }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Date</span>
+          <span class="sp-data-value">{{ tournament.date|date:"l, d M Y h:i A" }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Prize Pool</span>
+          <span class="sp-data-value">₹{{ tournament.prize_pool|floatformat:2 }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Total Slots</span>
+          <span class="sp-data-value">{{ tournament.total_slots }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Registered</span>
+          <span class="sp-data-value">{{ tournament.registered_slots }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Slots Remaining</span>
+          <span class="sp-data-value">{{ tournament.slots_remaining }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Status</span>
+          <span class="sp-data-value">{{ tournament.get_status_display }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Created</span>
+          <span class="sp-data-value">{{ tournament.created_at|date:"d M Y h:i A" }}</span>
+        </div>
+        <div class="sp-data-row">
+          <span class="sp-data-label">Last Updated</span>
+          <span class="sp-data-value">{{ tournament.updated_at|date:"d M Y h:i A" }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Registration progress -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Registration</h2></div>
+    <div class="sp-widget-body">
+      <div class="sp-slot-progress">
+        <div class="sp-slot-progress-head">
+          <span class="sp-slot-progress-value">{{ tournament.registered_slots }} <small>/ {{ tournament.total_slots }}</small></span>
+          <span class="sp-slot-progress-pct">{{ tournament.slots_filled_percent }}%</span>
+        </div>
+        <div class="sp-slot-track sp-slot-track--lg" role="progressbar" aria-valuenow="{{ tournament.registered_slots }}" aria-valuemin="0" aria-valuemax="{{ tournament.total_slots }}" aria-label="Registration fill">
+          <span class="sp-slot-fill {% if tournament.status == 'full' %}is-full{% elif tournament.status == 'completed' %}is-done{% elif tournament.status == 'cancelled' %}is-off{% endif %}" style="width: {{ tournament.slots_filled_percent }}%"></span>
+        </div>
+        <div class="sp-slot-progress-foot">
+          <span>{{ tournament.slots_remaining }} slot{{ tournament.slots_remaining|pluralize }} remaining</span>
+          <span class="sp-activity-time">{{ tournament.slots_filled_percent }}% full</span>
+        </div>
+      </div>
+      <div class="sp-legend" aria-label="Legend">
+        <span class="sp-legend-item"><span class="sp-legend-dot is-blue" aria-hidden="true"></span>Available</span>
+        <span class="sp-legend-item"><span class="sp-legend-dot is-full" aria-hidden="true"></span>Full</span>
+        <span class="sp-legend-item"><span class="sp-legend-dot is-off" aria-hidden="true"></span>Closed / Cancelled</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Similar events -->
+  <div class="sp-widget">
+    <div class="sp-widget-header"><h2 class="sp-widget-title">Similar Events</h2></div>
+    <div class="sp-widget-body">
+      {% if similar_tournaments %}
+      <div class="sp-mini-list">
+        {% for s in similar_tournaments %}
+        <a href="{% url 'staff:staff_tournament_detail' s.id %}" class="sp-mini-item">
+          <div class="sp-mini-main">
+            <div class="sp-mini-title">{{ s.title }}</div>
+            <div class="sp-mini-sub">{{ s.date|date:"d M Y h:i A" }} · ₹{{ s.prize_pool|floatformat:0 }} · {{ s.registered_slots }}/{{ s.total_slots }} slots</div>
+          </div>
+          <span class="cx-badge
+            {% if s.status == 'registrations_open' %}cx-badge--success
+            {% elif s.status == 'in_progress' %}cx-badge--warning
+            {% elif s.status == 'completed' %}cx-badge--neutral
+            {% elif s.status == 'cancelled' %}cx-badge--danger
+            {% else %}cx-badge--primary{% endif %}">{{ s.get_status_display }}</span>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="cx-empty" role="status">
+        <div class="cx-empty-title">No similar events</div>
+        <div class="cx-empty-desc">Other tournaments for {{ tournament.game }} will appear here.</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

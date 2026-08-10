@@ -5,7 +5,8 @@ from urllib.parse import urlencode
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.contrib import messages
-from django.db.models import Count, Q, Sum
+from django.db.models import Avg, Count, F, Q, Sum
+from django.db.models import ExpressionWrapper, FloatField
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
@@ -281,36 +282,114 @@ def customer_detail(request, user_id):
     })
 
 
-def game_list(request):
+def filter_games(request):
+    """Shared queryset builder for the game library page."""
     q = request.GET.get("q", "")
-    platform = request.GET.get("platform", "")
+    category = request.GET.get("category", "")
+    badge = request.GET.get("badge", "")
     active_filter = request.GET.get("active", "")
+    sort = request.GET.get("sort", "popular")
 
     games = Game.objects.all()
+
     if q:
         games = games.filter(
             Q(title__icontains=q)
             | Q(category__icontains=q)
+            | Q(badge__icontains=q)
         )
-    if platform:
-        games = games.filter(category=platform.lower())
+    if category:
+        games = games.filter(category=category)
+    if badge:
+        games = games.filter(badge=badge)
     if active_filter == "active":
         games = games.filter(is_active=True)
     elif active_filter == "archived":
         games = games.filter(is_active=False)
 
-    paginator = Paginator(games, 20)
+    valid_sorts = {
+        "title": ["title", "sort_order"],
+        "-title": ["-title", "sort_order"],
+        "rating": ["-rating", "sort_order", "title"],
+        "-rating": ["rating", "sort_order", "title"],
+        "newest": ["-created_at", "sort_order"],
+        "popular": ["sort_order", "title"],
+    }
+    games = games.order_by(*valid_sorts.get(sort, valid_sorts["popular"]))
+
+    return games, {
+        "q": q,
+        "category": category,
+        "badge": badge,
+        "active_filter": active_filter,
+        "sort": sort,
+    }
+
+
+def game_list(request):
+    games, filters = filter_games(request)
+
+    paginator = Paginator(games, 24)
     page = paginator.get_page(request.GET.get("page"))
 
-    consoles = GameConsole.objects.active()
+    params = {}
+    for key in ("q", "category", "badge", "active_filter"):
+        if filters[key]:
+            params[key if key != "active_filter" else "active"] = filters[key]
+    if filters["sort"] != "popular":
+        params["sort"] = filters["sort"]
+
+    avg_rating = Game.objects.filter(rating__gt=0).aggregate(avg=Avg("rating"))["avg"]
+    consoles = GameConsole.objects.annotate(
+        booking_count=Count("bookings")
+    ).order_by("name")
 
     return render(request, "staff/games/list.html", {
         "page_obj": page,
+        "qs": urlencode(params),
         "consoles": consoles,
-        "q": q,
-        "platform": platform,
-        "active_filter": active_filter,
+        "categories": Game.CATEGORIES,
+        "badge_choices": [c for c in Game.BADGE_CHOICES if c[0]],
+        "game_stats": {
+            "total": Game.objects.count(),
+            "active": Game.objects.filter(is_active=True).count(),
+            "archived": Game.objects.filter(is_active=False).count(),
+            "avg_rating": round(avg_rating, 1) if avg_rating is not None else 0,
+        },
+        "consoles_active": GameConsole.objects.active().count(),
+        **filters,
     })
+
+
+def game_detail(request, game_id):
+    game = get_object_or_404(Game, id=game_id)
+
+    related_tournaments = Tournament.objects.filter(
+        game__iexact=game.title, is_active=True
+    ).order_by("date")[:6]
+    similar_games = Game.objects.filter(
+        category=game.category
+    ).exclude(pk=game.pk).order_by("sort_order", "title")[:4]
+
+    return render(request, "staff/games/detail.html", {
+        "game": game,
+        "related_tournaments": related_tournaments,
+        "similar_games": similar_games,
+    })
+
+
+@require_POST
+def game_toggle_active(request, game_id):
+    game = get_object_or_404(Game, id=game_id)
+    game.is_active = not game.is_active
+    game.save(update_fields=["is_active", "updated_at"])
+    action = "restored to the library" if game.is_active else "archived"
+    messages.success(request, f"“{game.title}” {action}.")
+
+    next_url = request.POST.get("next", "")
+    if next_url.startswith("/staff/games"):
+        return redirect(next_url)
+    return redirect("staff:staff_game_list")
 
 
 def tournament_list(request):
@@ -327,22 +406,97 @@ def tournament_list(request):
     if status_filter:
         tournaments = tournaments.filter(status=status_filter)
 
-    valid_sorts = ["date", "-date", "title", "-title", "prize_pool", "-prize_pool"]
+    valid_sorts = ["date", "-date", "title", "-title",
+                   "prize_pool", "-prize_pool", "fill", "-fill"]
     if sort in valid_sorts:
-        tournaments = tournaments.order_by(sort)
+        if sort in ("fill", "-fill"):
+            tournaments = tournaments.annotate(
+                fill_ratio=ExpressionWrapper(
+                    F("registered_slots") * 1.0 / F("total_slots"),
+                    output_field=FloatField(),
+                )
+            ).order_by("-fill_ratio" if sort == "fill" else "fill_ratio")
+        else:
+            tournaments = tournaments.order_by(sort)
     else:
         tournaments = tournaments.order_by("-date")
 
-    paginator = Paginator(tournaments, 20)
+    paginator = Paginator(tournaments, 18)
     page = paginator.get_page(request.GET.get("page"))
+
+    params = {}
+    if q:
+        params["q"] = q
+    if status_filter:
+        params["status"] = status_filter
+    if sort != "-date":
+        params["sort"] = sort
+
+    totals = Tournament.objects.aggregate(
+        prize_total=Sum("prize_pool"),
+        slots_total=Sum("total_slots"),
+        registered_total=Sum("registered_slots"),
+    )
+    registered = totals["registered_total"] or 0
+    slots = totals["slots_total"] or 0
+    filled = int((registered / slots) * 100) if slots else 0
 
     return render(request, "staff/tournaments/list.html", {
         "page_obj": page,
+        "qs": urlencode(params),
         "q": q,
         "status_filter": status_filter,
         "sort": sort,
         "status_choices": Tournament.Status.choices,
+        "tournament_stats": {
+            "total": Tournament.objects.count(),
+            "open": Tournament.objects.filter(status="registrations_open").count(),
+            "upcoming": Tournament.objects.filter(status="upcoming").count(),
+            "live": Tournament.objects.filter(status="in_progress").count(),
+            "completed": Tournament.objects.filter(status="completed").count(),
+            "cancelled": Tournament.objects.filter(status="cancelled").count(),
+            "full": Tournament.objects.filter(status="full").count(),
+            "prize_total": totals["prize_total"] or 0,
+            "filled": filled,
+            "registered": registered,
+            "slots": slots,
+        },
     })
+
+
+def tournament_detail(request, tournament_id):
+    tournament = get_object_or_404(Tournament, id=tournament_id)
+
+    similar_tournaments = Tournament.objects.filter(
+        game=tournament.game
+    ).exclude(pk=tournament.pk).order_by("date")[:3]
+
+    return render(request, "staff/tournaments/detail.html", {
+        "tournament": tournament,
+        "similar_tournaments": similar_tournaments,
+    })
+
+
+@require_POST
+def tournament_set_status(request, tournament_id):
+    tournament = get_object_or_404(Tournament, id=tournament_id)
+    status = request.POST.get("status", "")
+    allowed = {c[0] for c in Tournament.Status.choices}
+
+    if status in allowed:
+        tournament.status = status
+        tournament.save(update_fields=["status", "updated_at"])
+        messages.success(
+            request,
+            f"“{tournament.title}” is now {tournament.get_status_display().lower()}.",
+        )
+    else:
+        messages.error(request, "That status is not valid.")
+
+    next_url = request.POST.get("next", "")
+    if next_url.startswith("/staff/tournaments"):
+        return redirect(next_url)
+    return redirect("staff:staff_tournament_list")
 
 
 def membership_list(request):

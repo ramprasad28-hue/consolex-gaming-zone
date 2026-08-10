@@ -2,40 +2,102 @@
 {% load static %}
 
 {% block title %}Tournament Management — {{ site.brand_name }}{% endblock %}
+{% block sp_breadcrumb %}Tournaments{% endblock %}
 
 {% block sp_content %}
 <div class="sp-header">
   <div>
     <h1 class="sp-header-title">Tournament Management</h1>
-    <p class="sp-header-sub">Create, publish and manage tournaments</p>
+    <p class="sp-header-sub">Schedule competitions, track registrations and run the event lifecycle.</p>
   </div>
   <div class="sp-header-actions">
-    <a href="{% url 'admin:tournaments_tournament_add' %}" class="cx-btn cx-btn--primary cx-btn--sm" target="_blank">+ Create Tournament</a>
+    <a href="{% url 'admin:tournaments_tournament_add' %}" class="cx-btn cx-btn--primary cx-btn--sm" target="_blank" rel="noopener">+ Create Tournament</a>
   </div>
 </div>
 
+{% if messages %}
+  <div class="cx-flash-stack">
+    {% for message in messages %}
+      <div class="cx-flash" role="status">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<!-- Stats -->
+<div class="sp-stats-grid" role="list" aria-label="Tournament statistics">
+  <div class="sp-stat-card sp-stat-card--blue" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Total Tournaments</span>
+      <span class="sp-stat-icon sp-stat-icon--blue" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v6a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a3 3 0 0 0 3 6"/><path d="M17 6h3a3 3 0 0 1-3 6"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ tournament_stats.total }}">{{ tournament_stats.total }}</div>
+    <div class="sp-stat-trend">all-time events</div>
+  </div>
+
+  <div class="sp-stat-card sp-stat-card--green" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Registrations Open</span>
+      <span class="sp-stat-icon sp-stat-icon--green" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ tournament_stats.open }}">{{ tournament_stats.open }}</div>
+    <div class="sp-stat-trend">{{ tournament_stats.filled }}% seats filled</div>
+  </div>
+
+  <div class="sp-stat-card sp-stat-card--purple" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Upcoming</span>
+      <span class="sp-stat-icon sp-stat-icon--purple" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value" data-count="{{ tournament_stats.upcoming }}">{{ tournament_stats.upcoming }}</div>
+    <div class="sp-stat-trend">announced but not open</div>
+  </div>
+
+  <div class="sp-stat-card sp-stat-card--orange" role="listitem">
+    <div class="sp-stat-top">
+      <span class="sp-stat-label">Prize Pool</span>
+      <span class="sp-stat-icon sp-stat-icon--orange" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </span>
+    </div>
+    <div class="sp-stat-value">₹{{ tournament_stats.prize_total|floatformat:0 }}</div>
+    <div class="sp-stat-trend">across {{ tournament_stats.total }} event{{ tournament_stats.total|pluralize }}</div>
+  </div>
+</div>
+
+<!-- Filters -->
 <form method="GET" action="">
 <div class="sp-toolbar" role="search" aria-label="Filter tournaments">
   <div class="sp-search-wrap">
     <svg class="sp-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="search" name="q" class="cx-input" placeholder="Search tournaments…" value="{{ q }}" aria-label="Search tournaments">
+    <input type="search" name="q" class="cx-input" placeholder="Search title or game…" value="{{ q }}" aria-label="Search tournaments">
   </div>
+
   <div class="cx-field">
     <select name="status" class="cx-select" data-auto-submit aria-label="Filter by status">
-      <option value="">All Status</option>
+      <option value="">All Statuses</option>
       {% for val, label in status_choices %}
       <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ label }}</option>
       {% endfor %}
     </select>
   </div>
+
   <div class="cx-field">
-    <select name="sort" class="cx-select" data-auto-submit aria-label="Sort by">
+    <select name="sort" class="cx-select" data-auto-submit aria-label="Sort tournaments">
       <option value="-date" {% if sort == '-date' %}selected{% endif %}>Newest</option>
       <option value="date" {% if sort == 'date' %}selected{% endif %}>Oldest</option>
       <option value="-prize_pool" {% if sort == '-prize_pool' %}selected{% endif %}>Highest Prize</option>
       <option value="prize_pool" {% if sort == 'prize_pool' %}selected{% endif %}>Lowest Prize</option>
+      <option value="fill" {% if sort == 'fill' %}selected{% endif %}>Most Filled</option>
+      <option value="title" {% if sort == 'title' %}selected{% endif %}>Title A–Z</option>
     </select>
   </div>
+
   <button type="submit" class="cx-btn cx-btn--primary cx-btn--sm">Filter</button>
   {% if q or status_filter %}
   <a href="{% url 'staff:staff_tournament_list' %}" class="cx-btn cx-btn--ghost cx-btn--sm">Clear</a>
@@ -43,55 +105,171 @@
 </div>
 </form>
 
+{% if q or status_filter %}
+<div class="sp-active-filters" aria-label="Active filters">
+  <span class="sp-filter-chip">Filtered <b>{{ page_obj.paginator.count }}</b> of {{ tournament_stats.total }} tournaments</span>
+  <a class="sp-filter-chip" href="{% url 'staff:staff_tournament_list' %}">Clear all <span aria-hidden="true">×</span></a>
+</div>
+{% endif %}
+
+<!-- Tournament catalog -->
 <div class="sp-widget">
-  <div class="sp-widget-header"><h2 class="sp-widget-title">{{ page_obj.paginator.count }} Tournament{{ page_obj.paginator.count|pluralize }}</h2></div>
+  <div class="sp-widget-header">
+    <h2 class="sp-widget-title">{{ page_obj.paginator.count }} Tournament{{ page_obj.paginator.count|pluralize }}</h2>
+    <div class="sp-widget-tools">
+      {% if page_obj %}<span class="sp-activity-time">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>{% endif %}
+      <div class="sp-view-switch" role="group" aria-label="Switch layout">
+        <button type="button" class="sp-view-btn" data-sp-view-switch="tournaments" data-view="grid" aria-label="Grid view" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </button>
+        <button type="button" class="sp-view-btn" data-sp-view-switch="tournaments" data-view="list" aria-label="List view" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
   <div class="sp-widget-body">
     {% if page_obj %}
-    <div class="sp-table-wrap">
-      <table class="sp-table" aria-label="Tournaments">
-        <thead>
-          <tr><th scope="col">Title</th><th scope="col">Game</th><th scope="col">Date</th><th scope="col">Prize Pool</th><th scope="col">Slots</th><th scope="col">Registered</th><th scope="col">Status</th><th scope="col">Actions</th></tr>
-        </thead>
-        <tbody>
-          {% for t in page_obj %}
-          <tr>
-            <td><strong>{{ t.title }}</strong></td>
-            <td>{{ t.game }}</td>
-            <td>{{ t.date|date:"d M Y h:i A" }}</td>
-            <td><strong>₹{{ t.prize_pool|floatformat:0 }}</strong></td>
-            <td>{{ t.total_slots }}</td>
-            <td>{{ t.registered_slots }}</td>
-            <td>
-              {% if t.status == 'registrations_open' %}<span class="cx-badge cx-badge--success">Open</span>
-              {% elif t.status == 'upcoming' %}<span class="cx-badge cx-badge--primary">Upcoming</span>
-              {% elif t.status == 'in_progress' %}<span class="cx-badge cx-badge--warning">Live</span>
-              {% elif t.status == 'completed' %}<span class="cx-badge cx-badge--neutral">Done</span>
-              {% elif t.status == 'full' %}<span class="cx-badge cx-badge--warning">Full</span>
-              {% elif t.status == 'cancelled' %}<span class="cx-badge cx-badge--danger">Cancelled</span>{% endif %}
-            </td>
-            <td class="sp-cell-actions">
-              <a href="{% url 'admin:tournaments_tournament_change' t.id %}" class="cx-btn cx-btn--ghost cx-btn--sm" target="_blank">Edit</a>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+    <div class="sp-catalog-grid" data-sp-view="tournaments" data-sp-view-default="grid">
+      {% for t in page_obj %}
+      <article class="sp-cat-card sp-cat-card--tourney {% if t.status == 'cancelled' %}sp-cat-card--muted{% endif %}">
+        <div class="sp-cover sp-cover--banner">
+          {% if t.image_src %}
+            <img class="sp-cover-img" src="{{ t.image_src }}" alt="{{ t.title }} banner" loading="lazy">
+          {% else %}
+            <div class="sp-cover-fallback" aria-hidden="true">{{ t.title|slice:":1"|upper }}</div>
+          {% endif %}
+          <span class="sp-cover-status {% if t.status == 'cancelled' %}is-danger{% elif t.status == 'completed' %}is-muted{% elif t.status == 'in_progress' %}is-live{% endif %}">
+            {% if t.status == 'registrations_open' %}<span class="sp-live-dot" aria-hidden="true"></span>{% endif %}{{ t.get_status_display }}
+          </span>
+          <span class="sp-cover-prize">
+            <span class="sp-cover-prize-label">Prize</span>
+            <span class="sp-cover-prize-value">₹{{ t.prize_pool|floatformat:0 }}</span>
+          </span>
+        </div>
+        <div class="sp-cat-card-body">
+          <h3 class="sp-cat-card-title">{{ t.title }}</h3>
+          <div class="sp-cat-card-meta">
+            <span class="cx-badge cx-badge--neutral">{{ t.game }}</span>
+            <span class="sp-meta-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              {{ t.date|date:"d M Y · h:i A" }}
+            </span>
+          </div>
+          <div class="sp-slot">
+            <div class="sp-slot-head">
+              <span>Registration</span>
+              <span><b>{{ t.registered_slots }}</b>/{{ t.total_slots }} slots</span>
+            </div>
+            <div class="sp-slot-track" role="progressbar" aria-valuenow="{{ t.registered_slots }}" aria-valuemin="0" aria-valuemax="{{ t.total_slots }}" aria-label="Registration fill">
+              <span class="sp-slot-fill {% if t.status == 'full' %}is-full{% elif t.status == 'completed' %}is-done{% elif t.status == 'cancelled' %}is-off{% endif %}" style="width: {{ t.slots_filled_percent }}%"></span>
+            </div>
+          </div>
+        </div>
+        <div class="sp-cat-card-actions">
+          <a href="{% url 'staff:staff_tournament_detail' t.id %}" class="cx-btn cx-btn--outline cx-btn--sm">View</a>
+          <a href="{% url 'admin:tournaments_tournament_change' t.id %}" class="cx-btn cx-btn--ghost cx-btn--sm" target="_blank" rel="noopener">Edit</a>
+          <div class="sp-menu" data-sp-menu>
+            <button type="button" class="sp-menu-toggle" data-sp-menu-toggle aria-label="More actions for {{ t.title }}" aria-haspopup="menu" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>
+            </button>
+            <div class="sp-menu-panel" role="menu" aria-label="Tournament actions">
+              <a href="{% url 'tournaments:tournament_detail' t.id %}" class="sp-menu-item" role="menuitem" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                View on site
+              </a>
+              {% if t.status == 'registrations_open' %}
+              <form method="POST" action="{% url 'staff:staff_tournament_set_status' t.id %}" data-sp-confirm data-sp-confirm-message="Close registration for “{{ t.title }}” and mark it as full?">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="full">
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="sp-menu-item" role="menuitem">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Close registration
+                </button>
+              </form>
+              <form method="POST" action="{% url 'staff:staff_tournament_set_status' t.id %}" data-sp-confirm data-sp-confirm-message="Move “{{ t.title }}” to in progress?">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="in_progress">
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="sp-menu-item" role="menuitem">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  Start now
+                </button>
+              </form>
+              {% elif t.status == 'in_progress' %}
+              <form method="POST" action="{% url 'staff:staff_tournament_set_status' t.id %}" data-sp-confirm data-sp-confirm-message="Mark “{{ t.title }}” as completed?">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="completed">
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="sp-menu-item" role="menuitem">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  Mark completed
+                </button>
+              </form>
+              {% elif t.status == 'full' %}
+              <form method="POST" action="{% url 'staff:staff_tournament_set_status' t.id %}" data-sp-confirm data-sp-confirm-message="Reopen registration for “{{ t.title }}”?">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="registrations_open">
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="sp-menu-item" role="menuitem">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                  Reopen registration
+                </button>
+              </form>
+              {% elif t.status == 'completed' or t.status == 'cancelled' %}
+              <form method="POST" action="{% url 'staff:staff_tournament_set_status' t.id %}" data-sp-confirm data-sp-confirm-message="Move “{{ t.title }}” back to upcoming?">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="upcoming">
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="sp-menu-item" role="menuitem">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg>
+                  Reopen as upcoming
+                </button>
+              </form>
+              {% else %}
+              <form method="POST" action="{% url 'staff:staff_tournament_set_status' t.id %}" data-sp-confirm data-sp-confirm-message="Open registration for “{{ t.title }}”?">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="registrations_open">
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="sp-menu-item" role="menuitem">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                  Open registration
+                </button>
+              </form>
+              {% endif %}
+              {% if t.status != 'cancelled' %}
+              <form method="POST" action="{% url 'staff:staff_tournament_set_status' t.id %}" data-sp-confirm data-sp-confirm-message="Cancel “{{ t.title }}”? Players will see it as cancelled." data-sp-confirm-danger>
+                {% csrf_token %}
+                <input type="hidden" name="status" value="cancelled">
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="sp-menu-item is-danger" role="menuitem">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                  Cancel tournament
+                </button>
+              </form>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
     </div>
 
     {% if page_obj.paginator.num_pages > 1 %}
-    <nav class="cx-pagination" style="margin-top:var(--cx-space-4)" aria-label="Tournament pages">
+    <nav class="cx-pagination" aria-label="Tournament pages" style="margin-top:var(--cx-space-4)">
       {% if page_obj.has_previous %}
-        <a href="?page=1{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="cx-page-btn">&laquo;</a>
-        <a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="cx-page-btn">&lsaquo;</a>
+        <a href="?page=1{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn" aria-label="First">&laquo;</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn" aria-label="Previous">&lsaquo;</a>
       {% endif %}
       {% for n in page_obj.paginator.page_range %}
         {% if n >= page_obj.number|add:"-2" and n <= page_obj.number|add:"2" %}
-          <a href="?page={{ n }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="cx-page-btn {% if n == page_obj.number %}cx-page-btn--active{% endif %}">{{ n }}</a>
+          <a href="?page={{ n }}{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn {% if n == page_obj.number %}cx-page-btn--active{% endif %}">{{ n }}</a>
         {% endif %}
       {% endfor %}
       {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="cx-page-btn">&rsaquo;</a>
-        <a href="?page={{ page_obj.paginator.num_pages }}{% if q %}&q={{ q }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="cx-page-btn">&raquo;</a>
+        <a href="?page={{ page_obj.next_page_number }}{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn" aria-label="Next">&rsaquo;</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if qs %}&{{ qs }}{% endif %}" class="cx-page-btn" aria-label="Last">&raquo;</a>
       {% endif %}
     </nav>
     {% endif %}
@@ -99,7 +277,17 @@
     {% else %}
     <div class="cx-empty" role="status">
       <div class="cx-empty-title">No tournaments found</div>
-      <div class="cx-empty-desc">Create your first tournament.</div>
+      <div class="cx-empty-desc">
+        {% if q or status_filter %}
+        Nothing matches your search or filters. Try clearing them.
+        {% else %}
+        No tournaments yet. Create the first one to open registrations.
+        {% endif %}
+      </div>
+      {% if q or status_filter %}
+      <a href="{% url 'staff:staff_tournament_list' %}" class="cx-btn cx-btn--outline cx-btn--md">Clear Filters</a>
+      {% endif %}
+      <a href="{% url 'admin:tournaments_tournament_add' %}" class="cx-btn cx-btn--primary cx-btn--md" target="_blank" rel="noopener">Create Tournament</a>
     </div>
     {% endif %}
   </div>

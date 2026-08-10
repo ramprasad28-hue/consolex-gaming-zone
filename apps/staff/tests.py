@@ -6,9 +6,10 @@ from django.urls import reverse
 from django.utils import timezone
 
 from apps.users.models import User
-from apps.games.models import GameConsole
+from apps.games.models import GameConsole, Game
 from apps.bookings.models import Booking
 from apps.payments.models import Payment
+from apps.tournaments.models import Tournament
 
 
 def make_staff(email="staff@test.com", superuser=False):
@@ -282,3 +283,172 @@ class BookingListFilterTests(TestCase):
         )
         self.assertEqual(resp.status_code, 200)
         self.assertNotContains(resp, "payer@test.com")
+
+
+def make_game(title="God of War", category="action", is_active=True, rating=Decimal("9.0")):
+    return Game.objects.create(
+        title=title, category=category, is_active=is_active,
+        rating=rating, badge="", sort_order=0,
+    )
+
+
+def make_tournament(
+    title="Warzone Weekend",
+    game="Call of Duty",
+    status="registrations_open",
+    prize_pool=Decimal("5000.00"),
+    total_slots=16,
+    registered_slots=4,
+):
+    return Tournament.objects.create(
+        title=title, game=game,
+        date=timezone.now() + timezone.timedelta(days=5),
+        status=status, prize_pool=prize_pool,
+        total_slots=total_slots, registered_slots=registered_slots,
+    )
+
+
+class GameLibraryTests(TestCase):
+    """Phase 3 — game library filters, stats and archive toggle."""
+
+    def setUp(self):
+        make_staff()
+        self.client.force_login(User.objects.get(email="staff@test.com"))
+        self.game = make_game()
+        make_game("Gran Turismo", category="racing", is_active=False, rating=Decimal("0"))
+
+    def test_list_renders_with_stats(self):
+        resp = self.client.get(reverse("staff:staff_game_list"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("game_stats", resp.context)
+        self.assertEqual(resp.context["game_stats"]["total"], 2)
+        self.assertEqual(resp.context["game_stats"]["active"], 1)
+        self.assertEqual(resp.context["game_stats"]["archived"], 1)
+        self.assertIn("consoles", resp.context)
+
+    def test_filter_by_category(self):
+        resp = self.client.get(
+            reverse("staff:staff_game_list"), {"category": "racing"}
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.context["page_obj"].object_list), 1)
+        self.assertEqual(resp.context["page_obj"].object_list[0].title, "Gran Turismo")
+
+    def test_filter_by_active(self):
+        resp = self.client.get(
+            reverse("staff:staff_game_list"), {"active": "archived"}
+        )
+        self.assertEqual(len(resp.context["page_obj"].object_list), 1)
+        self.assertEqual(resp.context["page_obj"].object_list[0].title, "Gran Turismo")
+
+    def test_search_by_title(self):
+        resp = self.client.get(
+            reverse("staff:staff_game_list"), {"q": "gran"}
+        )
+        self.assertEqual(len(resp.context["page_obj"].object_list), 1)
+
+    def test_detail_renders(self):
+        resp = self.client.get(
+            reverse("staff:staff_game_detail", args=[self.game.id])
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.context["game"].title, "God of War")
+
+    def test_anonymous_cannot_access_detail(self):
+        self.client.logout()
+        resp = self.client.get(
+            reverse("staff:staff_game_detail", args=[self.game.id])
+        )
+        self.assertNotEqual(resp.status_code, 200)
+
+    def test_toggle_active_archives(self):
+        resp = self.client.post(
+            reverse("staff:staff_game_toggle_active", args=[self.game.id])
+        )
+        self.assertEqual(resp.status_code, 302)
+        self.game.refresh_from_db()
+        self.assertFalse(self.game.is_active)
+
+    def test_toggle_active_restores(self):
+        archived = Game.objects.get(title="Gran Turismo")
+        self.client.post(
+            reverse("staff:staff_game_toggle_active", args=[archived.id])
+        )
+        archived.refresh_from_db()
+        self.assertTrue(archived.is_active)
+
+    def test_toggle_active_requires_post(self):
+        resp = self.client.get(
+            reverse("staff:staff_game_toggle_active", args=[self.game.id])
+        )
+        self.assertEqual(resp.status_code, 405)
+
+
+class TournamentManagementTests(TestCase):
+    """Phase 3 — tournament filters, stats and status updates."""
+
+    def setUp(self):
+        make_staff()
+        self.client.force_login(User.objects.get(email="staff@test.com"))
+        self.tournament = make_tournament()
+        make_tournament(title="Old Final", game="FIFA 24", status="completed", prize_pool=Decimal("1000.00"))
+
+    def test_list_renders_with_stats(self):
+        resp = self.client.get(reverse("staff:staff_tournament_list"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("tournament_stats", resp.context)
+        self.assertEqual(resp.context["tournament_stats"]["total"], 2)
+        self.assertEqual(resp.context["tournament_stats"]["open"], 1)
+        self.assertEqual(resp.context["tournament_stats"]["completed"], 1)
+        self.assertEqual(resp.context["tournament_stats"]["filled"], 25)
+
+    def test_filter_by_status(self):
+        resp = self.client.get(
+            reverse("staff:staff_tournament_list"), {"status": "completed"}
+        )
+        self.assertEqual(len(resp.context["page_obj"].object_list), 1)
+        self.assertEqual(resp.context["page_obj"].object_list[0].title, "Old Final")
+
+    def test_search_by_game(self):
+        resp = self.client.get(
+            reverse("staff:staff_tournament_list"), {"q": "Call of Duty"}
+        )
+        self.assertEqual(len(resp.context["page_obj"].object_list), 1)
+
+    def test_detail_renders_with_slots(self):
+        resp = self.client.get(
+            reverse("staff:staff_tournament_detail", args=[self.tournament.id])
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.context["tournament"].slots_filled_percent, 25)
+
+    def test_anonymous_cannot_access_detail(self):
+        self.client.logout()
+        resp = self.client.get(
+            reverse("staff:staff_tournament_detail", args=[self.tournament.id])
+        )
+        self.assertNotEqual(resp.status_code, 200)
+
+    def test_set_status_marks_full(self):
+        resp = self.client.post(
+            reverse("staff:staff_tournament_set_status", args=[self.tournament.id]),
+            {"status": "full"},
+        )
+        self.assertEqual(resp.status_code, 302)
+        self.tournament.refresh_from_db()
+        self.assertEqual(self.tournament.status, "full")
+
+    def test_set_status_rejects_invalid(self):
+        resp = self.client.post(
+            reverse("staff:staff_tournament_set_status", args=[self.tournament.id]),
+            {"status": "bogus"},
+        )
+        self.assertEqual(resp.status_code, 302)
+        self.tournament.refresh_from_db()
+        self.assertEqual(self.tournament.status, "registrations_open")
+
+    def test_set_status_requires_post(self):
+        resp = self.client.get(
+            reverse("staff:staff_tournament_set_status", args=[self.tournament.id])
+        )
+        self.assertEqual(resp.status_code, 405)
