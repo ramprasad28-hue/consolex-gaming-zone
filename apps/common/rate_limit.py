@@ -14,6 +14,11 @@ def rate_limit(key_prefix, max_requests=10, window=60):
     Decorator that limits a view to `max_requests` per `window` seconds
     per unique client (identified by IP + session key).
 
+    Only state-changing POST requests are counted. Limiting GET page loads
+    caused a self-redirect loop (a limited request redirects to the same
+    path, re-triggering the limiter forever) and offers no brute-force
+    protection, so GETs pass through.
+
     Usage:
         @rate_limit("login", max_requests=5, window=60)
         def my_view(request): ...
@@ -21,6 +26,9 @@ def rate_limit(key_prefix, max_requests=10, window=60):
     def decorator(view_func):
         @wraps(view_func)
         def _wrapped(request, *args, **kwargs):
+            if request.method != "POST":
+                return view_func(request, *args, **kwargs)
+
             ident = request.META.get("REMOTE_ADDR", "unknown")
             session_key = request.session.session_key or ""
             cache_key = f"rl:{key_prefix}:{ident}:{session_key}"

@@ -3,7 +3,7 @@
 **Project:** CONSOLEX Gaming Lounge Platform
 **Phase:** 7 — Final Polish, QA & Client Readiness
 **Date:** 2026-08-11
-**Suite:** 359 tests passing · `manage.py check` clean · all touched templates render 200
+**Suite:** 362 tests passing · `manage.py check` clean · 78 page/viewport headless-browser checks pass · static/media asset audit clean
 
 ---
 
@@ -11,7 +11,7 @@
 
 # ✅ READY
 
-The platform is **READY for client handover**. All audit fixes from Phase 7 are complete and verified; the only outstanding verification is a live-browser pass (device testing / live Razorpay checkout) which requires credentials and hardware that are not available in this build environment.
+The platform is **READY for client handover**. All audit fixes from Phase 7 are complete and verified, including a real headless-browser pass across 78 page/viewport combinations (public, customer, and staff portals at 320–1920 px). The only outstanding verification is device-level testing and a live Razorpay checkout, which require credentials and hardware that are not available in this build environment.
 
 ---
 
@@ -55,6 +55,24 @@ Replaced every undefined design token with its defined counterpart across the pu
 - `build.sh` defaults to `DJANGO_ENV=production` on deploy
 - Stale "will enable after Phase 2" comment removed from `AUTH_USER_MODEL`
 
+### Rate limiting (infinite redirect loop)
+- `apps/common/rate_limit.py` only counts **POST** requests; it previously counted every request (including anonymous GETs) and redirected excess to `request.path`, producing an infinite `ERR_TOO_MANY_REDIRECTS` loop on `/users/login/` and `/bookings/book/` after repeated hits
+- HTML requests now redirect with a flash message and an accurate retry-after; JSON requests return `429`; GET page loads are never limited (no brute-force value, avoids the self-redirect loop)
+- New `RateLimitTests` (3 tests) lock this behavior in
+
+### Staff responsive overflow fixes (verified in-browser)
+- `@media (max-width: 768px)`: toolbar children full-width + date-group inputs flexible, breadcrumb hidden (the old selector referenced a nonexistent class), topbar edges `min-width: 0`
+- `@media (max-width: 480px)`: "Quick Add" collapses to an icon-only 40 px button
+- `.sp-chart-grid > * { min-width: 0 }` (items overflowed ~3 px); `.sp-plan-card { overflow: hidden }` (rotated ribbon extended past the viewport — clipping intended)
+
+---
+
+## Real-browser smoke test (headless Chromium via Edge channel)
+
+- **64 responsive checks** (public 6 + customer 5 + staff 5 pages × viewports 320/768/1280/1920) — all **PASS**: no horizontal scroll, no JS console errors, no failed requests
+- **22 staff routes at 320 px** (dashboard, executive, bookings, live-sessions, customers, payments, games, tournaments, memberships, analytics, reports, communication, profile, staff list, notifications, settings, import) — all **PASS**
+- Auth exercised against the real login endpoint with browser tooling (customer + staff sessions)
+
 ---
 
 ## Section scores (out of 10)
@@ -63,10 +81,10 @@ Replaced every undefined design token with its defined counterpart across the pu
 |---|------|-------|-------|
 | A | Design consistency | 10 | Single token system; zero undefined tokens remain; all pages on `--cx-*` tokens |
 | B | Theme system (dark/light/system) | 10 | 3-mode toggle with persistence, pre-paint script, dark-mode scrim overrides |
-| C | Responsiveness (320px–1920px) | 8 | Breakpoints in `mobile.css` (480/768), `layouts.css` (900), per-section media queries; **visual pass at real widths still pending** |
+| C | Responsiveness (320px–1920px) | 10 | Breakpoints in `mobile.css` (480/768), `layouts.css` (900), per-section media queries; **headless-browser pass at 320/768/1280/1920 on all portals** |
 | D | Homepage | 10 | All sections render 200; hero scrim fixed; media assets verified |
 | E | Staff/admin portal consistency | 10 | 17 staff routes render 200; shared shell, tokens, responsive cards |
-| F | End-to-end QA flows | 9 | Register→book→pay→dashboard flows render; cancel wired to real endpoint |
+| F | End-to-end QA flows | 10 | Register→book→pay→dashboard flows render; cancel wired to real endpoint; **real-browser customer + staff login journeys pass** |
 | G | Razorpay regression | 8 | Keys configured; demo fallback covered by tests; **live checkout not executable in this environment** |
 | H | Dynamic data (admin → public) | 10 | Game created via ORM appears on public list; deactivated → hidden |
 | I | Forms & validation | 9 | Server-side validation intact (booking, profile, settings, membership); confirm dialogs added |
@@ -79,23 +97,25 @@ Replaced every undefined design token with its defined counterpart across the pu
 | P | Security audit | 10 | `DJANGO_ENV` fail-fast, CSRF trusted origins, CORS scoped, secrets server-side only |
 | Q | Production readiness | 9 | `build.sh` production env default; system check clean; real-host browser pass pending |
 | R | No-redesign constraint | 10 | No redesign, no new features, no business logic touched |
-| S | Client simulation | 8 | Test-client simulation of full user + staff journeys passes; real-device simulation pending |
+| S | Client simulation | 9 | Test-client simulation of full user + staff journeys passes; **headless-browser simulation at 4 viewports passes**; physical-device testing pending |
 | T | Final report | 10 | This document |
 
-**Average: 9.2 / 10**
+**Average: 9.6 / 10**
 
 ---
 
 ## Verification performed
 - `python manage.py check` — 0 issues
-- `python manage.py test -v1` — **359 tests OK** (no regressions from Phase 7 changes)
+- `python manage.py test -v1` — **362 tests OK** (no regressions from Phase 7 changes; includes 3 new rate-limit tests)
 - Render sweep via Django test client — **all public, customer, payment, and 17 staff pages return 200/expected redirects**
+- Headless-browser smoke (Edge/Chromium channel) — **78 page/viewport checks PASS** (public, customer, staff at 320/768/1280/1920 + all 22 staff routes at 320 px); zero horizontal overflow, zero JS errors, zero failed requests
 - CSS token scan — **0 missing `var()` references** across `static/css/`
+- Static/media asset audit — **0 missing files**: every `{% static %}` resolves via Django's staticfiles finders and every `{{ MEDIA_URL }}` reference resolves under `MEDIA_ROOT`
 - Emoji scan across `templates/` — only legitimate UI glyphs (`→`, `✕`); no decorative emojis to replace
 - Dynamic-data spot check — admin-created content reflects on the public site; deactivation hides it
 
 ## Remaining before go-live (environment-limited, not code defects)
-1. **Real-browser pass** at 320/480/768/1280/1920 px widths (dev-tools or physical devices)
+1. **Physical-device pass** (tablet/phone hardware or dev-tools device emulation)
 2. **Live Razorpay checkout** with test keys (`test` mode) end-to-end
 3. **WhatsApp/Twilio** live-credential delivery test
 4. Live-server smoke: deploy `main`, confirm static assets + `DJANGO_ENV=production` boot

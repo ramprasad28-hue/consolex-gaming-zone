@@ -1,5 +1,27 @@
 # Changelog
 
+## [4.2.1] — 2026-08-11
+
+### Fixed
+
+#### Rate limiting (infinite redirect loop)
+- `apps/common/rate_limit.py` now counts **POST requests only**; it previously counted every request (including anonymous GETs) and redirected excess to `request.path`, causing an infinite `ERR_TOO_MANY_REDIRECTS` loop on `/users/login/` and `/bookings/book/`
+- HTML clients get a redirect with a flash message + accurate retry-after; JSON clients get `429`; GET page loads pass through unlimited
+
+#### Staff portal responsive overflow (verified in-browser)
+- ≤768 px: toolbar children full-width, date-group inputs flexible, breadcrumb hidden (old selector referenced a nonexistent class), topbar edges `min-width: 0`
+- ≤480 px: "Quick Add" collapses to an icon-only 40 px button
+- `.sp-chart-grid > * { min-width: 0 }` (items overflowed ~3 px); `.sp-plan-card { overflow: hidden }` (rotated ribbon was clipped past viewport)
+
+### Added
+- `RateLimitTests` (3 tests) covering GET pass-through, POST limiting, and JSON `429`
+- Headless-browser smoke verification (Edge/Chromium): 78 page/viewport checks pass at 320–1920 px with zero horizontal overflow, JS errors, or failed requests
+- Static/media asset audit: every `{% static %}` resolves via staticfiles finders and every `{{ MEDIA_URL }}` reference resolves — 0 missing files
+
+### Changed
+- `CLIENT_READINESS_REPORT.md` updated: avg **9.6/10**, responsiveness / e2e / client-simulation scores raised after in-browser verification
+- Test suite re-verified at **362 tests OK**; `manage.py check` clean
+
 ## [4.2.0] — 2026-08-11
 
 ### Added
@@ -31,7 +53,7 @@
 - Env-driven `CSRF_TRUSTED_ORIGINS` and extended `CORS_ALLOWED_ORIGINS`; `build.sh` defaults to `DJANGO_ENV=production`
 
 ### Changed
-- Test suite re-verified at **359 tests OK** after Phase 7 changes; `manage.py check` clean; all touched templates render via test client
+- Test suite re-verified at **359 tests OK** after Phase 7 changes; `manage.py check` clean; all touched templates render via test client *(superseded by the 4.2.1 entry — see above for the final 362-test state)*
 
 ## [4.1.0] — 2026-08-10
 

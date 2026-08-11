@@ -1,5 +1,6 @@
 # apps/common/tests.py
-from django.test import TestCase
+from django.core.cache import cache
+from django.test import Client, TestCase
 
 from apps.common.exceptions import (
     ServiceError,
@@ -145,3 +146,34 @@ class ExceptionInstantiationTests(TestCase):
     def test_custom_message_override(self):
         err = BookingNotFoundError(message="Custom not found")
         self.assertEqual(err.message, "Custom not found")
+
+
+class RateLimitTests(TestCase):
+    def setUp(self):
+        cache.clear()
+
+    def test_get_requests_are_not_rate_limited(self):
+        client = Client()
+        for _ in range(20):
+            resp = client.get("/users/login/")
+            self.assertEqual(resp.status_code, 200)
+
+    def test_post_requests_are_rate_limited(self):
+        client = Client()
+        for _ in range(5):
+            resp = client.post("/users/login/", {"email": "nobody@example.com", "password": "x"})
+            self.assertEqual(resp.status_code, 200)
+        resp = client.post("/users/login/", {"email": "nobody@example.com", "password": "x"})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.url, "/users/login/")
+
+    def test_json_request_returns_429_after_limit(self):
+        client = Client()
+        for _ in range(5):
+            client.post("/users/login/", {"email": "nobody@example.com", "password": "x"})
+        resp = client.post(
+            "/users/login/",
+            {"email": "nobody@example.com", "password": "x"},
+            HTTP_ACCEPT="application/json",
+        )
+        self.assertEqual(resp.status_code, 429)
