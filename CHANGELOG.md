@@ -1,5 +1,38 @@
 # Changelog
 
+## [4.2.0] — 2026-08-11
+
+### Added
+
+#### Ch17 — Phase 7 Final Polish & Client Readiness
+- `CLIENT_READINESS_REPORT.md`: final 19-section readiness report with per-area scores (avg 9.2/10) and READY verdict
+
+### Fixed
+
+#### CSS token repair (zero undefined `var()` references remain)
+- `--cx-card-bg` → `--card-bg`; `--cx-space-7/9/14/18` → `--cx-space-8/10/16/20`; `--sp-surface-card` → `--sp-surface-2`; `--cx-text-md` → `--cx-text-base`; `--cx-surface-muted` → `--cx-surface-subtle`; `--cx-success-text`/`--cx-warning-text` → `--cx-success`/`--cx-warning`
+- `--hero-scrim-*` defined locally with dark-mode overrides (hero overlay was transparent)
+
+#### Booking & live sessions
+- `Booking.session_remaining_minutes` now compares local (IST) time instead of UTC (`timezone.localtime()`); new `Booking.session_end_local` handles midnight-crossing sessions
+- Staff serializer, live-session widget, and booking detail use `session_end_local`; dead `data-session-countdown` removed
+- User dashboard "Sessions Played" no longer double-counts completed bookings
+
+#### Templates & JS
+- Cancel booking wired to real `bookings:booking_cancel` endpoint (was a stub) with `form[data-confirm]` dialog
+- Hero/media paths use `{{ MEDIA_URL }}`; theme pre-paint handles `system` mode + `localStorage` try/catch
+- `sr-only` unread badge text; `prefers-reduced-motion` respected in smooth-scroll; staff sidebar `aria-expanded`
+- `search.js` excludes staff toolbar forms from auto-submit (fixes double submission on 7 staff list pages)
+- `staff.js` live-sessions render recreates the empty state (fixes stale "No live sessions"); booking link uses server-rendered URL
+- Razorpay templates: `amount` is numeric (was string) + `typeof Razorpay` guard; `theme.js`/`dashboard.js` localStorage guards
+
+#### Settings & security
+- Invalid `DJANGO_ENV` now raises `ImproperlyConfigured` instead of silently falling back to development
+- Env-driven `CSRF_TRUSTED_ORIGINS` and extended `CORS_ALLOWED_ORIGINS`; `build.sh` defaults to `DJANGO_ENV=production`
+
+### Changed
+- Test suite re-verified at **359 tests OK** after Phase 7 changes; `manage.py check` clean; all touched templates render via test client
+
 ## [4.1.0] — 2026-08-10
 
 ### Added

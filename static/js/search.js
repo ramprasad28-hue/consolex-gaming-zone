@@ -58,10 +58,13 @@
     });
 
     /* ── Auto-submit select changes ─────────────────────────── */
+    /* Staff toolbars (`.sp-toolbar`) are handled by staff.js via
+       `data-auto-submit` — skip them here to avoid double submits. */
     document.addEventListener('change', function (e) {
         if (e.target.matches('select[name="category"], select[name="badge"], select[name="sort"], select[name="status"]')) {
             var form = e.target.closest('form');
-            if (form) form.submit();
+            if (!form || form.classList.contains('sp-toolbar')) return;
+            form.submit();
         }
     });
 

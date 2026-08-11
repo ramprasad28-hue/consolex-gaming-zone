@@ -121,7 +121,7 @@
             currency: "INR",
             name: "{{ site.brand_name }} Gaming Zone",
             description: "Advance Payment",
-            image: "/media/logo/favicon.png",
+            image: "{{ MEDIA_URL }}logo/favicon.png",
             order_id: "{{ rp_order_id }}",
             prefill: {
                 name: "{{ request.user.get_full_name|default:''|escapejs }}",
@@ -184,6 +184,15 @@
                 });
             }
         };
+
+        if (typeof Razorpay === 'undefined') {
+            payBtn.disabled = false;
+            payBtn.classList.remove('pay-btn--loading');
+            payBtn.removeAttribute('aria-busy');
+            payBtn.innerHTML = 'Pay ₹{{ advance_rupees }} Securely';
+            showError("Payment gateway failed to load. Please refresh and try again.");
+            return;
+        }
 
         var rzp = new Razorpay(options);
 

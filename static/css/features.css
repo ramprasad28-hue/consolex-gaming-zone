@@ -57,7 +57,7 @@
     min-height: 220px;
     border-radius: var(--cx-radius-xl);
     border: 1px solid var(--cx-border);
-    background: var(--cx-card-bg);
+    background: var(--card-bg);
     overflow: hidden;
     transition: border-color var(--cx-duration-normal) var(--cx-ease),
                 transform var(--cx-duration-normal) var(--cx-ease),
@@ -94,13 +94,13 @@
 .fcard-bg-scrim {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, var(--cx-card-bg), rgba(255,255,255,0.6), transparent);
+    background: linear-gradient(to top, var(--card-bg), var(--card-bg) 40%, transparent);
 }
 
 .fcard-content {
     position: relative;
     z-index: 10;
-    padding: var(--cx-space-7);
+    padding: var(--cx-space-8);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -183,7 +183,7 @@
 }
 
 @media (max-width: 992px) {
-    .features-section { padding: var(--cx-space-18) var(--cx-space-5); }
+    .features-section { padding: var(--cx-space-20) var(--cx-space-5); }
     .features-header { margin-bottom: var(--cx-space-12); }
 }
 @media (max-width: 768px) {
@@ -196,7 +196,7 @@
     .fcard-desc { font-size: var(--cx-text-xs); }
 }
 @media (max-width: 480px) {
-    .features-section { padding: var(--cx-space-14) var(--cx-space-3); }
+    .features-section { padding: var(--cx-space-16) var(--cx-space-3); }
     .features-card { min-height: 160px; }
     .fcard-content { padding: var(--cx-space-4); }
     .fcard-icon { width: 36px; height: 36px; border-radius: var(--cx-radius-md); margin-bottom: var(--cx-space-3); }

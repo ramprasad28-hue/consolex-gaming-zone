@@ -4,7 +4,7 @@
 
 .gaming-stats {
     position: relative;
-    padding: var(--cx-space-18) var(--cx-space-6);
+    padding: var(--cx-space-20) var(--cx-space-6);
     background: var(--cx-surface);
     border-top: 1px solid var(--cx-border);
     border-bottom: 1px solid var(--cx-border);
@@ -61,7 +61,7 @@
     .stats-grid { grid-template-columns: repeat(3, 1fr); gap: var(--cx-space-5); }
 }
 @media (max-width: 768px) {
-    .gaming-stats { padding: var(--cx-space-14) var(--cx-space-5); }
+    .gaming-stats { padding: var(--cx-space-16) var(--cx-space-5); }
     .stats-grid { grid-template-columns: repeat(2, 1fr); gap: var(--cx-space-4); }
     .stat-number { font-size: 2rem; }
 }

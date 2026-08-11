@@ -29,7 +29,7 @@
 
 .tourney-card {
     border-radius: var(--cx-radius-xl); border: 1px solid var(--cx-border);
-    background: var(--cx-card-bg); overflow: hidden;
+    background: var(--card-bg); overflow: hidden;
     transition: border-color var(--cx-duration-normal) var(--cx-ease),
                 transform var(--cx-duration-normal) var(--cx-ease),
                 background var(--cx-theme-speed) ease;
@@ -64,7 +64,7 @@
 .tourney-prize-box {
     position: absolute; bottom: var(--cx-space-3); right: var(--cx-space-3);
     padding: var(--cx-space-2) var(--cx-space-3); border-radius: var(--cx-radius-lg);
-    background: var(--cx-card-bg); border: 1px solid var(--cx-border);
+    background: var(--card-bg); border: 1px solid var(--cx-border);
 }
 .tourney-prize-label { font-size: var(--cx-text-xs); color: var(--cx-text-3); display: block; }
 .tourney-prize-val {
@@ -118,7 +118,7 @@
 }
 
 @media (max-width: 992px) {
-    .tournament-section { padding: var(--cx-space-18) var(--cx-space-5); }
+    .tournament-section { padding: var(--cx-space-20) var(--cx-space-5); }
 }
 @media (max-width: 768px) {
     .tournament-section { padding: var(--cx-space-16) var(--cx-space-4); }
@@ -128,7 +128,7 @@
     .tourney-header { margin-bottom: var(--cx-space-10); }
 }
 @media (max-width: 480px) {
-    .tournament-section { padding: var(--cx-space-14) var(--cx-space-3); }
+    .tournament-section { padding: var(--cx-space-16) var(--cx-space-3); }
     .tourney-card-img { height: 120px; }
     .tourney-card-title { font-size: 1rem; }
     .tourney-prize-val { font-size: 1rem; }

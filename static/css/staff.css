@@ -2690,7 +2690,7 @@ html[data-theme="light"] .sp-cover-fallback {
     display: flex;
     flex-direction: column;
     gap: var(--cx-space-3);
-    background: var(--sp-surface-card);
+    background: var(--sp-surface-2);
     border: 1px solid var(--sp-border);
     border-radius: var(--cx-radius-lg);
     padding: var(--cx-space-5);
@@ -2783,7 +2783,7 @@ html[data-theme="light"] .sp-cover-fallback {
         gap: var(--cx-space-3);
     }
     .sp-customer-card {
-        background: var(--sp-surface-card);
+        background: var(--sp-surface-2);
         border: 1px solid var(--sp-border);
         border-radius: var(--cx-radius-lg);
         padding: var(--cx-space-4);
@@ -2932,7 +2932,7 @@ html[data-theme="light"] .sp-cover-fallback {
 }
 .sp-billing-value {
     display: block;
-    font-size: var(--cx-text-md);
+    font-size: var(--cx-text-base);
     font-weight: 800;
     color: var(--sp-text);
 }
@@ -3161,7 +3161,7 @@ html[data-theme="light"] .sp-cover-fallback {
 .sp-report-card--violet .sp-report-icon { background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%); }
 .sp-report-main { flex: 1; min-width: 0; }
 .sp-report-title {
-    font-size: var(--cx-text-md);
+    font-size: var(--cx-text-base);
     font-weight: 800;
     color: var(--sp-text);
 }
@@ -3233,7 +3233,7 @@ html[data-theme="light"] .sp-cover-fallback {
 
 
 /* ============================================================
-   20 · PHASE 6 — SETTINGS, PROFILE, STAFF, NOTIFICATIONS
+   20 ï¿½ PHASE 6 ï¿½ SETTINGS, PROFILE, STAFF, NOTIFICATIONS
    ============================================================ */
 
 /* -- Settings hub layout -- */

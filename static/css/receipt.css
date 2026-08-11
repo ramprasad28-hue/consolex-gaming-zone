@@ -5,7 +5,7 @@
 .receipt-card {
     max-width: 580px;
     margin: var(--cx-space-8) auto;
-    padding: var(--cx-space-9);
+    padding: var(--cx-space-10);
     background: var(--cx-surface-card);
     border: 1px solid var(--cx-border);
     border-radius: var(--cx-radius-xl);
@@ -89,7 +89,7 @@
 
 .receipt-footer {
     text-align: center;
-    margin-top: var(--cx-space-7);
+    margin-top: var(--cx-space-8);
     padding-top: var(--cx-space-5);
     border-top: 1px solid var(--cx-border);
 }
@@ -159,11 +159,11 @@
     text-transform: capitalize;
 }
 .receipt-status--success {
-    color: var(--cx-success-text);
+    color: var(--cx-success);
     background: var(--cx-success-light);
 }
 .receipt-status--pending {
-    color: var(--cx-warning-text);
+    color: var(--cx-warning);
     background: var(--cx-warning-light);
 }
 

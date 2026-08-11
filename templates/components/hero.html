@@ -1,8 +1,8 @@
 {% load static %}
 <section class="hero" id="hero">
     <div class="hero-bg">
-        <img src="media/cxdesign/first.jpeg"
-             srcset="media/cxdesign/hero-bg-800.jpg 800w, media/cxdesign/hero-bg-1600.jpg 1600w, media/cxdesign/first.jpeg 3000w"
+        <img src="{{ MEDIA_URL }}cxdesign/first.jpeg"
+             srcset="{{ MEDIA_URL }}cxdesign/hero-bg-800.jpg 800w, {{ MEDIA_URL }}cxdesign/hero-bg-1600.jpg 1600w, {{ MEDIA_URL }}cxdesign/first.jpeg 3000w"
              sizes="100vw"
              width="3000" height="4000"
              alt="Gaming lounge with PS5 setup" class="hero-bg-img" fetchpriority="high" decoding="async">

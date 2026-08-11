@@ -25,6 +25,11 @@
 .hero-scrim {
     position: absolute;
     inset: 0;
+    --hero-scrim-l:  rgba(248, 250, 252, 0.92);
+    --hero-scrim-m:  rgba(248, 250, 252, 0.72);
+    --hero-scrim-r:  rgba(248, 250, 252, 0.30);
+    --hero-scrim-b:  rgba(248, 250, 252, 0.88);
+    --hero-scrim-bt: rgba(248, 250, 252, 0.00);
     background: linear-gradient(
         to right,
         var(--hero-scrim-l),
@@ -37,6 +42,16 @@
         transparent,
         var(--hero-scrim-bt)
     );
+}
+
+/* Keep the hero overlay theme-aware so headline text stays readable
+   over the background photo in both themes. */
+[data-theme="dark"] .hero-scrim {
+    --hero-scrim-l:  rgba(15, 23, 42, 0.90);
+    --hero-scrim-m:  rgba(15, 23, 42, 0.68);
+    --hero-scrim-r:  rgba(15, 23, 42, 0.30);
+    --hero-scrim-b:  rgba(15, 23, 42, 0.85);
+    --hero-scrim-bt: rgba(15, 23, 42, 0.00);
 }
 
 .hero-wrap {
@@ -97,7 +112,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--cx-space-4);
-    margin-bottom: var(--cx-space-14);
+    margin-bottom: var(--cx-space-16);
 }
 
 .hero-stats {

@@ -65,7 +65,7 @@
               · {{ s.number_of_players }} player{{ s.number_of_players|pluralize }}
             </div>
             <div class="sp-activity-time">
-              <span data-live-remaining data-session-end="{{ s.booking_date|date:'Y-m-d' }} {{ s.end_time|time:'H:i' }}">{{ s.session_remaining_minutes }} min left</span>
+              <span data-live-remaining data-session-end="{{ s.session_end_local|date:'Y-m-d H:i' }}">{{ s.session_remaining_minutes }} min left</span>
               · checked in {{ s.checked_in_at|timesince }} ago
             </div>
           </div>

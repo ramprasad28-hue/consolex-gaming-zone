@@ -31,6 +31,7 @@
       if (e.key === 'Escape') {
         notifPanel.classList.remove('is-open');
         bellBtn.setAttribute('aria-expanded', 'false');
+        document.removeEventListener('click', closeOnOutsideClick);
         bellBtn.focus();
       }
     });
@@ -86,24 +87,12 @@
     bars.forEach(function (el) { el.style.width = (el.getAttribute('data-progress-fill') || 0) + '%'; });
   }
 
-  /* ── Toast for stub actions ─────────────────────────────── */
-  var toast = document.getElementById('dxToast');
-  var toastTimer = null;
-
-  window.dxShowStubToast = function (message) {
-    if (!toast) return;
-    toast.textContent = message;
-    toast.classList.add('is-shown');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () {
-      toast.classList.remove('is-shown');
-    }, 2600);
-  };
-
-  document.querySelectorAll('[data-stub-action]').forEach(function (btn) {
-    btn.addEventListener('click', function (e) {
+  /* ── Confirm dialog for destructive form submissions ────── */
+  document.addEventListener('submit', function (e) {
+    var form = e.target.closest('form[data-confirm]');
+    if (!form) return;
+    if (!window.confirm(form.getAttribute('data-confirm') || 'Are you sure?')) {
       e.preventDefault();
-      window.dxShowStubToast(btn.getAttribute('data-stub-action'));
-    });
+    }
   });
 }());

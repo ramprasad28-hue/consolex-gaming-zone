@@ -105,8 +105,13 @@
     });
 
     /* ── Ch12: Live sessions console (30s poll) ── */
-    var POLL_URL = document.querySelector('[data-live-sessions-data-url]');
-    var LIVE_URL = POLL_URL ? POLL_URL.getAttribute('data-live-sessions-data-url') : '/staff/live-sessions/data/';
+    var widgetEl = document.querySelector('[data-live-sessions-data-url]');
+    var LIVE_URL = widgetEl ? widgetEl.getAttribute('data-live-sessions-data-url') : '/staff/live-sessions/data/';
+    var BOOKING_URL_TMPL = null;
+    if (widgetEl) {
+        var bUrl = widgetEl.getAttribute('data-booking-detail-url');
+        if (bUrl) BOOKING_URL_TMPL = bUrl.replace(/\/0\/$/, '/{id}/');
+    }
 
     function liveCountEls() {
         return document.querySelectorAll('[data-live-count], [data-live-count-big], [data-live-nav-count]');
@@ -151,11 +156,13 @@
         var actions = document.createElement('div');
         actions.className = 'sp-activity-actions';
 
-        var details = document.createElement('a');
-        details.className = 'cx-btn cx-btn--ghost cx-btn--sm';
-        details.href = '/staff/bookings/' + s.id + '/';
-        details.textContent = 'Open';
-        actions.appendChild(details);
+        if (BOOKING_URL_TMPL) {
+            var details = document.createElement('a');
+            details.className = 'cx-btn cx-btn--ghost cx-btn--sm';
+            details.href = BOOKING_URL_TMPL.replace('{id}', s.id);
+            details.textContent = 'Open';
+            actions.appendChild(details);
+        }
 
         item.appendChild(dot);
         item.appendChild(body);
@@ -164,26 +171,21 @@
     }
 
     function renderLiveSessions(data) {
-        var list = document.querySelector('[data-live-sessions-list]');
         var body = document.querySelector('[data-live-sessions-body]');
         if (!body) return;
 
         setLiveCounts(data.count);
 
-        if (!list) {
-            list = document.createElement('div');
+        if (data.sessions && data.sessions.length) {
+            body.innerHTML = '';
+            var list = document.createElement('div');
             list.className = 'sp-activity';
             list.setAttribute('data-live-sessions-list', '');
-            body.appendChild(list);
-        }
-        list.innerHTML = '';
-
-        if (data.sessions && data.sessions.length) {
             data.sessions.forEach(function (s) {
                 list.appendChild(makeSessionRow(s));
             });
+            body.appendChild(list);
         } else {
-            list.remove();
             body.innerHTML = '<div class="cx-empty" role="status">' +
                 '<div class="cx-empty-title">No live sessions</div>' +
                 '<div class="cx-empty-desc">Checked-in players will appear here.</div>' +
@@ -201,17 +203,18 @@
 
     function refreshCountdowns() {
         var now = new Date();
-        document.querySelectorAll('[data-live-remaining]').forEach(function (el) {
+        document.querySelectorAll('[data-session-end]').forEach(function (el) {
             var endStr = el.getAttribute('data-session-end');
             if (!endStr) return;
             var end = new Date(endStr.replace(' ', 'T'));
             var mins = Math.max(0, Math.round((end - now) / 60000));
-            el.textContent = mins + ' min left';
+            var suffix = el.hasAttribute('data-live-remaining') ? ' min left' : ' min';
+            el.textContent = mins + suffix;
         });
     }
 
-    // Poll only on staff pages (endpoint exists there).
-    if (document.querySelector('[data-live-sessions-body], [data-live-nav-count], [data-live-count]')) {
+    // Poll/countdown on staff pages where the widget or a countdown exists.
+    if (document.querySelector('[data-live-sessions-body], [data-live-nav-count], [data-live-count], [data-session-end]')) {
         refreshCountdowns();
         setInterval(pollLiveSessions, 30000);
         setInterval(refreshCountdowns, 30000);
@@ -232,6 +235,7 @@
 
         collapseBtn.addEventListener('click', function () {
             var collapsed = shell.classList.toggle('is-collapsed');
+            collapseBtn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
             try { localStorage.setItem(COLLAPSE_KEY, collapsed ? '1' : '0'); } catch (e) { /* ignore */ }
         });
     }

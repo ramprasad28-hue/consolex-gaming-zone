@@ -307,8 +307,10 @@
                         {% endif %}
                         <a href="{% url 'bookings:booking_detail' booking.id %}" class="dx-action-btn dx-action-btn--view" aria-label="View booking #{{ booking.id }}">View</a>
                         {% if booking.status == 'pending' or booking.status == 'confirmed' %}
-                          <button type="button" class="dx-action-btn dx-action-btn--cancel"
-                                  data-stub-action="Cancellation isn't wired up yet — contact us on WhatsApp.">Cancel</button>
+                          <form method="POST" action="{% url 'bookings:booking_cancel' booking.id %}" data-confirm="Cancel booking #{{ booking.id }}? This cannot be undone.">
+                            {% csrf_token %}
+                            <button type="submit" class="dx-action-btn dx-action-btn--cancel">Cancel</button>
+                          </form>
                         {% endif %}
                         {% if booking.is_paid %}
                           <a href="{% url 'payments:payment_receipt' booking.id %}" class="dx-action-btn dx-action-btn--receipt" aria-label="Download receipt for booking #{{ booking.id }}">Receipt</a>
@@ -417,7 +419,7 @@
 
           <div class="dx-community-grid">
             <div class="dx-comm-stat">
-              <div class="dx-comm-stat-value">{{ total_bookings|add:completed_bookings }}</div>
+              <div class="dx-comm-stat-value">{{ completed_bookings }}</div>
               <div class="dx-comm-stat-label">Sessions Played</div>
             </div>
             <div class="dx-comm-stat">
@@ -535,9 +537,6 @@
     {% endwith %}
     {% endwith %}
   </div>
-
-  <!-- Toast for stub actions -->
-  <div id="dxToast" class="dx-toast" role="status" aria-live="polite"></div>
 
 </section>
 {% endblock %}

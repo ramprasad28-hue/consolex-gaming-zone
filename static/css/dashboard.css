@@ -545,6 +545,8 @@
 /* Action buttons */
 .dx-actions { display: flex; gap: var(--cx-space-2); flex-wrap: wrap; }
 
+.dx-actions form { display: inline-flex; margin: 0; }
+
 .dx-action-btn {
     font-family: var(--cx-font-ui);
     font-size: 11px;
@@ -860,7 +862,7 @@
 .dx-comm-stat {
     text-align: center;
     padding: var(--cx-space-3);
-    background: var(--cx-surface-muted);
+    background: var(--cx-surface-subtle);
     border-radius: var(--cx-radius-md);
 }
 
@@ -889,7 +891,7 @@
     gap: var(--cx-space-3);
     padding: var(--cx-space-2) var(--cx-space-3);
     border-radius: var(--cx-radius-sm);
-    background: var(--cx-surface-muted);
+    background: var(--cx-surface-subtle);
     font-size: var(--cx-text-sm);
 }
 

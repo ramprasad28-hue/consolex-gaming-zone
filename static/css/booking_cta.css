@@ -42,11 +42,11 @@
 }
 
 @media (max-width: 768px) {
-    .booking-cta-section { padding: var(--cx-space-14) var(--cx-space-5); }
+    .booking-cta-section { padding: var(--cx-space-16) var(--cx-space-5); }
     .booking-cta-container {
         flex-direction: column;
         text-align: center;
-        gap: var(--cx-space-7);
+        gap: var(--cx-space-8);
     }
     .booking-cta-title { font-size: 1.6rem; }
 }

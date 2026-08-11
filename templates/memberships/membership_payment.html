@@ -62,7 +62,7 @@
 
         var options = {
             key: "{{ razorpay_key_id }}",
-            amount: "{{ rp_amount }}",
+            amount: {{ rp_amount }},
             currency: "INR",
             name: "{{ site.brand_name }} Gaming Zone",
             description: "{{ plan.name }} Membership — {{ plan.duration_days }} days",
@@ -116,6 +116,15 @@
                 }
             }
         };
+
+        if (typeof Razorpay === 'undefined') {
+            status.textContent = "Payment gateway failed to load. Please refresh and try again.";
+            status.style.color = "#FF4444";
+            btn.disabled = false;
+            if (btnText) btnText.textContent = "Pay ₹{{ plan.price }} with Razorpay";
+            if (btnSpinner) btnSpinner.style.display = 'none';
+            return;
+        }
 
         var rzp = new Razorpay(options);
         rzp.on('payment.failed', function (response) {

@@ -222,7 +222,7 @@
 }
 
 @media (max-width: 768px) {
-    .instagram-cta { padding: var(--cx-space-14) var(--cx-space-5); }
+    .instagram-cta { padding: var(--cx-space-16) var(--cx-space-5); }
     .instagram-cta-inner {
         grid-template-columns: 1fr;
         gap: var(--cx-space-10);
@@ -232,7 +232,7 @@
     .insta-right { order: 2; }
     .insta-title { font-size: 2rem; }
     .insta-desc { margin-left: auto; margin-right: auto; }
-    .google-review-cta { padding: var(--cx-space-14) var(--cx-space-5); }
+    .google-review-cta { padding: var(--cx-space-16) var(--cx-space-5); }
     .google-review-title { font-size: 1.6rem; }
 }
 

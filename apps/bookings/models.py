@@ -129,16 +129,23 @@ class Booking(models.Model):
         return self.checked_in_at is not None
 
     @property
-    def session_remaining_minutes(self):
-        """Minutes left in the session window (0 if ended)."""
-        if not self.is_checked_in:
-            return 0
+    def session_end_local(self):
+        """Naive local datetime the session ends (handles midnight crossing)."""
         from datetime import datetime, date as date_type, timedelta
         base = date_type.today()
         start = datetime.combine(base, self.start_time)
         end = datetime.combine(base, self.end_time)
         if end <= start:
             end += timedelta(days=1)
-        now_dt = datetime.combine(base, timezone.now().time())
-        remaining = (end - now_dt).total_seconds() / 60
+        return end
+
+    @property
+    def session_remaining_minutes(self):
+        """Minutes left in the session window (0 if ended)."""
+        if not self.is_checked_in:
+            return 0
+        from datetime import datetime, date as date_type
+        base = date_type.today()
+        now_dt = datetime.combine(base, timezone.localtime().time())
+        remaining = (self.session_end_local - now_dt).total_seconds() / 60
         return max(0, round(remaining))

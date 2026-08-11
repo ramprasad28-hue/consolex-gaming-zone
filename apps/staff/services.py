@@ -27,7 +27,7 @@ def serialize_live_sessions(bookings):
             "end_time": b.end_time.strftime("%H:%M"),
             "checked_in_at": b.checked_in_at.isoformat(),
             "remaining_minutes": b.session_remaining_minutes,
-            "session_end": f"{b.booking_date} {b.end_time.strftime('%H:%M')}",
+            "session_end": b.session_end_local.strftime("%Y-%m-%d %H:%M"),
         }
         for b in bookings
     ]

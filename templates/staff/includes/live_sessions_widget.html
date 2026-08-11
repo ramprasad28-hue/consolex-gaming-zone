@@ -2,7 +2,7 @@
 Ch12 Live Sessions widget — rendered server-side, refreshed by staff.js
 via the 30s poll against staff:staff_live_sessions_data.
 {% endcomment %}
-<div class="sp-widget" data-live-sessions-widget data-live-sessions-data-url="{% url 'staff:staff_live_sessions_data' %}">
+<div class="sp-widget" data-live-sessions-widget data-live-sessions-data-url="{% url 'staff:staff_live_sessions_data' %}" data-booking-detail-url="{% url 'staff:staff_booking_detail' 0 %}">
   <div class="sp-widget-header">
     <h2 class="sp-widget-title">
       <span class="sp-live-dot" aria-hidden="true"></span>
@@ -24,7 +24,7 @@ via the 30s poll against staff:staff_live_sessions_data.
               · {{ s.start_time|time:"h:i A" }}–{{ s.end_time|time:"h:i A" }}
             </div>
             <div class="sp-activity-time">
-              <span data-live-remaining data-session-end="{{ s.booking_date|date:'Y-m-d' }} {{ s.end_time|time:'H:i' }}">{{ s.session_remaining_minutes }} min left</span>
+              <span data-live-remaining data-session-end="{{ s.session_end_local|date:'Y-m-d H:i' }}">{{ s.session_remaining_minutes }} min left</span>
             </div>
           </div>
           <a href="{% url 'staff:staff_booking_detail' s.id %}" class="cx-btn cx-btn--ghost cx-btn--sm">Open</a>

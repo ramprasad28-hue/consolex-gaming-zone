@@ -98,7 +98,7 @@ MEDIA_ROOT = BASE_DIR.parent / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'users.User'   # will enable after Phase 2
+AUTH_USER_MODEL = 'users.User'
 
 LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/users/dashboard/'
@@ -180,7 +180,18 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
+# Env-driven (comma-separated) origins for staging/production frontends,
+# e.g. CORS_ALLOWED_ORIGINS=https://admin.example.com,https://api.example.com
+CORS_ALLOWED_ORIGINS += [
+    o.strip() for o in config('CORS_ALLOWED_ORIGINS', default='').split(',') if o.strip()
+]
 CORS_ALLOW_CREDENTIALS = True
+
+# Env-driven (comma-separated) trusted origins for POST CSRF from HTTPS origins,
+# e.g. CSRF_TRUSTED_ORIGINS=https://consolex.in,https://admin.consolex.in
+CSRF_TRUSTED_ORIGINS = [
+    o.strip() for o in config('CSRF_TRUSTED_ORIGINS', default='').split(',') if o.strip()
+]
 
 # ── Django REST Framework ──────────────────────
 REST_FRAMEWORK = {

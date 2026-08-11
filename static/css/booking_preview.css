@@ -141,7 +141,7 @@
     display: inline-flex;
     align-items: center;
     gap: var(--cx-space-2);
-    padding: var(--cx-space-3) var(--cx-space-7);
+    padding: var(--cx-space-3) var(--cx-space-8);
     border-radius: var(--cx-radius-md);
     background: var(--cx-primary);
     color: var(--cx-text-inverse);

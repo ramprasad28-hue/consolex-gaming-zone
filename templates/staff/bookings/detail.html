@@ -123,7 +123,7 @@
         {% if booking.status == 'checked_in' %}
         <div class="sp-data-row">
           <span class="sp-data-label">Time Remaining</span>
-          <span class="sp-data-value" data-session-countdown="{{ booking.checked_in_at|date:'U' }}" data-session-end="{{ booking.booking_date|date:'Y-m-d' }} {{ booking.end_time|time:'H:i' }}">
+          <span class="sp-data-value" data-session-end="{{ booking.session_end_local|date:'Y-m-d H:i' }}">
             {{ booking.session_remaining_minutes }} min
           </span>
         </div>

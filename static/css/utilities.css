@@ -7,7 +7,7 @@
 /* ── Solid card ─────────────────────────────────────────── */
 .glass-card,
 .solid-card {
-    background: var(--cx-card-bg);
+    background: var(--card-bg);
     border: 1px solid var(--cx-border);
     border-radius: var(--cx-radius-lg);
     box-shadow: var(--cx-shadow-sm);
@@ -159,7 +159,7 @@
 
 /* ── Countdown block ────────────────────────────────────── */
 .countdown-block {
-    background: var(--cx-card-bg);
+    background: var(--card-bg);
     border: 1px solid var(--cx-border);
     border-radius: var(--cx-radius-md);
     min-width: 72px;
@@ -185,14 +185,14 @@
 
 /* ── Pricing featured ───────────────────────────────────── */
 .pricing-featured {
-    background: var(--cx-card-bg);
+    background: var(--card-bg);
     border: 2px solid var(--cx-cyan);
     box-shadow: var(--cx-shadow-md);
 }
 
 /* ── Membership highlight ───────────────────────────────── */
 .membership-popular {
-    background: var(--cx-card-bg);
+    background: var(--card-bg);
     border: 2px solid var(--cx-primary);
     position: relative;
     transform: scale(1.03);
@@ -200,7 +200,7 @@
 }
 
 .membership-best {
-    background: var(--cx-card-bg);
+    background: var(--card-bg);
     border: 2px solid var(--cx-info);
     box-shadow: var(--cx-shadow-lg);
 }

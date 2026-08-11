@@ -13,8 +13,13 @@
 
     /** Current mode — light is always the default */
     function currentMode() {
-        var saved = localStorage.getItem(STORAGE_KEY);
-        return saved || LIGHT;
+        var saved = LIGHT;
+        try {
+            saved = localStorage.getItem(STORAGE_KEY) || LIGHT;
+        } catch (e) {
+            // localStorage unavailable (private mode, blocked storage) — default to light
+        }
+        return saved;
     }
 
     /** Get system color scheme preference */

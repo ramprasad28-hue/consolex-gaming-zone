@@ -32,7 +32,7 @@
 }
 .pricing-toggle {
     display: flex; gap: var(--cx-space-1); padding: var(--cx-space-1);
-    background: var(--cx-card-bg); border: 1px solid var(--cx-border);
+    background: var(--card-bg); border: 1px solid var(--cx-border);
     border-radius: var(--cx-radius-lg);
 }
 .pricing-toggle-btn {
@@ -54,7 +54,7 @@
 
 .pricing-card {
     padding: var(--cx-space-6); border-radius: var(--cx-radius-xl);
-    border: 1px solid var(--cx-border); background: var(--cx-card-bg);
+    border: 1px solid var(--cx-border); background: var(--card-bg);
     display: flex; flex-direction: column; gap: var(--cx-space-4);
     transition: border-color var(--cx-duration-normal) var(--cx-ease),
                 transform var(--cx-duration-normal) var(--cx-ease),
@@ -101,7 +101,7 @@
 
 .membership-card {
     padding: var(--cx-space-8); border-radius: var(--cx-radius-xl);
-    border: 1px solid var(--cx-border); background: var(--cx-card-bg);
+    border: 1px solid var(--cx-border); background: var(--card-bg);
     display: flex; flex-direction: column; gap: var(--cx-space-6);
     transition: transform var(--cx-duration-normal) var(--cx-ease),
                 border-color var(--cx-duration-normal) var(--cx-ease),
@@ -133,7 +133,7 @@
 
 .mc-hours-box {
     padding: var(--cx-space-4); border-radius: var(--cx-radius-lg);
-    background: var(--cx-card-bg); border: 1px solid var(--cx-border);
+    background: var(--card-bg); border: 1px solid var(--cx-border);
 }
 .mc-hours-row {
     display: flex; justify-content: space-between; align-items: center; padding: var(--cx-space-1) 0;
@@ -148,7 +148,7 @@
 .mc-hours-divider { height: 1px; background: var(--cx-border); margin: var(--cx-space-2) 0; }
 
 @media (max-width: 992px) {
-    .pricing-section { padding: var(--cx-space-18) var(--cx-space-5); }
+    .pricing-section { padding: var(--cx-space-20) var(--cx-space-5); }
 }
 @media (max-width: 768px) {
     .pricing-section { padding: var(--cx-space-16) var(--cx-space-4); }
@@ -161,7 +161,7 @@
     .pricing-cards-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; }
 }
 @media (max-width: 480px) {
-    .pricing-section { padding: var(--cx-space-14) var(--cx-space-3); }
+    .pricing-section { padding: var(--cx-space-16) var(--cx-space-3); }
     .pricing-card { padding: var(--cx-space-5); }
     .pricing-amount { font-size: 1.6rem; }
     .pricing-membership-grid { grid-template-columns: 1fr; }
