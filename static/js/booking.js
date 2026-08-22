@@ -1,10 +1,13 @@
 /**
- * CONSOLEX — booking.js (V3 Booking Wizard)
- * 6-step wizard: Console → Date → Time → Players → Summary → Payment
+ * CONSOLEX — booking.js (V4 Booking Wizard)
+ * 6-step wizard: Console → Date → Time (+Duration) → Players → Summary → Payment
+ * Step 3 uses the real availability API (/api/v1/bookings/availability/).
  * No dependencies. Vanilla JS. IIFE-wrapped.
  */
 (function () {
     'use strict';
+
+    var AVAILABILITY_URL = '/api/v1/bookings/availability/';
 
     /* ==========================================================
        STATE
@@ -18,7 +21,11 @@
         date: null,       // "YYYY-MM-DD"
         time: null,       // "HH:MM"
         players: 1,
-        duration: 1
+        duration: 1,
+        slots: [],        // [{start, end, available}] from API
+        availLoading: false,
+        availError: false,
+        availSeq: 0       // guards against stale responses
     };
 
     /* ==========================================================
@@ -71,7 +78,7 @@
         state.step = stepNum;
 
         /* Prepare step-specific content */
-        if (stepNum === 3) buildTimeSlots();
+        if (stepNum === 3) initTimeStep();
         if (stepNum === 5) updateSummary();
         if (stepNum === 6) updateConfirm();
 
@@ -106,8 +113,21 @@
                 hideError('err-date');
                 return true;
             case 3:
+                if (state.availLoading) {
+                    showError('err-time', 'Still checking availability — one moment.');
+                    return false;
+                }
+                if (state.availError) {
+                    showError('err-time', 'Availability could not be loaded. Please retry.');
+                    return false;
+                }
                 if (!state.time) {
                     showError('err-time', 'Please select a start time.');
+                    return false;
+                }
+                var sel = findSlot(state.time);
+                if (!sel || !sel.available) {
+                    showError('err-time', 'That time is not available. Please choose another slot.');
                     return false;
                 }
                 hideError('err-time');
@@ -296,103 +316,281 @@
     }
 
     /* ==========================================================
-       STEP 3 — Time Slots
+       STEP 3 — Time & Duration (real availability)
        ========================================================== */
-    function buildTimeSlots() {
-        var grid = $('#timeslotGrid');
-        if (!grid) return;
-        grid.innerHTML = '';
+    var LOCK_SVG =
+        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
 
-        /* Determine operating hours based on weekend */
-        var isWeekend = false;
-        if (state.date) {
-            var parts = state.date.split('-');
-            var d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-            var dow = d.getDay();
-            isWeekend = (dow === 0 || dow === 6);
+    function parseHM(t) {
+        var p = t.split(':');
+        return parseInt(p[0], 10) * 60 + parseInt(p[1] || '0', 10);
+    }
+
+    function fmtTime(hhmm) {
+        var mins = parseHM(hhmm) % 1440;
+        var h24 = Math.floor(mins / 60);
+        var m = mins % 60;
+        var suffix = h24 >= 12 ? 'PM' : 'AM';
+        var h12 = h24 % 12 || 12;
+        return h12 + (m ? ':' + String(m).padStart(2, '0') : ':00') + ' ' + suffix;
+    }
+
+    function formatRange(startHHMM, durationHours) {
+        var endMins = (parseHM(startHHMM) + durationHours * 60) % 1440;
+        var endHHMM = String(Math.floor(endMins / 60)).padStart(2, '0') + ':' + String(endMins % 60).padStart(2, '0');
+        return fmtTime(startHHMM) + ' \u2192 ' + fmtTime(endHHMM);
+    }
+
+    function findSlot(t) {
+        for (var i = 0; i < state.slots.length; i++) {
+            if (state.slots[i].start === t) return state.slots[i];
         }
-        var startHour = isWeekend ? 9 : 10;
-        var endHour = 23; /* last slot starts at 22 */
+        return null;
+    }
 
-        var now = new Date();
-        var todayStr = formatDate(now.getFullYear(), now.getMonth() + 1, now.getDate());
-        var isToday = (state.date === todayStr);
+    function initTimeStep() {
+        setText('ctxConsole', state.consoleName || '\u2014');
+        setText('ctxDate', state.date ? formatDateDisplay(state.date) : '\u2014');
 
-        for (var h = startHour; h < endHour; h++) {
-            var slotTime = String(h).padStart(2, '0') + ':00';
-            var displayTime = formatTime12(h, 0);
+        var timeSelect = document.getElementById('timeSelect');
+        if (!timeSelect.dataset.wired) {
+            timeSelect.addEventListener('change', function () {
+                if (this.value) selectTime(this.value);
+            });
+            timeSelect.dataset.wired = '1';
+        }
+        var durSelect = document.getElementById('durationSelect');
+        if (!durSelect.dataset.wired) {
+            durSelect.addEventListener('change', function () {
+                state.duration = parseInt(this.value, 10);
+                document.getElementById('hf_duration').value = state.duration;
+                updateCost();
+                loadAvailability();
+            });
+            durSelect.dataset.wired = '1';
+        }
 
-            var slot = document.createElement('button');
-            slot.type = 'button';
-            slot.className = 'wiz-timeslot';
-            slot.setAttribute('data-time', slotTime);
-            slot.setAttribute('role', 'radio');
-            slot.setAttribute('aria-checked', 'false');
-            slot.setAttribute('aria-label', displayTime);
+        loadAvailability();
+    }
 
-            /* Disable past slots if today */
-            if (isToday && h <= now.getHours()) {
-                slot.classList.add('wiz-timeslot--disabled');
-                slot.disabled = true;
-                slot.setAttribute('aria-disabled', 'true');
+    /* One request per meaningful change; stale responses discarded by seq. */
+    function loadAvailability() {
+        if (!state.consoleId || !state.date) return;
+
+        var seq = ++state.availSeq;
+        state.availLoading = true;
+        state.availError = false;
+
+        clearTimeSelection(true);
+        setLoadingUI(true);
+        hideError('err-time');
+
+        var url = AVAILABILITY_URL +
+            '?console=' + encodeURIComponent(state.consoleId) +
+            '&date=' + encodeURIComponent(state.date) +
+            '&duration=' + encodeURIComponent(state.duration);
+
+        fetch(url, {
+            headers: { 'Accept': 'application/json' },
+            credentials: 'same-origin'
+        })
+            .then(function (resp) {
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                return resp.json();
+            })
+            .then(function (data) {
+                if (seq !== state.availSeq) return;
+                state.slots = data.slots || [];
+                state.availLoading = false;
+                setLoadingUI(false);
+                renderAvailability();
+                restoreSelectionIfAvailable();
+            })
+            .catch(function () {
+                if (seq !== state.availSeq) return;
+                state.slots = [];
+                state.availLoading = false;
+                state.availError = true;
+                setLoadingUI(false);
+                renderAvailability();
+                var retry = document.getElementById('availRetry');
+                if (retry) retry.hidden = false;
+                showError('err-time',
+                    'We couldn\u2019t check availability right now. Please check your connection and try again.');
+            });
+    }
+
+    function retryAvailability() {
+        if (!state.availError || !state.consoleId || !state.date) return;
+        loadAvailability();
+    }
+
+    function setLoadingUI(on) {
+        var loading = document.getElementById('availLoading');
+        var list = document.getElementById('availList');
+        var select = document.getElementById('timeSelect');
+        var retry = document.getElementById('availRetry');
+        if (loading) loading.hidden = !on;
+        if (select) select.disabled = on || state.availError;
+        if (retry && on) retry.hidden = true;
+        if (on && list) list.innerHTML = '';
+    }
+
+    function clearTimeSelection(silent) {
+        state.time = null;
+        var hf = document.getElementById('hf_time');
+        if (hf) hf.value = '';
+        var sessionCard = document.getElementById('sessionCard');
+        if (sessionCard) sessionCard.hidden = true;
+        if (!silent) updateLiveRail();
+    }
+
+    function restoreSelectionIfAvailable() {
+        var hf = document.getElementById('hf_time');
+        if (hf && hf.value) {
+            var slot = findSlot(hf.value);
+            if (slot && slot.available) {
+                selectTime(hf.value, true);
+                return;
+            }
+            hf.value = '';
+            state.time = null;
+        }
+        updateLiveRail();
+    }
+
+    function renderAvailability() {
+        renderTimeSelect();
+        renderAvailList();
+        updateSessionCard();
+
+        var free = 0;
+        state.slots.forEach(function (s) { if (s.available) free++; });
+        var meta = document.getElementById('availMeta');
+        if (meta) {
+            meta.textContent = state.availError
+                ? ''
+                : (free === 0
+                    ? 'No free start times for this duration'
+                    : free + ' of ' + state.slots.length + ' times free');
+        }
+    }
+
+    function renderTimeSelect() {
+        var select = document.getElementById('timeSelect');
+        if (!select) return;
+        select.innerHTML = '';
+
+        var placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = state.availError
+            ? 'Unavailable'
+            : (state.slots.length ? 'Select a start time' : 'No times available');
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        select.appendChild(placeholder);
+
+        state.slots.forEach(function (slot) {
+            var opt = document.createElement('option');
+            opt.value = slot.start;
+            opt.textContent = fmtTime(slot.start) + (slot.available ? '' : ' \u2014 Unavailable');
+            opt.disabled = !slot.available;
+            select.appendChild(opt);
+        });
+    }
+
+    function renderAvailList() {
+        var list = document.getElementById('availList');
+        if (!list) return;
+        list.innerHTML = '';
+
+        if (state.availError) return;
+
+        state.slots.forEach(function (slot) {
+            var row = document.createElement('button');
+            row.type = 'button';
+            row.className = 'wiz-avail-slot' + (slot.available ? '' : ' wiz-avail-slot--busy');
+            row.setAttribute('data-time', slot.start);
+            row.setAttribute('role', 'radio');
+            row.setAttribute('aria-checked', 'false');
+
+            var timeSpan = document.createElement('span');
+            timeSpan.className = 'wiz-avail-time';
+            timeSpan.textContent = fmtTime(slot.start);
+
+            var stateSpan = document.createElement('span');
+            stateSpan.className = 'wiz-avail-state ' +
+                (slot.available ? 'wiz-avail-state--free' : 'wiz-avail-state--busy');
+            stateSpan.innerHTML = slot.available
+                ? '<span class="wiz-status-dot" aria-hidden="true"></span> Available'
+                : LOCK_SVG + ' Unavailable';
+
+            row.appendChild(timeSpan);
+            row.appendChild(stateSpan);
+
+            if (slot.available) {
+                row.setAttribute('aria-label', fmtTime(slot.start) + ', available');
+            } else {
+                row.disabled = true;
+                row.setAttribute('aria-disabled', 'true');
+                row.setAttribute('aria-label', fmtTime(slot.start) + ', unavailable');
             }
 
-            if (state.time === slotTime) {
-                slot.classList.add('wiz-timeslot--selected');
-                slot.setAttribute('aria-checked', 'true');
-            }
-
-            slot.innerHTML =
-                '<span class="wiz-timeslot-time">' + displayTime + '</span>' +
-                '<span class="wiz-timeslot-status">Available</span>';
-
-            slot.addEventListener('click', function () {
-                var t = this.getAttribute('data-time');
-                state.time = t;
-
-                $$('.wiz-timeslot').forEach(function (s) {
-                    s.classList.remove('wiz-timeslot--selected');
-                    s.setAttribute('aria-checked', 'false');
-                });
-                this.classList.add('wiz-timeslot--selected');
-                this.setAttribute('aria-checked', 'true');
-
-                var hf = document.getElementById('hf_time');
-                if (hf) hf.value = t;
-
-                var display = document.getElementById('selectedTimeText');
-                if (display) display.textContent = formatTimeDisplay(t);
-
-                hideError('err-time');
-                updateLiveRail();
+            row.addEventListener('click', function () {
+                if (this.disabled) return;
+                selectTime(slot.start);
             });
 
-            grid.appendChild(slot);
-        }
+            list.appendChild(row);
+        });
     }
 
-    function formatTime12(h, m) {
-        var suffix = h >= 12 ? 'PM' : 'AM';
-        var h12 = h % 12 || 12;
-        return h12 + ':00 ' + suffix;
+    function selectTime(t, skipFocusSync) {
+        state.time = t;
+
+        var hf = document.getElementById('hf_time');
+        if (hf) hf.value = t;
+
+        var select = document.getElementById('timeSelect');
+        if (select) select.value = t;
+
+        $$('.wiz-avail-slot').forEach(function (row) {
+            var isSel = row.getAttribute('data-time') === t;
+            row.classList.toggle('wiz-avail-slot--selected', isSel);
+            row.setAttribute('aria-checked', isSel ? 'true' : 'false');
+        });
+
+        updateSessionCard();
+        hideError('err-time');
+        updateLiveRail();
     }
 
-    function formatTimeDisplay(timeStr) {
-        var parts = timeStr.split(':');
-        var h = parseInt(parts[0], 10);
-        var suffix = h >= 12 ? 'PM' : 'AM';
-        var h12 = h % 12 || 12;
-        var endH = h + state.duration;
-        var endSuffix = endH >= 12 ? 'PM' : 'AM';
-        var endH12 = endH % 12 || 12;
-        if (endH > 23) {
-            return h12 + ':00 ' + suffix + ' — Midnight';
+    function updateSessionCard() {
+        var card = document.getElementById('sessionCard');
+        var rangeEl = document.getElementById('sessionRange');
+        var statusEl = document.getElementById('sessionStatusText');
+        if (!card || !rangeEl || !statusEl) return;
+
+        if (!state.time) { card.hidden = true; return; }
+
+        var slot = findSlot(state.time);
+        card.hidden = false;
+        rangeEl.textContent = formatRange(state.time, state.duration);
+
+        if (state.availLoading) {
+            statusEl.textContent = 'Checking availability\u2026';
+            statusEl.className = 'wiz-session-status';
+        } else if (slot && slot.available) {
+            statusEl.textContent = 'Available';
+            statusEl.className = 'wiz-session-status wiz-session-status--ok';
+        } else {
+            statusEl.textContent = 'Unavailable \u2014 please choose another time.';
+            statusEl.className = 'wiz-session-status wiz-session-status--bad';
         }
-        return h12 + ':00 ' + suffix + ' — ' + endH12 + ':00 ' + endSuffix;
     }
 
     /* ==========================================================
-       STEP 4 — Players & Duration
+       STEP 4 — Players (duration now lives in Step 3)
        ========================================================== */
     function initPlayerButtons() {
         $$('.wiz-player-btn').forEach(function (btn) {
@@ -414,16 +612,6 @@
                 hideError('err-players');
             });
         });
-
-        var durSelect = document.getElementById('durationSelect');
-        if (durSelect) {
-            durSelect.addEventListener('change', function () {
-                state.duration = parseInt(this.value, 10);
-                var hf = document.getElementById('hf_duration');
-                if (hf) hf.value = state.duration;
-                updateCost();
-            });
-        }
 
         /* Select 1 player by default */
         var btn1 = $('.wiz-player-btn[data-players="1"]');
@@ -466,7 +654,7 @@
 
         setText('sumConsole', state.consoleName || '—');
         setText('sumDate', state.date ? formatDateDisplay(state.date) : '—');
-        setText('sumTime', state.time ? formatTimeDisplay(state.time) : '—');
+        setText('sumTime', state.time ? formatRange(state.time, state.duration) : '—');
         setText('sumPlayers', state.players + (state.players === 1 ? ' Player' : ' Players'));
         setText('sumDuration', state.duration + (state.duration === 1 ? ' Hour' : ' Hours'));
         setText('sumSubtotal', '₹' + (state.totalCost || 0));
@@ -482,7 +670,7 @@
     function updateLiveRail() {
         setText('railConsole', state.consoleName || '—');
         setText('railDate', state.date ? formatDateDisplay(state.date) : '—');
-        setText('railTime', state.time ? formatTimeDisplay(state.time) : '—');
+        setText('railTime', state.time ? formatRange(state.time, state.duration) : '—');
         setText('railPlayers', state.players + (state.players === 1 ? ' Player' : ' Players'));
         setText('railDuration', state.duration + (state.duration === 1 ? ' Hour' : ' Hours'));
         setText('railSubtotal', '₹' + (state.totalCost || 0));
@@ -498,7 +686,7 @@
         setText('confirmDateTime',
             (state.date ? formatDateDisplay(state.date) : '—') +
             ' at ' +
-            (state.time ? formatTime12(parseInt(state.time.split(':')[0], 10), 0) : '—')
+            (state.time ? formatRange(state.time, state.duration) : '—')
         );
         setText('confirmPlayers', state.players + (state.players === 1 ? ' Player' : ' Players'));
         setText('confirmDuration', state.duration + (state.duration === 1 ? ' Hour' : ' Hours'));
@@ -577,22 +765,28 @@
         initPlayerButtons();
         initForm();
 
-        /* Keyboard: arrow keys on time slots */
-        var timeslotGrid = document.getElementById('timeslotGrid');
+        /* Keyboard: arrow keys on availability slots */
+        var timeslotGrid = document.getElementById('availList');
         if (timeslotGrid) {
             timeslotGrid.addEventListener('keydown', function (e) {
                 if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
                     e.preventDefault();
-                    var slots = $$('.wiz-timeslot:not(.wiz-timeslot--disabled)');
+                    var slots = $$('.wiz-avail-slot:not([aria-disabled="true"])');
                     var idx = slots.indexOf(document.activeElement);
                     if (idx < slots.length - 1) slots[idx + 1].focus();
                 } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
                     e.preventDefault();
-                    var slots2 = $$('.wiz-timeslot:not(.wiz-timeslot--disabled)');
+                    var slots2 = $$('.wiz-avail-slot:not([aria-disabled="true"])');
                     var idx2 = slots2.indexOf(document.activeElement);
                     if (idx2 > 0) slots2[idx2 - 1].focus();
                 }
             });
+        }
+
+        /* Retry button for availability failures */
+        var retryBtn = document.getElementById('availRetry');
+        if (retryBtn) {
+            retryBtn.addEventListener('click', retryAvailability);
         }
 
         /* Keyboard: arrow keys on player buttons */

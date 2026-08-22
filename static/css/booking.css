@@ -537,70 +537,200 @@
     text-align: center;
 }
 
-/* ── Time Slots ──────────────────────────────────────────── */
-.wiz-timeslot-grid {
+/* ── Step 3 — Selected Context ───────────────────────────── */
+.wiz-context-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 0.75rem;
-    margin-bottom: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--cx-space-3);
+    margin-bottom: var(--cx-space-5);
 }
 
-.wiz-timeslot {
+.wiz-context-card {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.3rem;
-    padding: 0.9rem 0.6rem;
+    gap: var(--cx-space-1);
+    padding: var(--cx-space-3) var(--cx-space-4);
+    border: 1px solid var(--cx-border);
     border-radius: var(--cx-radius-md);
-    border: 1.5px solid var(--cx-border);
-    background: var(--cx-surface-card);
-    cursor: pointer;
-    transition: all 0.25s var(--cx-ease);
-    font-family: var(--cx-font-ui);
-}
-.wiz-timeslot:hover:not(.wiz-timeslot--disabled) {
-    border-color: var(--cx-primary-border);
-    background: var(--cx-primary-subtle);
-    transform: translateY(-2px);
-    box-shadow: var(--cx-shadow-sm);
-}
-.wiz-timeslot:focus-visible {
-    outline: 2px solid var(--cx-primary);
-    outline-offset: 2px;
+    background: var(--cx-surface);
 }
 
-.wiz-timeslot-time {
-    font-size: 0.95rem;
+.wiz-context-label {
+    font-size: var(--cx-text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--cx-text-3);
+}
+
+.wiz-context-value {
+    font-size: 1rem;
     font-weight: 700;
     color: var(--cx-text);
 }
 
-.wiz-timeslot-status {
-    font-size: 0.7rem;
-    color: var(--cx-success);
+.wiz-context-change {
+    align-self: flex-start;
+    margin-top: var(--cx-space-1);
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: var(--cx-font-ui);
+    font-size: var(--cx-text-sm);
+    font-weight: 600;
+    color: var(--cx-primary);
+}
+
+.wiz-context-change:hover { text-decoration: underline; }
+.wiz-context-change:focus-visible {
+    outline: 2px solid var(--cx-primary);
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+/* ── Step 3 — Session Summary ────────────────────────────── */
+.wiz-session-card {
+    margin: var(--cx-space-4) 0;
+    padding: var(--cx-space-4);
+    border: 1px solid var(--cx-border);
+    border-left: 3px solid var(--cx-primary);
+    border-radius: var(--cx-radius-md);
+    background: var(--cx-surface-card);
+}
+
+.wiz-session-title {
+    font-size: var(--cx-text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--cx-text-3);
+    margin-bottom: var(--cx-space-2);
+}
+
+.wiz-session-range {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--cx-text);
+    font-family: var(--cx-font-ui);
+}
+
+.wiz-session-status {
+    margin-top: var(--cx-space-2);
+    font-size: var(--cx-text-sm);
+    font-weight: 600;
+}
+.wiz-session-status--ok { color: var(--cx-success); }
+.wiz-session-status--bad { color: var(--cx-danger); }
+
+/* ── Step 3 — Availability List ──────────────────────────── */
+.wiz-avail-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--cx-space-3);
+    margin-top: var(--cx-space-5);
+    margin-bottom: var(--cx-space-3);
+}
+
+.wiz-avail-meta {
+    font-size: var(--cx-text-sm);
+    color: var(--cx-text-2);
+}
+
+.wiz-avail-loading {
+    display: flex;
+    align-items: center;
+    gap: var(--cx-space-2);
+    padding: var(--cx-space-4);
+    border: 1px dashed var(--cx-border);
+    border-radius: var(--cx-radius-md);
+    color: var(--cx-text-2);
+    font-size: var(--cx-text-sm);
+}
+
+.wiz-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--cx-border);
+    border-top-color: var(--cx-primary);
+    border-radius: 50%;
+    animation: wiz-spin 0.8s linear infinite;
+}
+
+@keyframes wiz-spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wiz-spinner { animation-duration: 1.6s; }
+}
+
+.wiz-avail-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 0.5rem;
+}
+
+.wiz-avail-slot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: var(--cx-radius-sm);
+    border: 1.5px solid var(--cx-border);
+    background: var(--cx-surface-card);
+    cursor: pointer;
+    transition: border-color 0.2s var(--cx-ease), background 0.2s var(--cx-ease);
+    font-family: var(--cx-font-ui);
+    text-align: left;
+}
+.wiz-avail-slot:hover:not([aria-disabled="true"]) {
+    border-color: var(--cx-primary-border);
+    background: var(--cx-primary-subtle);
+}
+.wiz-avail-slot:focus-visible {
+    outline: 2px solid var(--cx-primary);
+    outline-offset: 2px;
+}
+
+.wiz-avail-time {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--cx-text);
+}
+
+.wiz-avail-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.72rem;
     font-weight: 600;
     letter-spacing: 0.02em;
+    white-space: nowrap;
 }
+.wiz-avail-state--free { color: var(--cx-success); }
+.wiz-avail-state--busy { color: var(--cx-text-3); }
+.wiz-avail-state svg { flex-shrink: 0; }
 
-.wiz-timeslot--selected {
-    border-color: var(--cx-primary);
-    background: var(--cx-primary);
-    box-shadow: 0 4px 12px var(--cx-primary-25);
-}
-.wiz-timeslot--selected .wiz-timeslot-time {
-    color: var(--cx-text-inverse);
-}
-.wiz-timeslot--selected .wiz-timeslot-status {
-    color: var(--cx-text-inverse);
-    opacity: 0.85;
-}
-
-.wiz-timeslot--disabled {
-    opacity: 0.4;
+.wiz-avail-slot--busy {
+    opacity: 0.55;
     cursor: not-allowed;
+    background: transparent;
+    border-style: dashed;
 }
-.wiz-timeslot--disabled .wiz-timeslot-status {
-    color: var(--cx-text-3);
+
+.wiz-avail-slot--selected {
+    border-color: var(--cx-primary);
+    box-shadow: 0 0 0 1px var(--cx-primary), 0 4px 12px var(--cx-primary-25);
+}
+.wiz-avail-slot--selected .wiz-avail-time { color: var(--cx-primary); }
+
+.wiz-btn-sm {
+    padding: 0.45rem 0.9rem;
+    font-size: var(--cx-text-sm);
+    margin-top: var(--cx-space-3);
 }
 
 /* ── Player Selection ────────────────────────────────────── */
@@ -1010,6 +1140,16 @@
     }
     .wiz-player-num {
         font-size: 1.2rem;
+    }
+    /* Booking form stacks single-column on mobile */
+    .wiz-context-grid {
+        grid-template-columns: 1fr;
+    }
+    .wiz-avail-list {
+        grid-template-columns: 1fr;
+    }
+    .wiz-avail-slot {
+        padding: 0.85rem 0.9rem;   /* touch-friendly */
     }
 }
 

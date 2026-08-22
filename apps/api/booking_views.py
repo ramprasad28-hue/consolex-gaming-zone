@@ -4,6 +4,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 
+from datetime import datetime
+
 from apps.bookings.services import BookingService
 from apps.bookings.pricing import RATE_PER_PLAYER_HOUR
 from apps.common.exceptions import ServiceError
@@ -15,12 +17,55 @@ class BookingCreateThrottle(UserRateThrottle):
     rate = "10/minute"
 
 
+class AvailabilityThrottle(UserRateThrottle):
+    rate = "60/minute"
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def booking_list(request):
     status_filter = request.query_params.get("status")
     qs = BookingService.list_for_user(request.user, status_filter)
     return paginated_response(qs, BookingSerializer, request)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@throttle_classes([AvailabilityThrottle])
+def booking_availability(request):
+    """
+    GET /api/v1/bookings/availability/?console=<id>&date=YYYY-MM-DD&duration=<hours>
+
+    Returns per-slot availability for one console/day. Times only —
+    no customer or booking details are exposed.
+    """
+    console_id = request.query_params.get("console")
+    date_str = request.query_params.get("date")
+    duration_str = request.query_params.get("duration", "1")
+
+    if not console_id or not date_str:
+        return error_response(
+            "Both 'console' and 'date' query parameters are required.",
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        booking_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+    except ValueError:
+        return error_response(
+            "Invalid date format. Use YYYY-MM-DD.",
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        data = BookingService.get_day_availability(console_id, booking_date, duration_str)
+    except ServiceError as e:
+        return error_response(
+            str(e),
+            getattr(e, "status_code", status.HTTP_400_BAD_REQUEST),
+        )
+
+    return Response(data)
 
 
 @api_view(["POST"])

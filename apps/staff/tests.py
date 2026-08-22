@@ -1366,3 +1366,14 @@ class StaffPortalRoutingTests(TestCase):
         self.assertContains(resp, "Edit in admin")
         resp = self.client.get(reverse("staff:staff_game_detail", args=[game.id]))
         self.assertContains(resp, "Edit in Django Admin")
+
+    def test_customer_toolbar_admin_link_is_labeled(self):
+        """+ Add Customer must be explicitly marked as leaving the portal."""
+        customer = User.objects.create_user(email="toolbar@x.com", password="x")
+        resp = self.client.get(reverse("staff:staff_customer_list"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "+ Add Customer (Admin)")
+        content = resp.content.decode()
+        self.assertIn('href="/admin/users/user/add/"', content)
+        # Customer detail rows stay inside the portal.
+        self.assertContains(resp, reverse("staff:staff_customer_detail", args=[customer.id]))

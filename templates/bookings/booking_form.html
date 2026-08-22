@@ -174,20 +174,71 @@
         </div>
       </div>
 
-      <!-- step 3: choose time slot -->
+      <!-- step 3: choose time (form-based) -->
       <div class="wiz-panel" id="step-3" role="tabpanel" aria-label="Step 3: Choose Time">
         <div class="wiz-panel-head">
-          <h2 class="wiz-panel-title">Select Time Slot</h2>
-          <p class="wiz-panel-sub">Choose your start time. Sessions run hourly.</p>
+          <h2 class="wiz-panel-title">Choose Your Time</h2>
+          <p class="wiz-panel-sub">Start times run every 30 minutes. Pick a slot that's free.</p>
         </div>
 
-        <div class="wiz-timeslot-grid" id="timeslotGrid" role="radiogroup" aria-label="Available time slots">
+        <!-- Selected context: console + date -->
+        <div class="wiz-context-grid">
+          <div class="wiz-context-card">
+            <span class="wiz-context-label">Selected Console</span>
+            <span class="wiz-context-value" id="ctxConsole">—</span>
+            <button type="button" class="wiz-context-change" data-wiz-prev="1" aria-label="Change console">
+              Change
+            </button>
+          </div>
+          <div class="wiz-context-card">
+            <span class="wiz-context-label">Selected Date</span>
+            <span class="wiz-context-value" id="ctxDate">—</span>
+            <button type="button" class="wiz-context-change" data-wiz-prev="2" aria-label="Change date">
+              Change
+            </button>
+          </div>
         </div>
 
-        <div class="wiz-selected-display" id="selectedTimeDisplay" aria-live="polite">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span id="selectedTimeText">No time selected</span>
+        <!-- Start Time -->
+        <div class="wiz-field wiz-field--gap">
+          <label class="cx-label" for="timeSelect">Start Time</label>
+          <select class="cx-select" id="timeSelect" aria-describedby="sessionStatusText" disabled>
+            <option value="">Checking availability…</option>
+          </select>
         </div>
+
+        <!-- Duration -->
+        <div class="wiz-field wiz-field--gap">
+          <label class="cx-label" for="durationSelect">Duration</label>
+          <select class="cx-select" id="durationSelect" aria-describedby="duration-hint">
+            <option value="1">1 Hour</option>
+            <option value="2">2 Hours</option>
+            <option value="3">3 Hours</option>
+            <option value="4">4 Hours</option>
+          </select>
+          <span class="cx-hint" id="duration-hint">You can book up to 4 hours.</span>
+        </div>
+
+        <!-- Selected session -->
+        <div class="wiz-session-card" id="sessionCard" hidden>
+          <div class="wiz-session-title">Your Session</div>
+          <div class="wiz-session-range" id="sessionRange">—</div>
+          <div class="wiz-session-status" id="sessionStatusText" role="status"></div>
+        </div>
+
+        <!-- Availability map -->
+        <div class="wiz-avail-head">
+          <span class="cx-label">Available Start Times</span>
+          <span class="wiz-avail-meta" id="availMeta" aria-live="polite"></span>
+        </div>
+
+        <div class="wiz-avail-loading" id="availLoading" role="status">
+          <span class="wiz-spinner" aria-hidden="true"></span> Checking availability…
+        </div>
+
+        <div class="wiz-avail-list" id="availList" role="radiogroup" aria-label="Start time availability"></div>
+
+        <button type="button" class="wiz-btn wiz-btn-ghost wiz-btn-sm" id="availRetry" hidden>Retry availability check</button>
 
         <div class="wiz-error" id="err-time" role="alert" aria-live="polite"></div>
 
@@ -196,18 +247,18 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
             Back
           </button>
-          <button type="button" class="wiz-btn wiz-btn-primary" data-wiz-next="4" aria-label="Continue to player selection">
+          <button type="button" class="wiz-btn wiz-btn-primary" data-wiz-next="4" id="toPlayersBtn" aria-label="Continue to player selection">
             Choose Players
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
         </div>
       </div>
 
-      <!-- step 4: players & duration -->
-      <div class="wiz-panel" id="step-4" role="tabpanel" aria-label="Step 4: Players and Duration">
+      <!-- step 4: players -->
+      <div class="wiz-panel" id="step-4" role="tabpanel" aria-label="Step 4: Players">
         <div class="wiz-panel-head">
-          <h2 class="wiz-panel-title">Players & Duration</h2>
-          <p class="wiz-panel-sub">How many players and for how long?</p>
+          <h2 class="wiz-panel-title">Number of Players</h2>
+          <p class="wiz-panel-sub">Who's playing?</p>
         </div>
 
         <div class="wiz-interim">
@@ -234,17 +285,6 @@
             </div>
           </div>
 
-          <div class="wiz-field wiz-field--gap">
-            <label class="cx-label" for="durationSelect">Duration</label>
-            <select class="cx-select" id="durationSelect" aria-describedby="duration-hint">
-              <option value="1">1 Hour</option>
-              <option value="2">2 Hours</option>
-              <option value="3">3 Hours</option>
-              <option value="4">4 Hours</option>
-            </select>
-            <span class="cx-hint" id="duration-hint">You can book up to 4 hours.</span>
-          </div>
-
           <div class="wiz-cost-preview" id="costPreview" aria-live="polite">
             <svg class="wiz-cost-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             <span>Estimated Total: <strong id="costTotal">₹0</strong></span>
@@ -264,10 +304,13 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td>1 Player</td><td>₹130</td><td>₹150</td></tr>
-                  <tr><td>2 Players</td><td>₹250</td><td>₹270</td></tr>
-                  <tr><td>3 Players</td><td>₹330</td><td>₹400</td></tr>
-                  <tr><td>4 Players</td><td>₹420</td><td>₹520</td></tr>
+                  {% for row in rate_rows %}
+                  <tr>
+                    <td>{{ row.players }} Player{{ row.players|pluralize }}</td>
+                    <td>₹{{ row.weekday }}</td>
+                    <td>₹{{ row.weekend }}</td>
+                  </tr>
+                  {% endfor %}
                 </tbody>
               </table>
             </div>

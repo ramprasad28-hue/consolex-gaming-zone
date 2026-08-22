@@ -4,7 +4,7 @@ Business logic for bookings: creation, conflict detection, cancellation.
 Views and API endpoints delegate here instead of inlining logic.
 """
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta
 from decimal import Decimal
 
 from django.db import transaction
@@ -34,6 +34,9 @@ logger = logging.getLogger("apps.bookings")
 
 class BookingService:
     """Stateless service — every method is a self-contained operation."""
+
+    # Start-time grid granularity for availability (business rule: 30 min).
+    SLOT_INTERVAL_MINUTES = 30
 
     # ── Queries ────────────────────────────────────────────
 
@@ -79,11 +82,8 @@ class BookingService:
         end_dt = start_dt + timedelta(hours=duration_hours)
         end_time = end_dt.time()
 
-        # Reject past slots
-        now = timezone.now()
-        if booking_date < now.date() or (
-            booking_date == now.date() and start_time <= now.time()
-        ):
+        # Reject past slots (local wall clock — session times are local times)
+        if BookingService._is_past_slot(booking_date, start_time):
             raise BookingInPastError("Please choose a future date and time.")
 
         # Operating hours check
@@ -192,14 +192,130 @@ class BookingService:
         )
         return booking
 
+    # ── Availability ───────────────────────────────────────
+
+    @staticmethod
+    def _operating_hours(booking_date):
+        """
+        Single source of truth for daily operating hours.
+
+        Returns (open_hour, close_hour) in 24h terms:
+          weekday 10:00–23:00, weekend 09:00–24:00.
+        """
+        is_weekend = booking_date.weekday() >= 5
+        return (9 if is_weekend else 10), (24 if is_weekend else 23)
+
+    @staticmethod
+    def get_day_availability(console_id, booking_date, duration_hours):
+        """
+        Real slot availability for one console/day, computed with the SAME
+        business rules as create_booking:
+
+          - operating hours via the shared _operating_hours helper
+          - past-slot rejection (same comparison)
+          - strict-overlap conflict predicate against blocking bookings
+            (confirmed + paid pending), matching _check_slot_conflict
+
+        Start times are generated every SLOT_INTERVAL_MINUTES. The result is
+        advisory only — create_booking remains the final authority at
+        submission time (row-locked conflict check).
+        """
+        try:
+            console = GameConsole.objects.get(pk=console_id, is_active=True)
+        except (GameConsole.DoesNotExist, ValueError):
+            raise ConsoleNotFoundError("Console not found.")
+
+        try:
+            duration = int(duration_hours)
+        except (TypeError, ValueError):
+            raise BookingValidationError("Invalid duration selected.")
+        if duration < 1 or duration > 10:
+            raise BookingValidationError("Invalid duration selected.")
+
+        is_weekend = booking_date.weekday() >= 5
+        open_hour, close_hour = BookingService._operating_hours(booking_date)
+
+        now_local = timezone.localtime()
+
+        # Blocking bookings for this console/day — same statuses the
+        # submission-time conflict check treats as conflicts.
+        blocking = list(
+            Booking.objects.filter(
+                game_console=console,
+                booking_date=booking_date,
+            ).filter(
+                Q(status="confirmed") | Q(status="pending", payment__isnull=False)
+            ).values_list("start_time", "end_time")
+        )
+
+        # Latest allowed session end per business hours:
+        #   weekday: same-day close_hour; weekend: midnight next day.
+        if is_weekend:
+            max_end = datetime.combine(booking_date + timedelta(days=1), time(0, 0))
+        else:
+            max_end = datetime.combine(booking_date, time(close_hour))
+
+        interval = timedelta(minutes=BookingService.SLOT_INTERVAL_MINUTES)
+        start_dt = datetime.combine(booking_date, time(open_hour))
+
+        slots = []
+        while True:
+            end_dt = start_dt + timedelta(hours=duration)
+            if end_dt > max_end:
+                break
+
+            if BookingService._is_past_slot(booking_date, start_dt.time(), now=now_local):
+                available, reason = False, "past"
+            else:
+                s_t, e_t = start_dt.time(), end_dt.time()
+                overlaps = any(
+                    s_t < b_end and e_t > b_start for b_start, b_end in blocking
+                )
+                available, reason = (not overlaps), (None if not overlaps else "booked")
+
+            slot = {
+                "start": start_dt.strftime("%H:%M"),
+                "end": end_dt.strftime("%H:%M"),
+                "available": available,
+            }
+            if reason:
+                slot["reason"] = reason
+            slots.append(slot)
+            start_dt += interval
+
+        return {
+            "console_id": console.id,
+            "date": booking_date.isoformat(),
+            "duration_hours": duration,
+            "interval_minutes": BookingService.SLOT_INTERVAL_MINUTES,
+            "slots": slots,
+        }
+
     # ── Internal helpers ───────────────────────────────────
+
+    @staticmethod
+    def _is_past_slot(booking_date, start_time, now=None):
+        """
+        True if the slot starts at or before "now" on the local wall clock.
+
+        Booking date/times are naive local session times (IST), so the
+        reference clock must be timezone.localtime(), not timezone.now()
+        (which is UTC under USE_TZ). An aware `now` is converted to local
+        time first; `now` may also be injected naive-local for tests.
+        """
+        if now is None:
+            now = timezone.localtime()
+        elif timezone.is_aware(now):
+            now = timezone.localtime(now)
+        return booking_date < now.date() or (
+            booking_date == now.date() and start_time <= now.time()
+        )
 
     @staticmethod
     def _validate_operating_hours(booking_date, start_time, end_dt):
         """Raise if outside operating hours (weekdays 10–23, weekends 9–24)."""
+        open_hour, close_hour = BookingService._operating_hours(booking_date)
         is_weekend = booking_date.weekday() >= 5
-        open_hour = 9 if is_weekend else 10
-        close_hour = 24 if is_weekend else 23
 
         if start_time.hour < open_hour:
             label = "9 AM on weekends" if is_weekend else "10 AM on weekdays"

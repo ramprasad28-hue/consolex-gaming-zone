@@ -44,6 +44,14 @@ def booking_form(request):
         "consoles": consoles,
         "rate_table": {str(k): float(v) for k, v in RATE_PER_PLAYER_HOUR.items()},
         "rate_table_weekend": {str(k): float(v) for k, v in RATE_PER_PLAYER_HOUR_WEEKEND.items()},
+        "rate_rows": [
+            {
+                "players": players,
+                "weekday": RATE_PER_PLAYER_HOUR[players],
+                "weekend": RATE_PER_PLAYER_HOUR_WEEKEND[players],
+            }
+            for players in sorted(RATE_PER_PLAYER_HOUR)
+        ],
         "form_errors": form.errors if form.is_bound and not form.is_valid() else None,
     })
 
