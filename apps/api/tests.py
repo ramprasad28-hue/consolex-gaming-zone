@@ -51,6 +51,25 @@ class AuthRegisterTests(TestCase):
         )
         self.assertEqual(resp.status_code, 400)
 
+    def test_register_same_prefix_different_domain(self):
+        payload = {"password": "securepass123"}
+        r1 = self.client.post(
+            reverse("api-register"),
+            data=json.dumps({**payload, "email": "john@a.com"}),
+            content_type="application/json",
+        )
+        r2 = self.client.post(
+            reverse("api-register"),
+            data=json.dumps({**payload, "email": "john@b.com"}),
+            content_type="application/json",
+        )
+        self.assertEqual(r1.status_code, 201)
+        self.assertEqual(r2.status_code, 201)
+        users = User.objects.filter(email__in=["john@a.com", "john@b.com"])
+        self.assertEqual(users.count(), 2)
+        usernames = list(users.values_list("username", flat=True))
+        self.assertEqual(len(usernames), len(set(usernames)))
+
 
 class AuthLoginTests(TestCase):
     def setUp(self):

@@ -1,7 +1,10 @@
-from django.db import models
+from django.db import IntegrityError, models, transaction
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.validators import RegexValidator
 from django.utils import timezone
+from django.utils.crypto import get_random_string
+
+USERNAME_MAX_LENGTH = 150
 
 
 class UserManager(BaseUserManager):
@@ -10,11 +13,42 @@ class UserManager(BaseUserManager):
             raise ValueError("Email is required")
         email = self.normalize_email(email)
         if not extra_fields.get("username"):
-            extra_fields["username"] = email.split("@")[0]
+            extra_fields["username"] = self._generate_username(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
-        user.save(using=self._db)
+        try:
+            with transaction.atomic():
+                user.save(using=self._db)
+        except IntegrityError:
+            # A concurrent registration claimed the same username between
+            # the availability check and save; retry with a random suffix.
+            extra_fields["username"] = self._fallback_username(email)
+            user = self.model(email=email, **extra_fields)
+            user.set_password(password)
+            user.save(using=self._db)
         return user
+
+    def _generate_username(self, email):
+        """Derive a unique username from the email local-part.
+
+        Keeps the plain prefix when free (john@a.com -> john) and appends an
+        index on collision (john@b.com -> john1, john@c.com -> john2).
+        """
+        base = email.split("@")[0]
+        username = base
+        index = 0
+        while self.model._default_manager.filter(username=username).exists():
+            index += 1
+            suffix = str(index)
+            username = f"{base[:USERNAME_MAX_LENGTH - len(suffix)]}{suffix}"
+        return username
+
+    def _fallback_username(self, email):
+        """Random-suffix username used when the availability check races."""
+        return (
+            f"{email.split('@')[0][:USERNAME_MAX_LENGTH - 9]}"
+            f"-{get_random_string(8)}"
+        )
 
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", True)

@@ -217,3 +217,67 @@ class UserPortalTests(TestCase):
         names = [entry.full_display_name for entry in leaderboard]
         self.assertIn(self.user.full_display_name, names)
         self.assertNotIn("ProGamer_X", names)
+
+
+class UsernameCollisionTests(TestCase):
+    def setUp(self):
+        from django.core.cache import cache
+        cache.clear()
+
+    def test_same_prefix_different_domains_both_created(self):
+        u1 = User.objects.create_user(email="john@a.com", password="x")
+        u2 = User.objects.create_user(email="john@b.com", password="x")
+        self.assertEqual(u1.username, "john")
+        self.assertEqual(u2.username, "john1")
+        self.assertNotEqual(u1.username, u2.username)
+
+    def test_non_conflicting_email_keeps_plain_prefix(self):
+        user = User.objects.create_user(email="alice@web.com", password="x")
+        self.assertEqual(user.username, "alice")
+
+    def test_third_collision_increments_counter(self):
+        User.objects.create_user(email="john@a.com", password="x")
+        User.objects.create_user(email="john@b.com", password="x")
+        u3 = User.objects.create_user(email="john@c.com", password="x")
+        self.assertEqual(u3.username, "john2")
+
+    def test_explicit_username_still_honored(self):
+        user = User.objects.create_user(
+            email="explicit@a.com", password="x", username="chosen"
+        )
+        self.assertEqual(user.username, "chosen")
+
+    def test_existing_users_unaffected_by_new_registrations(self):
+        existing = User.objects.create_user(email="kim@a.com", password="x")
+        User.objects.create_user(email="kim@b.com", password="x")
+        existing.refresh_from_db()
+        self.assertEqual(existing.username, "kim")
+        self.assertEqual(User.objects.filter(username="kim").count(), 1)
+
+    def test_template_registration_same_prefix_no_500(self):
+        payload = {
+            "first_name": "John",
+            "last_name": "Doe",
+            "password1": "Str0ng!Pass",
+            "password2": "Str0ng!Pass",
+        }
+        r1 = self.client.post(reverse("users:register"), {**payload, "email": "john@a.com"})
+        self.assertEqual(r1.status_code, 302)
+        self.client.logout()
+        r2 = self.client.post(reverse("users:register"), {**payload, "email": "john@b.com"})
+        self.assertEqual(r2.status_code, 302)
+        users = User.objects.filter(email__in=["john@a.com", "john@b.com"])
+        self.assertEqual(users.count(), 2)
+        usernames = list(users.values_list("username", flat=True))
+        self.assertEqual(len(usernames), len(set(usernames)))
+
+    def test_integrity_error_fallback_generates_unique_username(self):
+        from unittest.mock import patch
+        from apps.users.models import UserManager
+
+        User.objects.create_user(email="race@a.com", password="x")
+        with patch.object(UserManager, "_generate_username", return_value="race"):
+            u2 = User.objects.create_user(email="race@b.com", password="x")
+        self.assertTrue(u2.username.startswith("race-"))
+        self.assertNotEqual(u2.username, "race")
+        self.assertTrue(User.objects.filter(username=u2.username).exists())
