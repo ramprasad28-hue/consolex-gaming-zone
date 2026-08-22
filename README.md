@@ -81,6 +81,9 @@ TWILIO_ACCOUNT_SID=
 TWILIO_AUTH_TOKEN=
 TWILIO_WHATSAPP_FROM=
 OWNER_WHATSAPP_TO=
+
+# Redis (production only — shared cache across Gunicorn workers)
+REDIS_URL=redis://127.0.0.1:6379/0
 ```
 
 ## Project Structure
@@ -130,6 +133,7 @@ consolex/
 - [ ] Set a strong `SECRET_KEY` via environment variable
 - [ ] Configure `ALLOWED_HOSTS` with your domain
 - [ ] Set up PostgreSQL database
+- [ ] Provision Redis and set `REDIS_URL` (required: shared rate limiting + CMS cache across workers; startup fails fast without it)
 - [ ] Configure WhiteNoise or CDN for static files
 - [ ] Set up HTTPS (SSL certificate)
 - [ ] Configure Razorpay and Twilio credentials

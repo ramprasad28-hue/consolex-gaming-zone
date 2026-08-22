@@ -30,6 +30,26 @@ DATABASES = {
     }
 }
 
+# ── Cache — shared Redis across all Gunicorn workers ─────────
+# LocMemCache (base.py) is process-local: rate limits and CMS cache
+# invalidation break under multiple workers. Redis is required in prod.
+# Credentials live inside REDIS_URL only (e.g. redis://host:6379/0 or a
+# provider URL such as rediss://default:<password>@<host>:<port>).
+REDIS_URL = os.environ.get('REDIS_URL')
+if not REDIS_URL:
+    raise RuntimeError(
+        "REDIS_URL environment variable is required in production so all "
+        "workers share one cache (rate limiting, DRF throttles, CMS cache)."
+    )
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': REDIS_URL,
+        'KEY_PREFIX': 'consolex',
+    }
+}
+
 # ── Security headers ─────────────────────────
 SECURE_BROWSER_XSS_FILTER        = True
 SECURE_CONTENT_TYPE_NOSNIFF      = True

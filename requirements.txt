@@ -9,3 +9,4 @@ razorpay>=1.4
 PyJWT>=2.9
 requests>=2.32
 twilio>=9.0
+redis>=8.0
