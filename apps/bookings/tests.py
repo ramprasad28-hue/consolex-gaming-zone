@@ -247,6 +247,14 @@ class BookingModelTests(TestCase):
         )
         self.assertEqual(booking.duration_hours, 2.0)
 
+    def test_duration_hours_late_night_three_hours(self):
+        booking = Booking(
+            user=self.user, game_console=self.console,
+            booking_date=date(2026, 9, 1), start_time=time(23, 30),
+            end_time=time(2, 30), number_of_players=2, total_cost=500,
+        )
+        self.assertEqual(booking.duration_hours, 3.0)
+
     def test_duration_hours_ends_at_midnight(self):
         booking = Booking(
             user=self.user, game_console=self.console,
