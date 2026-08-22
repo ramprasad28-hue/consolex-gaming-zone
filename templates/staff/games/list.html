@@ -11,7 +11,7 @@
     <p class="sp-header-sub">Browse the catalog, curate covers and badges, and keep the library fresh.</p>
   </div>
   <div class="sp-header-actions">
-    <a href="{% url 'admin:games_game_add' %}" class="cx-btn cx-btn--primary cx-btn--sm" target="_blank" rel="noopener">+ Add Game</a>
+    <a href="{% url 'admin:games_game_add' %}" class="cx-btn cx-btn--primary cx-btn--sm" target="_blank" rel="noopener">+ Add Game (Admin)</a>
   </div>
 </div>
 
@@ -174,7 +174,7 @@
         </div>
         <div class="sp-cat-card-actions">
           <a href="{% url 'staff:staff_game_detail' g.id %}" class="cx-btn cx-btn--outline cx-btn--sm">View</a>
-          <a href="{% url 'admin:games_game_change' g.id %}" class="cx-btn cx-btn--ghost cx-btn--sm" target="_blank" rel="noopener">Edit</a>
+          <a href="{% url 'admin:games_game_change' g.id %}" class="cx-btn cx-btn--ghost cx-btn--sm" target="_blank" rel="noopener">Edit in admin</a>
           <div class="sp-menu" data-sp-menu>
             <button type="button" class="sp-menu-toggle" data-sp-menu-toggle aria-label="More actions for {{ g.title }}" aria-haspopup="menu" aria-expanded="false">
               <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>
@@ -241,7 +241,7 @@
       {% if q or category or badge or active_filter %}
       <a href="{% url 'staff:staff_game_list' %}" class="cx-btn cx-btn--outline cx-btn--md">Clear Filters</a>
       {% endif %}
-      <a href="{% url 'admin:games_game_add' %}" class="cx-btn cx-btn--primary cx-btn--md" target="_blank" rel="noopener">Add Game</a>
+      <a href="{% url 'admin:games_game_add' %}" class="cx-btn cx-btn--primary cx-btn--md" target="_blank" rel="noopener">Add Game (Admin)</a>
     </div>
     {% endif %}
   </div>

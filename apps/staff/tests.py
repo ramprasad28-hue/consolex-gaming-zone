@@ -1303,3 +1303,66 @@ class Phase6StaffNotificationEventsTests(TestCase):
             ).count(),
             1,
         )
+
+
+class StaffPortalRoutingTests(TestCase):
+    """Staff portal must keep staff inside the portal, never bounce into /admin/.
+
+    Regression tests for the routing audit: unlabeled admin shortcuts on
+    detail/list pages were landing staff users in Django Admin's login or
+    permission-denied screens.
+    """
+
+    def setUp(self):
+        self.staff = make_staff()
+        self.client.force_login(self.staff)
+
+    def test_dashboard_pending_payments_links_to_portal_payments(self):
+        resp = self.client.get(reverse("staff:staff_dashboard"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, reverse("staff:staff_payment_list"))
+
+    def test_sidebar_no_longer_links_to_admin_changelists(self):
+        resp = self.client.get(reverse("staff:staff_dashboard"))
+        # Old sidebar items pointed at Django Admin changelists.
+        self.assertNotContains(resp, "Game Library")
+        self.assertNotContains(resp, '<span class="sp-sidenav-label">Users</span>')
+        # The remaining Quick Add dropdown links must be add-pages, not changelists.
+        content = resp.content.decode()
+        self.assertIn('href="/admin/games/game/add/"', content)
+        self.assertNotIn('href="/admin/games/game/"', content)
+
+    def test_booking_detail_has_no_customer_scoped_view_link(self):
+        customer = User.objects.create_user(email="cust@x.com", password="x")
+        booking = Booking.objects.create(
+            user=customer,
+            booking_date=timezone.localdate(),
+            start_time="10:00",
+            end_time="11:00",
+            status="confirmed",
+        )
+        resp = self.client.get(
+            reverse("staff:staff_booking_detail", args=[booking.id])
+        )
+        self.assertEqual(resp.status_code, 200)
+        # Exact anchor match so the portal URL /staff/bookings/N/ doesn't
+        # satisfy a plain substring check for /bookings/N/.
+        customer_url = reverse("bookings:booking_detail", args=[booking.id])
+        self.assertNotContains(resp, f'href="{customer_url}"')
+
+    def test_customer_and_game_detail_render_for_staff(self):
+        customer = User.objects.create_user(email="c2@x.com", password="x")
+        game = Game.objects.create(title="Routing Test Game", category="action")
+        resp = self.client.get(reverse("staff:staff_customer_detail", args=[customer.id]))
+        self.assertEqual(resp.status_code, 200)
+        resp = self.client.get(reverse("staff:staff_game_detail", args=[game.id]))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_remaining_admin_shortcuts_are_explicitly_labelled(self):
+        game = Game.objects.create(title="Label Test Game", category="action")
+        resp = self.client.get(reverse("staff:staff_game_list"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Add Game (Admin)")
+        self.assertContains(resp, "Edit in admin")
+        resp = self.client.get(reverse("staff:staff_game_detail", args=[game.id]))
+        self.assertContains(resp, "Edit in Django Admin")

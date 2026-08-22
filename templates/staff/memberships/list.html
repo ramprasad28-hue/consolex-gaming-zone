@@ -10,7 +10,7 @@
     <p class="sp-header-sub">Plans, pricing, and who's subscribed — live from your database.</p>
   </div>
   <div class="sp-header-actions">
-    <a href="{% url 'admin:memberships_membership_add' %}" class="cx-btn cx-btn--primary cx-btn--sm" target="_blank" rel="noopener">+ Add Plan</a>
+    <a href="{% url 'admin:memberships_membership_add' %}" class="cx-btn cx-btn--primary cx-btn--sm" target="_blank" rel="noopener">+ Add Plan (Admin)</a>
   </div>
 </div>
 
@@ -159,7 +159,7 @@
 
     <div class="sp-plan-card-foot">
       <a href="{% url 'staff:staff_membership_detail' m.id %}" class="cx-btn cx-btn--outline cx-btn--sm">View Plan</a>
-      <a href="{% url 'admin:memberships_membership_change' m.id %}" class="cx-btn cx-btn--ghost cx-btn--sm" target="_blank" rel="noopener">Edit</a>
+      <a href="{% url 'admin:memberships_membership_change' m.id %}" class="cx-btn cx-btn--ghost cx-btn--sm" target="_blank" rel="noopener">Edit in admin</a>
     </div>
   </article>
   {% endfor %}
