@@ -239,6 +239,46 @@ class BookingModelTests(TestCase):
         )
         self.assertEqual(booking.duration_hours, 2.5)
 
+    def test_duration_hours_midnight_crossing(self):
+        booking = Booking(
+            user=self.user, game_console=self.console,
+            booking_date=date(2026, 9, 1), start_time=time(23, 0),
+            end_time=time(1, 0), number_of_players=2, total_cost=500,
+        )
+        self.assertEqual(booking.duration_hours, 2.0)
+
+    def test_duration_hours_ends_at_midnight(self):
+        booking = Booking(
+            user=self.user, game_console=self.console,
+            booking_date=date(2026, 9, 1), start_time=time(23, 0),
+            end_time=time(0, 0), number_of_players=2, total_cost=500,
+        )
+        self.assertEqual(booking.duration_hours, 1.0)
+
+    def test_duration_hours_same_day_one_hour(self):
+        booking = Booking(
+            user=self.user, game_console=self.console,
+            booking_date=date(2026, 9, 1), start_time=time(22, 0),
+            end_time=time(23, 0), number_of_players=2, total_cost=500,
+        )
+        self.assertEqual(booking.duration_hours, 1.0)
+
+    def test_duration_hours_morning_slot(self):
+        booking = Booking(
+            user=self.user, game_console=self.console,
+            booking_date=date(2026, 9, 1), start_time=time(9, 0),
+            end_time=time(10, 0), number_of_players=2, total_cost=500,
+        )
+        self.assertEqual(booking.duration_hours, 1.0)
+
+    def test_duration_hours_half_hour_boundaries(self):
+        booking = Booking(
+            user=self.user, game_console=self.console,
+            booking_date=date(2026, 9, 1), start_time=time(12, 30),
+            end_time=time(14, 30), number_of_players=2, total_cost=500,
+        )
+        self.assertEqual(booking.duration_hours, 2.0)
+
     def test_advance_amount(self):
         booking = Booking.objects.create(
             user=self.user, game_console=self.console,

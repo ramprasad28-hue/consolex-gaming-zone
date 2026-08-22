@@ -103,11 +103,12 @@ class Booking(models.Model):
 
     @property
     def duration_hours(self):
-        from datetime import datetime, date
+        from datetime import datetime, date, timedelta
         start = datetime.combine(date.today(), self.start_time)
         end = datetime.combine(date.today(), self.end_time)
-        diff = (end - start).seconds / 3600
-        return round(diff, 2)
+        if end <= start:
+            end += timedelta(days=1)
+        return round((end - start).total_seconds() / 3600, 2)
 
     @property
     def advance_amount(self):
