@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
 {% block body_class %}layout-error{% endblock %}
 {% block announcement %}{% endblock %}
@@ -9,7 +10,7 @@
 {% block content %}
 <div class="error-shell">
     <div class="error-brand" aria-hidden="true">
-        <img src="/media/logo/favicon.png" alt="{{ site.brand_name }}" width="40" height="40">
+        <img src="{% static 'images/logo/favicon.png' %}" alt="{{ site.brand_name }}" width="40" height="40">
     </div>
     {% block error_content %}{% endblock %}
 </div>

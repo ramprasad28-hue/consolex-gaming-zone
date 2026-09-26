@@ -1,9 +1,10 @@
+{% load static %}
 <nav class="navbar" id="navbar" aria-label="Main navigation">
     <div class="nav-inner">
 
         <!-- Logo -->
         <a href="/" class="nav-logo">
-            <img src="/media/logo/favicon.png" alt="{{ site.brand_name }}" width="34" height="34" class="nav-logo-img">
+            <img src="{% static 'images/logo/favicon.png' %}" alt="{{ site.brand_name }}" width="34" height="34" class="nav-logo-img">
             <div class="nav-logo-text">
                 <span class="nav-logo-name">{{ site.brand_name }}</span>
                 <span class="nav-logo-tag">{{ site.tagline }}</span>

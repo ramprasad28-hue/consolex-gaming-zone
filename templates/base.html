@@ -12,13 +12,13 @@
     <meta property="og:site_name" content="{{ site.brand_name }}">
     <meta property="og:title" content="{% block og_title %}{{ site.og_title }}{% endblock %}">
     <meta property="og:description" content="{% block og_description %}{{ site.og_description }}{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}/media/cxdesign/first.jpeg{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{% static 'images/cxdesign/first.jpeg' %}{% endblock %}">
     <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{% block tw_title %}{{ site.og_title }}{% endblock %}">
     <meta name="twitter:description" content="{% block tw_description %}{{ site.og_description }}{% endblock %}">
     <title>{% block title %}{{ site.brand_name }} — {{ site.tagline }}{% endblock %}</title>
-    <link rel="icon" type="image/png" href="/media/logo/favicon.png">
+    <link rel="icon" type="image/png" href="{% static 'images/logo/favicon.png' %}">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",

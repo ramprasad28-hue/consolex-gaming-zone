@@ -38,7 +38,7 @@
 {% block branding %}
 <div id="branding" style="display:flex;align-items:center;gap:10px;">
     <a href="{% url 'admin:index' %}" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-        <img src="/media/logo/favicon.png" alt="CONSOLEX" width="36" height="36" style="border-radius:6px;">
+        <img src="{% static 'images/logo/favicon.png' %}" alt="CONSOLEX" width="36" height="36" style="border-radius:6px;">
         <h1 id="site-name">
             <a href="{% url 'admin:index' %}">CONSOLEX Admin</a>
         </h1>
