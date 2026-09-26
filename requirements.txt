@@ -1,12 +1,14 @@
-Django>=5.2,<6.0
-djangorestframework>=3.15
+# Root requirements.txt — developer convenience reference.
+# build.sh installs requirements/base.txt + requirements/production.txt.
+# Keep this file in sync with requirements/base.txt + production.txt.
+Django>=6.0,<7.0
+djangorestframework>=3.17
 django-cors-headers>=4.4
 python-decouple>=3.8
-whitenoise>=6.7
-gunicorn>=22.0
-pillow>=11.0
-razorpay>=1.4
-PyJWT>=2.9
-requests>=2.32
+whitenoise>=6.12
+gunicorn>=26.0
+pillow>=12.2
+razorpay>=2.0
 twilio>=9.0
+psycopg2-binary>=2.9
 redis>=8.0
