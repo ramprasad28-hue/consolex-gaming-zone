@@ -807,7 +807,7 @@ class PaymentManagementTests(TestCase):
 
     def test_date_range_filter(self):
         Payment.objects.filter(pk=self.captured.pk).update(
-            created_at="2026-08-01 10:00:00+00:00"
+            created_at="2026-08-15 10:00:00+00:00"
         )
         resp = self.client.get(
             reverse("staff:staff_payment_list"),
