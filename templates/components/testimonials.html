@@ -1,8 +1,10 @@
+{% if cms_testimonials or site.google_rating %}
 <section class="testimonials-section" id="reviews">
     <div class="testi-container">
         <div class="testi-header stagger-child">
             <span class="cx-badge cx-badge--primary">{{ cb.testimonials_pill }}</span>
             <h2 class="testi-title">{{ cb.testimonials_title }}</h2>
+            {% if site.google_rating %}
             <div class="testi-rating-box">
                 <div class="testi-stars">
                     {% for _ in "12345" %}<svg width="18" height="18" viewBox="0 0 24 24" fill="var(--cx-gold)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>{% endfor %}
@@ -12,6 +14,7 @@
                     <span class="testi-rating-label">{{ site.google_review_count }} Google Reviews</span>
                 </div>
             </div>
+            {% endif %}
         </div>
 
         <div class="testi-grid testi-grid-3">
@@ -68,3 +71,4 @@
         </div>
     </div>
 </section>
+{% endif %}

@@ -38,22 +38,30 @@
             </div>
 
             <div class="hero-stats">
+                {% if cb.hero_stat_1_value %}
                 <div class="hero-stat">
                     <span class="hero-stat-value">{{ cb.hero_stat_1_value }}</span>
                     <span class="hero-stat-label">{{ cb.hero_stat_1_label }}</span>
                 </div>
+                {% endif %}
+                {% if cb.hero_stat_2_value %}
                 <div class="hero-stat">
                     <span class="hero-stat-value">{{ cb.hero_stat_2_value }}</span>
                     <span class="hero-stat-label">{{ cb.hero_stat_2_label }}</span>
                 </div>
+                {% endif %}
+                {% if cb.hero_stat_3_value %}
                 <div class="hero-stat">
                     <span class="hero-stat-value">{{ cb.hero_stat_3_value }}</span>
                     <span class="hero-stat-label">{{ cb.hero_stat_3_label }}</span>
                 </div>
+                {% endif %}
+                {% if cb.hero_stat_4_value %}
                 <div class="hero-stat">
                     <span class="hero-stat-value">{{ cb.hero_stat_4_value }}</span>
                     <span class="hero-stat-label">{{ cb.hero_stat_4_label }}</span>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>

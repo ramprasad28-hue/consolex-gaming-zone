@@ -105,25 +105,34 @@ class GameModelTests(TestCase):
 
 
 class SeedDataCommandTests(TestCase):
-    def test_seed_creates_data(self):
+    def test_default_seed_no_tournaments(self):
         from django.core.management import call_command
         call_command("seed_data", verbosity=0)
         self.assertGreaterEqual(Game.objects.count(), 10)
         self.assertGreaterEqual(GameConsole.objects.count(), 4)
-        self.assertGreaterEqual(Tournament.objects.count(), 3)
+        self.assertEqual(Tournament.objects.count(), 0)
+
+    def test_tournaments_opt_in(self):
+        from django.core.management import call_command
+        call_command("seed_data", "--with-tournaments", verbosity=0)
+        self.assertEqual(Tournament.objects.count(), 4)
+        self.assertTrue(all(t.registered_slots == 0 for t in Tournament.objects.all()))
+        self.assertTrue(all(t.total_slots > 0 for t in Tournament.objects.all()))
+        self.assertFalse(Tournament.objects.filter(title="GTA V Heist Challenge", game="GTA V Online").exists())
 
     def test_seed_idempotent(self):
         from django.core.management import call_command
-        call_command("seed_data", verbosity=0)
-        counts = (Game.objects.count(), GameConsole.objects.count(), Tournament.objects.count())
-        call_command("seed_data", verbosity=0)
+        call_command("seed_data", "--with-tournaments", verbosity=0)
+        first = (Game.objects.count(), GameConsole.objects.count(), Tournament.objects.count())
+        call_command("seed_data", "--with-tournaments", verbosity=0)
         self.assertEqual(
             (Game.objects.count(), GameConsole.objects.count(), Tournament.objects.count()),
-            counts,
+            first,
         )
 
     def test_seed_clear(self):
         from django.core.management import call_command
-        call_command("seed_data", verbosity=0)
-        call_command("seed_data", "--clear", verbosity=0)
+        call_command("seed_data", "--with-tournaments", verbosity=0)
+        call_command("seed_data", "--clear", "--with-tournaments", verbosity=0)
         self.assertGreaterEqual(Game.objects.count(), 10)
+        self.assertEqual(Tournament.objects.count(), 4)

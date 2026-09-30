@@ -206,6 +206,7 @@
         </div>
         <div class="dx-qa-label">Tournaments</div>
       </a>
+      {% if site.whatsapp_number %}
       <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hi%20{{ site.brand_name }}!%20I%20need%20help%20with%20my%20booking."
          target="_blank" rel="noopener noreferrer" class="dx-qa-card dx-animate dx-d4">
         <div class="dx-qa-icon" aria-hidden="true">
@@ -213,6 +214,7 @@
         </div>
         <div class="dx-qa-label">Support</div>
       </a>
+      {% endif %}
       <a href="{% url 'users:notifications' %}" class="dx-qa-card dx-animate dx-d5"
               aria-label="View notifications">
         <div class="dx-qa-icon" aria-hidden="true">

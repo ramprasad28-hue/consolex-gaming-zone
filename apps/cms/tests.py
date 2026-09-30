@@ -1,5 +1,6 @@
 # apps/cms/tests.py
 from io import StringIO
+from decimal import Decimal
 from django.test import TestCase, RequestFactory
 from django.contrib.admin.sites import AdminSite
 
@@ -222,17 +223,91 @@ class AdminTests(TestCase):
 
 
 class SeedContentCommandTests(TestCase):
+    def setUp(self):
+        from django.core.cache import cache
+        cache.clear()
+
     def test_seed_content_creates_blocks(self):
-        from django.core.management import call_command, CommandError
+        from django.core.management import call_command
         out = StringIO()
         call_command("seed_content", stdout=out)
         output = out.getvalue()
         self.assertIn("CMS content seeded successfully", output)
         self.assertTrue(ContentBlock.objects.count() >= 10)
-        self.assertTrue(Testimonial.objects.count() >= 1)
-        self.assertTrue(SiteStat.objects.count() >= 1)
+        self.assertEqual(Testimonial.objects.count(), 0)
+        self.assertEqual(SiteStat.objects.count(), 0)
         self.assertTrue(Feature.objects.count() >= 1)
         self.assertTrue(FAQItem.objects.count() >= 1)
+        self.assertTrue(GalleryItem.objects.count() >= 1)
+
+    def test_seed_no_fabricated_business_values(self):
+        from django.core.management import call_command
+        call_command("seed_content", verbosity=0)
+        site = SiteSettings.objects.get_solo()
+        self.assertEqual(site.phone, "")
+        self.assertEqual(site.whatsapp_number, "")
+        self.assertEqual(site.google_review_url, "")
+        self.assertEqual(site.google_rating, Decimal("0.0"))
+        self.assertEqual(site.google_review_count, 0)
+        self.assertEqual(site.instagram_handle, "")
+        self.assertEqual(site.instagram_url, "")
+        self.assertEqual(site.instagram_follower_count, "")
+        ann = Announcement.objects.get(pk=1)
+        self.assertEqual(ann.cta_url, "/bookings/book/")
+        self.assertNotIn("Next Tournament", ann.text)
+        self.assertNotIn("₹5,000", ann.text)
+        forbidden = [
+            "+91 98765", "ChIJ", "Placeholder", "@consolexerode",
+            "instagram.com/consolexerode", "2.1K", "100+", "+24",
+        ]
+        for cb in ContentBlock.objects.all():
+            for token in forbidden:
+                self.assertNotIn(token, cb.value)
+        for field in ("meta_description", "og_description"):
+            for token in forbidden:
+                self.assertNotIn(token, getattr(site, field))
+
+    def test_seed_heals_existing_fabricated_site_settings(self):
+        from django.core.management import call_command
+        factory_site = SiteSettings.objects.get_solo()
+        factory_site.phone = "+91 98765 43210"
+        factory_site.whatsapp_number = "919876543210"
+        factory_site.instagram_handle = "@consolexerode"
+        factory_site.instagram_url = "https://instagram.com/consolexerode"
+        factory_site.google_review_url = "https://search.google.com/local/writereview?placeid=ChIJPlaceholder"
+        factory_site.google_rating = Decimal("4.9")
+        factory_site.google_review_count = 87
+        factory_site.instagram_follower_count = "2.1K"
+        factory_site.save()
+        call_command("seed_content", verbosity=0)
+        site = SiteSettings.objects.get_solo()
+        self.assertEqual(site.phone, "")
+        self.assertEqual(site.whatsapp_number, "")
+        self.assertEqual(site.google_review_url, "")
+        self.assertEqual(site.google_rating, Decimal("0.0"))
+        self.assertEqual(site.google_review_count, 0)
+        self.assertEqual(site.instagram_handle, "")
+        self.assertEqual(site.instagram_url, "")
+        self.assertEqual(site.instagram_follower_count, "")
+
+    def test_seed_announcement_cta_route(self):
+        from django.core.management import call_command
+        call_command("seed_content", verbosity=0)
+        ann = Announcement.objects.get(pk=1)
+        self.assertTrue(ann.is_active)
+        self.assertEqual(ann.cta_text, "Book Now")
+        self.assertEqual(ann.cta_url, "/bookings/book/")
+
+    def test_homepage_renders_safe_without_business_info(self):
+        from django.core.management import call_command
+        from django.core.cache import cache
+        call_command("seed_content", verbosity=0)
+        cache.clear()
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+        content = response.content.decode()
+        for token in ("98765", "ChIJ", "wa.me/None", "/bookings/new/", "2.1K", "100+", "12+"):
+            self.assertNotIn(token, content)
 
     def test_seed_content_idempotent(self):
         from django.core.management import call_command

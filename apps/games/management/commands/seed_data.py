@@ -7,10 +7,15 @@ from apps.tournaments.models import Tournament
 
 
 class Command(BaseCommand):
-    help = "Seed demo data: games, consoles, and tournaments"
+    help = "Seed demo games and consoles (tournaments only with --with-tournaments)"
 
     def add_arguments(self, parser):
         parser.add_argument("--clear", action="store_true", help="Clear existing data first")
+        parser.add_argument(
+            "--with-tournaments",
+            action="store_true",
+            help="Also seed demo tournaments (opt-in — off by default so no fake events go live)",
+        )
 
     def handle(self, *args, **options):
         if options["clear"]:
@@ -21,7 +26,8 @@ class Command(BaseCommand):
 
         self._seed_consoles()
         self._seed_games()
-        self._seed_tournaments()
+        if options.get("with_tournaments"):
+            self._seed_tournaments()
 
         self.stdout.write(self.style.SUCCESS(
             f"Done. Games: {Game.objects.count()}, "
@@ -191,7 +197,6 @@ class Command(BaseCommand):
                 "date": now + datetime.timedelta(days=14),
                 "prize_pool": Decimal("15000.00"),
                 "total_slots": 16,
-                "registered_slots": 12,
                 "status": Tournament.Status.REGISTRATIONS_OPEN,
                 "is_active": True,
             },
@@ -202,7 +207,6 @@ class Command(BaseCommand):
                 "date": now + datetime.timedelta(days=5),
                 "prize_pool": Decimal("5000.00"),
                 "total_slots": 32,
-                "registered_slots": 28,
                 "status": Tournament.Status.REGISTRATIONS_OPEN,
                 "is_active": True,
             },
@@ -213,18 +217,16 @@ class Command(BaseCommand):
                 "date": now + datetime.timedelta(days=21),
                 "prize_pool": Decimal("3000.00"),
                 "total_slots": 20,
-                "registered_slots": 0,
                 "status": Tournament.Status.UPCOMING,
                 "is_active": True,
             },
             {
                 "title": "GTA V Heist Challenge",
-                "game": "GTA V Online",
+                "game": "GTA V",
                 "description": "4-player teams race to complete The Diamond Casino Heist with max payout.",
                 "date": now + datetime.timedelta(days=30),
                 "prize_pool": Decimal("10000.00"),
                 "total_slots": 12,
-                "registered_slots": 0,
                 "status": Tournament.Status.UPCOMING,
                 "is_active": True,
             },

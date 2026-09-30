@@ -80,6 +80,7 @@
         </div>
 
         <div class="td-hero-actions">
+          {% if site.whatsapp_number %}
           {% if tournament.btn_label == "Register Now" %}
             <a href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" rel="noopener" class="cx-btn cx-btn--primary cx-btn--lg">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
@@ -87,6 +88,9 @@
             </a>
           {% elif tournament.btn_label == "Notify Me" %}
             <a href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" rel="noopener" class="cx-btn cx-btn--outline cx-btn--lg">Notify Me</a>
+          {% else %}
+            <span class="cx-btn cx-btn--outline cx-btn--lg cx-btn--disabled">{{ tournament.btn_label }}</span>
+          {% endif %}
           {% else %}
             <span class="cx-btn cx-btn--outline cx-btn--lg cx-btn--disabled">{{ tournament.btn_label }}</span>
           {% endif %}
@@ -209,7 +213,7 @@
       <div class="td-cta-card">
         <h2 class="td-cta-title">Ready to Compete?</h2>
         <p class="td-cta-text">Join {{ tournament.title }} and prove you're the best at {{ site.brand_name }}.</p>
-        {% if tournament.btn_label == "Register Now" %}
+        {% if tournament.btn_label == "Register Now" and site.whatsapp_number %}
           <a href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" rel="noopener" class="cx-btn cx-btn--primary cx-btn--lg">Register Now</a>
         {% else %}
           <a href="{% url 'tournaments:tournament_list' %}" class="cx-btn cx-btn--outline cx-btn--lg">View All Tournaments</a>

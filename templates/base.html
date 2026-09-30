@@ -26,12 +26,14 @@
         "name": "{{ site.brand_name }}",
         "url": "{{ request.build_absolute_uri }}",
         "description": "{{ site.meta_description }}",
-        "foundingDate": "2025",
+        "foundingDate": "2025"
+        {% if site.phone %},
         "contactPoint": {
             "@type": "ContactPoint",
             "telephone": "{{ site.phone }}",
             "contactType": "customer service"
         }
+        {% endif %}
     }
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">

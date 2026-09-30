@@ -1,6 +1,7 @@
 {% load static %}
 
 <!-- phase: social cta ──────────────────────────────── -->
+{% if site.instagram_handle %}
 <section class="instagram-cta" id="instagram">
   <div class="instagram-cta-inner">
 
@@ -63,16 +64,20 @@
           </div>
         </div>
       </div>
+      {% if site.instagram_follower_count %}
       <div class="insta-follower-count">
         <span class="follower-number">{{ site.instagram_follower_count }}</span>
         <span class="follower-label">followers and growing</span>
       </div>
-    </div>
+      {% endif %}
+</div>
 
-  </div>
+</div>
 </section>
+{% endif %}
 
 <!-- ── GOOGLE REVIEW CTA ────────────────────────────────── -->
+{% if site.google_review_url %}
 <section class="google-review-cta" id="reviews">
   <div class="google-review-inner">
 
@@ -115,3 +120,4 @@
 
   </div>
 </section>
+{% endif %}

@@ -7,7 +7,7 @@ from apps.cms.models import (
 
 
 class Command(BaseCommand):
-    help = "Seed CMS content with all current hardcoded values"
+    help = "Seed production-safe CMS content (no invented business claims)"
 
     def add_arguments(self, parser):
         parser.add_argument("--clear", action="store_true", help="Clear existing CMS data first")
@@ -22,8 +22,6 @@ class Command(BaseCommand):
         self._seed_site_settings()
         self._seed_content_blocks()
         self._seed_announcement()
-        self._seed_testimonials()
-        self._seed_stats()
         self._seed_features()
         self._seed_faq()
         self._seed_gallery()
@@ -31,63 +29,83 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("CMS content seeded successfully."))
 
     def _seed_site_settings(self):
-        SiteSettings.objects.get_or_create(pk=1, defaults={
+        defaults = {
             "brand_name": "CONSOLEX",
             "tagline": "Play Beyond",
-            "phone": "+91 98765 43210",
-            "address": "Erode, Tamil Nadu, India",
+            "phone": "",
+            "address": "",
             "operating_hours": "10:00 AM – 11:00 PM Daily",
-            "whatsapp_number": "919876543210",
-            "instagram_handle": "@consolexerode",
-            "instagram_url": "https://instagram.com/consolexerode",
-            "google_review_url": "https://search.google.com/local/writereview?placeid=ChIJPlaceholder",
-            "google_rating": Decimal("4.9"),
-            "google_review_count": 87,
-            "instagram_follower_count": "2.1K",
+            "whatsapp_number": "",
+            "instagram_handle": "",
+            "instagram_url": "",
+            "google_review_url": "",
+            "google_rating": Decimal("0.0"),
+            "google_review_count": 0,
+            "instagram_follower_count": "",
             "meta_description": "CONSOLEX — Premium PS5 gaming zone in Erode. Book sessions, join memberships, compete in tournaments. Walk-ins welcome.",
             "og_title": "CONSOLEX Gaming Zone — Play Beyond",
             "og_description": "Premium PS5 gaming zone in Erode. Book sessions, join memberships, compete in tournaments.",
             "theme_color": "#050036",
             "theme_color_light": "#00e5ff",
-        })
+        }
+        obj, created = SiteSettings.objects.get_or_create(pk=1, defaults=defaults)
+        if not created:
+            stale = {
+                "phone": "+91 98765 43210",
+                "whatsapp_number": "919876543210",
+                "instagram_handle": "@consolexerode",
+                "instagram_url": "https://instagram.com/consolexerode",
+                "google_review_url": "https://search.google.com/local/writereview?placeid=ChIJPlaceholder",
+                "google_rating": Decimal("4.9"),
+                "google_review_count": 87,
+                "instagram_follower_count": "2.1K",
+            }
+            updates = [k for k in stale if getattr(obj, k) == stale[k]]
+            for key in updates:
+                setattr(obj, key, defaults[key])
+            if updates:
+                obj.save(update_fields=updates)
+                self.stdout.write(self.style.WARNING(
+                    "  SiteSettings: removed stale placeholder business values."
+                ))
         self.stdout.write("  SiteSettings: OK")
 
     def _seed_content_blocks(self):
         blocks = {
-            "hero_pill_1": "Now Open in Erode",
-            "hero_pill_2": "PS5 Gaming Lounge",
+            "hero_pill_1": "PS5 Gaming Lounge",
+            "hero_pill_2": "Online Booking",
             "hero_headline_1": "PLAY",
             "hero_headline_2": "BEYOND",
             "hero_subtitle": "Experience premium console gaming with high-end PlayStation 5 setups, online booking, memberships, tournaments, and immersive multiplayer experiences.",
             "hero_cta_primary": "Book Now",
             "hero_cta_ghost": "Explore Memberships",
-            "hero_stat_1_value": "10+",
-            "hero_stat_1_label": "PS5 Consoles",
+            "hero_stat_1_value": "",
+            "hero_stat_1_label": "",
             "hero_stat_2_value": "4K",
             "hero_stat_2_label": "HDR Displays",
-            "hero_stat_3_value": "100+",
-            "hero_stat_3_label": "PS5 Games",
+            "hero_stat_3_value": "",
+            "hero_stat_3_label": "",
             "hero_stat_4_value": "₹130",
             "hero_stat_4_label": "Starting /hr",
-            "hero_floating_tournament": "Next Tournament",
-            "hero_floating_pool": "Prize Pool: ₹5,000",
-            "hero_floating_badge": "Registrations Open",
-            "hero_floating_players": "+24 Playing Now",
+            "hero_floating_tournament": "",
+            "hero_floating_pool": "",
+            "hero_floating_badge": "",
+            "hero_floating_players": "",
 
             "features_pill": "The Experience",
             "features_title": "Everything You Need to Game Like a Pro",
             "features_subtitle": "Not your average cyber café. Every detail is designed for the ultimate PlayStation experience.",
 
             "games_pill": "Game Library",
-            "games_title": "100+ PS5 Titles",
-            "games_subtitle": "From AAA blockbusters to indie gems. All included in every session.",
-            "games_cta_text": "And 80+ more titles available at the lounge",
+            "games_title": "PS5 Game Library",
+            "games_subtitle": "From AAA blockbusters to indie gems.",
+            "games_cta_text": "Browse the full library at the lounge",
             "games_cta_btn": "View Full Library",
             "games_empty": "Game library coming soon. Check back soon for our full PS5 collection!",
 
             "tournament_pill": "Tournaments",
             "tournament_title": "Compete. Win. Dominate.",
-            "tournament_subtitle": "Weekly tournaments with real cash prizes. Open to all members and walk-ins.",
+            "tournament_subtitle": "Open to all members and walk-ins.",
             "tournament_expired": "Event Started",
 
             "pricing_pill": "Pricing",
@@ -125,13 +143,13 @@ class Command(BaseCommand):
 
             "social_instagram_title": "Follow the Chaos",
             "social_instagram_subtitle": "Behind-the-scenes gaming sessions, tournament clips, weekend highlights, and exclusive offers — all on Instagram.",
-            "social_instagram_btn": "Follow @consolexerode",
+            "social_instagram_btn": "Follow Us on Instagram",
             "social_review_title": "Loved your session?",
             "social_review_subtitle": "Drop a Google review — it takes 30 seconds and helps more gamers discover CONSOLEX.",
             "social_review_btn": "Write a Google Review",
 
             "footer_tagline": "Premium PS5 gaming lounge in Erode. Book your session, join tournaments, and play beyond limits.",
-            "footer_copyright": "© 2026 CONSOLEX. All rights reserved.",
+            "footer_copyright": "© CONSOLEX. All rights reserved.",
 
             "booking_form_title": "Book Your PS5 Slot",
             "booking_form_subtitle": "Select your console, date, time and number of players.",
@@ -164,86 +182,28 @@ class Command(BaseCommand):
         self.stdout.write(f"  ContentBlocks: {created} created, {len(blocks) - created} already existed.")
 
     def _seed_announcement(self):
-        Announcement.objects.get_or_create(
-            pk=1,
-            defaults={
-                "is_active": True,
-                "icon": "🏆",
-                "text": "Next Tournament: Jul 20 — ₹5,000 Prize Pool",
-                "cta_text": "Register Now →",
-                "cta_url": "/bookings/new/",
-            },
-        )
+        defaults = {
+            "is_active": True,
+            "icon": "🎮",
+            "text": "Book your PS5 session online in under a minute.",
+            "cta_text": "Book Now",
+            "cta_url": "/bookings/book/",
+        }
+        obj, created = Announcement.objects.get_or_create(pk=1, defaults=defaults)
+        if not created:
+            updates = []
+            if obj.text == "Next Tournament: Jul 20 — ₹5,000 Prize Pool":
+                obj.text = defaults["text"]
+                updates.append("text")
+            if obj.cta_url in ("", "/bookings/new/"):
+                obj.cta_url = defaults["cta_url"]
+                updates.append("cta_url")
+            if updates:
+                obj.save(update_fields=updates)
+                self.stdout.write(self.style.WARNING(
+                    "  Announcement: replaced stale tournament promo."
+                ))
         self.stdout.write("  Announcement: OK")
-
-    def _seed_testimonials(self):
-        testimonials = [
-            {
-                "name": "Aditya Subramanian",
-                "role": "College Student, PSG Tech",
-                "quote": "CONSOLEX is unreal. The PS5 setups are top-tier, the screens are huge, and the vibe is like playing at home but way better. I've been coming every weekend with my squad.",
-                "game_tag": "Playing: God of War Ragnarök",
-                "rating": 5,
-                "sort_order": 1,
-            },
-            {
-                "name": "Meenakshi Palaniswamy",
-                "role": "Graphic Designer, Erode",
-                "quote": "Came here for a date night and we ended up staying for 3 hours! The online booking was so easy, the ambience is incredible, and the staff is super friendly.",
-                "game_tag": "Playing: It Takes Two",
-                "rating": 5,
-                "sort_order": 2,
-            },
-            {
-                "name": "Karthikeyan Rajan",
-                "role": "Esports Player, Erode",
-                "quote": "Won my first tournament here and walked away with ₹3,000. The setups are lag-free, the controllers are pristine, and the tournament format is super competitive.",
-                "game_tag": "Playing: Warzone",
-                "rating": 5,
-                "sort_order": 3,
-            },
-            {
-                "name": "Divya Annamalai",
-                "role": "IT Professional, Erode",
-                "quote": "The Pro membership is insane value. 45 hours a month for ₹3,999? I come here after work to decompress and it's honestly the best part of my day.",
-                "game_tag": "Playing: Spider-Man 2",
-                "rating": 5,
-                "sort_order": 4,
-            },
-            {
-                "name": "Surya Narayanan",
-                "role": "Engineering Student",
-                "quote": "Brought my whole friend group for a birthday session. 4-player mode on the big screen — we couldn't stop laughing. The staff even set up a special arrangement for us.",
-                "game_tag": "Playing: Mortal Kombat 1",
-                "rating": 5,
-                "sort_order": 5,
-            },
-        ]
-        created = 0
-        for data in testimonials:
-            _, was_created = Testimonial.objects.get_or_create(
-                name=data["name"], defaults=data,
-            )
-            if was_created:
-                created += 1
-        self.stdout.write(f"  Testimonials: {created} created, {len(testimonials) - created} already existed.")
-
-    def _seed_stats(self):
-        stats = [
-            {"number": 5000, "suffix": "+", "label": "Players Served", "sort_order": 1},
-            {"number": 15000, "suffix": "+", "label": "Hours Played", "sort_order": 2},
-            {"number": 2000, "suffix": "+", "label": "Bookings Completed", "sort_order": 3},
-            {"number": 200, "suffix": "+", "label": "Active Members", "sort_order": 4},
-            {"number": 50, "suffix": "+", "label": "Tournaments Hosted", "sort_order": 5},
-        ]
-        created = 0
-        for data in stats:
-            _, was_created = SiteStat.objects.get_or_create(
-                label=data["label"], defaults=data,
-            )
-            if was_created:
-                created += 1
-        self.stdout.write(f"  Stats: {created} created, {len(stats) - created} already existed.")
 
     def _seed_features(self):
         features = [
@@ -283,8 +243,8 @@ class Command(BaseCommand):
             {
                 "section": "features", "icon": "🏆", "sort_order": 6,
                 "title": "Competitive Tournaments",
-                "description": "Weekly esports events with real cash prizes. Prove your skill.",
-                "tag": "Weekly Events",
+                "description": "Esports events open to all members and walk-ins. Prove your skill.",
+                "tag": "Esports",
                 "tag_url": "/tournaments/",
                 "image": "tournaments/EA_Sports_FC_26.jpg",
             },
@@ -375,28 +335,16 @@ class Command(BaseCommand):
         faqs = [
             {"category": "booking", "sort_order": 1,
              "question": "How do I book a session at CONSOLEX?",
-             "answer": "You can book online through our website in under 60 seconds — just select your date, time, number of players, and duration. You'll receive a confirmation via WhatsApp. Walk-ins are also welcome subject to availability."},
+             "answer": "You can book online through our website — just select your date, time, number of players, and duration. Walk-ins are also welcome subject to availability."},
             {"category": "booking", "sort_order": 2,
              "question": "What is the minimum booking duration?",
-             "answer": "The minimum booking duration is 1 hour. You can book in 30-minute increments after the first hour. Maximum single-session booking is 4 hours."},
+             "answer": "The minimum booking duration is 1 hour. You can book in 30-minute increments after the first hour."},
             {"category": "membership", "sort_order": 3,
              "question": "What is included in a membership?",
-             "answer": "Memberships include pre-paid gaming hours valid for 30 days. Basic (10 hrs weekdays), Standard (25+5 weekend hrs), and Pro (45 total hrs, all days). Members also get priority booking and exclusive discounts."},
+             "answer": "Memberships include pre-paid gaming hours valid for 30 days: Basic (10 weekday hrs), Standard (25 weekday + 5 weekend hrs), and Pro (40 weekday + 5 bonus hrs). Pro members also get priority slot booking."},
             {"category": "membership", "sort_order": 4,
              "question": "Do unused membership hours roll over?",
-             "answer": "Membership hours do not roll over to the next month. We recommend choosing a plan that matches your expected usage. You can upgrade your plan at any time."},
-            {"category": "payments", "sort_order": 5,
-             "question": "What payment methods do you accept?",
-             "answer": "We accept UPI (GPay, PhonePe, Paytm), cash, and all major credit/debit cards. Online bookings can be paid via UPI or card. Memberships can also be purchased in-store."},
-            {"category": "refunds", "sort_order": 6,
-             "question": "What is the refund policy for bookings?",
-             "answer": "Cancellations made 2+ hours before the session start time receive a full refund. Cancellations within 2 hours receive a 50% refund. No-shows are non-refundable. Membership fees are non-refundable after activation."},
-            {"category": "rules", "sort_order": 7,
-             "question": "Are there any age restrictions?",
-             "answer": "Players below 16 years old must be accompanied by a parent or guardian. Some games are age-rated and we follow PEGI/ESRB guidelines. ID may be requested for age-restricted titles."},
-            {"category": "rules", "sort_order": 8,
-             "question": "Can I bring food and drinks to the lounge?",
-             "answer": "Outside food and drinks are not permitted inside the gaming zone. We have snacks, beverages, and refreshments available at the lounge counter. No smoking or alcohol is allowed on the premises."},
+             "answer": "Membership hours do not roll over to the next month. We recommend choosing a plan that matches your expected usage."},
         ]
         created = 0
         for data in faqs:

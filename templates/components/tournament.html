@@ -14,8 +14,6 @@
                 <div class="tourney-card-img">
                     {% if t.image_src %}
                     <img src="{{ t.image_src }}" alt="{{ t.title }}">
-                    {% else %}
-                    <img src="{{ MEDIA_URL }}games/cod.jpg" alt="{{ t.title }}">
                     {% endif %}
                     <div class="tourney-card-img-scrim"></div>
                     <span class="tourney-status {{ t.status_css_class }}">{{ t.status_label }}</span>
@@ -48,7 +46,11 @@
                     </div>
                     <div class="tourney-countdown" data-target="{{ t.date|date:'Y-m-d\TH:i:s' }}"></div>
                     {% if t.btn_label == "Register Now" or t.btn_label == "Notify Me" %}
+                    {% if site.whatsapp_number %}
                     <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hi!%20I%27m%20interested%20in%20the%20{{ t.title|urlencode }}%20tournament." class="cx-btn cx-btn--primary" target="_blank" rel="noopener noreferrer" style="width:100%;justify-content:center;">{{ t.btn_label }}</a>
+                    {% else %}
+                    <span class="cx-btn cx-btn--outline" aria-disabled="true" style="width:100%;justify-content:center;opacity:0.5;cursor:not-allowed;">{{ t.btn_label }}</span>
+                    {% endif %}
                     {% else %}
                     <span class="cx-btn cx-btn--outline" aria-disabled="true" style="width:100%;justify-content:center;opacity:0.5;cursor:not-allowed;">{{ t.btn_label }}</span>
                     {% endif %}
